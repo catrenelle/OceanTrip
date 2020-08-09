@@ -1,0 +1,1233 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Text.RegularExpressions;
+using Buddy.Coroutines;
+using Clio.Utilities;
+using ff14bot;
+using ff14bot.AClasses;
+using ff14bot.Behavior;
+using ff14bot.Enums;
+using ff14bot.Helpers;
+using ff14bot.Managers;
+using ff14bot.Navigation;
+using ff14bot.NeoProfiles;
+using ff14bot.Objects;
+using ff14bot.Pathing.Service_Navigation;
+using ff14bot.RemoteWindows;
+using GreyMagic;
+using OceanTripPlanner.RemoteWindows;
+using OceanTripPlanner.Helpers;
+using TreeSharp;
+
+namespace OceanTripPlanner
+{	
+	public class OceanTrip : BotBase
+	{
+		private Composite _root;
+
+		public OceanTrip()
+		{
+		}
+
+		private static readonly Vector3[] fishSpots = 
+		{
+			new Vector3(-7.541584f, 6.74677f, -7.7191f),
+			new Vector3(-7.419403f, 6.73973f, -2.7815f),
+			new Vector3(7.538965f, 6.745806f, -10.44607f),
+			new Vector3(7.178741f, 6.749996f, -4.165483f),
+			new Vector3(7.313677f, 6.711103f, -8.10146f),
+			new Vector3(7.53893f, 6.745699f, 1.881091f)
+		};
+		private static readonly float[] headings = new[] {4.622331f, 4.684318f, 1.569952f, 1.509215f, 1.553197f, 1.576235f};
+		
+		private readonly uint[] oceanFish = new uint[] {28937, 28938, 29739, 29722, 29723, 28941, 29728, 29729, 29730, 29736, 29737, 29738, 29719, 28942, 28939, 29724, 28940, 29725, 29731, 29735, 29733, 29718, 29740, 29741, 29734, 29721, 29726, 29727, 29742,29732,29720,29743, 29744, 29745, 29746, 29747, 29766, 29749, 29750, 29751, 29752, 29753, 29754, 29755, 29756, 29757, 29758, 29759, 29779, 29761, 29760, 29763, 29764, 29765, 29775, 29767, 29768, 29769,29770, 29771, 29772, 29780, 29774, 29748,29776, 29777, 29778, 29773, 29762, 29781, 29782, 29783, 29784, 29785, 29786, 29787, 29788, 29789, 29790, 29791};
+		private static readonly int[] fishForSale = new [] {28937,28938,28939,28940,28941,28942,29718,29719,29720,29721,29722,29723,29724,29725,29726,29727,29728,29729,29730,29731,29732,29733,29734,29735,29736,29737,29738,29739,29740,29741,29742,29743,29744,29745,29746,29747,29748,29749,29750,29751,29752,29753,29754,29755,29756,29757,29758,29759,29760,29761,29762,29763,29764,29765,29766,29767,29768,29769,29770,29771,29772,29773,29774,29775,29776,29777,29778,29779,29780,29781,29782,29784,29785,29786,29787};
+
+		private static readonly int[] pattern = new[] {
+		2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1};
+		private static string[] schedulesTod = new[] {"D S N", "N D S", "S N D"};
+		private string[] schedule = new string[3];
+		private int posOnSchedule = 0;
+		private int epoch = 0;
+		private int twoHourChunk = 0;
+
+		private static Random rnd = new Random();
+		private int spot = rnd.Next(5);
+		private Stopwatch biteTimer = new Stopwatch();
+		private bool doubleHooked = false;
+
+		private SpellData action;
+		
+		private List<uint> missingFish = new List<uint>();
+
+		public override string Name => "Ocean Trip";
+		public override PulseFlags PulseFlags => PulseFlags.All;
+
+		public override bool IsAutonomous => true;
+		public override bool RequiresProfile => false;
+
+		public override Composite Root => _root;
+
+		public override bool WantButton { get; } = true;
+
+		private SettingsForm settings;
+        public override void OnButtonPress()
+        {
+            if (settings == null || settings.IsDisposed)
+                settings = new SettingsForm();
+            try
+            {
+                settings.Show();
+                settings.Activate();
+            }
+            catch 
+			{ 
+			}
+        }
+
+		public override void Start()
+		{
+			_root = new ActionRunCoroutine(r => Run());
+		}
+
+		public override void Stop()
+		{
+			_root = null;
+		}
+
+		private async Task<bool> Run()
+		{
+			Navigator.PlayerMover = new SlideMover();
+			Navigator.NavigationProvider = new ServiceNavigationProvider();
+
+			if (!Lisbeth.GetHookList().Contains("StopGently"))
+			{
+				Lisbeth.AddHook("StopGently", LisbethStop);
+				Log("StopGently hook added");
+			}
+
+			await OceanFishing();
+			return true;
+		}
+
+		private async Task LisbethStop()
+        {
+			if (DateTime.UtcNow.Hour % 2 == 0 && DateTime.UtcNow.Minute < 14 && DateTime.UtcNow.Minute > 5)
+			{
+				Lisbeth.StopGently();
+			}
+        }
+
+		private async Task OceanFishing()
+		{			
+			if (WorldManager.RawZoneId != 900)
+			{
+				if (Core.Me.CurrentJob == ClassJobType.Fisher)
+				{
+					if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Sell)
+					{
+						await LandSell(fishForSale);
+					}
+					else if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Desynth)
+					{
+						await DesynthOcean(fishForSale);
+					}
+					
+					await LandRepair(90);
+					await RestockBait(150, 500);
+					//await EmptyScrips(12669, 1000, 0);
+				}
+
+				if (OceanTripSettings.Instance.Venturing)
+				{
+					await Retaining();
+				}
+
+				await PassTheTime();
+
+				missingFish = await GetFishLog();
+				Log($"Missing Fish:");
+				foreach (var fish in missingFish)
+				{
+					Log($"{fish} {DataManager.GetItem(fish).CurrentLocaleName}");
+				}
+				
+				Log("Waiting for the boat...");
+				while (!((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute == 13)))
+				{
+					await Coroutine.Sleep(1000);
+					if (OceanTripSettings.Instance.Venturing)
+					{
+						await Retaining();
+					}
+				}
+				
+				await SwitchToJob(ClassJobType.Fisher);
+				await Navigation.GetTo(129, new Vector3(-410.1068f, 3.999944f, 74.89863f));
+
+				if (DataManager.GetItem(27870).ItemCount() >= 1 && OceanTripSettings.Instance.OceanFood == true)
+				{
+					Log("Eating food...");
+					do
+					{
+						foreach(BagSlot slot in InventoryManager.FilledSlots)	
+						{		
+							if(slot.RawItemId == 27870)	
+							{	
+								slot.UseItem();	
+							}
+						}
+						await Coroutine.Sleep(3000);
+					} while (!Core.Player.Auras.Any(x => x.Value == 10419));
+					await Coroutine.Sleep(1000);
+				}
+				else if (OceanTripSettings.Instance.OceanFood == true)
+				{
+					Log("Out of food!");
+				}
+
+				await GetOnBoat();
+
+				spot = rnd.Next(5);
+				posOnSchedule = 0;
+				Log(GetSchedule());
+				switch (GetSchedule())
+				{
+					case "D S N":
+						schedule[0] = "Day";
+						schedule[1] = "Sunset";
+						schedule[2] = "Night";
+						break;
+					case "S N D":
+						schedule[0] = "Sunset";
+						schedule[1] = "Night";
+						schedule[2] = "Day";
+						break;
+					case "N D S":
+						schedule[0] = "Night";
+						schedule[1] = "Day";
+						schedule[2] = "Sunset";
+						break;
+				}
+			}
+
+			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","measure your catch"))
+			{
+				if (ChatCheck("[NPCAnnouncements]","southern Strait"))
+				{
+					Log($"Southern Merlthor, {schedule[posOnSchedule]}");
+					await GoFish(29715, 2613, "south");
+					posOnSchedule++;
+				}
+				if (ChatCheck("[NPCAnnouncements]","Galadion"))
+				{
+					Log($"Galadion Bay, {schedule[posOnSchedule]}");
+					await GoFish(29716, 2603, "galadion");		
+					posOnSchedule++;
+				}
+				if (ChatCheck("[NPCAnnouncements]","northern Strait"))
+				{
+					Log($"Northern Merlthor, {schedule[posOnSchedule]}");
+					await GoFish(29714, 2619, "north");
+					posOnSchedule++;
+				}
+				if (ChatCheck("[NPCAnnouncements]","Rhotano Sea"))
+				{
+					Log($"Rhotano Sea, {schedule[posOnSchedule]}");
+					await GoFish(29714, 2591, "rhotano");
+					posOnSchedule++;
+				}
+				await Coroutine.Sleep(1000);
+			}
+
+			AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
+			if (windowByName != null)
+			{
+				await Coroutine.Sleep(5000);
+				windowByName.SendAction(1, 3, 0);
+				if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+				{
+					await Coroutine.Yield();
+					await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
+				}
+			}
+			await Coroutine.Sleep(1000);
+		}
+
+		private async Task ChangeBait(ulong baitId)
+		{
+			if ((baitId != FishingManager.SelectedBaitItemId) && (DataManager.GetItem((uint) baitId).ItemCount() > 20))
+			{
+				AtkAddonControl baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
+				if(baitWindow == null)
+				{
+					ActionManager.DoAction(288, GameObjectManager.LocalPlayer);
+					await Buddy.Coroutines.Coroutine.Sleep(1000);
+					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
+				}							
+				if(baitWindow != null)
+				{
+					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
+					Log($"Applied {DataManager.GetItem((uint) baitId).CurrentLocaleName}");
+					await Buddy.Coroutines.Coroutine.Sleep(1000);
+					ActionManager.DoAction(288, GameObjectManager.LocalPlayer);
+				}	
+			}
+		}
+
+		private async Task GoFish(ulong baitId, ulong spectralbaitId, string location)
+		{			
+			Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
+			while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
+			{
+				Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
+				await Coroutine.Sleep(100);
+			}
+			Navigator.PlayerMover.MoveStop();
+			await Coroutine.Sleep(500);
+			Core.Me.SetFacing(headings[spot]);
+			await Coroutine.Sleep(1000);
+
+			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]","measure your catch"))
+			{
+				if (!FishingManager.CanMooch && !ChatCheck("[2115]","Mooch II") && (Core.Me.CurrentGP < 500))
+				{
+					await UseCordial();
+				}
+
+				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
+				{
+					if ((ChatCheck("You land a","gugrusaurus") || ChatCheck("You land a","heavenskey")) && (Core.Me.CurrentGP >= 350) && !Core.Player.HasAura(568))
+					{
+						await Coroutine.Sleep(100);
+						if (ActionManager.CanCast(4596, Core.Me))
+						{
+							Log("Identical Cast!");
+							ActionManager.DoAction(4596, Core.Me);
+						}
+					}
+
+					if (FishingManager.CanMooch && WorldManager.CurrentWeatherId == 145)
+					{
+						Log("Mooch!");
+						FishingManager.Mooch();
+						biteTimer.Start();
+					}
+					else if (ChatCheck("[2115]","Mooch II") && ActionManager.CanCast(268, Core.Me) && Core.Me.CurrentGP >= 200 && WorldManager.CurrentWeatherId == 145)
+					{
+						Log("Mooch II!");
+						ActionManager.DoAction(268, Core.Me);
+						biteTimer.Start();
+					}
+					else
+					{
+						//<!-- plump 29716 -->
+						//<!-- krill 29715 -->
+						//<!-- ragworm 29714 -->
+						if (WorldManager.CurrentWeatherId == 145)
+						{
+							if (((location == "galadion") && (schedule[posOnSchedule] == "Night") && missingFish.Contains(29788)) || ((location == "south") && (schedule[posOnSchedule] == "Night") && missingFish.Contains(29789)) || ((location == "north") && (schedule[posOnSchedule] == "Day") && missingFish.Contains(29791)) || ((location == "rhotano") && (schedule[posOnSchedule] == "Sunset") && missingFish.Contains(29790)))
+							{
+								await ChangeBait(spectralbaitId);
+							}
+							else if (((location == "galadion") && (schedule[posOnSchedule] == "Sunset")) || ((location == "rhotano") && (schedule[posOnSchedule] == "Day")) || ((location == "north") && (schedule[posOnSchedule] == "Day")) || ((location == "south") && (schedule[posOnSchedule] == "Night")))
+							{
+								await ChangeBait(29716); //plump
+							}
+							else if (((location == "south") && (schedule[posOnSchedule] == "Day")) || ((location == "rhotano") && (schedule[posOnSchedule] == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29774))) || ((location == "north") && (schedule[posOnSchedule] == "Sunset") && missingFish.Contains(29783) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) || ((location == "north") && (schedule[posOnSchedule] == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29777))) || ((location == "galadion") && (schedule[posOnSchedule] == "Night")))
+							{
+								await ChangeBait(29715); //krill
+							}
+							else if (((location == "galadion") && (schedule[posOnSchedule] == "Day")) || ((location == "south") && (schedule[posOnSchedule] == "Sunset")) || ((location == "north") && (schedule[posOnSchedule] == "Sunset")) || ((location == "north") && (schedule[posOnSchedule] == "Night")) || ((location == "rhotano") && (schedule[posOnSchedule] == "Night")))
+							{
+								await ChangeBait(29714); //ragworm
+							}
+							else
+							{
+								await ChangeBait(spectralbaitId);
+							}
+						}
+						else
+						{
+							await ChangeBait(baitId);
+						}
+						biteTimer.Start();
+						FishingManager.Cast();	
+					}
+					await Coroutine.Sleep(10);
+					doubleHooked = false;
+				}
+				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]","measure your catch"))
+				{
+					await Coroutine.Sleep(100);
+					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
+					{
+						biteTimer.Stop();
+						Log($"Bite Time: {biteTimer.Elapsed.TotalSeconds:F1}s");
+						if ((((location == "galadion") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (FishingManager.TugType != TugType.Medium) && (schedule[posOnSchedule] != "Night")) || ((biteTimer.Elapsed.TotalSeconds > 1) && (biteTimer.Elapsed.TotalSeconds <= 4) && (FishingManager.TugType == TugType.Medium)))) || ((location == "south") && (((biteTimer.Elapsed.TotalSeconds >= 6) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Heavy) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (biteTimer.Elapsed.TotalSeconds <= 6) && (schedule[posOnSchedule] == "Night") && (FishingManager.TugType == TugType.Medium) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 4) && (biteTimer.Elapsed.TotalSeconds <= 7) && (schedule[posOnSchedule] == "Day") && (FishingManager.TugType == TugType.Medium)))) || ((location == "north") && (((biteTimer.Elapsed.TotalSeconds >= 5) && (biteTimer.Elapsed.TotalSeconds <= 9) && (schedule[posOnSchedule] == "Night") && (FishingManager.TugType != TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 12) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 9) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Medium)))) || ((location == "rhotano") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 11) && (schedule[posOnSchedule] == "Night") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 10) && (schedule[posOnSchedule] == "Day") && (FishingManager.TugType == TugType.Heavy))))) && (WorldManager.CurrentWeatherId == 145) && ActionManager.CanCast(269, Core.Me) && (Core.Me.CurrentGP >= 400))
+						{
+							Log("Double Hook!");
+							ActionManager.DoAction(269, Core.Me);
+							doubleHooked = true;
+						}
+						else if (FishingManager.HasPatience)
+						{
+							if (FishingManager.TugType == TugType.Light)
+							{
+								ActionManager.DoAction(4179, Core.Me);
+							}
+							else
+							{
+								ActionManager.DoAction(4103, Core.Me);
+							}
+						}
+						else
+						{
+							FishingManager.Hook();
+						}
+						biteTimer.Reset();
+					}
+				}
+			}
+
+			await Coroutine.Sleep(2000);
+			Log("Waiting for next stop...");
+			if (FishingManager.State != FishingState.None)
+			{
+				ActionManager.DoAction(299, Core.Me);
+			}
+		}
+
+		private static async Task GetOnBoat()
+		{	
+			var Dryskthota = GameObjectManager.GetObjectByNPCId(1005421);
+
+			if (Dryskthota != null)
+			{
+				Dryskthota.Interact();
+				if (await Coroutine.Wait(5000, () => Talk.DialogOpen))
+				{
+					Talk.Next();
+				}
+
+				await Coroutine.Wait(5000, () => SelectString.IsOpen);
+
+				if (SelectString.IsOpen)
+				{
+					SelectString.ClickSlot(0);
+					await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+					SelectYesno.Yes();
+
+					await Coroutine.Wait(1000000, () => ContentsFinderConfirm.IsOpen);
+
+					await Coroutine.Yield();
+					while (ContentsFinderConfirm.IsOpen)
+					{
+						DutyManager.Commence();
+						await Coroutine.Yield();
+						if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+						{
+							await Coroutine.Yield();
+							await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
+						}
+					}
+					while (WorldManager.ZoneId != 900)
+					{
+						await Coroutine.Sleep(1000);
+					}
+					await Coroutine.Sleep(2500);
+					Logging.Write(Colors.Aqua, "On the boat");
+				}
+			}
+		}
+
+		private static async Task SwitchToJob(ClassJobType job)
+		{
+			if (Core.Me.CurrentJob == job) return;
+
+			var gearSets = GearsetManager.GearSets.Where(i => i.InUse);
+
+			if (gearSets.Any(gs => gs.Class == job))
+			{
+				Logging.Write(Colors.Fuchsia, $"[ChangeJob] Found GearSet");
+				gearSets.First(gs => gs.Class == job).Activate();
+				await Coroutine.Sleep(1000);
+			}
+		}		
+
+		private async Task UseCordial()
+		{
+			if (Core.Me.CurrentGP < 500)
+			{
+				await Coroutine.Sleep(500);
+				foreach(ff14bot.Managers.BagSlot slot in ff14bot.Managers.InventoryManager.FilledSlots)	
+				{	
+					if(slot.RawItemId == 12669)	
+					{	
+						slot.UseItem();	
+					}
+				}
+				await Coroutine.Sleep(2000);
+			}
+		}
+
+		private async Task PassTheTime()
+		{
+			if (TimeCheck(30) && (DataManager.GetItem(27870).ItemCount() < 10) && OceanTripSettings.Instance.OceanFood == true)
+			{
+				await IdleLisbeth(27870, 40, "Culinarian", "false"); //Peppered Popotos
+			}
+
+			if(OceanTripSettings.Instance.CraftToSell)
+			{
+				//Potions
+				while (TimeCheck(30) && (DataManager.GetItem(29979).ItemCount() >= 40))
+				{
+					await IdleLisbeth(29492, 60, "Alchemist", "false"); //Grade 3 Tincture of Strength
+				}
+				
+				//Food
+				while (TimeCheck(59) && (DataManager.GetItem(29501).ItemCount() < 500))
+				{
+					await IdleLisbeth(29501, 52, "Culinarian", "false"); //Sausage and Sauerkraut
+				}
+				while (TimeCheck(59) && (DataManager.GetItem(29502).ItemCount() < 500))
+				{
+					await IdleLisbeth(29502, 52, "Culinarian", "false"); //Stuffed Highland Cabbage
+				}
+				while (TimeCheck(59) && (DataManager.GetItem(29504).ItemCount() < 500))
+				{
+					await IdleLisbeth(29504, 52, "Culinarian", "false"); //Herring Pie
+				}
+				while (TimeCheck(59) && (DataManager.GetItem(29497).ItemCount() < 120))
+				{
+					await IdleLisbeth(29497, 52, "Culinarian", "false"); //Ovim Meatballs
+				}
+				
+				//Gear
+				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28478).ItemCount() == 0))
+				//{
+				//	await IdleLisbeth(28478, 2, "Weaver", "false"); //Gather body
+				//}
+				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 12) && (DataManager.GetItem(28479).ItemCount() == 0))
+				//{
+				//	await IdleLisbeth(28479, 2, "Weaver", "false"); //Gather gloves
+				//}
+				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28480).ItemCount() == 0))
+				//{
+				//	await IdleLisbeth(28480, 2, "Weaver", "false"); //Gather pants
+				//}
+				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28473).ItemCount() == 0))
+				//{
+				//	await IdleLisbeth(28473, 2, "Weaver", "false"); //Crafter body
+				//}
+				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28475).ItemCount() == 0))
+				//{
+				//	await IdleLisbeth(28475, 2, "Weaver", "false"); //Crafter pants
+				//}
+				
+				//Materia
+				//while (TimeCheck(45) && DataManager.GetItem(25194).ItemCount() < 30)
+				//{
+				//	await IdleLisbeth(25194, 10, "Exchange", "false"); //crafter materia
+				//}
+				//while (TimeCheck(45) && DataManager.GetItem(25195).ItemCount() < 30)
+				//{
+				//	await IdleLisbeth(25195, 10, "Exchange", "false"); //crafter materia
+				//}
+				//while (TimeCheck(45) && DataManager.GetItem(25196).ItemCount() < 30)
+				//{
+				//	await IdleLisbeth(25196, 10, "Exchange", "false"); //crafter materia
+				//}
+				//while (TimeCheck(40) && DataManager.GetItem(26735).ItemCount() < 30)
+				//{
+				//	await IdleLisbeth(26735, 4, "Exchange", "false"); //crafter materia
+				//}
+				//while (TimeCheck(40) && DataManager.GetItem(26736).ItemCount() < 30)
+				//{
+				//	await IdleLisbeth(26736, 4, "Exchange", "false"); //crafter materia
+				//}
+				//while (TimeCheck(40) && DataManager.GetItem(26737).ItemCount() < 30)
+				//{
+				//	await IdleLisbeth(26737, 4, "Exchange", "false"); //crafter materia
+				//}
+				
+				//Multifaceted
+				while (TimeCheck(59) && DataManager.GetItem(27744).ItemCount() >= 20 && DataManager.GetItem(27737).ItemCount() >= 40)
+				{
+					await IdleLisbeth(27743, 10, "Leatherworker", "false"); //chalicotherium leather
+				}			
+				while (TimeCheck(59) && DataManager.GetItem(27695).ItemCount() >= 20)
+				{
+					await IdleLisbeth(27694, 10, "Carpenter", "false"); //sandalwood lumber
+				}
+				while (TimeCheck(59) && DataManager.GetItem(27762).ItemCount() >= 50)
+				{
+					await IdleLisbeth(27760, 10, "Weaver", "false"); //ethereal silk
+				}
+				while (TimeCheck(59) && DataManager.GetItem(27718).ItemCount() >= 20)
+				{
+					await IdleLisbeth(27716, 10, "Blacksmith", "false"); //tungsten steel ingot
+				}
+				while (TimeCheck(59) && DataManager.GetItem(27719).ItemCount() >= 20)
+				{
+					await IdleLisbeth(27717, 10, "Goldsmith", "false"); //prismatic ingot
+				}
+				
+				//Scrip
+				while (TimeCheck(59) && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 25199) <= 1500)
+				{
+					await IdleLisbeth(25199, 500, "CraftMasterpiece", "false"); //White Scrip
+				}
+				while (TimeCheck(59) && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 17833) <= 1500)
+				{
+					await IdleLisbeth(17833, 500, "CraftMasterpiece", "false"); //Yellow Scrip
+				}
+				
+				//Mats
+				while (TimeCheck(59) && DataManager.GetItem(27714).ItemCount() < 400)
+				{
+					await IdleLisbeth(27714, 30, "Blacksmith", "false"); //Dwarven Mythril Ingot
+				}
+				while (TimeCheck(59) && DataManager.GetItem(27715).ItemCount() < 400)
+				{
+					await IdleLisbeth(27715, 30, "Goldsmith", "false"); //Dwarven Mythril Nugget
+				}
+				while (TimeCheck(59) && DataManager.GetItem(27693).ItemCount() < 400)
+				{
+					await IdleLisbeth(27693, 30, "Carpenter", "false"); //Lignum Vitae Lumber
+				}
+				while (TimeCheck(59) && DataManager.GetItem(27852).ItemCount() < 300)
+				{
+					await IdleLisbeth(27852, 40, "Grind", "false"); //Ovim Meat
+				}
+				while (TimeCheck(59) && DataManager.GetItem(27742).ItemCount() < 990)
+				{
+					await IdleLisbeth(27742, 10, "Leatherworker", "false"); //Sea Swallow Leather
+				}
+			}
+			
+			//Gold Ore
+			if(OceanTripSettings.Instance.FieldcraftIII && (TimeCheck(5) || (TimeCheck(35) && (WorldManager.EorzaTime.Hour < 9 || WorldManager.EorzaTime.Hour > 22))))
+			{
+				await IdleLisbeth(5118, 30, "Gather", "false"); //Gold Ore
+			}
+			
+			if (OceanTripSettings.Instance.FieldcraftIII)
+			{
+				while (TimeCheck(50) && (DataManager.GetItem(5118).ItemCount() >= 204))
+				{
+					await IdleLisbeth(7615, 34, "Goldsmith", "false"); //Rose Gold Cog
+					await ExchangeCogs();
+				}
+				while (TimeCheck(50) &&  (DataManager.GetItem(5068).ItemCount() >= 4))
+				{
+					await IdleLisbeth(7615, (int) DataManager.GetItem(5068).ItemCount()/2, "Goldsmith", "false"); //Rose Gold Cog
+					await ExchangeCogs();
+				}
+			}
+			
+			//Shards
+			if(OceanTripSettings.Instance.GatherShards)
+			{
+				while (TimeCheck(55) && (ConditionParser.ItemCount(4) < 8700))
+				{
+					await IdleLisbeth(4, 500, "Gather", "false"); //Wind Shard Gets Stuck
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(10) < 8700))
+				{
+					await IdleLisbeth(10, 500, "Gather", "false"); //Wind Crystal
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(2) < 8700))
+				{
+					await IdleLisbeth(2, 500, "Gather", "false"); //Fire Shard
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(8) < 8700))
+				{
+					await IdleLisbeth(8, 500, "Gather", "false"); //Fire Crystal
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(3) < 8700))
+				{
+					await IdleLisbeth(3, 500, "Gather", "false"); //Ice Shard
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(9) < 8700))
+				{
+					await IdleLisbeth(9, 500, "Gather", "false"); //Ice Crystal
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(5) < 8700))
+				{
+					await IdleLisbeth(5, 500, "Gather", "false"); //Earth Shard
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(11) < 8700))
+				{
+					await IdleLisbeth(11, 500, "Gather", "false"); //Earth Crystal
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(6) < 8700))
+				{
+					await IdleLisbeth(6, 500, "Gather", "false"); //Lightning Shard
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(12) < 8700))
+				{
+					await IdleLisbeth(12, 500, "Gather", "false"); //Lightning Crystal
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(7) < 8700))
+				{
+					await IdleLisbeth(7, 500, "Gather", "false"); //Water Shard
+				}
+				while (TimeCheck(55) && (ConditionParser.ItemCount(13) < 8700))
+				{
+					await IdleLisbeth(13, 500, "Gather", "false"); //Water Crystal
+				}
+			}
+		}
+
+		private static async Task LandRepair(int repairThreshold)
+		{
+			if (InventoryManager.EquippedItems.Where(r => r.IsFilled && r.Condition < repairThreshold).Count() > 0)
+			{	
+				Logging.Write(Colors.Aqua, "Starting repair...");
+				await Navigation.GetTo(129, new Vector3(-398.5143f, 3.099996f, 81.47765f));
+				await Coroutine.Sleep(1000);
+				GameObjectManager.GetObjectByNPCId(1005422).Interact();
+				await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
+				if (SelectIconString.IsOpen)
+				{
+					SelectIconString.ClickSlot(1);
+					await Coroutine.Wait(3000, () => Repair.IsOpen);
+					if (Repair.IsOpen)
+					{
+						Repair.RepairAll();
+						await Coroutine.Wait(3000, () => SelectYesno.IsOpen);
+						if (SelectYesno.IsOpen)
+						{
+							SelectYesno.ClickYes();
+						}
+						Repair.Close();
+						await Coroutine.Wait(5000, () => !Repair.IsOpen);
+					}
+				}
+				Logging.Write(Colors.Aqua, "Repair complete");
+			}
+		}
+
+		private async Task RestockBait(int baitThreshold, uint baitCap)
+		{
+			List<uint> itemsToBuy = new List<uint>();
+			if (DataManager.GetItem(29714).ItemCount() < baitThreshold)
+			{
+				itemsToBuy.Add(29714);
+			}
+			if (DataManager.GetItem(29715).ItemCount() < baitThreshold)
+			{
+				itemsToBuy.Add(29715);
+			}
+			if (DataManager.GetItem(29716).ItemCount() < baitThreshold)
+			{
+				itemsToBuy.Add(29716);
+			}
+			if (DataManager.GetItem(2591).ItemCount() < baitThreshold)
+			{
+				itemsToBuy.Add(2591);
+			}
+			if (DataManager.GetItem(2603).ItemCount() < baitThreshold)
+			{
+				itemsToBuy.Add(2603);
+			}
+			if (DataManager.GetItem(2619).ItemCount() < 5)
+			{
+				itemsToBuy.Add(2619);
+			}
+			if (DataManager.GetItem(2613).ItemCount() < baitThreshold)
+			{
+				itemsToBuy.Add(2613);
+			}
+
+			if (itemsToBuy.Any())
+			{
+				Log("Restocking bait...");
+				if (itemsToBuy.Contains(29714) || itemsToBuy.Contains(29715) || itemsToBuy.Contains(29716))
+				{
+					await Navigation.GetTo(129, new Vector3(-398.5143f, 3.099996f, 81.47765f));
+					await Coroutine.Sleep(1000);
+					GameObjectManager.GetObjectByNPCId(1005422).Interact();
+					await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
+					if (SelectIconString.IsOpen)
+					{
+						SelectIconString.ClickSlot(0);
+						await Coroutine.Wait(5000, () => Shop.Open);
+						foreach (uint item in itemsToBuy)
+						{
+							if ((item == 29714) || (item == 29715) || (item == 29716))
+							{
+								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
+								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
+								SelectYesno.ClickYes();
+							}
+							await Coroutine.Sleep(1000);
+						}
+					}
+					await Coroutine.Sleep(1000);
+					Shop.Close();
+					await Coroutine.Wait(5000, () => !Shop.Open);
+				}
+				if (itemsToBuy.Contains(2591) || itemsToBuy.Contains(2603) || itemsToBuy.Contains(2613))
+				{
+					await Navigation.GetTo(129, new Vector3(-247.6223f, 16.2f, 39.87407f));
+					await Coroutine.Sleep(1000);
+					GameObjectManager.GetObjectByNPCId(1003254).Interact();
+					await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
+					if (SelectIconString.IsOpen)
+					{
+						SelectIconString.ClickSlot(2);
+						await Coroutine.Wait(5000, () => Shop.Open);
+						foreach (uint item in itemsToBuy)
+						{
+							if ((item == 2591) || (item == 2603) || (item == 2613))
+							{
+								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
+								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
+								SelectYesno.ClickYes();
+							}
+							await Coroutine.Sleep(1000);
+						}
+					}
+					await Coroutine.Sleep(1000);
+					Shop.Close();
+					await Coroutine.Wait(5000, () => !Shop.Open);
+				}
+
+				if (itemsToBuy.Contains(2619) && Core.Me.Levels[ClassJobType.Goldsmith] >= 36)
+				{
+					await IdleLisbeth(2619, 20, "Goldsmith", "true");
+				}
+				Log("Restocking bait complete");
+			}
+		}
+
+		private async Task RunWithTimeout(ThreadStart entryPoint, int timeout)
+		{
+			var thread = new Thread(() =>
+			{
+				try
+				{
+					entryPoint();
+				}
+				catch (ThreadAbortException)
+				{ }
+
+			})
+			{ IsBackground = true };
+
+			thread.Start();
+
+			if (!thread.Join(timeout))
+				thread.Abort();
+		}
+
+		private async Task IdleLisbeth(int itemId, int amount, string type, string quicksynth)
+		{
+			Log($"{type}ing {DataManager.GetItem((uint) itemId).CurrentLocaleName} with Lisbeth");
+			if (BotManager.Bots.FirstOrDefault(c => c.Name == "Lisbeth") != null)
+			{
+				await Lisbeth.ExecuteOrders("[{'Item':"+itemId+",'Amount':"+amount+",'Type':'"+type+"','QuickSynth':"+quicksynth+",'Enabled': true}]");
+
+				await Coroutine.Sleep(2000);
+				AtkAddonControl masterWindow = RaptureAtkUnitManager.GetWindowByName("MasterPieceSupply");
+				if (masterWindow != null)
+				{
+					masterWindow.SendAction(1, 3uL, 4294967295uL);
+				}
+				if (ShopExchangeCurrency.Open)
+				{
+					ShopExchangeCurrency.Close();
+					await Coroutine.Sleep(2000);
+				}
+				if (SelectString.IsOpen)
+				{
+					SelectString.ClickLineEquals("Cancel");
+				}
+				if (SelectIconString.IsOpen)
+				{
+					SelectIconString.ClickLineEquals("Nothing");
+				}
+				if (CraftingManager.IsCrafting == true)
+				{
+					Log("Lisbeth borked. Trying to finish craft");
+					while (CraftingManager.Progress < CraftingManager.ProgressRequired && CraftingManager.Progress != -1)
+					{
+						await CraftAction("Basic Synthesis");
+					}
+				}
+				await Coroutine.Sleep(2000);
+				if(CraftingLog.IsOpen == true)
+				{
+					CraftingLog.Close();
+					await Coroutine.Wait(10000, () => !CraftingLog.IsOpen);
+					await Coroutine.Wait(Timeout.InfiniteTimeSpan, () => !CraftingManager.AnimationLocked);
+				}
+				Log("Crafting complete");
+			}
+			else
+			{
+				Log("Failed to craft.");
+			}
+		}
+
+		private async Task CraftAction(string actionName)
+		{
+			ActionManager.CurrentActions.TryGetValue(actionName, out action);
+			await Coroutine.Wait(Timeout.InfiniteTimeSpan, () => !CraftingManager.AnimationLocked);
+
+			if (ActionManager.CanCast(action, null))
+			{
+				ActionManager.DoAction(action, null);
+			}
+
+			await Coroutine.Wait(10000, () => CraftingManager.AnimationLocked);
+			await Coroutine.Wait(Timeout.InfiniteTimeSpan, () => !CraftingManager.AnimationLocked);
+
+			await Coroutine.Sleep(500);
+		}
+
+		private async Task LandSell(int[] itemIds)
+		{
+			var itemsToSell = InventoryManager.FilledSlots.Where(bs => bs.IsSellable && itemIds.Contains((int)bs.RawItemId));
+			if (itemsToSell.Count() != 0)
+			{
+				Log("Selling fish...");
+				await Navigation.GetTo(129, new Vector3(-398.5143f, 3.099996f, 81.47765f));
+				await Coroutine.Sleep(1000);
+				GameObjectManager.GetObjectByNPCId(1005422).Interact();
+				await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
+				if (SelectIconString.IsOpen)
+				{
+					SelectIconString.ClickSlot(0);
+					await Coroutine.Wait(5000, () => Shop.Open);
+					foreach (var item in itemsToSell)
+					{		
+						if(item.Value <= 18)
+						{
+							var name = item.Name;
+							await CommonTasks.SellItem(item);
+							await Coroutine.Wait(10000, () => !item.IsFilled || !item.Name.Equals(name));
+							await Coroutine.Sleep(1000);	
+						}
+					}
+					Shop.Close();
+					await Coroutine.Wait(2000, () => !Shop.Open);
+				}
+				Log("Sale complete");	
+			}
+		}
+
+		private async Task EmptyScrips(uint itemId, int scripThreshold, uint slot)
+		{
+			if (SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 17834) > scripThreshold)
+			{
+				Log($"Buying {DataManager.GetItem(itemId).CurrentLocaleName}s");
+				await Navigation.GetTo(129, new Vector3(-406.1322f, 3.099996f, 67.07707f));
+				var ScripStore = GameObjectManager.GetObjectByNPCId(1005423);
+				if (ScripStore != null)
+				{
+					ScripStore.Interact();
+				}
+				uint count = SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 17834)/20;
+				await Coroutine.Wait(5000, () => SelectIconString.IsOpen);
+
+				if (SelectIconString.IsOpen)
+				{
+					SelectIconString.ClickSlot(slot);
+
+					await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
+
+					if (ShopExchangeCurrency.Open)
+					{
+						ShopExchangeCurrency.Purchase(itemId, count);
+						await Coroutine.Wait(2000, () => SelectYesno.IsOpen || Request.IsOpen);
+
+						if (SelectYesno.IsOpen)
+						{
+							SelectYesno.Yes();
+							await Coroutine.Sleep(1000);
+						}
+					}
+
+					await Coroutine.Wait(2000, () => ShopExchangeCurrency.Open);
+					if (ShopExchangeCurrency.Open)
+					{
+						ShopExchangeCurrency.Close();
+					}
+					await Coroutine.Sleep(1000);
+				}
+				Log("Purchase complete");
+			}
+		}
+
+		private async Task Retaining()
+		{
+			if(OceanTripSettings.Instance.VentureTime < DateTime.Now)
+			{
+				await Navigation.GetTo(478, new Vector3(35.51684f, 208.1487f, -51.6737f));
+
+				foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
+				{
+					if (unit.NpcId == 2000401 || unit.NpcId == 2000441)
+					{
+						unit.Interact();
+						break;
+					}
+				}
+				await Coroutine.Sleep(2000);
+				string bell = Lua.GetReturnVal<string>(string.Format("local values = '' for key,value in pairs(_G) do if string.match(key, '{0}:') then return key;   end end return values;", "CmnDefRetainerBell")).Trim();
+				int numOfRetainers = 0;
+
+				if (bell.Length > 0)
+				{
+					numOfRetainers = Lua.GetReturnVal<int>(string.Format("return _G['{0}']:GetRetainerEmployedCount();", bell));
+				}
+
+				AtkAddonControl retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
+				while (retainerWindow == null)
+				{
+					await Coroutine.Sleep(1000);
+					retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
+				}
+
+				int count = 0;
+				while (count < numOfRetainers)
+				{
+					retainerWindow = null;
+					while (retainerWindow == null)
+					{	
+						await Coroutine.Sleep(1000);
+						retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
+					}
+					retainerWindow.SendAction(2, 3UL, 2UL, 3UL, (ulong) count);
+					if (await Coroutine.Wait(15000, () => Talk.DialogOpen))
+					{
+						Talk.Next();
+					}
+					if (await Coroutine.Wait(20000, () => SelectString.IsOpen))
+					{
+						if (SelectString.Lines().Contains("View venture report. (Complete)"))
+						{
+							SelectString.ClickLineEquals("View venture report. (Complete)");
+							if (await Coroutine.Wait(20000, () => RetainerTaskResult.IsOpen))
+							{
+								RetainerTaskResult.Reassign();
+								if (await Coroutine.Wait(10000, () => RetainerTaskAsk.IsOpen))
+								{
+									RetainerTaskAsk.Confirm();
+									if (await Coroutine.Wait(10000, () => Talk.DialogOpen))
+									{
+										Talk.Next();
+									}
+								}
+							}
+						}
+						await Coroutine.Wait(20000, () => SelectString.IsOpen);
+						if(SelectString.Lines().Any(x => x.Contains("View venture report. (Complete on")))
+						{
+							Regex r = new Regex(@"(\d+[-.\/]\d+ \d+:\d+)");
+							Match m = r.Match(SelectString.Lines().FirstOrDefault(x => x.Contains("View venture report. (Complete on")).ToString());
+							if(m.Success)
+							{
+								DateTime ventureTime = DateTime.ParseExact(m.Value, "d/M H:mm", null);
+								if ((ventureTime < OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime > DateTime.Now) || (ventureTime > OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime < DateTime.Now))
+								{
+									OceanTripSettings.Instance.VentureTime = ventureTime;
+								}
+
+							}
+						}
+						if (await Coroutine.Wait(20000, () => SelectString.IsOpen))
+						{
+							SelectString.ClickLineEquals("Quit.");
+						}
+						if (await Coroutine.Wait(10000, () => Talk.DialogOpen))
+						{
+							Talk.Next();
+						}					
+					}
+					count++;
+				}
+				retainerWindow = null;
+				while (retainerWindow == null)
+				{	
+					await Coroutine.Sleep(1000);
+					retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
+				}
+				retainerWindow.SendAction(1, 3UL, (ulong) uint.MaxValue);
+				await Coroutine.Sleep(3000);
+			}
+		}
+
+		private async Task DesynthOcean(int[] itemId)
+		{
+			var itemsToDesynth = InventoryManager.FilledSlots.Where(bs => bs.IsDesynthesizable && itemId.Contains((int)bs.RawItemId));
+
+			if (itemsToDesynth.Count() != 0)
+			{
+				Log("Desynthing...");	
+				foreach (var item in itemsToDesynth)
+				{
+					var name = item.EnglishName;
+					var currentStackSize = item.Item.StackSize;
+
+					while (item.Count > 0)
+					{
+						await CommonTasks.Desynthesize(item, 20000);
+
+						await Coroutine.Wait(20000, () => (!item.IsFilled || !item.EnglishName.Equals(name) || item.Count != currentStackSize));
+					}
+					await Coroutine.Sleep(200);
+				}
+				Log("Desynth complete");	
+			}			
+		}
+
+		private async Task ExchangeCogs()
+		{
+			await Navigation.GetTo(156, new Vector3(26.29833f, 28.99997f, -730.8021f));
+			var Talan = GameObjectManager.GetObjectByNPCId(1006972);
+
+			while (DataManager.GetItem(7615).ItemCount() > 0)
+			{
+				if (Talan != null)
+				{
+					Talan.Interact();
+					if (await Coroutine.Wait(20000, () => SelectIconString.IsOpen))
+					{
+						ff14bot.RemoteWindows.SelectIconString.ClickSlot(2);
+						if (await Coroutine.Wait(20000, () => Talk.DialogOpen))
+						{
+							Talk.Next();
+						}
+					}
+
+					AtkAddonControl CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
+					CogExchangeWindow = null;
+					while (DataManager.GetItem(7615).ItemCount() > 0 && InventoryManager.FreeSlots > 2)
+					{
+						while (CogExchangeWindow == null)
+						{	
+							await Coroutine.Sleep(200);
+							CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
+						}
+						await Coroutine.Sleep(200);
+						CogExchangeWindow.SendAction(2, 0, 0, 1, 3);
+						
+						CogExchangeWindow = null;
+						while (CogExchangeWindow == null)
+						{	
+							await Coroutine.Sleep(200);
+							CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog");
+						}
+						await Coroutine.Sleep(200);
+						CogExchangeWindow.SendAction(1, 0, 0);
+
+						if (await Coroutine.Wait(20000, () => Request.IsOpen))
+						{
+							foreach(BagSlot slot in InventoryManager.FilledSlots)
+							{
+								if(slot.RawItemId == 7615)
+								{
+									slot.Handover();
+								}
+							}
+						}
+						await Coroutine.Sleep(200);
+						if (await Coroutine.Wait(2000, () => Request.HandOverButtonClickable))
+						{
+							Request.HandOver();
+							await Coroutine.Wait(20000, () => !Request.IsOpen);
+							await Coroutine.Sleep(500);
+						}
+						if (DataManager.GetItem(7615).ItemCount() == 1)
+						{
+							await Coroutine.Sleep(500);
+						}
+						CogExchangeWindow = null;
+					}
+
+					while (CogExchangeWindow == null)
+					{	
+						await Coroutine.Sleep(1000);
+						CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
+					}
+					CogExchangeWindow.SendAction(1, 3, uint.MaxValue);	
+				}
+				await DesynthOcean(new int[] {7521});
+				await Coroutine.Sleep(1000);
+				await DesynthOcean(new int[] {7521});
+			}
+		}
+		
+		private async Task<List<uint>> GetFishLog()
+		{
+			List<uint> recordedFish = new List<uint>();
+			if (!FishGuide.IsOpen)
+			{
+				FishGuide.Toggle();
+				await Coroutine.Wait(5000, () => FishGuide.IsOpen);
+			}
+
+			if (FishGuide.IsOpen)
+			{
+				for (int i = 33; i < FishGuide.TabCount; i++)
+				{
+					FishGuide.ClickTab(i);
+					await Coroutine.Sleep(10);
+					var list = FishGuide.GetTabList();
+					foreach (var fishy in list.Select(x => x.FishItem))
+					{
+						if (fishy != 0 && fishy != uint.MaxValue)
+						{
+							recordedFish.Add(fishy);
+						}
+					}
+				}
+
+				FishGuide.Toggle();
+				await Coroutine.Wait(5000, () => !FishGuide.IsOpen);
+			}
+			return oceanFish.Except(recordedFish).ToList();
+		}
+
+		private bool ChatCheck(string chattype, string chatmessage)
+		{
+			try
+			{
+				return GamelogManager.CurrentBuffer.Last(chatline => chatline.FullLine.Contains(chattype)).FullLine.Contains(chatmessage);
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private bool TimeCheck(int minuteThreshold)
+		{
+			return !(!(DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute > minuteThreshold)) && !((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute < 16));
+		}
+
+		private string GetSchedule()
+		{
+			epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+			twoHourChunk = ((epoch / 7200) + 16) % 72;
+			return schedulesTod[pattern[twoHourChunk] - 1];
+		}
+
+		private void Log(string text, params object[] args)
+		{
+			var msg = string.Format("[" + Name + "] " + text, args);
+			Logging.Write(Colors.Aqua, msg);
+		}
+
+	}
+}
