@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Text.RegularExpressions;
+using System.Timers;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
@@ -15,8 +16,6 @@ using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
-using ff14bot.NeoProfiles;
-using ff14bot.Objects;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using GreyMagic;
@@ -51,7 +50,7 @@ namespace OceanTripPlanner
 		private static readonly int[] pattern = new[] {
 		2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1};
 		private static string[] schedulesTod = new[] {"D S N", "N D S", "S N D"};
-		private string[] schedule = new string[3];
+		
 		private int posOnSchedule = 0;
 		private int epoch = 0;
 		private int twoHourChunk = 0;
@@ -60,10 +59,11 @@ namespace OceanTripPlanner
 		private int spot = rnd.Next(5);
 		private Stopwatch biteTimer = new Stopwatch();
 		private bool doubleHooked = false;
-
-		private SpellData action;
+		private string[] schedule = new string[3];
 		
 		private List<uint> missingFish = new List<uint>();
+
+		System.Timers.Timer execute = new System.Timers.Timer();
 
 		public override string Name => "Ocean Trip";
 		public override PulseFlags PulseFlags => PulseFlags.All;
@@ -92,11 +92,49 @@ namespace OceanTripPlanner
 
 		public override void Start()
 		{
-			_root = new ActionRunCoroutine(r => Run());
+			TimeSpan stop = new TimeSpan();
+
+			if ((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute > 10))
+			{
+				stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 10, 0);
+			}
+			else
+			{
+				stop = new TimeSpan(DateTime.UtcNow.Hour + DateTime.UtcNow.Hour % 2, 10, 0);
+			}
+			
+            //stop = new TimeSpan(DateTime.UtcNow.Hour, DateTime.UtcNow.Minute+1, 0);
+
+            TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
+
+			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
+            execute.Elapsed += new ElapsedEventHandler(KillLisbeth);
+            execute.Start();
+            Log("Stop in " + timeLeftUntilFirstRun.ToString());
+
+            _root = new ActionRunCoroutine(r => Run());
 		}
 
-		public override void Stop()
+        private async void KillLisbeth(object sender, ElapsedEventArgs e)
+        {
+			TimeSpan stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 10, 0);
+
+			Log("stop!");
+            Lisbeth.StopGently();
+
+			PassTheTime.freeToCraft = false;
+
+			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
+
+            execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
+			//execute.Elapsed += new ElapsedEventHandler(KillLisbeth);
+			execute.Start();
+            Log("Stop in " + timeLeftUntilFirstRun.ToString());
+        }
+
+        public override void Stop()
 		{
+			execute.Elapsed -= new ElapsedEventHandler(KillLisbeth);
 			_root = null;
 		}
 
@@ -105,25 +143,11 @@ namespace OceanTripPlanner
 			Navigator.PlayerMover = new SlideMover();
 			Navigator.NavigationProvider = new ServiceNavigationProvider();
 
-			if (!Lisbeth.GetHookList().Contains("StopGently"))
-			{
-				Lisbeth.AddHook("StopGently", LisbethStop);
-				Log("StopGently hook added");
-			}
-
 			await OceanFishing();
 			return true;
 		}
 
-		private async Task LisbethStop()
-        {
-			if (DateTime.UtcNow.Hour % 2 == 0 && DateTime.UtcNow.Minute < 14 && DateTime.UtcNow.Minute > 5)
-			{
-				Lisbeth.StopGently();
-			}
-        }
-
-		private async Task OceanFishing()
+        private async Task OceanFishing()
 		{			
 			if (WorldManager.RawZoneId != 900)
 			{
@@ -135,12 +159,12 @@ namespace OceanTripPlanner
 					}
 					else if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Desynth)
 					{
-						await DesynthOcean(fishForSale);
+						await PassTheTime.DesynthOcean(fishForSale);
 					}
 					
 					await LandRepair(90);
 					await RestockBait(150, 500);
-					//await EmptyScrips(12669, 1000, 0);
+					await EmptyScrips(12669, 1000, 0);
 				}
 
 				if (OceanTripSettings.Instance.Venturing)
@@ -148,7 +172,8 @@ namespace OceanTripPlanner
 					await Retaining();
 				}
 
-				await PassTheTime();
+				PassTheTime.freeToCraft = true;
+				await PassTheTime.Craft();
 
 				missingFish = await GetFishLog();
 				Log($"Missing Fish:");
@@ -195,25 +220,11 @@ namespace OceanTripPlanner
 
 				spot = rnd.Next(5);
 				posOnSchedule = 0;
-				Log(GetSchedule());
-				switch (GetSchedule())
-				{
-					case "D S N":
-						schedule[0] = "Day";
-						schedule[1] = "Sunset";
-						schedule[2] = "Night";
-						break;
-					case "S N D":
-						schedule[0] = "Sunset";
-						schedule[1] = "Night";
-						schedule[2] = "Day";
-						break;
-					case "N D S":
-						schedule[0] = "Night";
-						schedule[1] = "Day";
-						schedule[2] = "Sunset";
-						break;
-				}
+				Log(GetSchedule()[0]);
+				Log(GetSchedule()[1]);
+				Log(GetSchedule()[2]);
+
+				schedule = GetSchedule();
 			}
 
 			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","measure your catch"))
@@ -476,216 +487,6 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private async Task PassTheTime()
-		{
-			if (TimeCheck(30) && (DataManager.GetItem(27870).ItemCount() < 10) && OceanTripSettings.Instance.OceanFood == true)
-			{
-				await IdleLisbeth(27870, 40, "Culinarian", "false"); //Peppered Popotos
-			}
-
-			if(OceanTripSettings.Instance.CraftToSell)
-			{
-				//Potions
-				while (TimeCheck(30) && (DataManager.GetItem(29979).ItemCount() >= 40))
-				{
-					await IdleLisbeth(29492, 60, "Alchemist", "false"); //Grade 3 Tincture of Strength
-				}
-				
-				//Food
-				while (TimeCheck(59) && (DataManager.GetItem(29501).ItemCount() < 500))
-				{
-					await IdleLisbeth(29501, 52, "Culinarian", "false"); //Sausage and Sauerkraut
-				}
-				while (TimeCheck(59) && (DataManager.GetItem(29502).ItemCount() < 500))
-				{
-					await IdleLisbeth(29502, 52, "Culinarian", "false"); //Stuffed Highland Cabbage
-				}
-				while (TimeCheck(59) && (DataManager.GetItem(29504).ItemCount() < 500))
-				{
-					await IdleLisbeth(29504, 52, "Culinarian", "false"); //Herring Pie
-				}
-				while (TimeCheck(59) && (DataManager.GetItem(29497).ItemCount() < 120))
-				{
-					await IdleLisbeth(29497, 52, "Culinarian", "false"); //Ovim Meatballs
-				}
-				
-				//Gear
-				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28478).ItemCount() == 0))
-				//{
-				//	await IdleLisbeth(28478, 2, "Weaver", "false"); //Gather body
-				//}
-				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 12) && (DataManager.GetItem(28479).ItemCount() == 0))
-				//{
-				//	await IdleLisbeth(28479, 2, "Weaver", "false"); //Gather gloves
-				//}
-				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28480).ItemCount() == 0))
-				//{
-				//	await IdleLisbeth(28480, 2, "Weaver", "false"); //Gather pants
-				//}
-				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28473).ItemCount() == 0))
-				//{
-				//	await IdleLisbeth(28473, 2, "Weaver", "false"); //Crafter body
-				//}
-				//if (TimeCheck(40) && (DataManager.GetItem(27762).ItemCount() >= 18) && (DataManager.GetItem(28475).ItemCount() == 0))
-				//{
-				//	await IdleLisbeth(28475, 2, "Weaver", "false"); //Crafter pants
-				//}
-				
-				//Materia
-				//while (TimeCheck(45) && DataManager.GetItem(25194).ItemCount() < 30)
-				//{
-				//	await IdleLisbeth(25194, 10, "Exchange", "false"); //crafter materia
-				//}
-				//while (TimeCheck(45) && DataManager.GetItem(25195).ItemCount() < 30)
-				//{
-				//	await IdleLisbeth(25195, 10, "Exchange", "false"); //crafter materia
-				//}
-				//while (TimeCheck(45) && DataManager.GetItem(25196).ItemCount() < 30)
-				//{
-				//	await IdleLisbeth(25196, 10, "Exchange", "false"); //crafter materia
-				//}
-				//while (TimeCheck(40) && DataManager.GetItem(26735).ItemCount() < 30)
-				//{
-				//	await IdleLisbeth(26735, 4, "Exchange", "false"); //crafter materia
-				//}
-				//while (TimeCheck(40) && DataManager.GetItem(26736).ItemCount() < 30)
-				//{
-				//	await IdleLisbeth(26736, 4, "Exchange", "false"); //crafter materia
-				//}
-				//while (TimeCheck(40) && DataManager.GetItem(26737).ItemCount() < 30)
-				//{
-				//	await IdleLisbeth(26737, 4, "Exchange", "false"); //crafter materia
-				//}
-				
-				//Multifaceted
-				while (TimeCheck(59) && DataManager.GetItem(27744).ItemCount() >= 20 && DataManager.GetItem(27737).ItemCount() >= 40)
-				{
-					await IdleLisbeth(27743, 10, "Leatherworker", "false"); //chalicotherium leather
-				}			
-				while (TimeCheck(59) && DataManager.GetItem(27695).ItemCount() >= 20)
-				{
-					await IdleLisbeth(27694, 10, "Carpenter", "false"); //sandalwood lumber
-				}
-				while (TimeCheck(59) && DataManager.GetItem(27762).ItemCount() >= 50)
-				{
-					await IdleLisbeth(27760, 10, "Weaver", "false"); //ethereal silk
-				}
-				while (TimeCheck(59) && DataManager.GetItem(27718).ItemCount() >= 20)
-				{
-					await IdleLisbeth(27716, 10, "Blacksmith", "false"); //tungsten steel ingot
-				}
-				while (TimeCheck(59) && DataManager.GetItem(27719).ItemCount() >= 20)
-				{
-					await IdleLisbeth(27717, 10, "Goldsmith", "false"); //prismatic ingot
-				}
-				
-				//Scrip
-				while (TimeCheck(59) && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 25199) <= 1500)
-				{
-					await IdleLisbeth(25199, 500, "CraftMasterpiece", "false"); //White Scrip
-				}
-				while (TimeCheck(59) && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 17833) <= 1500)
-				{
-					await IdleLisbeth(17833, 500, "CraftMasterpiece", "false"); //Yellow Scrip
-				}
-				
-				//Mats
-				while (TimeCheck(59) && DataManager.GetItem(27714).ItemCount() < 400)
-				{
-					await IdleLisbeth(27714, 30, "Blacksmith", "false"); //Dwarven Mythril Ingot
-				}
-				while (TimeCheck(59) && DataManager.GetItem(27715).ItemCount() < 400)
-				{
-					await IdleLisbeth(27715, 30, "Goldsmith", "false"); //Dwarven Mythril Nugget
-				}
-				while (TimeCheck(59) && DataManager.GetItem(27693).ItemCount() < 400)
-				{
-					await IdleLisbeth(27693, 30, "Carpenter", "false"); //Lignum Vitae Lumber
-				}
-				while (TimeCheck(59) && DataManager.GetItem(27852).ItemCount() < 300)
-				{
-					await IdleLisbeth(27852, 40, "Grind", "false"); //Ovim Meat
-				}
-				while (TimeCheck(59) && DataManager.GetItem(27742).ItemCount() < 990)
-				{
-					await IdleLisbeth(27742, 10, "Leatherworker", "false"); //Sea Swallow Leather
-				}
-			}
-			
-			//Gold Ore
-			if(OceanTripSettings.Instance.FieldcraftIII && (TimeCheck(5) || (TimeCheck(35) && (WorldManager.EorzaTime.Hour < 9 || WorldManager.EorzaTime.Hour > 22))))
-			{
-				await IdleLisbeth(5118, 30, "Gather", "false"); //Gold Ore
-			}
-			
-			if (OceanTripSettings.Instance.FieldcraftIII)
-			{
-				while (TimeCheck(50) && (DataManager.GetItem(5118).ItemCount() >= 204))
-				{
-					await IdleLisbeth(7615, 34, "Goldsmith", "false"); //Rose Gold Cog
-					await ExchangeCogs();
-				}
-				while (TimeCheck(50) &&  (DataManager.GetItem(5068).ItemCount() >= 4))
-				{
-					await IdleLisbeth(7615, (int) DataManager.GetItem(5068).ItemCount()/2, "Goldsmith", "false"); //Rose Gold Cog
-					await ExchangeCogs();
-				}
-			}
-			
-			//Shards
-			if(OceanTripSettings.Instance.GatherShards)
-			{
-				while (TimeCheck(55) && (ConditionParser.ItemCount(4) < 8700))
-				{
-					await IdleLisbeth(4, 500, "Gather", "false"); //Wind Shard Gets Stuck
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(10) < 8700))
-				{
-					await IdleLisbeth(10, 500, "Gather", "false"); //Wind Crystal
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(2) < 8700))
-				{
-					await IdleLisbeth(2, 500, "Gather", "false"); //Fire Shard
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(8) < 8700))
-				{
-					await IdleLisbeth(8, 500, "Gather", "false"); //Fire Crystal
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(3) < 8700))
-				{
-					await IdleLisbeth(3, 500, "Gather", "false"); //Ice Shard
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(9) < 8700))
-				{
-					await IdleLisbeth(9, 500, "Gather", "false"); //Ice Crystal
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(5) < 8700))
-				{
-					await IdleLisbeth(5, 500, "Gather", "false"); //Earth Shard
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(11) < 8700))
-				{
-					await IdleLisbeth(11, 500, "Gather", "false"); //Earth Crystal
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(6) < 8700))
-				{
-					await IdleLisbeth(6, 500, "Gather", "false"); //Lightning Shard
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(12) < 8700))
-				{
-					await IdleLisbeth(12, 500, "Gather", "false"); //Lightning Crystal
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(7) < 8700))
-				{
-					await IdleLisbeth(7, 500, "Gather", "false"); //Water Shard
-				}
-				while (TimeCheck(55) && (ConditionParser.ItemCount(13) < 8700))
-				{
-					await IdleLisbeth(13, 500, "Gather", "false"); //Water Crystal
-				}
-			}
-		}
-
 		private static async Task LandRepair(int repairThreshold)
 		{
 			if (InventoryManager.EquippedItems.Where(r => r.IsFilled && r.Condition < repairThreshold).Count() > 0)
@@ -803,95 +604,10 @@ namespace OceanTripPlanner
 
 				if (itemsToBuy.Contains(2619) && Core.Me.Levels[ClassJobType.Goldsmith] >= 36)
 				{
-					await IdleLisbeth(2619, 20, "Goldsmith", "true");
+					await PassTheTime.IdleLisbeth(2619, 20, "Goldsmith", "true");
 				}
 				Log("Restocking bait complete");
 			}
-		}
-
-		private async Task RunWithTimeout(ThreadStart entryPoint, int timeout)
-		{
-			var thread = new Thread(() =>
-			{
-				try
-				{
-					entryPoint();
-				}
-				catch (ThreadAbortException)
-				{ }
-
-			})
-			{ IsBackground = true };
-
-			thread.Start();
-
-			if (!thread.Join(timeout))
-				thread.Abort();
-		}
-
-		private async Task IdleLisbeth(int itemId, int amount, string type, string quicksynth)
-		{
-			Log($"{type}ing {DataManager.GetItem((uint) itemId).CurrentLocaleName} with Lisbeth");
-			if (BotManager.Bots.FirstOrDefault(c => c.Name == "Lisbeth") != null)
-			{
-				await Lisbeth.ExecuteOrders("[{'Item':"+itemId+",'Amount':"+amount+",'Type':'"+type+"','QuickSynth':"+quicksynth+",'Enabled': true}]");
-
-				await Coroutine.Sleep(2000);
-				AtkAddonControl masterWindow = RaptureAtkUnitManager.GetWindowByName("MasterPieceSupply");
-				if (masterWindow != null)
-				{
-					masterWindow.SendAction(1, 3uL, 4294967295uL);
-				}
-				if (ShopExchangeCurrency.Open)
-				{
-					ShopExchangeCurrency.Close();
-					await Coroutine.Sleep(2000);
-				}
-				if (SelectString.IsOpen)
-				{
-					SelectString.ClickLineEquals("Cancel");
-				}
-				if (SelectIconString.IsOpen)
-				{
-					SelectIconString.ClickLineEquals("Nothing");
-				}
-				if (CraftingManager.IsCrafting == true)
-				{
-					Log("Lisbeth borked. Trying to finish craft");
-					while (CraftingManager.Progress < CraftingManager.ProgressRequired && CraftingManager.Progress != -1)
-					{
-						await CraftAction("Basic Synthesis");
-					}
-				}
-				await Coroutine.Sleep(2000);
-				if(CraftingLog.IsOpen == true)
-				{
-					CraftingLog.Close();
-					await Coroutine.Wait(10000, () => !CraftingLog.IsOpen);
-					await Coroutine.Wait(Timeout.InfiniteTimeSpan, () => !CraftingManager.AnimationLocked);
-				}
-				Log("Crafting complete");
-			}
-			else
-			{
-				Log("Failed to craft.");
-			}
-		}
-
-		private async Task CraftAction(string actionName)
-		{
-			ActionManager.CurrentActions.TryGetValue(actionName, out action);
-			await Coroutine.Wait(Timeout.InfiniteTimeSpan, () => !CraftingManager.AnimationLocked);
-
-			if (ActionManager.CanCast(action, null))
-			{
-				ActionManager.DoAction(action, null);
-			}
-
-			await Coroutine.Wait(10000, () => CraftingManager.AnimationLocked);
-			await Coroutine.Wait(Timeout.InfiniteTimeSpan, () => !CraftingManager.AnimationLocked);
-
-			await Coroutine.Sleep(500);
 		}
 
 		private async Task LandSell(int[] itemIds)
@@ -1067,107 +783,6 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private async Task DesynthOcean(int[] itemId)
-		{
-			var itemsToDesynth = InventoryManager.FilledSlots.Where(bs => bs.IsDesynthesizable && itemId.Contains((int)bs.RawItemId));
-
-			if (itemsToDesynth.Count() != 0)
-			{
-				Log("Desynthing...");	
-				foreach (var item in itemsToDesynth)
-				{
-					var name = item.EnglishName;
-					var currentStackSize = item.Item.StackSize;
-
-					while (item.Count > 0)
-					{
-						await CommonTasks.Desynthesize(item, 20000);
-
-						await Coroutine.Wait(20000, () => (!item.IsFilled || !item.EnglishName.Equals(name) || item.Count != currentStackSize));
-					}
-					await Coroutine.Sleep(200);
-				}
-				Log("Desynth complete");	
-			}			
-		}
-
-		private async Task ExchangeCogs()
-		{
-			await Navigation.GetTo(156, new Vector3(26.29833f, 28.99997f, -730.8021f));
-			var Talan = GameObjectManager.GetObjectByNPCId(1006972);
-
-			while (DataManager.GetItem(7615).ItemCount() > 0)
-			{
-				if (Talan != null)
-				{
-					Talan.Interact();
-					if (await Coroutine.Wait(20000, () => SelectIconString.IsOpen))
-					{
-						ff14bot.RemoteWindows.SelectIconString.ClickSlot(2);
-						if (await Coroutine.Wait(20000, () => Talk.DialogOpen))
-						{
-							Talk.Next();
-						}
-					}
-
-					AtkAddonControl CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
-					CogExchangeWindow = null;
-					while (DataManager.GetItem(7615).ItemCount() > 0 && InventoryManager.FreeSlots > 2)
-					{
-						while (CogExchangeWindow == null)
-						{	
-							await Coroutine.Sleep(200);
-							CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
-						}
-						await Coroutine.Sleep(200);
-						CogExchangeWindow.SendAction(2, 0, 0, 1, 3);
-						
-						CogExchangeWindow = null;
-						while (CogExchangeWindow == null)
-						{	
-							await Coroutine.Sleep(200);
-							CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog");
-						}
-						await Coroutine.Sleep(200);
-						CogExchangeWindow.SendAction(1, 0, 0);
-
-						if (await Coroutine.Wait(20000, () => Request.IsOpen))
-						{
-							foreach(BagSlot slot in InventoryManager.FilledSlots)
-							{
-								if(slot.RawItemId == 7615)
-								{
-									slot.Handover();
-								}
-							}
-						}
-						await Coroutine.Sleep(200);
-						if (await Coroutine.Wait(2000, () => Request.HandOverButtonClickable))
-						{
-							Request.HandOver();
-							await Coroutine.Wait(20000, () => !Request.IsOpen);
-							await Coroutine.Sleep(500);
-						}
-						if (DataManager.GetItem(7615).ItemCount() == 1)
-						{
-							await Coroutine.Sleep(500);
-						}
-						CogExchangeWindow = null;
-					}
-
-					while (CogExchangeWindow == null)
-					{	
-						await Coroutine.Sleep(1000);
-						CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
-					}
-					CogExchangeWindow.SendAction(1, 3, uint.MaxValue);	
-				}
-				await DesynthOcean(new int[] {7521});
-				await Coroutine.Sleep(1000);
-				await DesynthOcean(new int[] {7521});
-			}
-		}
-		
 		private async Task<List<uint>> GetFishLog()
 		{
 			List<uint> recordedFish = new List<uint>();
@@ -1211,16 +826,38 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private bool TimeCheck(int minuteThreshold)
-		{
-			return !(!(DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute > minuteThreshold)) && !((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute < 16));
-		}
+		//private bool TimeCheck(int minuteThreshold)
+		//{
+		//	return !(!(DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute > minuteThreshold)) && !((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute < 16));
+		//}
 
-		private string GetSchedule()
+		private string[] GetSchedule()
 		{
+			string[] schedule = new string[3];
 			epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 			twoHourChunk = ((epoch / 7200) + 16) % 72;
-			return schedulesTod[pattern[twoHourChunk] - 1];
+			//return schedulesTod[pattern[twoHourChunk] - 1];
+
+			switch (schedulesTod[pattern[twoHourChunk] - 1])
+			{
+				case "D S N":
+					schedule[0] = "Day";
+					schedule[1] = "Sunset";
+					schedule[2] = "Night";
+					break;
+				case "S N D":
+					schedule[0] = "Sunset";
+					schedule[1] = "Night";
+					schedule[2] = "Day";
+					break;
+				case "N D S":
+					schedule[0] = "Night";
+					schedule[1] = "Day";
+					schedule[2] = "Sunset";
+					break;
+			}
+
+			return schedule;
 		}
 
 		private void Log(string text, params object[] args)

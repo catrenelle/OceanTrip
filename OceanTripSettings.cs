@@ -3,6 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.ComponentModel;
 using ff14bot.Helpers;
+using System.Collections.Generic;
 
 namespace OceanTripPlanner
 {
@@ -179,8 +180,29 @@ namespace OceanTripPlanner
                 }
             }
         }
-		
-		private DateTime _VentureTime;
+
+        private KeyValuePair<string, int> _Crafts;
+        [Setting]
+
+        [DisplayName("Crafts")]
+        [Description("Use Lisbeth to gather shards and crystals while waiting for the boat.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(null)]
+        public KeyValuePair<string, int> Crafts
+        {
+            get { return _Crafts; }
+            set
+            {
+                if (_Crafts.Key != value.Key || _Crafts.Value != value.Value)
+                {
+                    _Crafts = value;
+                    Save();
+                }
+            }
+        }
+
+        private DateTime _VentureTime;
         [Setting]
 
 		[Browsable(false)]
