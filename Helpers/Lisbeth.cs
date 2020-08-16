@@ -67,13 +67,13 @@ namespace OceanTripPlanner.Helpers
 
         internal static async Task<bool> ExecuteOrders(string json)
         {
-            if (_orderMethod != null) return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json});
+            if (_orderMethod != null) return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, false});
 
             FindLisbeth();
             if (_orderMethod == null)
                 return false;
 
-            return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json});
+            return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, false});
         }
 
         internal static async Task<bool> TravelTo(string area, Vector3 position)

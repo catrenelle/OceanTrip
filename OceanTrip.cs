@@ -44,13 +44,56 @@ namespace OceanTripPlanner
 		};
 		private static readonly float[] headings = new[] {4.622331f, 4.684318f, 1.569952f, 1.509215f, 1.553197f, 1.576235f};
 		
-		private readonly uint[] oceanFish = new uint[] {28937, 28938, 29739, 29722, 29723, 28941, 29728, 29729, 29730, 29736, 29737, 29738, 29719, 28942, 28939, 29724, 28940, 29725, 29731, 29735, 29733, 29718, 29740, 29741, 29734, 29721, 29726, 29727, 29742,29732,29720,29743, 29744, 29745, 29746, 29747, 29766, 29749, 29750, 29751, 29752, 29753, 29754, 29755, 29756, 29757, 29758, 29759, 29779, 29761, 29760, 29763, 29764, 29765, 29775, 29767, 29768, 29769,29770, 29771, 29772, 29780, 29774, 29748,29776, 29777, 29778, 29773, 29762, 29781, 29782, 29783, 29784, 29785, 29786, 29787, 29788, 29789, 29790, 29791};
-		private static readonly int[] fishForSale = new [] {28937,28938,28939,28940,28941,28942,29718,29719,29720,29721,29722,29723,29724,29725,29726,29727,29728,29729,29730,29731,29732,29733,29734,29735,29736,29737,29738,29739,29740,29741,29742,29743,29744,29745,29746,29747,29748,29749,29750,29751,29752,29753,29754,29755,29756,29757,29758,29759,29760,29761,29762,29763,29764,29765,29766,29767,29768,29769,29770,29771,29772,29773,29774,29775,29776,29777,29778,29779,29780,29781,29782,29784,29785,29786,29787};
+		private readonly uint[] oceanFish = new uint[] {
+			28937,28938,29739,29722,29723,28941,29728,29729,29730,29736,29737,29738,29719,28942,28939,29724,28940,29725, 29731,29735,29733,29718,29740,29741,29734,29721,29726,29727,29742,29732,29720,29743,29744,29745,29746,29747,29766,29749,29750,29751,29752,29753,29754,29755, 29756,29757,29758,29759,29779,29761,29760,29763,29764,29765,29775,29767,29768,29769,29770,29771,29772,29780,29774,29748,29776,29777,29778,29773,29762,29781,29782,29783,29784,29785,29786,29787,29788,29789,29790,29791
+		};
+		private static readonly int[] fishForSale = new [] 
+		{
+			28937,28938,28939,28940,28941,28942,29718,29719,29720,29721,29722,29723,29724,29725,29726,29727,29728,29729,29730,29731,29732,29733,29734,29735,29736,29737,29738,29739,29740,29741,29742,29743,29744,29745,29746,29747,29748,29749,29750,29751,29752,29753,29754,29755,29756,29757,29758,29759,29760,29761,29762,29763,29764,29765,29766,29767,29768,29769,29770,29771,29772,29773,29774,29775,29776,29777,29778,29779,29780,29781,29782,29784,29785,29786,29787
+		};
 
-		private static readonly int[] pattern = new[] {
-		2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1,3,3,2,2,1,1};
-		private static string[] schedulesTod = new[] {"D S N", "N D S", "S N D"};
-		
+		private static readonly int[] fullPattern = new[] 
+		{
+		1,4,2,5,3,6,1,4,2,5,3,6,4,1,5,2,6,3,4,1,5,2,6,3,2,5,3,6,1,4,2,5,3,6,1,4,5,2,6,3,4,1,5,2,6,3,4,1,3,6,1,4,2,5,3,6,1,4,2,5,6,3,4,1,5,2,6,3,4,1,5,2
+		};
+
+		private static readonly Tuple<string, string>[] sharkCoral = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("galadion", "Sunset"), 
+			new Tuple<string, string>("south", "Night"), 
+			new Tuple<string, string>("rhotano", "Day")
+		};
+		private static readonly Tuple<string, string>[] sothisElasmo = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("south", "Sunset"), 
+			new Tuple<string, string>("galadion", "Night"), 
+			new Tuple<string, string>("north", "Day")
+		};
+		private static readonly Tuple<string, string>[] sothisStone = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("galadion", "Night"), 
+			new Tuple<string, string>("south", "Day"), 
+			new Tuple<string, string>("rhotano", "Sunset")
+		};
+		private static readonly Tuple<string, string>[] seadragonCoral = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("south", "Night"),
+			new Tuple<string, string>("galadion", "Day"),
+			new Tuple<string, string>("north", "Sunset")
+		};
+		private static readonly Tuple<string, string>[] jellyfish = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("galadion", "Day"), 
+			new Tuple<string, string>("south", "Sunset"), 
+			new Tuple<string, string>("rhotano", "Night")
+		};
+		private static readonly Tuple<string, string>[] octopus = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("south", "Day"), 
+			new Tuple<string, string>("galadion", "Sunset"), 
+			new Tuple<string, string>("north", "Night")
+		};
+
 		private int posOnSchedule = 0;
 		private int epoch = 0;
 		private int twoHourChunk = 0;
@@ -59,7 +102,7 @@ namespace OceanTripPlanner
 		private int spot = rnd.Next(5);
 		private Stopwatch biteTimer = new Stopwatch();
 		private bool doubleHooked = false;
-		private string[] schedule = new string[3];
+		private Tuple<string, string>[] schedule = new Tuple<string, string>[3];
 		
 		private List<uint> missingFish = new List<uint>();
 
@@ -76,19 +119,19 @@ namespace OceanTripPlanner
 		public override bool WantButton { get; } = true;
 
 		private SettingsForm settings;
-        public override void OnButtonPress()
-        {
-            if (settings == null || settings.IsDisposed)
-                settings = new SettingsForm();
-            try
-            {
-                settings.Show();
-                settings.Activate();
-            }
-            catch 
+		public override void OnButtonPress()
+		{
+			if (settings == null || settings.IsDisposed)
+				settings = new SettingsForm();
+			try
+			{
+				settings.Show();
+				settings.Activate();
+			}
+			catch 
 			{ 
 			}
-        }
+		}
 
 		public override void Start()
 		{
@@ -102,37 +145,34 @@ namespace OceanTripPlanner
 			{
 				stop = new TimeSpan(DateTime.UtcNow.Hour + DateTime.UtcNow.Hour % 2, 10, 0);
 			}
-			
-            //stop = new TimeSpan(DateTime.UtcNow.Hour, DateTime.UtcNow.Minute+1, 0);
 
-            TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
+			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
 			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
-            execute.Elapsed += new ElapsedEventHandler(KillLisbeth);
-            execute.Start();
-            Log("Stop in " + timeLeftUntilFirstRun.ToString());
+			execute.Elapsed += new ElapsedEventHandler(KillLisbeth);
+			execute.Start();
 
-            _root = new ActionRunCoroutine(r => Run());
+			Log($"Passing the time for {Math.Round(timeLeftUntilFirstRun.TotalMinutes)} minutes");
+
+			_root = new ActionRunCoroutine(r => Run());
 		}
 
-        private async void KillLisbeth(object sender, ElapsedEventArgs e)
-        {
+		private async void KillLisbeth(object sender, ElapsedEventArgs e)
+		{
 			TimeSpan stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 10, 0);
 
-			Log("stop!");
-            Lisbeth.StopGently();
+			Log("Stop!");
+			Lisbeth.StopGently();
 
 			PassTheTime.freeToCraft = false;
 
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
-            execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
-			//execute.Elapsed += new ElapsedEventHandler(KillLisbeth);
+			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
 			execute.Start();
-            Log("Stop in " + timeLeftUntilFirstRun.ToString());
-        }
+		}
 
-        public override void Stop()
+		public override void Stop()
 		{
 			execute.Elapsed -= new ElapsedEventHandler(KillLisbeth);
 			_root = null;
@@ -147,7 +187,7 @@ namespace OceanTripPlanner
 			return true;
 		}
 
-        private async Task OceanFishing()
+		private async Task OceanFishing()
 		{			
 			if (WorldManager.RawZoneId != 900)
 			{
@@ -172,6 +212,7 @@ namespace OceanTripPlanner
 					await Retaining();
 				}
 
+				Log($"Passing the time");
 				PassTheTime.freeToCraft = true;
 				await PassTheTime.Craft();
 
@@ -220,9 +261,6 @@ namespace OceanTripPlanner
 
 				spot = rnd.Next(5);
 				posOnSchedule = 0;
-				Log(GetSchedule()[0]);
-				Log(GetSchedule()[1]);
-				Log(GetSchedule()[2]);
 
 				schedule = GetSchedule();
 			}
@@ -231,35 +269,35 @@ namespace OceanTripPlanner
 			{
 				if (ChatCheck("[NPCAnnouncements]","southern Strait"))
 				{
-					Log($"Southern Merlthor, {schedule[posOnSchedule]}");
-					await GoFish(29715, 2613, "south");
+					Log($"Southern Merlthor, {schedule[posOnSchedule].Item2}");
+					await GoFish(29715, 2613, "south", schedule[posOnSchedule].Item2);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","Galadion"))
 				{
-					Log($"Galadion Bay, {schedule[posOnSchedule]}");
-					await GoFish(29716, 2603, "galadion");		
+					Log($"Galadion Bay, {schedule[posOnSchedule].Item2}");
+					await GoFish(29716, 2603, "galadion", schedule[posOnSchedule].Item2);		
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","northern Strait"))
 				{
-					Log($"Northern Merlthor, {schedule[posOnSchedule]}");
-					await GoFish(29714, 2619, "north");
+					Log($"Northern Merlthor, {schedule[posOnSchedule].Item2}");
+					await GoFish(29714, 2619, "north", schedule[posOnSchedule].Item2);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","Rhotano Sea"))
 				{
-					Log($"Rhotano Sea, {schedule[posOnSchedule]}");
-					await GoFish(29714, 2591, "rhotano");
+					Log($"Rhotano Sea, {schedule[posOnSchedule].Item2}");
+					await GoFish(29714, 2591, "rhotano", schedule[posOnSchedule].Item2);
 					posOnSchedule++;
 				}
-				await Coroutine.Sleep(1000);
+				await Coroutine.Sleep(500);
 			}
 
 			AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
 			if (windowByName != null)
 			{
-				await Coroutine.Sleep(5000);
+				await Coroutine.Sleep(12000);
 				windowByName.SendAction(1, 3, 0);
 				if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
 				{
@@ -291,7 +329,7 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private async Task GoFish(ulong baitId, ulong spectralbaitId, string location)
+		private async Task GoFish(ulong baitId, ulong spectralbaitId, string location, string timeOfDay)
 		{			
 			Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
 			while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
@@ -342,19 +380,19 @@ namespace OceanTripPlanner
 						//<!-- ragworm 29714 -->
 						if (WorldManager.CurrentWeatherId == 145)
 						{
-							if (((location == "galadion") && (schedule[posOnSchedule] == "Night") && missingFish.Contains(29788)) || ((location == "south") && (schedule[posOnSchedule] == "Night") && missingFish.Contains(29789)) || ((location == "north") && (schedule[posOnSchedule] == "Day") && missingFish.Contains(29791)) || ((location == "rhotano") && (schedule[posOnSchedule] == "Sunset") && missingFish.Contains(29790)))
+							if (((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains(29788)) || ((location == "south") && (timeOfDay == "Night") && missingFish.Contains(29789)) || ((location == "north") && (timeOfDay == "Day") && missingFish.Contains(29791)) || ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains(29790)))
 							{
 								await ChangeBait(spectralbaitId);
 							}
-							else if (((location == "galadion") && (schedule[posOnSchedule] == "Sunset")) || ((location == "rhotano") && (schedule[posOnSchedule] == "Day")) || ((location == "north") && (schedule[posOnSchedule] == "Day")) || ((location == "south") && (schedule[posOnSchedule] == "Night")))
+							else if (((location == "galadion") && (timeOfDay == "Sunset")) || ((location == "rhotano") && (timeOfDay == "Day")) || ((location == "north") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Night")))
 							{
 								await ChangeBait(29716); //plump
 							}
-							else if (((location == "south") && (schedule[posOnSchedule] == "Day")) || ((location == "rhotano") && (schedule[posOnSchedule] == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29774))) || ((location == "north") && (schedule[posOnSchedule] == "Sunset") && missingFish.Contains(29783) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) || ((location == "north") && (schedule[posOnSchedule] == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29777))) || ((location == "galadion") && (schedule[posOnSchedule] == "Night")))
+							else if (((location == "south") && (timeOfDay == "Day")) || ((location == "rhotano") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29774))) || ((location == "north") && (timeOfDay == "Sunset") && missingFish.Contains(29783) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) || ((location == "north") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29777))) || ((location == "galadion") && (timeOfDay == "Night")))
 							{
 								await ChangeBait(29715); //krill
 							}
-							else if (((location == "galadion") && (schedule[posOnSchedule] == "Day")) || ((location == "south") && (schedule[posOnSchedule] == "Sunset")) || ((location == "north") && (schedule[posOnSchedule] == "Sunset")) || ((location == "north") && (schedule[posOnSchedule] == "Night")) || ((location == "rhotano") && (schedule[posOnSchedule] == "Night")))
+							else if (((location == "galadion") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Night")) || ((location == "rhotano") && (timeOfDay == "Night")))
 							{
 								await ChangeBait(29714); //ragworm
 							}
@@ -380,7 +418,7 @@ namespace OceanTripPlanner
 					{
 						biteTimer.Stop();
 						Log($"Bite Time: {biteTimer.Elapsed.TotalSeconds:F1}s");
-						if ((((location == "galadion") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (FishingManager.TugType != TugType.Medium) && (schedule[posOnSchedule] != "Night")) || ((biteTimer.Elapsed.TotalSeconds > 1) && (biteTimer.Elapsed.TotalSeconds <= 4) && (FishingManager.TugType == TugType.Medium)))) || ((location == "south") && (((biteTimer.Elapsed.TotalSeconds >= 6) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Heavy) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (biteTimer.Elapsed.TotalSeconds <= 6) && (schedule[posOnSchedule] == "Night") && (FishingManager.TugType == TugType.Medium) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 4) && (biteTimer.Elapsed.TotalSeconds <= 7) && (schedule[posOnSchedule] == "Day") && (FishingManager.TugType == TugType.Medium)))) || ((location == "north") && (((biteTimer.Elapsed.TotalSeconds >= 5) && (biteTimer.Elapsed.TotalSeconds <= 9) && (schedule[posOnSchedule] == "Night") && (FishingManager.TugType != TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 12) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 9) && (schedule[posOnSchedule] == "Sunset") && (FishingManager.TugType == TugType.Medium)))) || ((location == "rhotano") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 11) && (schedule[posOnSchedule] == "Night") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 10) && (schedule[posOnSchedule] == "Day") && (FishingManager.TugType == TugType.Heavy))))) && (WorldManager.CurrentWeatherId == 145) && ActionManager.CanCast(269, Core.Me) && (Core.Me.CurrentGP >= 400))
+						if ((((location == "galadion") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (FishingManager.TugType != TugType.Medium) && (timeOfDay != "Night")) || ((biteTimer.Elapsed.TotalSeconds > 1) && (biteTimer.Elapsed.TotalSeconds <= 4) && (FishingManager.TugType == TugType.Medium)))) || ((location == "south") && (((biteTimer.Elapsed.TotalSeconds >= 6) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Heavy) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (biteTimer.Elapsed.TotalSeconds <= 6) && (timeOfDay == "Night") && (FishingManager.TugType == TugType.Medium) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 4) && (biteTimer.Elapsed.TotalSeconds <= 7) && (timeOfDay == "Day") && (FishingManager.TugType == TugType.Medium)))) || ((location == "north") && (((biteTimer.Elapsed.TotalSeconds >= 5) && (biteTimer.Elapsed.TotalSeconds <= 9) && (timeOfDay == "Night") && (FishingManager.TugType != TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 12) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 9) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Medium)))) || ((location == "rhotano") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 11) && (timeOfDay == "Night") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 10) && (timeOfDay == "Day") && (FishingManager.TugType == TugType.Heavy))))) && (WorldManager.CurrentWeatherId == 145) && ActionManager.CanCast(269, Core.Me) && (Core.Me.CurrentGP >= 400))
 						{
 							Log("Double Hook!");
 							ActionManager.DoAction(269, Core.Me);
@@ -826,38 +864,27 @@ namespace OceanTripPlanner
 			}
 		}
 
-		//private bool TimeCheck(int minuteThreshold)
-		//{
-		//	return !(!(DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute > minuteThreshold)) && !((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute < 16));
-		//}
-
-		private string[] GetSchedule()
+		private Tuple<string, string>[] GetSchedule()
 		{
-			string[] schedule = new string[3];
 			epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 			twoHourChunk = ((epoch / 7200) + 16) % 72;
-			//return schedulesTod[pattern[twoHourChunk] - 1];
 
-			switch (schedulesTod[pattern[twoHourChunk] - 1])
+			switch (fullPattern[twoHourChunk])
 			{
-				case "D S N":
-					schedule[0] = "Day";
-					schedule[1] = "Sunset";
-					schedule[2] = "Night";
-					break;
-				case "S N D":
-					schedule[0] = "Sunset";
-					schedule[1] = "Night";
-					schedule[2] = "Day";
-					break;
-				case "N D S":
-					schedule[0] = "Night";
-					schedule[1] = "Day";
-					schedule[2] = "Sunset";
-					break;
+				case 1:
+					return seadragonCoral;
+				case 2:
+					return octopus;
+				case 3:
+					return sothisElasmo;
+				case 4:
+					return sothisStone;
+				case 5:
+					return jellyfish;
+				case 6:
+					return sharkCoral;
 			}
-
-			return schedule;
+			return null;
 		}
 
 		private void Log(string text, params object[] args)

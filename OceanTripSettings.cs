@@ -139,28 +139,133 @@ namespace OceanTripPlanner
             }
         }
 		
-		private bool _CraftToSell;
+		private bool _CraftPotions;
         [Setting]
 
-		[DisplayName("Craft To Sell")]
+		[DisplayName("Craft Potions")]
 		[Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
 		[Category("Idle Stuff")]
 		
         [DefaultValueAttribute(true)]
-        public bool CraftToSell
+        public bool CraftPotions
         {
-            get { return _CraftToSell; }
+            get { return _CraftPotions; }
             set
             {
-                if (_CraftToSell != value)
+                if (_CraftPotions != value)
                 {
-                    _CraftToSell = value;
+                    _CraftPotions = value;
                     Save();
                 }
             }
         }
-		
-		private bool _GatherShards;
+
+        private bool _CraftFood;
+        [Setting]
+
+        [DisplayName("Craft Food")]
+        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(true)]
+        public bool CraftFood
+        {
+            get { return _CraftFood; }
+            set
+            {
+                if (_CraftFood != value)
+                {
+                    _CraftFood = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _CraftGear;
+        [Setting]
+
+        [DisplayName("Craft Gear")]
+        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(true)]
+        public bool CraftGear
+        {
+            get { return _CraftGear; }
+            set
+            {
+                if (_CraftGear != value)
+                {
+                    _CraftGear = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _GetMateria;
+        [Setting]
+
+        [DisplayName("Get Materia")]
+        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(true)]
+        public bool GetMateria
+        {
+            get { return _GetMateria; }
+            set
+            {
+                if (_GetMateria != value)
+                {
+                    _GetMateria = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _RefillScrips;
+        [Setting]
+
+        [DisplayName("Refill Scrips")]
+        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(true)]
+        public bool RefillScrips
+        {
+            get { return _RefillScrips; }
+            set
+            {
+                if (_RefillScrips != value)
+                {
+                    _RefillScrips = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _CraftMats;
+        [Setting]
+
+        [DisplayName("Craft Mats")]
+        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(true)]
+        public bool CraftMats
+        {
+            get { return _CraftMats; }
+            set
+            {
+                if (_CraftMats != value)
+                {
+                    _CraftMats = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _GatherShards;
         [Setting]
 
 		[DisplayName("Gather Shards")]
@@ -176,27 +281,6 @@ namespace OceanTripPlanner
                 if (_GatherShards != value)
                 {
                     _GatherShards = value;
-                    Save();
-                }
-            }
-        }
-
-        private KeyValuePair<string, int> _Crafts;
-        [Setting]
-
-        [DisplayName("Crafts")]
-        [Description("Use Lisbeth to gather shards and crystals while waiting for the boat.")]
-        [Category("Idle Stuff")]
-
-        [DefaultValueAttribute(null)]
-        public KeyValuePair<string, int> Crafts
-        {
-            get { return _Crafts; }
-            set
-            {
-                if (_Crafts.Key != value.Key || _Crafts.Value != value.Value)
-                {
-                    _Crafts = value;
                     Save();
                 }
             }
