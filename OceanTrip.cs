@@ -161,11 +161,18 @@ namespace OceanTripPlanner
 		{
 			TimeSpan stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 10, 0);
 
-			Log("Stop!");
-			Lisbeth.StopGently();
+			schedule = GetSchedule();
 
-			PassTheTime.freeToCraft = false;
-
+			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == sothisElasmo || schedule == sothisStone)) || (missingFish.Contains(29789) && (schedule == sharkCoral || schedule == seadragonCoral)) || (missingFish.Contains(29790) && (schedule == sothisStone)) || (missingFish.Contains(29791) && (schedule == sothisElasmo)))))
+			{
+				Log("Stop!");
+				Lisbeth.StopGently();
+				PassTheTime.freeToCraft = false;
+			}
+			else
+            {
+				Log("Not getting on the boat, no catchable fish needed");
+            }
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
 			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
@@ -191,6 +198,8 @@ namespace OceanTripPlanner
 		{			
 			if (WorldManager.RawZoneId != 900)
 			{
+				missingFish = await GetFishLog();
+
 				if (Core.Me.CurrentJob == ClassJobType.Fisher)
 				{
 					if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Sell)
