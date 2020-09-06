@@ -2,7 +2,6 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using ff14bot.Helpers;
 
 namespace OceanTripPlanner
