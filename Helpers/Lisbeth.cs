@@ -15,7 +15,7 @@ namespace OceanTripPlanner.Helpers
         private static MethodInfo _orderMethod;
         private static MethodInfo _travelMethod;
         public static Func<string> _getCurrentAreaName;
-        private static Func<Task> _stopGently, _equipOptimalGear, _extractMateria, _selfRepair, _selfRepairWithMenderFallback;
+        private static Func<Task> _stopGently, _equipOptimalGear, _selfRepairWithMenderFallback;
         private static Action<string, Func<Task>> _addHook;
         private static Action<string> _removeHook;
         private static Func<List<string>> _getHookList;
@@ -50,8 +50,6 @@ namespace OceanTripPlanner.Helpers
                     _getHookList = (Func<List<string>>) Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
 
                     _equipOptimalGear = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "EquipOptimalGear");
-                    _extractMateria = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "ExtractMateria");
-                    _selfRepair = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepair");
                     _selfRepairWithMenderFallback = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepairWithMenderFallback");
                 }
             }
@@ -111,16 +109,6 @@ namespace OceanTripPlanner.Helpers
         public static async Task EquipOptimalGear()
         {
             await _equipOptimalGear();
-        }
-
-        public static async Task ExtractMateria()
-        {
-            await _extractMateria();
-        }
-
-        public static async Task SelfRepair()
-        {
-            await _selfRepair();
         }
 
         public static async Task SelfRepairWithMenderFallback()

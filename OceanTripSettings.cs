@@ -2,8 +2,8 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using ff14bot.Helpers;
-using System.Collections.Generic;
 
 namespace OceanTripPlanner
 {
@@ -19,8 +19,23 @@ namespace OceanTripPlanner
 		FishLog,
 		Points
 	}
-	
-	internal class OceanTripSettings : JsonSettings
+
+    public enum Venturing : uint
+    {
+        Limsa,
+        Uldah,
+        Gridania,
+        MorDohna,
+        Ishgard,
+        Idyllshire,
+        Kugane,
+        RhalgrsReach,
+        Crystarium,
+        Eulmore,
+        None
+    }
+
+    internal class OceanTripSettings : JsonSettings
     {
         private static OceanTripSettings _settings;
 
@@ -34,15 +49,15 @@ namespace OceanTripPlanner
         {
         }
 
-        private bool _Venturing;
+        private Venturing _Venturing;
         [Setting]
 
 		[DisplayName("Retaining")]
-		[Description("Go to Idyllshire to refresh ventures.")]
+		[Description("Go to a summoning bell and refresh ventures.")]
 		[Category("Idle Stuff")]
 		
-        [DefaultValueAttribute(true)]
-        public bool Venturing
+        [DefaultValueAttribute(Venturing.None)]
+        public Venturing Venturing
         {
             get { return _Venturing; }
             set
@@ -55,7 +70,28 @@ namespace OceanTripPlanner
             }
         }
 
-		private bool _OceanFood;
+        private bool _CustomOrder;
+        [Setting]
+
+        [DisplayName("Custom Order")]
+        [Description("Use your own Lisbeth json order while waiting for the boat. Save it as \"BoatOrder.json\" in your RebornBuddy root folder")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(false)]
+        public bool CustomOrder
+        {
+            get { return _CustomOrder; }
+            set
+            {
+                if (_CustomOrder != value)
+                {
+                    _CustomOrder = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _OceanFood;
         [Setting]
 
 		[DisplayName("Ocean Food")]
@@ -80,7 +116,7 @@ namespace OceanTripPlanner
         [Setting]
 
 		[DisplayName("Fieldcraft III")]
-		[Description("Desynth rose gold cogs for Fieldcraft IIIs.")]
+		[Description("Craft & Desynth rose gold cogs for Fieldcraft IIIs.")]
 		[Category("Idle Stuff")]
 		
         [DefaultValueAttribute(true)]
@@ -122,7 +158,7 @@ namespace OceanTripPlanner
         [Setting]
 
 		[DisplayName("Fish Priority")]
-		[Description("Prioritize fish log completion or points while ocean fishing.")]
+		[Description("Prioritize fish log completion or points while ocean fishing. This will skip the upcoming boat if you have the blue fish from it.")]
 		[Category("Ocean")]
 
         [DefaultValueAttribute(FishPriority.Points)]
@@ -143,7 +179,7 @@ namespace OceanTripPlanner
         [Setting]
 
 		[DisplayName("Craft Potions")]
-		[Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+		[Description("Use Lisbeth to craft various (lvl80) potions while waiting for the boat.")]
 		[Category("Idle Stuff")]
 		
         [DefaultValueAttribute(true)]
@@ -164,7 +200,7 @@ namespace OceanTripPlanner
         [Setting]
 
         [DisplayName("Craft Food")]
-        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Description("Use Lisbeth to craft various (lvl80) food while waiting for the boat.")]
         [Category("Idle Stuff")]
 
         [DefaultValueAttribute(true)]
@@ -185,7 +221,7 @@ namespace OceanTripPlanner
         [Setting]
 
         [DisplayName("Craft Gear")]
-        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Description("Use Lisbeth to craft various Aesthete stuff while waiting for the boat (won't buy tome items).")]
         [Category("Idle Stuff")]
 
         [DefaultValueAttribute(true)]
@@ -206,7 +242,7 @@ namespace OceanTripPlanner
         [Setting]
 
         [DisplayName("Get Materia")]
-        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Description("Use Lisbeth to buy VII and VIII materias while waiting for the boat.")]
         [Category("Idle Stuff")]
 
         [DefaultValueAttribute(true)]
@@ -227,7 +263,7 @@ namespace OceanTripPlanner
         [Setting]
 
         [DisplayName("Refill Scrips")]
-        [Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+        [Description("Use Lisbeth to refill Yellow and White Crafter Scrips while waiting for the boat.")]
         [Category("Idle Stuff")]
 
         [DefaultValueAttribute(true)]
@@ -239,6 +275,27 @@ namespace OceanTripPlanner
                 if (_RefillScrips != value)
                 {
                     _RefillScrips = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _EmptyScrips;
+        [Setting]
+
+        [DisplayName("Empty Gatherer Scrips")]
+        [Description("Buy Cordials when Yellow Gatherer Scrips are close to cap.")]
+        [Category("Ocean")]
+
+        [DefaultValueAttribute(true)]
+        public bool EmptyScrips
+        {
+            get { return _EmptyScrips; }
+            set
+            {
+                if (_EmptyScrips != value)
+                {
+                    _EmptyScrips = value;
                     Save();
                 }
             }

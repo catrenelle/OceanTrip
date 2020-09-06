@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Threading.Tasks;
 using Clio.Utilities;
 using Buddy.Coroutines;
+using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
@@ -11,6 +12,7 @@ using ff14bot.Helpers;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using OceanTripPlanner.Helpers;
+using System.IO;
 
 namespace OceanTripPlanner
 {
@@ -23,9 +25,26 @@ namespace OceanTripPlanner
 		{
 			if (freeToCraft)
 			{
-				if ((freeToCraft && DataManager.GetItem(27870).ItemCount() < 10) && OceanTripSettings.Instance.OceanFood == true)
+				//Ocean Food
+				if ((freeToCraft && DataManager.GetItem(27870).ItemCount() < 10) && OceanTripSettings.Instance.OceanFood)
 				{
 					await IdleLisbeth(27870, 40, "Culinarian", "false"); //Peppered Popotos
+				}
+
+				//Resume last order
+				if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}\\lisbeth-resume.json"))
+				{
+					if (File.ReadAllText($"Settings\\{Core.Me.Name}\\lisbeth-resume.json") != "[]")
+					{
+						Log("Resuming last Lisbeth order.");
+						await Lisbeth.ExecuteOrders(File.ReadAllText($"Settings\\{Core.Me.Name}\\lisbeth-resume.json"));
+					}
+				}
+
+				//Custom Order
+				if (freeToCraft && File.Exists("BoatOrder.json") && OceanTripSettings.Instance.CustomOrder)
+				{
+					await Lisbeth.ExecuteOrders(File.ReadAllText("BoatOrder.json"));
 				}
 
 				//Potions
@@ -39,23 +58,23 @@ namespace OceanTripPlanner
 				{
 					while (freeToCraft && DataManager.GetItem(30482).ItemCount() < 300)
 					{
-						await IdleLisbeth(30482, 52, "Culinarian", "false"); //Chili Crab
+						await IdleLisbeth(30482, 200, "Culinarian", "false"); //Chili Crab
 					}
 					while (freeToCraft && DataManager.GetItem(29501).ItemCount() < 300)
 					{
-						await IdleLisbeth(29501, 52, "Culinarian", "false"); //Sausage and Sauerkraut
+						await IdleLisbeth(29501, 200, "Culinarian", "false"); //Sausage and Sauerkraut
 					}
 					while (freeToCraft && DataManager.GetItem(29502).ItemCount() < 300)
 					{
-						await IdleLisbeth(29502, 52, "Culinarian", "false"); //Stuffed Highland Cabbage
+						await IdleLisbeth(29502, 200, "Culinarian", "false"); //Stuffed Highland Cabbage
 					}
 					while (freeToCraft && DataManager.GetItem(29504).ItemCount() < 300)
 					{
-						await IdleLisbeth(29504, 52, "Culinarian", "false"); //Herring Pie
+						await IdleLisbeth(29504, 200, "Culinarian", "false"); //Herring Pie
 					}
 					while (freeToCraft && DataManager.GetItem(29497).ItemCount() < 120)
 					{
-						await IdleLisbeth(29497, 52, "Culinarian", "false"); //Ovim Meatballs
+						await IdleLisbeth(29497, 100, "Culinarian", "false"); //Ovim Meatballs
 					}
 				}
 
@@ -76,7 +95,7 @@ namespace OceanTripPlanner
 					}
 					if (freeToCraft && (DataManager.GetItem(30463).ItemCount() == 0))
 					{
-						await IdleLisbeth(30463, 2, "Leatherworker", "false", 1030482); //Crafter Gloves
+						await IdleLisbeth(30463, 1, "Leatherworker", "false", 1030482); //Crafter Gloves
 					}
 				}
 
@@ -96,30 +115,30 @@ namespace OceanTripPlanner
 						await IdleLisbeth(25196, 10, "Exchange", "false"); //crafter command vii
 					}
 
-					while (freeToCraft && DataManager.GetItem(5703).ItemCount() < 100)
+					while (freeToCraft && DataManager.GetItem(5703).ItemCount() < 300)
 					{
-						await IdleLisbeth(5703, 10, "Exchange", "false"); //crafter competence v
+						await IdleLisbeth(5703, 30, "Exchange", "false"); //crafter competence v
 					}
-					while (freeToCraft && DataManager.GetItem(5708).ItemCount() < 100)
+					while (freeToCraft && DataManager.GetItem(5708).ItemCount() < 300)
 					{
-						await IdleLisbeth(5708, 10, "Exchange", "false"); //crafter cunning v
+						await IdleLisbeth(5708, 30, "Exchange", "false"); //crafter cunning v
 					}
-					while (freeToCraft && DataManager.GetItem(5713).ItemCount() < 100)
+					while (freeToCraft && DataManager.GetItem(5713).ItemCount() < 300)
 					{
-						await IdleLisbeth(5713, 10, "Exchange", "false"); //crafter command v
+						await IdleLisbeth(5713, 30, "Exchange", "false"); //crafter command v
 					}
 
-					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 30)
+					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 50)
 					{
-						await IdleLisbeth(26735, 4, "Exchange", "false"); //crafter materia
+						await IdleLisbeth(26735, 5, "Exchange", "false"); //crafter materia
 					}
-					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 30)
+					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 50)
 					{
-						await IdleLisbeth(26736, 4, "Exchange", "false"); //crafter materia
+						await IdleLisbeth(26736, 5, "Exchange", "false"); //crafter materia
 					}
-					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 30)
+					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 50)
 					{
-						await IdleLisbeth(26737, 4, "Exchange", "false"); //crafter materia
+						await IdleLisbeth(26737, 5, "Exchange", "false"); //crafter materia
 					}
 				}
 
@@ -165,22 +184,22 @@ namespace OceanTripPlanner
 					{
 						await IdleLisbeth(27714, 30, "Blacksmith", "false"); //Dwarven Mythril Ingot
 					}
-					while (DataManager.GetItem(27715).ItemCount() < 400)
-					{
-						await IdleLisbeth(27715, 30, "Goldsmith", "false"); //Dwarven Mythril Nugget
-					}
-					while (DataManager.GetItem(27693).ItemCount() < 400)
-					{
-						await IdleLisbeth(27693, 30, "Carpenter", "false"); //Lignum Vitae Lumber
-					}
-					while (DataManager.GetItem(27852).ItemCount() < 300)
-					{
-						await IdleLisbeth(27852, 40, "Grind", "false"); //Ovim Meat
-					}
-					while (DataManager.GetItem(27742).ItemCount() < 990)
-					{
-						await IdleLisbeth(27742, 10, "Leatherworker", "false"); //Sea Swallow Leather
-					}
+					//while (DataManager.GetItem(27715).ItemCount() < 400)
+					//{
+					//	await IdleLisbeth(27715, 30, "Goldsmith", "false"); //Dwarven Mythril Nugget
+					//}
+					//while (DataManager.GetItem(27693).ItemCount() < 400)
+					//{
+					//	await IdleLisbeth(27693, 30, "Carpenter", "false"); //Lignum Vitae Lumber
+					//}
+					//while (DataManager.GetItem(27852).ItemCount() < 300)
+					//{
+					//	await IdleLisbeth(27852, 40, "Grind", "false"); //Ovim Meat
+					//}
+					//while (DataManager.GetItem(27742).ItemCount() < 990)
+					//{
+					//	await IdleLisbeth(27742, 10, "Leatherworker", "false"); //Sea Swallow Leather
+					//}
 				}
 			}
 

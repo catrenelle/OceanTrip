@@ -94,14 +94,29 @@ namespace OceanTripPlanner
 			new Tuple<string, string>("north", "Night")
 		};
 
+		private static readonly Tuple<uint, Vector3>[] SummoningBells = new Tuple<uint, Vector3>[]
+		{
+			new Tuple<uint, Vector3>(129, new Vector3(-123.888062f, 17.990356f, 21.469421f)), //Limsa
+			new Tuple<uint, Vector3>(131, new Vector3(148.91272f, 3.982544f, -44.205383f)), //Ul'dah
+			new Tuple<uint, Vector3>(133, new Vector3(160.234863f, 15.671021f, -55.649719f)), //Old Gridania(Gridania) 
+			new Tuple<uint, Vector3>(156, new Vector3(11.001709f, 28.976807f, -734.554077f)), //Mor Dhona(Mor Dhona) 
+			new Tuple<uint, Vector3>(419, new Vector3(-151.171204f, -12.64978f, -11.764771f)), //The Pillars(Ishgard) 
+			new Tuple<uint, Vector3>(478, new Vector3(34.775269f, 208.148193f, -50.858398f)), //Idyllshire(Dravania)  
+			new Tuple<uint, Vector3>(628, new Vector3(19.394226f, 4.043579f, 53.025024f)), //Kugane(Kugane) 
+			new Tuple<uint, Vector3>(635, new Vector3(-57.633362f, -0.01532f, 49.30188f)), //Rhalgr's Reach(Gyr Abania) 
+			new Tuple<uint, Vector3>(819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium
+			new Tuple<uint, Vector3>(820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore) 
+		};
+
 		private int posOnSchedule = 0;
 		private int epoch = 0;
 		private int twoHourChunk = 0;
 
 		private static Random rnd = new Random();
-		private int spot = rnd.Next(5);
+		private int spot = rnd.Next(6);
 		private Stopwatch biteTimer = new Stopwatch();
 		private bool doubleHooked = false;
+		private bool spectraled = false;
 		private Tuple<string, string>[] schedule = new Tuple<string, string>[3];
 		
 		private List<uint> missingFish = new List<uint>();
@@ -170,9 +185,9 @@ namespace OceanTripPlanner
 				PassTheTime.freeToCraft = false;
 			}
 			else
-            {
+			{
 				Log("Not getting on the boat, no catchable fish needed");
-            }
+			}
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
 			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
@@ -210,13 +225,17 @@ namespace OceanTripPlanner
 					{
 						await PassTheTime.DesynthOcean(fishForSale);
 					}
-					
+
+					await Lisbeth.SelfRepairWithMenderFallback();
 					await LandRepair(90);
 					await RestockBait(150, 500);
-					await EmptyScrips(12669, 1000, 0);
+					if (OceanTripSettings.Instance.EmptyScrips)
+					{
+						await EmptyScrips(12669, 1000, 0);
+					}
 				}
 
-				if (OceanTripSettings.Instance.Venturing)
+				if (OceanTripSettings.Instance.Venturing != Venturing.None)
 				{
 					await Retaining();
 				}
@@ -231,12 +250,14 @@ namespace OceanTripPlanner
 				{
 					Log($"{fish} {DataManager.GetItem(fish).CurrentLocaleName}");
 				}
-				
+
+				await SwitchToJob(ClassJobType.Fisher);
+				await Lisbeth.SelfRepairWithMenderFallback();
 				Log("Waiting for the boat...");
 				while (!((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute == 13)))
 				{
 					await Coroutine.Sleep(1000);
-					if (OceanTripSettings.Instance.Venturing)
+					if (OceanTripSettings.Instance.Venturing != Venturing.None)
 					{
 						await Retaining();
 					}
@@ -268,7 +289,7 @@ namespace OceanTripPlanner
 
 				await GetOnBoat();
 
-				spot = rnd.Next(5);
+				spot = rnd.Next(6);
 				posOnSchedule = 0;
 
 				schedule = GetSchedule();
@@ -339,7 +360,8 @@ namespace OceanTripPlanner
 		}
 
 		private async Task GoFish(ulong baitId, ulong spectralbaitId, string location, string timeOfDay)
-		{			
+		{
+			spectraled = false;
 			Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
 			while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
 			{
@@ -353,14 +375,24 @@ namespace OceanTripPlanner
 
 			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]","measure your catch"))
 			{
-				if (!FishingManager.CanMooch && !ChatCheck("[2115]","Mooch II") && (Core.Me.CurrentGP < 500))
+				if (WorldManager.CurrentWeatherId != 145) 
+				{
+					spectraled = false;
+				}
+				else
+				{
+					spectraled = true;
+				}
+
+				if (!FishingManager.CanMooch && !ChatCheck("[2115]","Mooch II") && (Core.Me.CurrentGP < 500) && spectraled)
 				{
 					await UseCordial();
 				}
 
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
-					if ((ChatCheck("You land a","gugrusaurus") || ChatCheck("You land a","heavenskey")) && (Core.Me.CurrentGP >= 350) && !Core.Player.HasAura(568))
+					//Identical Cast for Blue fish
+					if ((ChatCheck("You land a","gugrusaurus") || ChatCheck("You land a","heavenskey") || ChatCheck("You land a", "grandmarlin")) && (Core.Me.CurrentGP >= 350) && !Core.Player.HasAura(568))
 					{
 						await Coroutine.Sleep(100);
 						if (ActionManager.CanCast(4596, Core.Me))
@@ -370,13 +402,13 @@ namespace OceanTripPlanner
 						}
 					}
 
-					if (FishingManager.CanMooch && WorldManager.CurrentWeatherId == 145)
+					if (FishingManager.CanMooch && WorldManager.CurrentWeatherId == 145 && spectraled)
 					{
 						Log("Mooch!");
 						FishingManager.Mooch();
 						biteTimer.Start();
 					}
-					else if (ChatCheck("[2115]","Mooch II") && ActionManager.CanCast(268, Core.Me) && Core.Me.CurrentGP >= 200 && WorldManager.CurrentWeatherId == 145)
+					else if (ChatCheck("[2115]","Mooch II") && ActionManager.CanCast(268, Core.Me) && Core.Me.CurrentGP >= 200 && WorldManager.CurrentWeatherId == 145 && spectraled)
 					{
 						Log("Mooch II!");
 						ActionManager.DoAction(268, Core.Me);
@@ -417,12 +449,22 @@ namespace OceanTripPlanner
 						biteTimer.Start();
 						FishingManager.Cast();	
 					}
-					await Coroutine.Sleep(10);
+					await Coroutine.Sleep(50);
 					doubleHooked = false;
 				}
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]","measure your catch"))
 				{
-					await Coroutine.Sleep(100);
+					await Coroutine.Sleep(50);
+
+					//Spectral popped, don't wait for normal fish
+					if (WorldManager.CurrentWeatherId == 145 && !spectraled)
+					{
+						spectraled = true;
+						if (FishingManager.CanHook)
+						{
+							FishingManager.Hook();
+						}
+					}
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
 						biteTimer.Stop();
@@ -453,6 +495,7 @@ namespace OceanTripPlanner
 				}
 			}
 
+			spectraled = false;
 			await Coroutine.Sleep(2000);
 			Log("Waiting for next stop...");
 			if (FishingManager.State != FishingState.None)
@@ -690,6 +733,7 @@ namespace OceanTripPlanner
 
 		private async Task EmptyScrips(uint itemId, int scripThreshold, uint slot)
 		{
+			//TODO: Buy other stuff with scrip
 			if (SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 17834) > scripThreshold)
 			{
 				Log($"Buying {DataManager.GetItem(itemId).CurrentLocaleName}s");
@@ -735,7 +779,8 @@ namespace OceanTripPlanner
 		{
 			if(OceanTripSettings.Instance.VentureTime < DateTime.Now)
 			{
-				await Navigation.GetTo(478, new Vector3(35.51684f, 208.1487f, -51.6737f));
+				//await Navigation.GetTo(478, new Vector3(35.51684f, 208.1487f, -51.6737f));
+				await Navigation.GetTo(SummoningBells[(int)OceanTripSettings.Instance.Venturing].Item1, SummoningBells[(int)OceanTripSettings.Instance.Venturing].Item2);
 
 				foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
 				{
