@@ -6,7 +6,16 @@ using ff14bot.Helpers;
 
 namespace OceanTripPlanner
 {
-	public enum ExchangeFish : uint
+
+    public enum LisbethFood : int
+    {
+        StoneSoup = 4717,
+        SeafoodStew = 12865,
+        SeafoodStewHQ = 1012865,
+        None = 0
+    }
+
+    public enum ExchangeFish : uint
 	{
 		Sell,
 		Desynth,
@@ -152,8 +161,29 @@ namespace OceanTripPlanner
                 }
             }
         }
-		
-		private FishPriority _FishPriority;
+
+        private LisbethFood _LisbethFood;
+        [Setting]
+
+        [DisplayName("Lisbeth Food")]
+        [Description("Food to use while crafting.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(LisbethFood.None)]
+        public LisbethFood LisbethFood
+        {
+            get { return _LisbethFood; }
+            set
+            {
+                if (_LisbethFood != value)
+                {
+                    _LisbethFood = value;
+                    Save();
+                }
+            }
+        }
+
+        private FishPriority _FishPriority;
         [Setting]
 
 		[DisplayName("Fish Priority")]

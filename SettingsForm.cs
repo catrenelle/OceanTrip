@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
+using ff14bot.Managers;
+using ff14bot.AClasses;
+using System.Linq;
+using OceanTripPlanner.Helpers;
 
 namespace OceanTripPlanner
 {
@@ -14,5 +18,10 @@ namespace OceanTripPlanner
         {
             propertyGrid1.SelectedObject = OceanTripSettings.Instance;
         }
-    }
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+            Lisbeth.OpenWindow();
+        }
+	}
 }

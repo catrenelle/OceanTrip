@@ -169,6 +169,7 @@ namespace OceanTripPlanner
 
 			Log($"Passing the time for {Math.Round(timeLeftUntilFirstRun.TotalMinutes)} minutes");
 
+			
 			_root = new ActionRunCoroutine(r => Run());
 		}
 
@@ -694,7 +695,7 @@ namespace OceanTripPlanner
 
 				if (itemsToBuy.Contains(2619) && Core.Me.Levels[ClassJobType.Goldsmith] >= 36)
 				{
-					await PassTheTime.IdleLisbeth(2619, 20, "Goldsmith", "true");
+					await PassTheTime.IdleLisbeth(2619, 20, "Goldsmith", "true", (int)OceanTripSettings.Instance.LisbethFood);
 				}
 				Log("Restocking bait complete");
 			}

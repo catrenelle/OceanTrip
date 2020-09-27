@@ -13,12 +13,17 @@ namespace OceanTripPlanner.Helpers
     {
         private static object _lisbeth;
         private static MethodInfo _orderMethod;
-        private static MethodInfo _travelMethod;
         public static Func<string> _getCurrentAreaName;
-        private static Func<Task> _stopGently, _equipOptimalGear, _selfRepairWithMenderFallback;
+        private static Func<Task> _equipOptimalGear, _extractMateria, _selfRepair, _selfRepairWithMenderFallback;
+        private static Func<Task> _stopGently;
         private static Action<string, Func<Task>> _addHook;
         private static Action<string> _removeHook;
         private static Func<List<string>> _getHookList;
+        private static Func<Task<bool>> _exitCrafting;
+        private static Func<string, Vector3, Task<bool>> _travelToWithArea;
+        private static Func<uint, uint, Vector3, Task<bool>> _travelTo;
+        private static Action _openWindow;
+
 
         static Lisbeth()
         {
@@ -35,28 +40,40 @@ namespace OceanTripPlanner.Helpers
             var lisbethObjectProperty = loader.GetType().GetProperty("Lisbeth");
             var lisbeth = lisbethObjectProperty?.GetValue(loader);
             var orderMethod = lisbeth?.GetType().GetMethod("ExecuteOrders");
-            var travelMethod = lisbeth?.GetType().GetMethod("TravelTo");
             var apiObject = lisbeth.GetType().GetProperty("Api")?.GetValue(lisbeth);
             if (lisbeth == null || orderMethod == null) return;
             if (apiObject != null)
             {
                 var m = apiObject.GetType().GetMethod("GetCurrentAreaName");
                 if (m != null)
-                {
-                    _getCurrentAreaName = (Func<string>) Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
-                    _stopGently = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
-                    _addHook = (Action<string, Func<Task>>) Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
-                    _removeHook = (Action<string>) Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
-                    _getHookList = (Func<List<string>>) Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
 
-                    _equipOptimalGear = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "EquipOptimalGear");
-                    _selfRepairWithMenderFallback = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepairWithMenderFallback");
+                {
+                    try
+                    {
+                        _getCurrentAreaName = (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
+                        _stopGently = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
+                        //_stopGentlyAndWait = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGentlyAndWait");
+                        _addHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
+                        _removeHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
+                        _getHookList = (Func<List<string>>)Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
+                        _exitCrafting = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "ExitCrafting");
+                        _equipOptimalGear = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "EquipOptimalGear");
+                        _extractMateria = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "ExtractMateria");
+                        _selfRepair = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepair");
+                        _selfRepairWithMenderFallback = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepairWithMenderFallback");
+                        _travelTo = (Func<uint, uint, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, uint, Vector3, Task<bool>>), apiObject, "TravelTo");
+                        _travelToWithArea = (Func<string, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<string, Vector3, Task<bool>>), apiObject, "TravelToWithArea");
+                        _openWindow = (Action)Delegate.CreateDelegate(typeof(Action), apiObject, "OpenWindow");
+                    }
+                    catch (Exception e)
+                    {
+                        Logging.Write(e.ToString());
+                    }
                 }
             }
 
             _orderMethod = orderMethod;
             _lisbeth = lisbeth;
-            _travelMethod = travelMethod;
 
             Logging.Write("Lisbeth found.");
         }
@@ -65,31 +82,47 @@ namespace OceanTripPlanner.Helpers
 
         internal static async Task<bool> ExecuteOrders(string json)
         {
-            if (_orderMethod != null) return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, false});
+            if (_orderMethod != null) return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
 
             FindLisbeth();
             if (_orderMethod == null)
                 return false;
 
-            return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, false});
+            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
+        }
+
+        internal static async Task<bool> ExecuteOrdersIgnoreHome(string json)
+        {
+            if (_orderMethod != null) return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
+
+            FindLisbeth();
+            if (_orderMethod == null)
+                return false;
+
+            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
         }
 
         internal static async Task<bool> TravelTo(string area, Vector3 position)
         {
-            if (_travelMethod != null) return await (Task<bool>) _travelMethod.Invoke(_lisbeth, new object[] {area, position});
+            if (_travelToWithArea != null) return await _travelToWithArea(area, position);
 
             FindLisbeth();
-            if (_travelMethod == null)
+            if (_travelToWithArea == null)
                 return false;
 
-            return await (Task<bool>) _travelMethod.Invoke(_lisbeth, new object[] {area, position});
+            return await _travelToWithArea(area, position);
         }
-        
+
+        public static async Task<bool> TravelToZones(uint zoneId, uint subzoneId, Vector3 position)
+        {
+            return await _travelTo(zoneId, subzoneId, position);
+        }
+
         public static async Task StopGently()
         {
-            if (_stopGently == null) { return; }
             await _stopGently();
         }
+
 
         public static void AddHook(string name, Func<Task> function)
         {
@@ -106,14 +139,34 @@ namespace OceanTripPlanner.Helpers
             return _getHookList?.Invoke();
         }
 
+        public static Task<bool> ExitCrafting()
+        {
+            return _exitCrafting?.Invoke();
+        }
+
         public static async Task EquipOptimalGear()
         {
             await _equipOptimalGear();
         }
 
+        public static async Task ExtractMateria()
+        {
+            await _extractMateria();
+        }
+
+        public static async Task SelfRepair()
+        {
+            await _selfRepair();
+        }
+
         public static async Task SelfRepairWithMenderFallback()
         {
             await _selfRepairWithMenderFallback();
+        }
+
+        public static void OpenWindow()
+        {
+            _openWindow();
         }
     }
 }
