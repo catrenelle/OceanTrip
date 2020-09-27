@@ -16,8 +16,8 @@ using System.IO;
 
 namespace OceanTripPlanner
 {
-    class PassTheTime
-    {
+	class PassTheTime
+	{
 		public static bool freeToCraft;
 		private static SpellData action;
 
@@ -102,20 +102,20 @@ namespace OceanTripPlanner
 				//Materia
 				if (freeToCraft && OceanTripSettings.Instance.GetMateria)
 				{				
-					while (freeToCraft && DataManager.GetItem(25194).ItemCount() < 0)
+					while (freeToCraft && DataManager.GetItem(25194).ItemCount() < 200)
 					{
 						await IdleLisbeth(25194, 20, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter competence vii
 					}
-					while (freeToCraft && DataManager.GetItem(25195).ItemCount() < 100)
+					while (freeToCraft && DataManager.GetItem(25195).ItemCount() < 200)
 					{
 						await IdleLisbeth(25195, 20, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter cunning vii
 					}
-					while (freeToCraft && DataManager.GetItem(25196).ItemCount() < 0)
+					while (freeToCraft && DataManager.GetItem(25196).ItemCount() < 200)
 					{
 						await IdleLisbeth(25196, 20, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter command vii
 					}
 
-					while (freeToCraft && DataManager.GetItem(5703).ItemCount() < 100)
+					while (freeToCraft && DataManager.GetItem(5703).ItemCount() < 200)
 					{
 						await IdleLisbeth(5703, 30, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter competence v
 					}
@@ -128,17 +128,17 @@ namespace OceanTripPlanner
 						await IdleLisbeth(5713, 30, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter command v
 					}
 
-					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 20)
+					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 50)
 					{
-						await IdleLisbeth(26735, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter materia
+						await IdleLisbeth(26735, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter competence viii
 					}
-					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 20)
+					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 50)
 					{
-						await IdleLisbeth(26736, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter materia
+						await IdleLisbeth(26736, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter cunning viii
 					}
-					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 20)
+					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 50)
 					{
-						await IdleLisbeth(26737, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter materia
+						await IdleLisbeth(26737, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter command viii
 					}
 				}
 
@@ -206,51 +206,51 @@ namespace OceanTripPlanner
 			//Shards
 			if (freeToCraft && OceanTripSettings.Instance.GatherShards)
 			{
-				while (freeToCraft && (ConditionParser.ItemCount(4) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(4) < 9000))
 				{
-					await IdleLisbeth(4, 500, "Gather", "false", 0); //Wind Shard Gets Stuck
+					await IdleLisbeth(4, 500, "Gather", "false", 0); //Wind Shard
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(10) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(10) < 9000))
 				{
 					await IdleLisbeth(10, 500, "Gather", "false", 0); //Wind Crystal
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(2) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(2) < 9000))
 				{
 					await IdleLisbeth(2, 500, "Gather", "false", 0); //Fire Shard
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(8) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(8) < 9000))
 				{
 					await IdleLisbeth(8, 500, "Gather", "false", 0); //Fire Crystal
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(3) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(3) < 9000))
 				{
 					await IdleLisbeth(3, 500, "Gather", "false", 0); //Ice Shard
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(9) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(9) < 9000))
 				{
 					await IdleLisbeth(9, 500, "Gather", "false", 0); //Ice Crystal
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(5) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(5) < 9000))
 				{
 					await IdleLisbeth(5, 500, "Gather", "false", 0); //Earth Shard
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(11) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(11) < 9000))
 				{
 					await IdleLisbeth(11, 500, "Gather", "false", 0); //Earth Crystal
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(6) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(6) < 9000))
 				{
 					await IdleLisbeth(6, 500, "Gather", "false", 0); //Lightning Shard
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(12) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(12) < 9000))
 				{
 					await IdleLisbeth(12, 500, "Gather", "false", 0); //Lightning Crystal
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(7) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(7) < 9000))
 				{
 					await IdleLisbeth(7, 500, "Gather", "false", 0); //Water Shard
 				}
-				while (freeToCraft && (ConditionParser.ItemCount(13) < 8700))
+				while (freeToCraft && (ConditionParser.ItemCount(13) < 9000))
 				{
 					await IdleLisbeth(13, 500, "Gather", "false", 0); //Water Crystal
 				}

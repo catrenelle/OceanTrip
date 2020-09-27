@@ -187,7 +187,7 @@ namespace OceanTripPlanner
 			}
 			else
 			{
-				Log("Not getting on the boat, no catchable fish needed");
+				Log("Not getting on the boat, no fish needed");
 			}
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
