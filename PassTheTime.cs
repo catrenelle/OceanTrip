@@ -76,6 +76,10 @@ namespace OceanTripPlanner
 					{
 						await IdleLisbeth(29497, 100, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Ovim Meatballs
 					}
+					while (freeToCraft && DataManager.GetItem(31320).ItemCount() < 200)
+					{
+						await IdleLisbeth(31320, 20, "Exchange", "false", 0); //Slithersand
+					}
 				}
 
 				//Gear
@@ -104,41 +108,41 @@ namespace OceanTripPlanner
 				{				
 					while (freeToCraft && DataManager.GetItem(25194).ItemCount() < 200)
 					{
-						await IdleLisbeth(25194, 20, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter competence vii
+						await IdleLisbeth(25194, 20, "Exchange", "false", 0); //crafter competence vii
 					}
 					while (freeToCraft && DataManager.GetItem(25195).ItemCount() < 200)
 					{
-						await IdleLisbeth(25195, 20, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter cunning vii
+						await IdleLisbeth(25195, 20, "Exchange", "false", 0); //crafter cunning vii
 					}
 					while (freeToCraft && DataManager.GetItem(25196).ItemCount() < 200)
 					{
-						await IdleLisbeth(25196, 20, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter command vii
+						await IdleLisbeth(25196, 20, "Exchange", "false", 0); //crafter command vii
 					}
 
 					while (freeToCraft && DataManager.GetItem(5703).ItemCount() < 200)
 					{
-						await IdleLisbeth(5703, 30, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter competence v
+						await IdleLisbeth(5703, 30, "Exchange", "false", 0); //crafter competence v
 					}
 					while (freeToCraft && DataManager.GetItem(5708).ItemCount() < 200)
 					{
-						await IdleLisbeth(5708, 30, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter cunning v
+						await IdleLisbeth(5708, 30, "Exchange", "false", 0); //crafter cunning v
 					}
 					while (freeToCraft && DataManager.GetItem(5713).ItemCount() < 200)
 					{
-						await IdleLisbeth(5713, 30, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter command v
+						await IdleLisbeth(5713, 30, "Exchange", "false", 0); //crafter command v
 					}
 
 					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 50)
 					{
-						await IdleLisbeth(26735, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter competence viii
+						await IdleLisbeth(26735, 5, "Exchange", "false", 0); //crafter competence viii
 					}
 					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 50)
 					{
-						await IdleLisbeth(26736, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter cunning viii
+						await IdleLisbeth(26736, 5, "Exchange", "false", 0); //crafter cunning viii
 					}
 					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 50)
 					{
-						await IdleLisbeth(26737, 5, "Exchange", "false", (int)OceanTripSettings.Instance.LisbethFood); //crafter command viii
+						await IdleLisbeth(26737, 5, "Exchange", "false", 0); //crafter command viii
 					}
 				}
 

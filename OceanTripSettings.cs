@@ -145,7 +145,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Exchange Fish")]
-		[Description("What to do with fish caught by ocean fishing.")]
+		[Description("What to do with fish caught by ocean fishing(won't dispose of blue fish).")]
 		[Category("Ocean")]
 
 		[DefaultValueAttribute(ExchangeFish.Sell)]
@@ -187,7 +187,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Fish Priority")]
-		[Description("Prioritize fish log completion or points while ocean fishing. This will skip the upcoming boat if you have the blue fish from it.")]
+		[Description("Prioritize fish log completion or points while ocean fishing. This will skip the upcoming boat if you have all the relevant blue fish.")]
 		[Category("Ocean")]
 
 		[DefaultValueAttribute(FishPriority.Points)]
@@ -250,7 +250,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Craft Gear")]
-		[Description("Use Lisbeth to craft various Aesthete stuff while waiting for the boat (won't buy tome items).")]
+		[Description("Use Lisbeth to craft various Aesthete stuff while waiting for the boat (won't buy tome items, needs Chili Crab HQ).")]
 		[Category("Idle Stuff")]
 
 		[DefaultValueAttribute(true)]

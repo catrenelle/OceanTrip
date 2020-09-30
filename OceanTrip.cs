@@ -341,20 +341,20 @@ namespace OceanTripPlanner
 
 		private async Task ChangeBait(ulong baitId)
 		{
-			if ((baitId != FishingManager.SelectedBaitItemId) && (DataManager.GetItem((uint) baitId).ItemCount() > 20))
+			if ((baitId != FishingManager.SelectedBaitItemId) && (DataManager.GetItem((uint)baitId).ItemCount() > 20) && (DataManager.GetItem((uint)baitId).RequiredLevel <= Core.Me.ClassLevel))
 			{
 				AtkAddonControl baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				if(baitWindow == null)
 				{
 					ActionManager.DoAction(288, GameObjectManager.LocalPlayer);
-					await Buddy.Coroutines.Coroutine.Sleep(1000);
+					await Coroutine.Sleep(1000);
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}							
 				if(baitWindow != null)
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					Log($"Applied {DataManager.GetItem((uint) baitId).CurrentLocaleName}");
-					await Buddy.Coroutines.Coroutine.Sleep(1000);
+					await Coroutine.Sleep(1000);
 					ActionManager.DoAction(288, GameObjectManager.LocalPlayer);
 				}	
 			}
@@ -780,7 +780,6 @@ namespace OceanTripPlanner
 		{
 			if(OceanTripSettings.Instance.VentureTime < DateTime.Now)
 			{
-				//await Navigation.GetTo(478, new Vector3(35.51684f, 208.1487f, -51.6737f));
 				await Navigation.GetTo(SummoningBells[(int)OceanTripSettings.Instance.Venturing].Item1, SummoningBells[(int)OceanTripSettings.Instance.Venturing].Item2);
 
 				foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
