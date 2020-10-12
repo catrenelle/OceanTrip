@@ -263,8 +263,10 @@ namespace OceanTripPlanner
 			//Fieldcraft III
 			if (freeToCraft && OceanTripSettings.Instance.FieldcraftIII)
 			{
-				await IdleLisbeth(5118, 30, "Gather", "false", 0); //Gold Ore
-
+				while (freeToCraft && (DataManager.GetItem(5118).ItemCount() < 204))
+				{
+					await IdleLisbeth(5118, 30, "Gather", "false", 0); //Gold Ore
+				}
 				while (freeToCraft && (DataManager.GetItem(5118).ItemCount() >= 204))
 				{
 					await IdleLisbeth(7615, 34, "Goldsmith", "false", 0); //Rose Gold Cog
@@ -437,7 +439,29 @@ namespace OceanTripPlanner
 					while (item.Count > 0)
 					{
 						await CommonTasks.Desynthesize(item, 20000);
+						await Coroutine.Wait(5000, () => SalvageDialog.IsOpen);
+						if (SalvageDialog.IsOpen)
+						{
+							RaptureAtkUnitManager.GetWindowByName("SalvageDialog").SendAction(1, 3, 0);
+							await Coroutine.Wait(10000, () => SalvageResult.IsOpen);
 
+							if (SalvageResult.IsOpen)
+							{
+								SalvageResult.Close();
+								await Coroutine.Wait(5000, () => !SalvageResult.IsOpen);
+								await Coroutine.Sleep(2000);
+							}
+							else
+							{
+								Log("Result didn't open");
+								break;
+							}
+						}
+						else
+						{
+							Log("SalvageDialog didn't open");
+							break;
+						}
 						await Coroutine.Wait(20000, () => (!item.IsFilled || !item.EnglishName.Equals(name) || item.Count != currentStackSize));
 					}
 					await Coroutine.Sleep(500);

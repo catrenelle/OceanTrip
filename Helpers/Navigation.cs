@@ -26,7 +26,7 @@ namespace OceanTripPlanner.Helpers
 
 		public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
 		{            
-			var path = await GenerateNodes(ZoneId, XYZ );
+			var path = await GenerateNodes(ZoneId, XYZ);
 			
 			if (path == null && WorldManager.ZoneId != ZoneId)
 			{
