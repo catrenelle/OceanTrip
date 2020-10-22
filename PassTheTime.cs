@@ -23,6 +23,7 @@ namespace OceanTripPlanner
 
 		public static async Task Craft()
 		{
+
 			if (freeToCraft)
 			{
 				//Ocean Food
@@ -32,12 +33,12 @@ namespace OceanTripPlanner
 				}
 
 				//Resume last order
-				if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}\\lisbeth-resume.json"))
+				if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json"))
 				{
-					if (File.ReadAllText($"Settings\\{Core.Me.Name}\\lisbeth-resume.json") != "[]")
+					if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") != "[]")
 					{
 						Log("Resuming last Lisbeth order.");
-						await Lisbeth.ExecuteOrders(File.ReadAllText($"Settings\\{Core.Me.Name}\\lisbeth-resume.json"));
+						await Lisbeth.ExecuteOrders(File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json"));
 					}
 				}
 

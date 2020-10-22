@@ -121,6 +121,10 @@ namespace OceanTripPlanner
 		
 		private List<uint> missingFish = new List<uint>();
 
+		static PatternFinder patternFinder = new PatternFinder(Core.Memory);
+		static int HomeWorldOffset = patternFinder.Find("0F B7 81 ? ? ? ? 66 89 44 24 ? 48 8D 4C 24 ? Add 3 Read32").ToInt32();
+		public static ushort HomeWorld = Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + HomeWorldOffset);
+
 		System.Timers.Timer execute = new System.Timers.Timer();
 
 		public override string Name => "Ocean Trip";
