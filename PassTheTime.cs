@@ -23,7 +23,6 @@ namespace OceanTripPlanner
 
 		public static async Task Craft()
 		{
-
 			if (freeToCraft)
 			{
 				//Ocean Food
@@ -49,9 +48,9 @@ namespace OceanTripPlanner
 				}
 
 				//Potions
-				while (freeToCraft && (DataManager.GetItem(29979).ItemCount() >= 40) && OceanTripSettings.Instance.CraftPotions)
+				while (freeToCraft && (DataManager.GetItem(32949).ItemCount() >= 40) && OceanTripSettings.Instance.CraftPotions)
 				{
-					await IdleLisbeth(29492, 60, "Alchemist", "false", (int)OceanTripSettings.Instance.LisbethFood); //Grade 3 Tincture of Strength
+					await IdleLisbeth(31893, 60, "Alchemist", "false", (int)OceanTripSettings.Instance.LisbethFood); //Grade 4 Tincture of Strength
 				}
 
 				//Food
@@ -61,18 +60,34 @@ namespace OceanTripPlanner
 					{
 						await IdleLisbeth(30482, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Chili Crab
 					}
-					while (freeToCraft && DataManager.GetItem(29501).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(31898).ItemCount() < 300)
 					{
-						await IdleLisbeth(29501, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Sausage and Sauerkraut
+						await IdleLisbeth(31898, 200, "Culinarian", "false", 1030482); //Pizza
 					}
-					while (freeToCraft && DataManager.GetItem(29502).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(31900).ItemCount() < 300)
 					{
-						await IdleLisbeth(29502, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Stuffed Highland Cabbage
+						await IdleLisbeth(31900, 200, "Culinarian", "false", 1030482); //Chicken Fettuccine
 					}
-					while (freeToCraft && DataManager.GetItem(29504).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(31901).ItemCount() < 300)
 					{
-						await IdleLisbeth(29504, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Herring Pie
+						await IdleLisbeth(31901, 200, "Culinarian", "false", 1030482); //Smoked Chicken
 					}
+					while (freeToCraft && DataManager.GetItem(31905).ItemCount() < 300)
+					{
+						await IdleLisbeth(31905, 200, "Culinarian", "false", 1030482); //Twilight Popoto Salad
+					}
+					//while (freeToCraft && DataManager.GetItem(29501).ItemCount() < 300)
+					//{
+					//	await IdleLisbeth(29501, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Sausage and Sauerkraut
+					//}
+					//while (freeToCraft && DataManager.GetItem(29502).ItemCount() < 300)
+					//{
+					//	await IdleLisbeth(29502, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Stuffed Highland Cabbage
+					//}
+					//while (freeToCraft && DataManager.GetItem(29504).ItemCount() < 300)
+					//{
+					//	await IdleLisbeth(29504, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Herring Pie
+					//}
 					while (freeToCraft && DataManager.GetItem(29497).ItemCount() < 120)
 					{
 						await IdleLisbeth(29497, 100, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Ovim Meatballs
@@ -133,17 +148,17 @@ namespace OceanTripPlanner
 						await IdleLisbeth(5713, 30, "Exchange", "false", 0); //crafter command v
 					}
 
-					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 50)
+					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 200)
 					{
-						await IdleLisbeth(26735, 5, "Exchange", "false", 0); //crafter competence viii
+						await IdleLisbeth(26735, 20, "Exchange", "false", 0); //crafter competence viii
 					}
-					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 50)
+					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 200)
 					{
-						await IdleLisbeth(26736, 5, "Exchange", "false", 0); //crafter cunning viii
+						await IdleLisbeth(26736, 20, "Exchange", "false", 0); //crafter cunning viii
 					}
-					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 50)
+					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 200)
 					{
-						await IdleLisbeth(26737, 5, "Exchange", "false", 0); //crafter command viii
+						await IdleLisbeth(26737, 20, "Exchange", "false", 0); //crafter command viii
 					}
 				}
 

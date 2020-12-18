@@ -10,7 +10,7 @@ namespace OceanTripPlanner.RemoteWindows
 		internal static IntPtr Vtable;
 		internal static int TabSlotCount;
 		internal static int TabStart;
-		public const int TabCount = 37;
+		public const int TabCount = 40;
 		public static int AgentId;
 		public static IntPtr Pointer => AgentModule.GetAgentInterfaceById(AgentId).Pointer;
 
