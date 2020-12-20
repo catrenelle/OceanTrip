@@ -252,7 +252,7 @@ namespace OceanTripPlanner
 		}
 
 		private async Task OceanFishing()
-		{			
+		{
 			if (WorldManager.RawZoneId != 900)
 			{
 				missingFish = await GetFishLog();
@@ -997,9 +997,9 @@ namespace OceanTripPlanner
 		private Tuple<string, string>[] GetSchedule()
 		{
 			epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-			twoHourChunk = ((epoch / 7200) + 88) % 143;
+			twoHourChunk = ((epoch / 7200) + 106) % 143;
 
-			switch (fullPattern[twoHourChunk]-1)
+			switch (fullPattern[twoHourChunk])
 			{
 				case 1:
 					return seadragonCoral;

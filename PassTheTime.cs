@@ -50,7 +50,7 @@ namespace OceanTripPlanner
 				//Potions
 				while (freeToCraft && (DataManager.GetItem(32949).ItemCount() >= 40) && OceanTripSettings.Instance.CraftPotions)
 				{
-					await IdleLisbeth(31893, 60, "Alchemist", "false", (int)OceanTripSettings.Instance.LisbethFood); //Grade 4 Tincture of Strength
+					await IdleLisbeth(31893, 60, "Alchemist", "false", 1030482); //Grade 4 Tincture of Strength
 				}
 
 				//Food
@@ -76,23 +76,11 @@ namespace OceanTripPlanner
 					{
 						await IdleLisbeth(31905, 200, "Culinarian", "false", 1030482); //Twilight Popoto Salad
 					}
-					//while (freeToCraft && DataManager.GetItem(29501).ItemCount() < 300)
-					//{
-					//	await IdleLisbeth(29501, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Sausage and Sauerkraut
-					//}
-					//while (freeToCraft && DataManager.GetItem(29502).ItemCount() < 300)
-					//{
-					//	await IdleLisbeth(29502, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Stuffed Highland Cabbage
-					//}
-					//while (freeToCraft && DataManager.GetItem(29504).ItemCount() < 300)
-					//{
-					//	await IdleLisbeth(29504, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Herring Pie
-					//}
-					while (freeToCraft && DataManager.GetItem(29497).ItemCount() < 120)
+					while (freeToCraft && DataManager.GetItem(29497).ItemCount() < 99)
 					{
-						await IdleLisbeth(29497, 100, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Ovim Meatballs
+						await IdleLisbeth(29497, 50, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Ovim Meatballs
 					}
-					while (freeToCraft && DataManager.GetItem(31320).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(31320).ItemCount() < 50)
 					{
 						await IdleLisbeth(31320, 20, "Exchange", "false", 0); //Slithersand
 					}
