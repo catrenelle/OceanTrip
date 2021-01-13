@@ -220,16 +220,16 @@ namespace OceanTripPlanner
 
 			schedule = GetSchedule();
 
-			//if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == sothisElasmo || schedule == sothisStone)) || (missingFish.Contains(29789) && (schedule == sharkCoral || schedule == seadragonCoral)) || (missingFish.Contains(29790) && (schedule == sothisStone)) || (missingFish.Contains(29791) && (schedule == sothisElasmo)) || (missingFish.Contains(32074) && (schedule == hafgufaElasmo || schedule == hafgufaPlacodus)) || (missingFish.Contains(32094) && (schedule == toadCrab)) || (missingFish.Contains(32114) && (schedule == hafgufaPlacodus)))))
-			//{
+			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == sothisElasmo || schedule == sothisStone)) || (missingFish.Contains(29789) && (schedule == sharkCoral || schedule == seadragonCoral)) || (missingFish.Contains(29790) && (schedule == sothisStone)) || (missingFish.Contains(29791) && (schedule == sothisElasmo)) || (missingFish.Contains(32074) && (schedule == hafgufaElasmo || schedule == hafgufaPlacodus)) || (missingFish.Contains(32094) && (schedule == toadCrab)) || (missingFish.Contains(32114) && (schedule == hafgufaPlacodus)))))
+			{
 				Log("Stop!");
 				Lisbeth.StopGently();
 				PassTheTime.freeToCraft = false;
-			//}
-			//else
-			//{
-			//	Log("Not getting on the boat, no fish needed");
-			//}
+			}
+			else
+			{
+				Log("Not getting on the boat, no fish needed");
+			}
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
 			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;

@@ -56,33 +56,33 @@ namespace OceanTripPlanner
 				//Food
 				if (freeToCraft && OceanTripSettings.Instance.CraftFood)
 				{
-					while (freeToCraft && DataManager.GetItem(30482).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(30482).ItemCount() < 200)
 					{
 						await IdleLisbeth(30482, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Chili Crab
 					}
-					while (freeToCraft && DataManager.GetItem(31898).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(31898).ItemCount() < 200)
 					{
 						await IdleLisbeth(31898, 200, "Culinarian", "false", 1030482); //Pizza
 					}
-					while (freeToCraft && DataManager.GetItem(31900).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(31900).ItemCount() < 200)
 					{
 						await IdleLisbeth(31900, 200, "Culinarian", "false", 1030482); //Chicken Fettuccine
 					}
-					while (freeToCraft && DataManager.GetItem(31901).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(31901).ItemCount() < 200)
 					{
 						await IdleLisbeth(31901, 200, "Culinarian", "false", 1030482); //Smoked Chicken
 					}
-					while (freeToCraft && DataManager.GetItem(31905).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(31905).ItemCount() < 200)
 					{
 						await IdleLisbeth(31905, 200, "Culinarian", "false", 1030482); //Twilight Popoto Salad
 					}
-					while (freeToCraft && DataManager.GetItem(29497).ItemCount() < 99)
+					while (freeToCraft && DataManager.GetItem(29497).ItemCount() < 39)
 					{
 						await IdleLisbeth(29497, 50, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Ovim Meatballs
 					}
 					while (freeToCraft && DataManager.GetItem(31320).ItemCount() < 50)
 					{
-						await IdleLisbeth(31320, 20, "Exchange", "false", 0); //Slithersand
+						await IdleLisbeth(31320, 10, "Exchange", "false", 0); //Slithersand
 					}
 				}
 
@@ -136,13 +136,13 @@ namespace OceanTripPlanner
 						await IdleLisbeth(5713, 30, "Exchange", "false", 0); //crafter command v
 					}
 
-					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 50)
 					{
-						await IdleLisbeth(26735, 20, "Exchange", "false", 0); //crafter competence viii
+						await IdleLisbeth(26735, 10, "Exchange", "false", 0); //crafter competence viii
 					}
-					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 50)
 					{
-						await IdleLisbeth(26736, 20, "Exchange", "false", 0); //crafter cunning viii
+						await IdleLisbeth(26736, 10, "Exchange", "false", 0); //crafter cunning viii
 					}
 					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 200)
 					{
