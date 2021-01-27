@@ -110,15 +110,15 @@ namespace OceanTripPlanner
 				//Materia
 				if (freeToCraft && OceanTripSettings.Instance.GetMateria)
 				{				
-					while (freeToCraft && DataManager.GetItem(25194).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(25194).ItemCount() < 300)
 					{
 						await IdleLisbeth(25194, 20, "Exchange", "false", 0); //crafter competence vii
 					}
-					while (freeToCraft && DataManager.GetItem(25195).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(25195).ItemCount() < 300)
 					{
 						await IdleLisbeth(25195, 20, "Exchange", "false", 0); //crafter cunning vii
 					}
-					while (freeToCraft && DataManager.GetItem(25196).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(25196).ItemCount() < 300)
 					{
 						await IdleLisbeth(25196, 20, "Exchange", "false", 0); //crafter command vii
 					}
@@ -136,11 +136,11 @@ namespace OceanTripPlanner
 						await IdleLisbeth(5713, 30, "Exchange", "false", 0); //crafter command v
 					}
 
-					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 50)
+					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 200)
 					{
 						await IdleLisbeth(26735, 10, "Exchange", "false", 0); //crafter competence viii
 					}
-					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 50)
+					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 200)
 					{
 						await IdleLisbeth(26736, 10, "Exchange", "false", 0); //crafter cunning viii
 					}

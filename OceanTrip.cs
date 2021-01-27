@@ -146,8 +146,6 @@ namespace OceanTripPlanner
 		};
 
 		private int posOnSchedule = 0;
-		private int epoch = 0;
-		private int twoHourChunk = 0;
 
 		private static Random rnd = new Random();
 		private int spot = rnd.Next(6);
@@ -220,16 +218,16 @@ namespace OceanTripPlanner
 
 			schedule = GetSchedule();
 
-			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == sothisElasmo || schedule == sothisStone)) || (missingFish.Contains(29789) && (schedule == sharkCoral || schedule == seadragonCoral)) || (missingFish.Contains(29790) && (schedule == sothisStone)) || (missingFish.Contains(29791) && (schedule == sothisElasmo)) || (missingFish.Contains(32074) && (schedule == hafgufaElasmo || schedule == hafgufaPlacodus)) || (missingFish.Contains(32094) && (schedule == toadCrab)) || (missingFish.Contains(32114) && (schedule == hafgufaPlacodus)))))
-			{
+			//if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == sothisElasmo || schedule == sothisStone)) || (missingFish.Contains(29789) && (schedule == sharkCoral || schedule == seadragonCoral)) || (missingFish.Contains(29790) && (schedule == sothisStone)) || (missingFish.Contains(29791) && (schedule == sothisElasmo)) || (missingFish.Contains(32074) && (schedule == hafgufaElasmo || schedule == hafgufaPlacodus)) || (missingFish.Contains(32094) && (schedule == toadCrab)) || (missingFish.Contains(32114) && (schedule == hafgufaPlacodus)))))
+			//{
 				Log("Stop!");
 				Lisbeth.StopGently();
 				PassTheTime.freeToCraft = false;
-			}
-			else
-			{
-				Log("Not getting on the boat, no fish needed");
-			}
+			//}
+			//else
+			//{
+			//	Log("Not getting on the boat, no fish needed");
+			//}
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
 			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
@@ -996,8 +994,16 @@ namespace OceanTripPlanner
 
 		private Tuple<string, string>[] GetSchedule()
 		{
-			epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-			twoHourChunk = ((epoch / 7200) + 106) % 143;
+			var epoch = (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
+			int twoHourChunk = (int)(((epoch / 1000 / 7200) + 103) % 143);
+			
+			//Log(twoHourChunk.ToString());
+			//Log(fullPattern[twoHourChunk].ToString());
+			//Log(fullPattern[twoHourChunk+1].ToString());
+			//Log(fullPattern[twoHourChunk+2].ToString());
+			//Log(fullPattern[twoHourChunk+3].ToString());
+			//Log(fullPattern[twoHourChunk+4].ToString());
+			//Log(fullPattern[twoHourChunk+5].ToString());
 
 			switch (fullPattern[twoHourChunk])
 			{
@@ -1028,6 +1034,57 @@ namespace OceanTripPlanner
 			}
 			return null;
 		}
+
+		//private Tuple<string, string>[] GetSchedule()
+		//{
+		//	long lulu_epoch = 1593302400000;
+
+		//	long epoch = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
+		//	long adjustedDate = epoch + 29700000;
+		//	long day = adjustedDate - lulu_epoch / 86400000;
+		//	long hour = DateTimeOffset.FromUnixTimeMilliseconds(adjustedDate).Hour;
+
+		//	hour += ((hour & 1) == 1) ? 2 : 1;
+
+		//	if (hour > 23)
+		//	{
+		//		day++;
+		//		hour -= 24;
+		//	}
+
+		//	long voyageNumber = hour >> 1;
+		//	long destIndex = (day + voyageNumber) % 4;
+		//	long timeIndex = (day + voyageNumber) % 12;
+
+		//	switch (fullPattern[twoHourChunk])
+		//	{
+		//		case 1:
+		//			return seadragonCoral;
+		//		case 2:
+		//			return octopus;
+		//		case 3:
+		//			return sothisElasmo;
+		//		case 4:
+		//			return sothisStone;
+		//		case 5:
+		//			return jellyfish;
+		//		case 6:
+		//			return sharkCoral;
+		//		case 7:
+		//			return hafgufaElasmo;
+		//		case 8:
+		//			return mantas;
+		//		case 9:
+		//			return toadCrab;
+		//		case 10:
+		//			return hafgufaPlacodus;
+		//		case 11:
+		//			return ballonStonescale;
+		//		case 12:
+		//			return ballonManta;
+		//	}
+		//	return null;
+		//}
 
 		private void Log(string text, params object[] args)
 		{
