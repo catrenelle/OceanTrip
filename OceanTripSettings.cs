@@ -12,6 +12,8 @@ namespace OceanTripPlanner
 		StoneSoup = 4717,
 		SeafoodStew = 12865,
 		SeafoodStewHQ = 1012865,
+		ChiliCrabHQ = 1030482,
+		TsaitouVounouHQ = 1036060,
 		None = 0
 	}
 
@@ -78,6 +80,27 @@ namespace OceanTripPlanner
 			}
 		}
 
+		private bool _ResumeOrder;
+		[Setting]
+
+		[DisplayName("Resume Order")]
+		[Description("Resume last order before making new ones. This will resume any unfinished Lisbeth order, even if started from somewhere else.")]
+		[Category("Idle Stuff")]
+
+		[DefaultValueAttribute(false)]
+		public bool ResumeOrder
+		{
+			get { return _ResumeOrder; }
+			set
+			{
+				if (_ResumeOrder != value)
+				{
+					_ResumeOrder = value;
+					Save();
+				}
+			}
+		}
+
 		private bool _CustomOrder;
 		[Setting]
 
@@ -115,27 +138,6 @@ namespace OceanTripPlanner
 				if (_OceanFood != value)
 				{
 					_OceanFood = value;
-					Save();
-				}
-			}
-		}
-
-		private bool _FieldcraftIII;
-		[Setting]
-
-		[DisplayName("Fieldcraft III")]
-		[Description("Craft & Desynth rose gold cogs for Fieldcraft IIIs.")]
-		[Category("Idle Stuff")]
-		
-		[DefaultValueAttribute(true)]
-		public bool FieldcraftIII
-		{
-			get { return _FieldcraftIII; }
-			set
-			{
-				if (_FieldcraftIII != value)
-				{
-					_FieldcraftIII = value;
 					Save();
 				}
 			}
@@ -208,7 +210,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Craft Potions")]
-		[Description("Use Lisbeth to craft various (lvl80) potions while waiting for the boat.")]
+		[Description("Use Lisbeth to craft various (lvl90) potions while waiting for the boat.")]
 		[Category("Idle Stuff")]
 		
 		[DefaultValueAttribute(true)]
@@ -229,7 +231,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Craft Food")]
-		[Description("Use Lisbeth to craft various (lvl80) food while waiting for the boat.")]
+		[Description("Use Lisbeth to craft various (lvl90) food while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
 		[DefaultValueAttribute(true)]
@@ -246,32 +248,11 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private bool _CraftGear;
-		[Setting]
-
-		[DisplayName("Craft Gear")]
-		[Description("Use Lisbeth to craft various Aesthete stuff while waiting for the boat (won't buy tome items, needs Chili Crab HQ).")]
-		[Category("Idle Stuff")]
-
-		[DefaultValueAttribute(true)]
-		public bool CraftGear
-		{
-			get { return _CraftGear; }
-			set
-			{
-				if (_CraftGear != value)
-				{
-					_CraftGear = value;
-					Save();
-				}
-			}
-		}
-
 		private bool _GetMateria;
 		[Setting]
 
 		[DisplayName("Get Materia")]
-		[Description("Use Lisbeth to buy VII and VIII materias while waiting for the boat.")]
+		[Description("Use Lisbeth to buy IX and X materia while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
 		[DefaultValueAttribute(true)]
@@ -292,7 +273,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Refill Scrips")]
-		[Description("Use Lisbeth to refill Yellow and White Crafter Scrips while waiting for the boat.")]
+		[Description("Use Lisbeth to refill White and Purple Crafter Scrips while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
 		[DefaultValueAttribute(true)]
@@ -313,7 +294,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Empty Gatherer Scrips")]
-		[Description("Buy Cordials when Yellow Gatherer Scrips are close to cap.")]
+		[Description("Buy Cordials when White Gatherer Scrips are close to cap.")]
 		[Category("Ocean")]
 
 		[DefaultValueAttribute(true)]

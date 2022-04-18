@@ -25,14 +25,16 @@ namespace OceanTripPlanner
 		{
 			if (freeToCraft)
 			{
+				int lisFood = (int)OceanTripSettings.Instance.LisbethFood;
+
 				//Ocean Food
 				if ((freeToCraft && DataManager.GetItem(27870).ItemCount() < 10) && OceanTripSettings.Instance.OceanFood)
 				{
-					await IdleLisbeth(27870, 40, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Peppered Popotos
+					await IdleLisbeth(27870, 40, "Culinarian", "false", lisFood); //Peppered Popotos
 				}
 
 				//Resume last order
-				if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json"))
+				if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripSettings.Instance.ResumeOrder)
 				{
 					if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") != "[]")
 					{
@@ -48,105 +50,83 @@ namespace OceanTripPlanner
 				}
 
 				//Potions
-				while (freeToCraft && (DataManager.GetItem(32949).ItemCount() >= 40) && OceanTripSettings.Instance.CraftPotions)
-				{
-					await IdleLisbeth(31893, 60, "Alchemist", "false", 1030482); //Grade 4 Tincture of Strength
+				if (freeToCraft && OceanTripSettings.Instance.CraftPotions)
+				{ 
+					while (freeToCraft && (DataManager.GetItem(36109).ItemCount() <= 200))
+					{
+						await IdleLisbeth(36109, 150, "Alchemist", "false", lisFood); //Grade 6 Tincture of Strength
+					}
+					while (freeToCraft && (DataManager.GetItem(36110).ItemCount() <= 200))
+					{
+						await IdleLisbeth(36110, 150, "Alchemist", "false", lisFood); //Grade 6 Tincture of Dexterity
+					}
+					while (freeToCraft && (DataManager.GetItem(36112).ItemCount() <= 200))
+					{
+						await IdleLisbeth(36112, 150, "Alchemist", "false", lisFood); //Grade 6 Tincture of Intelligence
+					}
 				}
 
 				//Food
 				if (freeToCraft && OceanTripSettings.Instance.CraftFood)
 				{
-					while (freeToCraft && DataManager.GetItem(30482).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(36060).ItemCount() < 150)
 					{
-						await IdleLisbeth(30482, 200, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Chili Crab
+						await IdleLisbeth(36060, 400, "Culinarian", "false", lisFood); //Tsai tou Vounou
 					}
-					while (freeToCraft && DataManager.GetItem(31898).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(36069).ItemCount() < 150)
 					{
-						await IdleLisbeth(31898, 200, "Culinarian", "false", 1030482); //Pizza
+						await IdleLisbeth(36069, 400, "Culinarian", "false", lisFood); //Pumpkin Ratatouille
 					}
-					while (freeToCraft && DataManager.GetItem(31900).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(36067).ItemCount() < 150)
 					{
-						await IdleLisbeth(31900, 200, "Culinarian", "false", 1030482); //Chicken Fettuccine
+						await IdleLisbeth(36067, 400, "Culinarian", "false", lisFood); //Archon Burger
 					}
-					while (freeToCraft && DataManager.GetItem(31901).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(36074).ItemCount() < 150)
 					{
-						await IdleLisbeth(31901, 200, "Culinarian", "false", 1030482); //Smoked Chicken
+						await IdleLisbeth(36074, 400, "Culinarian", "false", lisFood); //Thavnairian Chai
 					}
-					while (freeToCraft && DataManager.GetItem(31905).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(36070).ItemCount() < 150)
 					{
-						await IdleLisbeth(31905, 200, "Culinarian", "false", 1030482); //Twilight Popoto Salad
-					}
-					while (freeToCraft && DataManager.GetItem(29497).ItemCount() < 39)
-					{
-						await IdleLisbeth(29497, 50, "Culinarian", "false", (int)OceanTripSettings.Instance.LisbethFood); //Ovim Meatballs
-					}
-					while (freeToCraft && DataManager.GetItem(31320).ItemCount() < 50)
-					{
-						await IdleLisbeth(31320, 10, "Exchange", "false", 0); //Slithersand
+						await IdleLisbeth(36070, 400, "Culinarian", "false", lisFood); //Pumpkin Potage
 					}
 				}
 
-				//Gear
-				if (freeToCraft && OceanTripSettings.Instance.CraftGear)
-				{				
-					if (freeToCraft && (DataManager.GetItem(30462).ItemCount() == 0))
+				//Mats
+				if (freeToCraft && OceanTripSettings.Instance.CraftMats)
+				{
+					while (freeToCraft && (DataManager.GetItem(36109).ItemCount() <= 300))
 					{
-						await IdleLisbeth(30462, 1, "Weaver", "false", 1030482); //Crafter Body
-					}
-					if (freeToCraft && (DataManager.GetItem(30465).ItemCount() == 0))
-					{
-						await IdleLisbeth(30465, 1, "Leatherworker", "false", 1030482); //Crafter Legs
-					}
-					if (freeToCraft && (DataManager.GetItem(30464).ItemCount() == 0))
-					{
-						await IdleLisbeth(30464, 1, "Weaver", "false", 1030482); //Crafter Pants
-					}
-					if (freeToCraft && (DataManager.GetItem(30463).ItemCount() == 0))
-					{
-						await IdleLisbeth(30463, 1, "Leatherworker", "false", 1030482); //Crafter Gloves
+						await IdleLisbeth(37284, 50, "Exchange", "false", lisFood); //Immutable Solution
 					}
 				}
 
 				//Materia
 				if (freeToCraft && OceanTripSettings.Instance.GetMateria)
 				{				
-					while (freeToCraft && DataManager.GetItem(25194).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(33925).ItemCount() < 200)
 					{
-						await IdleLisbeth(25194, 20, "Exchange", "false", 0); //crafter competence vii
+						await IdleLisbeth(33925, 20, "Exchange", "false", 0); //crafter competence IX
 					}
-					while (freeToCraft && DataManager.GetItem(25195).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(33926).ItemCount() < 200)
 					{
-						await IdleLisbeth(25195, 20, "Exchange", "false", 0); //crafter cunning vii
+						await IdleLisbeth(33926, 20, "Exchange", "false", 0); //crafter cunning IX
 					}
-					while (freeToCraft && DataManager.GetItem(25196).ItemCount() < 300)
+					while (freeToCraft && DataManager.GetItem(33927).ItemCount() < 200)
 					{
-						await IdleLisbeth(25196, 20, "Exchange", "false", 0); //crafter command vii
-					}
-
-					while (freeToCraft && DataManager.GetItem(5703).ItemCount() < 200)
-					{
-						await IdleLisbeth(5703, 30, "Exchange", "false", 0); //crafter competence v
-					}
-					while (freeToCraft && DataManager.GetItem(5708).ItemCount() < 200)
-					{
-						await IdleLisbeth(5708, 30, "Exchange", "false", 0); //crafter cunning v
-					}
-					while (freeToCraft && DataManager.GetItem(5713).ItemCount() < 200)
-					{
-						await IdleLisbeth(5713, 30, "Exchange", "false", 0); //crafter command v
+						await IdleLisbeth(33927, 20, "Exchange", "false", 0); //crafter command IX
 					}
 
-					while (freeToCraft && DataManager.GetItem(26735).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(33938).ItemCount() < 200)
 					{
-						await IdleLisbeth(26735, 10, "Exchange", "false", 0); //crafter competence viii
+						await IdleLisbeth(33938, 30, "Exchange", "false", 0); //crafter competence X
 					}
-					while (freeToCraft && DataManager.GetItem(26736).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(33939).ItemCount() < 200)
 					{
-						await IdleLisbeth(26736, 10, "Exchange", "false", 0); //crafter cunning viii
+						await IdleLisbeth(33939, 30, "Exchange", "false", 0); //crafter cunning X
 					}
-					while (freeToCraft && DataManager.GetItem(26737).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem(33940).ItemCount() < 200)
 					{
-						await IdleLisbeth(26737, 20, "Exchange", "false", 0); //crafter command viii
+						await IdleLisbeth(33940, 30, "Exchange", "false", 0); //crafter command X
 					}
 				}
 
@@ -155,60 +135,14 @@ namespace OceanTripPlanner
 				{
 					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)25199) <= 1500)
 					{
-						await IdleLisbeth(25199, 500, "CraftMasterpiece", "false", (int)OceanTripSettings.Instance.LisbethFood); //White Scrip
+						await IdleLisbeth(25199, 500, "CraftMasterpiece", "false", 0); //White Scrip
 					}
-					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)17833) <= 1500)
+					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)33913) <= 1500)
 					{
-						await IdleLisbeth(17833, 500, "CraftMasterpiece", "false", (int)OceanTripSettings.Instance.LisbethFood); //Yellow Scrip
+						await IdleLisbeth(33913, 500, "CraftMasterpiece", "false", 0); //Purple Scrip
 					}
 				}
 
-				//Multifaceted
-				while (freeToCraft && DataManager.GetItem(29977).ItemCount() >= 20)
-				{
-					await IdleLisbeth(29962, 10, "Leatherworker", "false", (int)OceanTripSettings.Instance.LisbethFood); //megalania leather
-				}
-				while (freeToCraft && DataManager.GetItem(29973).ItemCount() >= 20)
-				{
-					await IdleLisbeth(29960, 10, "Carpenter", "false", (int)OceanTripSettings.Instance.LisbethFood); //merbau lumber
-				}
-				while (freeToCraft && DataManager.GetItem(29975).ItemCount() >= 50)
-				{
-					await IdleLisbeth(29961, 10, "Weaver", "false", (int)OceanTripSettings.Instance.LisbethFood); //duskcourt cloth
-				}
-				while (freeToCraft && DataManager.GetItem(29969).ItemCount() >= 20)
-				{
-					await IdleLisbeth(29958, 10, "Blacksmith", "false", (int)OceanTripSettings.Instance.LisbethFood); //cobalt alloy ingot
-				}
-				while (freeToCraft && DataManager.GetItem(29971).ItemCount() >= 20)
-				{
-					await IdleLisbeth(29959, 10, "Goldsmith", "false", (int)OceanTripSettings.Instance.LisbethFood); //workbench resin
-				}
-
-				//Mats
-				if (freeToCraft && OceanTripSettings.Instance.CraftMats)
-				{
-					while (DataManager.GetItem(27714).ItemCount() < 400)
-					{
-						await IdleLisbeth(27714, 30, "Blacksmith", "false", (int)OceanTripSettings.Instance.LisbethFood); //Dwarven Mythril Ingot
-					}
-					while (DataManager.GetItem(27715).ItemCount() < 400)
-					{
-						await IdleLisbeth(27715, 30, "Goldsmith", "false", (int)OceanTripSettings.Instance.LisbethFood); //Dwarven Mythril Nugget
-					}
-					while (DataManager.GetItem(27693).ItemCount() < 400)
-					{
-						await IdleLisbeth(27693, 30, "Carpenter", "false", (int)OceanTripSettings.Instance.LisbethFood); //Lignum Vitae Lumber
-					}
-					while (DataManager.GetItem(27852).ItemCount() < 300)
-					{
-						await IdleLisbeth(27852, 40, "Grind", "false", (int)OceanTripSettings.Instance.LisbethFood); //Ovim Meat
-					}
-					//while (DataManager.GetItem(27742).ItemCount() < 990)
-					//{
-					//	await IdleLisbeth(27742, 10, "Leatherworker", "false", (int)OceanTripSettings.Instance.LisbethFood); //Sea Swallow Leather
-					//}
-				}
 			}
 
 			//Shards
@@ -262,24 +196,29 @@ namespace OceanTripPlanner
 				{
 					await IdleLisbeth(13, 500, "Gather", "false", 0); //Water Crystal
 				}
-			}
-
-			//Fieldcraft III
-			if (freeToCraft && OceanTripSettings.Instance.FieldcraftIII)
-			{
-				while (freeToCraft && (DataManager.GetItem(5118).ItemCount() < 204))
+				while (freeToCraft && (ConditionParser.ItemCount(14) < 9000))
 				{
-					await IdleLisbeth(5118, 30, "Gather", "false", 0); //Gold Ore
+					await IdleLisbeth(14, 500, "Gather", "false", 0); //Fire Cluster
 				}
-				while (freeToCraft && (DataManager.GetItem(5118).ItemCount() >= 204))
+				while (freeToCraft && (ConditionParser.ItemCount(15) < 9000))
 				{
-					await IdleLisbeth(7615, 34, "Goldsmith", "false", 0); //Rose Gold Cog
-					await ExchangeCogs();
+					await IdleLisbeth(15, 500, "Gather", "false", 0); //Ice Cluster
 				}
-				while (freeToCraft && (DataManager.GetItem(5068).ItemCount() >= 4))
+				while (freeToCraft && (ConditionParser.ItemCount(16) < 9000))
 				{
-					await IdleLisbeth(7615, (int)DataManager.GetItem(5068).ItemCount() / 2, "Goldsmith", "false", 0); //Rose Gold Cog
-					await ExchangeCogs();
+					await IdleLisbeth(16, 500, "Gather", "false", 0); //Wind Cluster
+				}
+				while (freeToCraft && (ConditionParser.ItemCount(17) < 9000))
+				{
+					await IdleLisbeth(17, 500, "Gather", "false", 0); //Earth Cluster
+				}
+				while (freeToCraft && (ConditionParser.ItemCount(18) < 9000))
+				{
+					await IdleLisbeth(18, 500, "Gather", "false", 0); //Lightning Cluster
+				}
+				while (freeToCraft && (ConditionParser.ItemCount(19) < 9000))
+				{
+					await IdleLisbeth(19, 500, "Gather", "false", 0); //Water Cluster
 				}
 			}
 		}
@@ -348,83 +287,6 @@ namespace OceanTripPlanner
 			await Coroutine.Wait(Timeout.InfiniteTimeSpan, () => !CraftingManager.AnimationLocked);
 
 			await Coroutine.Sleep(500);
-		}
-
-		private static async Task ExchangeCogs()
-		{
-			await Navigation.GetTo(156, new Vector3(26.29833f, 28.99997f, -730.8021f));
-			var Talan = GameObjectManager.GetObjectByNPCId(1006972);
-
-			while (DataManager.GetItem(7615).ItemCount() > 0)
-			{
-				if (Talan != null)
-				{
-					Talan.Interact();
-					if (await Coroutine.Wait(20000, () => SelectIconString.IsOpen))
-					{
-						ff14bot.RemoteWindows.SelectIconString.ClickSlot(2);
-						if (await Coroutine.Wait(20000, () => Talk.DialogOpen))
-						{
-							Talk.Next();
-						}
-					}
-
-					AtkAddonControl CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
-					CogExchangeWindow = null;
-					while (DataManager.GetItem(7615).ItemCount() > 0 && InventoryManager.FreeSlots > 2)
-					{
-						while (CogExchangeWindow == null)
-						{
-							await Coroutine.Sleep(200);
-							CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
-						}
-						await Coroutine.Sleep(200);
-						CogExchangeWindow.SendAction(2, 0, 0, 1, 3);
-
-						CogExchangeWindow = null;
-						while (CogExchangeWindow == null)
-						{
-							await Coroutine.Sleep(200);
-							CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog");
-						}
-						await Coroutine.Sleep(200);
-						CogExchangeWindow.SendAction(1, 0, 0);
-
-						if (await Coroutine.Wait(20000, () => Request.IsOpen))
-						{
-							foreach (BagSlot slot in InventoryManager.FilledSlots)
-							{
-								if (slot.RawItemId == 7615)
-								{
-									slot.Handover();
-								}
-							}
-						}
-						await Coroutine.Sleep(200);
-						if (await Coroutine.Wait(2000, () => Request.HandOverButtonClickable))
-						{
-							Request.HandOver();
-							await Coroutine.Wait(20000, () => !Request.IsOpen);
-							await Coroutine.Sleep(500);
-						}
-						if (DataManager.GetItem(7615).ItemCount() == 1)
-						{
-							await Coroutine.Sleep(500);
-						}
-						CogExchangeWindow = null;
-					}
-
-					while (CogExchangeWindow == null)
-					{
-						await Coroutine.Sleep(1000);
-						CogExchangeWindow = RaptureAtkUnitManager.GetWindowByName("ShopExchangeItem");
-					}
-					CogExchangeWindow.SendAction(1, 3, uint.MaxValue);
-				}
-				await DesynthOcean(new int[] { 7521 });
-				await Coroutine.Sleep(1000);
-				await DesynthOcean(new int[] { 7521 });
-			}
 		}
 
 		public static async Task DesynthOcean(int[] itemId)

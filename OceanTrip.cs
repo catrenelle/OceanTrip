@@ -52,79 +52,75 @@ namespace OceanTripPlanner
 			28937,28938,28939,28940,28941,28942,29718,29719,29720,29721,29722,29723,29724,29725,29726,29727,29728,29729,29730,29731,29732,29733,29734,29735,29736,29737,29738,29739,29740,29741,29742,29743,29744,29745,29746,29747,29748,29749,29750,29751,29752,29753,29754,29755,29756,29757,29758,29759,29760,29761,29762,29763,29764,29765,29766,29767,29768,29769,29770,29771,29772,29773,29774,29775,29776,29777,29778,29779,29780,29781,29782,29784,29785,29786,29787,32055,32056,32057,32058,32059,32060,32061,32062,32063,32064,32065,32066,32067,32068,32069,32070,32071,32072,32073,32075,32076,32077,32078,32079,32080,32081,32082,32083,32084,32085,32086,32087,32088,32089,32090,32091,32092,32093,32095,32096,32097,32098,32099,32100,32101,32102,32103,32104,32105,32106,32107,32108,32109,32110,32111,32112,32113
 		};
 
-		private static readonly int[] fullPattern = new[]
-		{
-			7,10,1,4,8,11,2,5,12,3,6,7,10,1,4,8,11,2,5,9,3,6,7,10,1,4,8,11,2,5,9,12,6,7,10,1,4,8,11,2,5,9,12,3,7,10,1,4,8,11,2,5,9,12,3,6,10,1,4,8,11,2,5,9,12,3,6,7,1,4,8,11,2,5,9,12,3,6,7,10,4,8,11,2,5,9,12,3,6,7,10,1,8,11,2,5,9,12,3,6,7,10,1,4,11,2,5,9,12,3,6,7,10,1,4,8,2,5,9,12,3,6,7,10,1,4,8,11,5,9,12,3,6,7,10,1,4,8,11,2,9,12,3,6
-		};
-
-		private static readonly Tuple<string, string>[] sharkCoral = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("galadion", "Sunset"),
-			new Tuple<string, string>("south", "Night"),
-			new Tuple<string, string>("rhotano", "Day")
-		};
-		private static readonly Tuple<string, string>[] sothisElasmo = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("south", "Sunset"),
-			new Tuple<string, string>("galadion", "Night"),
-			new Tuple<string, string>("north", "Day")
-		};
-		private static readonly Tuple<string, string>[] sothisStone = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("galadion", "Night"),
-			new Tuple<string, string>("south", "Day"),
-			new Tuple<string, string>("rhotano", "Sunset")
-		};
-		private static readonly Tuple<string, string>[] seadragonCoral = new Tuple<string, string>[3]
+		private static readonly string[] fullPattern = new[]{"BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN"};
+		
+		private static readonly Tuple<string, string>[] NS = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("south", "Night"),
 			new Tuple<string, string>("galadion", "Day"),
 			new Tuple<string, string>("north", "Sunset")
 		};
-		private static readonly Tuple<string, string>[] jellyfish = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("galadion", "Day"),
-			new Tuple<string, string>("south", "Sunset"),
-			new Tuple<string, string>("rhotano", "Night")
-		};
-		private static readonly Tuple<string, string>[] octopus = new Tuple<string, string>[3]
+		private static readonly Tuple<string, string>[] NN = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("south", "Day"),
 			new Tuple<string, string>("galadion", "Sunset"),
 			new Tuple<string, string>("north", "Night")
 		};
-
-		private static readonly Tuple<string, string>[] hafgufaElasmo = new Tuple<string, string>[3]
+		private static readonly Tuple<string, string>[] ND = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("south", "Sunset"),
+			new Tuple<string, string>("galadion", "Night"),
+			new Tuple<string, string>("north", "Day")
+		};
+		private static readonly Tuple<string, string>[] RS = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("galadion", "Night"),
+			new Tuple<string, string>("south", "Day"),
+			new Tuple<string, string>("rhotano", "Sunset")
+		};
+		private static readonly Tuple<string, string>[] RN = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("galadion", "Day"),
+			new Tuple<string, string>("south", "Sunset"),
+			new Tuple<string, string>("rhotano", "Night")
+		};
+		private static readonly Tuple<string, string>[] RD = new Tuple<string, string>[3]
+		{
+			new Tuple<string, string>("galadion", "Sunset"),
+			new Tuple<string, string>("south", "Night"),
+			new Tuple<string, string>("rhotano", "Day")
+		};
+		private static readonly Tuple<string, string>[] BS = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("ciel", "Night"),
 			new Tuple<string, string>("north", "Day"),
 			new Tuple<string, string>("blood", "Sunset")
 		};
-		private static readonly Tuple<string, string>[] mantas = new Tuple<string, string>[3]
+		private static readonly Tuple<string, string>[] BN = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("ciel", "Day"),
 			new Tuple<string, string>("north", "Sunset"),
 			new Tuple<string, string>("blood", "Night")
 		};
-		private static readonly Tuple<string, string>[] toadCrab = new Tuple<string, string>[3]
+		private static readonly Tuple<string, string>[] BD = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("ciel", "Sunset"),
 			new Tuple<string, string>("north", "Night"),
 			new Tuple<string, string>("blood", "Day")
 		};
-		private static readonly Tuple<string, string>[] hafgufaPlacodus = new Tuple<string, string>[3]
+		private static readonly Tuple<string, string>[] TS = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("ciel", "Night"),
 			new Tuple<string, string>("rhotano", "Day"),
 			new Tuple<string, string>("sound", "Sunset")
 		};
-		private static readonly Tuple<string, string>[] ballonStonescale = new Tuple<string, string>[3]
+		private static readonly Tuple<string, string>[] TN = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("ciel", "Day"),
 			new Tuple<string, string>("rhotano", "Sunset"),
 			new Tuple<string, string>("sound", "Night")
 		};
-		private static readonly Tuple<string, string>[] ballonManta = new Tuple<string, string>[3]
+		private static readonly Tuple<string, string>[] TD = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("ciel", "Sunset"),
 			new Tuple<string, string>("rhotano", "Night"),
@@ -145,14 +141,9 @@ namespace OceanTripPlanner
 			new Tuple<uint, Vector3>(820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore) 
 		};
 
-		private int posOnSchedule = 0;
-
 		private static Random rnd = new Random();
-		private int spot = rnd.Next(6);
 		private Stopwatch biteTimer = new Stopwatch();
 		private bool doubleHooked = false;
-		private bool spectraled = false;
-		private Tuple<string, string>[] schedule = new Tuple<string, string>[3];
 
 		private List<uint> missingFish = new List<uint>();
 
@@ -216,18 +207,18 @@ namespace OceanTripPlanner
 		{
 			TimeSpan stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 10, 0);
 
-			schedule = GetSchedule();
+			var schedule = GetSchedule();
 
-			//if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == sothisElasmo || schedule == sothisStone)) || (missingFish.Contains(29789) && (schedule == sharkCoral || schedule == seadragonCoral)) || (missingFish.Contains(29790) && (schedule == sothisStone)) || (missingFish.Contains(29791) && (schedule == sothisElasmo)) || (missingFish.Contains(32074) && (schedule == hafgufaElasmo || schedule == hafgufaPlacodus)) || (missingFish.Contains(32094) && (schedule == toadCrab)) || (missingFish.Contains(32114) && (schedule == hafgufaPlacodus)))))
-			//{
+			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == ND || schedule == RS)) || (missingFish.Contains(29789) && (schedule == RD || schedule == NS)) || (missingFish.Contains(29790) && (schedule == RS)) || (missingFish.Contains(29791) && (schedule == ND)) || (missingFish.Contains(32074) && (schedule == BS || schedule == TS)) || (missingFish.Contains(32094) && (schedule == BD)) || (missingFish.Contains(32114) && (schedule == TS)))))
+			{
 				Log("Stop!");
 				Lisbeth.StopGently();
 				PassTheTime.freeToCraft = false;
-			//}
-			//else
-			//{
-			//	Log("Not getting on the boat, no fish needed");
-			//}
+			}
+			else
+			{
+				Log("Not getting on the boat, no fish needed");
+			}
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
 			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
@@ -251,6 +242,7 @@ namespace OceanTripPlanner
 
 		private async Task OceanFishing()
 		{
+			GetSchedule();
 			if (WorldManager.RawZoneId != 900)
 			{
 				missingFish = await GetFishLog();
@@ -267,13 +259,13 @@ namespace OceanTripPlanner
 					}
 
 					await Lisbeth.SelfRepairWithMenderFallback();
-					await LandRepair(90);	
+					await LandRepair(50);	
 				}
 
 				await RestockBait(150, 500);
 				if (OceanTripSettings.Instance.EmptyScrips)
 				{
-					await EmptyScrips(12669, 1000, 0);
+					await EmptyScrips(12669, 1500);
 				}
 
 				if (OceanTripSettings.Instance.Venturing != Venturing.None)
@@ -289,10 +281,7 @@ namespace OceanTripPlanner
 				Log($"Missing Fish:");
 				foreach (var fish in missingFish)
 				{
-					if (oceanFish.Contains(fish))
-					{
-						Log($"{fish} {DataManager.GetItem(fish).CurrentLocaleName}");
-					}
+					Log($"{fish} {DataManager.GetItem(fish).CurrentLocaleName}");
 				}
 
 				await SwitchToJob(ClassJobType.Fisher);
@@ -332,55 +321,60 @@ namespace OceanTripPlanner
 				}
 
 				await GetOnBoat();
-
-				spot = rnd.Next(6);
-				posOnSchedule = 0;
-
-				schedule = GetSchedule();
 			}
 
+			int spot = rnd.Next(6);
+			var schedule = GetSchedule();
+			int posOnSchedule = 0;
+			
+			Log(posOnSchedule.ToString());
+			Log("Route:");
+			Log(schedule[posOnSchedule].Item1 + ", " + schedule[posOnSchedule].Item2);
+			Log(schedule[posOnSchedule+1].Item1 + ", " + schedule[posOnSchedule+1].Item2);
+			Log(schedule[posOnSchedule+2].Item1 + ", " + schedule[posOnSchedule+2].Item2);
+			
 			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","measure your catch"))
 			{
 				if (ChatCheck("[NPCAnnouncements]","southern Strait"))
 				{
 					Log($"Southern Merlthor, {schedule[posOnSchedule].Item2}");
-					await GoFish(29715, 2613, "south", schedule[posOnSchedule].Item2);
+					await GoFish(29715, 2613, "south", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","Galadion"))
 				{
 					Log($"Galadion Bay, {schedule[posOnSchedule].Item2}");
-					await GoFish(29716, 2603, "galadion", schedule[posOnSchedule].Item2);		
+					await GoFish(29716, 2603, "galadion", schedule[posOnSchedule].Item2, spot);		
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","northern Strait"))
 				{
 					Log($"Northern Merlthor, {schedule[posOnSchedule].Item2}");
-					await GoFish(29714, 2619, "north", schedule[posOnSchedule].Item2);
+					await GoFish(29714, 2619, "north", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","Rhotano Sea"))
 				{
 					Log($"Rhotano Sea, {schedule[posOnSchedule].Item2}");
-					await GoFish(29714, 2591, "rhotano", schedule[posOnSchedule].Item2);
+					await GoFish(29714, 2591, "rhotano", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]", "Cieldalaes"))
 				{
 					Log($"Cieldalaes, {schedule[posOnSchedule].Item2}");
-					await GoFish(29714, 27590, "ciel", schedule[posOnSchedule].Item2);
+					await GoFish(29714, 27590, "ciel", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]", "Bloodbrine"))
 				{
 					Log($"Bloodbrine, {schedule[posOnSchedule].Item2}");
-					await GoFish(29715, 2587, "blood", schedule[posOnSchedule].Item2);
+					await GoFish(29715, 2587, "blood", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]", "Rothlyt Sound"))
 				{
 					Log($"Rothlyt Sound, {schedule[posOnSchedule].Item2}");
-					await GoFish(29716, 29714, "sound", schedule[posOnSchedule].Item2);
+					await GoFish(29716, 29714, "sound", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				await Coroutine.Sleep(500);
@@ -421,9 +415,9 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private async Task GoFish(ulong baitId, ulong spectralbaitId, string location, string timeOfDay)
+		private async Task GoFish(ulong baitId, ulong spectralbaitId, string location, string timeOfDay, int spot)
 		{
-			spectraled = false;
+			bool spectraled = false;
 			Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
 			while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
 			{
@@ -439,14 +433,22 @@ namespace OceanTripPlanner
 			{
 				if (WorldManager.CurrentWeatherId != 145) 
 				{
-					spectraled = false;
+					if (spectraled == true)
+					{
+						Log("Spectral over.");
+						spectraled = false;
+					}		
 				}
 				else
 				{
-					spectraled = true;
+					if (spectraled == false)
+					{
+						Log("Spectral popped!");
+						spectraled = true;
+					}		
 				}
 
-				if (!FishingManager.CanMooch && !ChatCheck("[2115]","Mooch II") && (Core.Me.CurrentGP < 500) && spectraled)
+				if (FishingManager.AvailableMooch.Both == FishingManager.CanMoochAny && !ChatCheck("[2115]","Mooch II") && (Core.Me.CurrentGP < 500) && spectraled)
 				{
 					await UseCordial();
 				}
@@ -488,15 +490,15 @@ namespace OceanTripPlanner
 							{
 								await ChangeBait(spectralbaitId);
 							}
-							else if (((location == "galadion") && (timeOfDay == "Sunset")) || ((location == "rhotano") && (timeOfDay == "Day")) || ((location == "north") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Night")) || ((location == "ciel") && (timeOfDay == "Sunset")))
+							else if (((location == "galadion") && (timeOfDay == "Sunset")) || ((location == "rhotano") && (timeOfDay == "Day")) || ((location == "north") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Night")) || ((location == "ciel") && (timeOfDay == "Sunset")) || ((location == "blood") && (timeOfDay == "Sunset")))
 							{
 								await ChangeBait(29716); //plump
 							}
-							else if (((location == "south") && (timeOfDay == "Day")) || ((location == "rhotano") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29774))) || ((location == "north") && (timeOfDay == "Sunset") && missingFish.Contains(29783) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) || ((location == "north") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29777))) || ((location == "galadion") && (timeOfDay == "Night")) || ((location == "ciel") && (timeOfDay == "Day")))
+							else if (((location == "south") && (timeOfDay == "Day")) || ((location == "rhotano") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29774))) || ((location == "north") && (timeOfDay == "Sunset") && missingFish.Contains(29783) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) || ((location == "north") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29777))) || ((location == "galadion") && (timeOfDay == "Night")) || ((location == "ciel") && (timeOfDay == "Day")) || ((location == "blood") && (timeOfDay == "Night")) || ((location == "sound")))
 							{
 								await ChangeBait(29715); //krill
 							}
-							else if (((location == "galadion") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Night")) || ((location == "rhotano") && (timeOfDay == "Night")))
+							else if (((location == "galadion") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Night")) || ((location == "rhotano") && (timeOfDay == "Night")) || ((location == "blood") && (timeOfDay == "Day")))
 							{
 								await ChangeBait(29714); //ragworm
 							}
@@ -507,7 +509,27 @@ namespace OceanTripPlanner
 						}
 						else
 						{
-							await ChangeBait(baitId);
+							//Cieldalaes Geode
+							if (location == "ciel" && missingFish.Contains(32064))
+							{
+								if (!Core.Player.HasAura(568))
+								{
+									await ChangeBait(29714);
+								}
+								else
+								{
+									await ChangeBait(29715);
+								}
+							}
+							//Ginkgo Fin
+							else if (location == "sound" && missingFish.Contains(32104))
+							{
+								await ChangeBait(29714);
+							}
+							else
+							{
+								await ChangeBait(baitId);
+							}
 						}
 						biteTimer.Start();
 						FishingManager.Cast();	
@@ -522,6 +544,7 @@ namespace OceanTripPlanner
 					//Spectral popped, don't wait for normal fish
 					if (WorldManager.CurrentWeatherId == 145 && !spectraled)
 					{
+						Log("Spectral popped!");
 						spectraled = true;
 						if (FishingManager.CanHook)
 						{
@@ -629,7 +652,7 @@ namespace OceanTripPlanner
 			if (Core.Me.CurrentGP < 500)
 			{
 				await Coroutine.Sleep(500);
-				foreach(ff14bot.Managers.BagSlot slot in ff14bot.Managers.InventoryManager.FilledSlots)	
+				foreach(BagSlot slot in InventoryManager.FilledSlots)	
 				{	
 					if(slot.RawItemId == 12669)	
 					{	
@@ -765,11 +788,11 @@ namespace OceanTripPlanner
 
 				if (itemsToBuy.Contains(2619) && Core.Me.Levels[ClassJobType.Goldsmith] >= 36)
 				{
-					await PassTheTime.IdleLisbeth(2619, 20, "Goldsmith", "true", (int)OceanTripSettings.Instance.LisbethFood);
+					await PassTheTime.IdleLisbeth(2619, 10, "Goldsmith", "true", 0);
 				}
 				if (itemsToBuy.Contains(27590))
 				{
-					await PassTheTime.IdleLisbeth(27590, 300, "Exchange", "true", (int)OceanTripSettings.Instance.LisbethFood);
+					await PassTheTime.IdleLisbeth(27590, 300, "Exchange", "true", 0);
 				}
 				Log("Restocking bait complete");
 			}
@@ -806,47 +829,12 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private async Task EmptyScrips(uint itemId, int scripThreshold, uint slot)
+		private async Task EmptyScrips(int itemId, int scripThreshold)
 		{
 			//TODO: Buy other stuff with scrip
-			if (SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 17834) > scripThreshold)
+			if (SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)25200) > scripThreshold)
 			{
-				Log($"Buying {DataManager.GetItem(itemId).CurrentLocaleName}s");
-				await Navigation.GetTo(129, new Vector3(-406.1322f, 3.099996f, 67.07707f));
-				var ScripStore = GameObjectManager.GetObjectByNPCId(1005423);
-				if (ScripStore != null)
-				{
-					ScripStore.Interact();
-				}
-				uint count = SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 17834)/20;
-				await Coroutine.Wait(5000, () => SelectIconString.IsOpen);
-
-				if (SelectIconString.IsOpen)
-				{
-					SelectIconString.ClickSlot(slot);
-
-					await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
-
-					if (ShopExchangeCurrency.Open)
-					{
-						ShopExchangeCurrency.Purchase(itemId, count);
-						await Coroutine.Wait(2000, () => SelectYesno.IsOpen || Request.IsOpen);
-
-						if (SelectYesno.IsOpen)
-						{
-							SelectYesno.Yes();
-							await Coroutine.Sleep(1000);
-						}
-					}
-
-					await Coroutine.Wait(2000, () => ShopExchangeCurrency.Open);
-					if (ShopExchangeCurrency.Open)
-					{
-						ShopExchangeCurrency.Close();
-					}
-					await Coroutine.Sleep(1000);
-				}
-				Log("Purchase complete");
+				await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)25200)/20, "Exchange", "false", 0);
 			}
 		}
 
@@ -960,7 +948,7 @@ namespace OceanTripPlanner
 
 			if (FishGuide.IsOpen)
 			{
-				for (int i = 33; i < FishGuide.TabCount; i++)
+				for (int i = 33; i <= FishGuide.TabCount; i++)
 				{
 					FishGuide.ClickTab(i);
 					await Coroutine.Sleep(10);
@@ -993,98 +981,39 @@ namespace OceanTripPlanner
 		}
 
 		private Tuple<string, string>[] GetSchedule()
-		{
-			var epoch = (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
-			int twoHourChunk = (int)(((epoch / 1000 / 7200) + 103) % 143);
-			
-			//Log(twoHourChunk.ToString());
-			//Log(fullPattern[twoHourChunk].ToString());
-			//Log(fullPattern[twoHourChunk+1].ToString());
-			//Log(fullPattern[twoHourChunk+2].ToString());
-			//Log(fullPattern[twoHourChunk+3].ToString());
-			//Log(fullPattern[twoHourChunk+4].ToString());
-			//Log(fullPattern[twoHourChunk+5].ToString());
+		{		
+			int epoch = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+			int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
 
 			switch (fullPattern[twoHourChunk])
 			{
-				case 1:
-					return seadragonCoral;
-				case 2:
-					return octopus;
-				case 3:
-					return sothisElasmo;
-				case 4:
-					return sothisStone;
-				case 5:
-					return jellyfish;
-				case 6:
-					return sharkCoral;
-				case 7:
-					return hafgufaElasmo;
-				case 8:
-					return mantas;
-				case 9:
-					return toadCrab;
-				case 10:
-					return hafgufaPlacodus;
-				case 11:
-					return ballonStonescale;
-				case 12:
-					return ballonManta;
+				case "NS":
+					return NS;
+				case "NN":
+					return NN;
+				case "ND":
+					return ND;
+				case "RS":
+					return RS;
+				case "RN":
+					return RN;
+				case "RD":
+					return RD;
+				case "BS":
+					return BS;
+				case "BN":
+					return BN;
+				case "BD":
+					return BD;
+				case "TS":
+					return TS;
+				case "TN":
+					return TN;
+				case "TD":
+					return TD;
 			}
 			return null;
 		}
-
-		//private Tuple<string, string>[] GetSchedule()
-		//{
-		//	long lulu_epoch = 1593302400000;
-
-		//	long epoch = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
-		//	long adjustedDate = epoch + 29700000;
-		//	long day = adjustedDate - lulu_epoch / 86400000;
-		//	long hour = DateTimeOffset.FromUnixTimeMilliseconds(adjustedDate).Hour;
-
-		//	hour += ((hour & 1) == 1) ? 2 : 1;
-
-		//	if (hour > 23)
-		//	{
-		//		day++;
-		//		hour -= 24;
-		//	}
-
-		//	long voyageNumber = hour >> 1;
-		//	long destIndex = (day + voyageNumber) % 4;
-		//	long timeIndex = (day + voyageNumber) % 12;
-
-		//	switch (fullPattern[twoHourChunk])
-		//	{
-		//		case 1:
-		//			return seadragonCoral;
-		//		case 2:
-		//			return octopus;
-		//		case 3:
-		//			return sothisElasmo;
-		//		case 4:
-		//			return sothisStone;
-		//		case 5:
-		//			return jellyfish;
-		//		case 6:
-		//			return sharkCoral;
-		//		case 7:
-		//			return hafgufaElasmo;
-		//		case 8:
-		//			return mantas;
-		//		case 9:
-		//			return toadCrab;
-		//		case 10:
-		//			return hafgufaPlacodus;
-		//		case 11:
-		//			return ballonStonescale;
-		//		case 12:
-		//			return ballonManta;
-		//	}
-		//	return null;
-		//}
 
 		private void Log(string text, params object[] args)
 		{

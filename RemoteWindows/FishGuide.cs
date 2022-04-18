@@ -10,7 +10,7 @@ namespace OceanTripPlanner.RemoteWindows
 		internal static IntPtr Vtable;
 		internal static int TabSlotCount;
 		internal static int TabStart;
-		public const int TabCount = 40;
+		public const int TabCount = 41;
 		public static int AgentId;
 		public static IntPtr Pointer => AgentModule.GetAgentInterfaceById(AgentId).Pointer;
 
@@ -21,6 +21,7 @@ namespace OceanTripPlanner.RemoteWindows
 		{
 			using (var pf = new GreyMagic.PatternFinder(Core.Memory))
 			{
+				//Credit to https://github.com/nt153133/__LlamaLibrary
 				Vtable = pf.Find("Search 48 8D 05 ? ? ? ? BA ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? Add 3 TraceRelative");
 				TabStart = pf.Find("Search 48 8D 43 ? 88 93 ? ? ? ? Add 3 Read8").ToInt32();
 				TabSlotCount = pf.Find("Search 8D 4A ? 66 89 93 ? ? ? ? 48 89 93 ? ? ? ? Add 2 Read8").ToInt32();
