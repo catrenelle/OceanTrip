@@ -94,7 +94,7 @@ namespace OceanTripPlanner
 				//Mats
 				if (freeToCraft && OceanTripSettings.Instance.CraftMats)
 				{
-					while (freeToCraft && (DataManager.GetItem(36109).ItemCount() <= 300))
+					while (freeToCraft && (DataManager.GetItem(37284).ItemCount() <= 300))
 					{
 						await IdleLisbeth(37284, 50, "Exchange", "false", lisFood); //Immutable Solution
 					}
