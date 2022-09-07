@@ -21,6 +21,7 @@ using ff14bot.RemoteWindows;
 using GreyMagic;
 using OceanTripPlanner.RemoteWindows;
 using OceanTripPlanner.Helpers;
+using OceanTripPlanner.Definitions;
 using TreeSharp;
 
 namespace OceanTripPlanner
@@ -44,13 +45,283 @@ namespace OceanTripPlanner
 		};
 		private static readonly float[] headings = new[] { 4.622331f, 4.684318f, 1.569952f, 1.509215f, 1.553197f, 1.576235f };
 
-		private readonly uint[] oceanFish = new uint[] {
-			28937,28938,29739,29722,29723,28941,29728,29729,29730,29736,29737,29738,29719,28942,28939,29724,28940,29725, 29731,29735,29733,29718,29740,29741,29734,29721,29726,29727,29742,29732,29720,29743,29744,29745,29746,29747,29766,29749,29750,29751,29752,29753,29754,29755, 29756,29757,29758,29759,29779,29761,29760,29763,29764,29765,29775,29767,29768,29769,29770,29771,29772,29780,29774,29748,29776,29777,29778,29773,29762,29781,29782,29783,29784,29785,29786,29787,29788,29789,29790,29791,32055,32056,32057,32058,32059,32060,32061,32062,32063,32064,32065,32066,32067,32068,32069,32070,32071,32072,32073,32074,32075,32076,32077,32078,32079,32080,32081,32082,32083,32084,32085,32086,32087,32088,32089,32090,32091,32092,32093,32094,32095,32096,32097,32098,32099,32100,32101,32102,32103,32104,32105,32106,32107,32108,32109,32110,32111,32112,32113,32114
-		};
-		private static readonly int[] fishForSale = new[]
+
+		private readonly int[] oceanFish = new[] {
+            OceanFish.GaladionGoby,
+            OceanFish.RosyBream,
+            OceanFish.TripodFish,
+            OceanFish.GhoulBarracuda,
+            OceanFish.LeopardEel,
+            OceanFish.Sunfly,
+            OceanFish.RhotanoWahoo,
+            OceanFish.RhotanoSardine,
+            OceanFish.DeepPlaice,
+            OceanFish.Floefish,
+            OceanFish.Megasquid,
+            OceanFish.OschonsStone,
+            OceanFish.Jasperhead,
+            OceanFish.TarnishedShark,
+            OceanFish.MarineBomb,
+            OceanFish.MomoraMora,
+            OceanFish.CrimsonMonkfish,
+            OceanFish.ChromeHammerhead,
+            OceanFish.OgreEel,
+            OceanFish.TossedDagger,
+            OceanFish.ShaggySeadragon,
+            OceanFish.NetCrawler,
+            OceanFish.CyanOctopus,
+            OceanFish.Heavenswimmer,
+            OceanFish.MerlthorButterfly,
+            OceanFish.Gladius,
+            OceanFish.DarkNautilus,
+            OceanFish.Lampfish,
+            OceanFish.MerlthorLobster,
+            OceanFish.ElderDinichthys,
+            OceanFish.Drunkfish,
+            OceanFish.LittleLeviathan,
+            OceanFish.Sabaton,
+            OceanFish.ShootingStar,
+            OceanFish.MermansMane,
+            OceanFish.Heavenskey,
+            OceanFish.GhostShark,
+            OceanFish.QuicksilverBlade,
+            OceanFish.NavigatorsPrint,
+            OceanFish.CasketOyster,
+            OceanFish.Fishmonger,
+            OceanFish.MythrilSovereign,
+            OceanFish.NimbleDancer,
+            OceanFish.SeaNettle,
+            OceanFish.GreatGrandmarlin,
+            OceanFish.ShipwrecksSail,
+            OceanFish.CharlatanSurvivor,
+            OceanFish.HiAetherlouse,
+            OceanFish.AzeymasSleeve,
+            OceanFish.AethericSeadragon,
+            OceanFish.CoralSeadragon,
+            OceanFish.Roguesaurus,
+            OceanFish.Aronnax,
+            OceanFish.Sweeper,
+            OceanFish.Silencer,
+            OceanFish.DeepSeaEel,
+            OceanFish.Executioner,
+            OceanFish.WildUrchin,
+            OceanFish.TrueBarramundi,
+            OceanFish.ProdigalSon,
+            OceanFish.Slipsnail,
+            OceanFish.Hammerclaw,
+            OceanFish.Coccosteus,
+            OceanFish.BartholomewTheChopper,
+            OceanFish.Prowler,
+            OceanFish.Mopbeard,
+            OceanFish.FloatingSaucer,
+            OceanFish.Gugrusaurus,
+            OceanFish.FunnelShark,
+            OceanFish.TheFallenOne,
+            OceanFish.SpectralMegalodon,
+            OceanFish.SpectralDiscus,
+            OceanFish.SpectralSeaBo,
+            OceanFish.SpectralBass,
+            OceanFish.Sothis,
+            OceanFish.CoralManta,
+            OceanFish.Stonescale,
+            OceanFish.Elasmosaurus,
+            OceanFish.TortoiseshellCrab,
+            OceanFish.LadysCameo,
+            OceanFish.MetallicBoxfish,
+            OceanFish.GoobbueRay,
+            OceanFish.Watermoura,
+            OceanFish.KingCobrafish,
+            OceanFish.MamahiMahi,
+            OceanFish.LavandinRemora,
+            OceanFish.SpectralButterfly,
+            OceanFish.CieldalaesGeode,
+            OceanFish.TitanshellCrab,
+            OceanFish.MythrilBoxfish,
+            OceanFish.MistbeardsCup,
+            OceanFish.AnomalocarisSaron,
+            OceanFish.FlamingEel,
+            OceanFish.JetborneManta,
+            OceanFish.DevilsSting,
+            OceanFish.Callichthyid,
+            OceanFish.MeanderingMora,
+            OceanFish.Hafgufa,
+            OceanFish.ThaliakCrab,
+            OceanFish.StarOfTheDestroyer,
+            OceanFish.TrueScad,
+            OceanFish.BloodedWrasse,
+            OceanFish.BloodpolishCrab,
+            OceanFish.BlueStitcher,
+            OceanFish.BloodfreshTuna,
+            OceanFish.SunkenMask,
+            OceanFish.SpectralEel,
+            OceanFish.Bareface,
+            OceanFish.OracularCrab,
+            OceanFish.DravanianBream,
+            OceanFish.Skaldminni,
+            OceanFish.SerratedClam,
+            OceanFish.BeatificVision,
+            OceanFish.Exterminator,
+            OceanFish.GoryTuna,
+            OceanFish.Ticinepomis,
+            OceanFish.QuartzHammerhead,
+            OceanFish.SeafaringToad,
+            OceanFish.CrowPuffer,
+            OceanFish.StripOfRothlytKelp,
+            OceanFish.LivingLantern,
+            OceanFish.HoneycombFish,
+            OceanFish.Godsbed,
+            OceanFish.Lansquenet,
+            OceanFish.ThavnairianShark,
+            OceanFish.NephriteEel,
+            OceanFish.Spectresaur,
+            OceanFish.GinkgoFin,
+            OceanFish.GarumJug,
+            OceanFish.SmoothJaguar,
+            OceanFish.RothlytMussel,
+            OceanFish.LeviElver,
+            OceanFish.PearlBombfish,
+            OceanFish.Trollfish,
+            OceanFish.Panoptes,
+            OceanFish.CrepeSole,
+            OceanFish.Knifejaw,
+            OceanFish.Placodus
+        };
+
+		private static readonly int[] fishForSale = new int[]
 		{
-			28937,28938,28939,28940,28941,28942,29718,29719,29720,29721,29722,29723,29724,29725,29726,29727,29728,29729,29730,29731,29732,29733,29734,29735,29736,29737,29738,29739,29740,29741,29742,29743,29744,29745,29746,29747,29748,29749,29750,29751,29752,29753,29754,29755,29756,29757,29758,29759,29760,29761,29762,29763,29764,29765,29766,29767,29768,29769,29770,29771,29772,29773,29774,29775,29776,29777,29778,29779,29780,29781,29782,29784,29785,29786,29787,32055,32056,32057,32058,32059,32060,32061,32062,32063,32064,32065,32066,32067,32068,32069,32070,32071,32072,32073,32075,32076,32077,32078,32079,32080,32081,32082,32083,32084,32085,32086,32087,32088,32089,32090,32091,32092,32093,32095,32096,32097,32098,32099,32100,32101,32102,32103,32104,32105,32106,32107,32108,32109,32110,32111,32112,32113
-		};
+            OceanFish.GaladionGoby,
+            OceanFish.GaladionChovy,
+            OceanFish.RosyBream,
+            OceanFish.TripodFish,
+            OceanFish.Sunfly,
+            OceanFish.TarnishedShark,
+            OceanFish.TossedDagger,
+            OceanFish.Jasperhead,
+            OceanFish.MerlthorLobster,
+            OceanFish.Heavenswimmer,
+            OceanFish.GhoulBarracuda,
+            OceanFish.LeopardEel,
+            OceanFish.MarineBomb,
+            OceanFish.MomoraMora,
+            OceanFish.MerlthorButterfly,
+            OceanFish.Gladius,
+            OceanFish.RhotanoWahoo,
+            OceanFish.RhotanoSardine,
+            OceanFish.DeepPlaice,
+            OceanFish.CrimsonMonkfish,
+            OceanFish.Lampfish,
+            OceanFish.OgreEel,
+            OceanFish.CyanOctopus,
+            OceanFish.ChromeHammerhead,
+            OceanFish.Floefish,
+            OceanFish.Megasquid,
+            OceanFish.OschonsStone,
+            OceanFish.LaNosceanJelly,
+            OceanFish.ShaggySeadragon,
+            OceanFish.NetCrawler,
+            OceanFish.DarkNautilus,
+            OceanFish.ElderDinichthys,
+            OceanFish.Drunkfish,
+            OceanFish.LittleLeviathan,
+            OceanFish.Sabaton,
+            OceanFish.ShootingStar,
+            OceanFish.Hammerclaw,
+            OceanFish.Heavenskey,
+            OceanFish.GhostShark,
+            OceanFish.QuicksilverBlade,
+            OceanFish.NavigatorsPrint,
+            OceanFish.CasketOyster,
+            OceanFish.Fishmonger,
+            OceanFish.MythrilSovereign,
+            OceanFish.NimbleDancer,
+            OceanFish.SeaNettle,
+            OceanFish.GreatGrandmarlin,
+            OceanFish.ShipwrecksSail,
+            OceanFish.AzeymasSleeve,
+            OceanFish.HiAetherlouse,
+            OceanFish.FloatingSaucer,
+            OceanFish.AethericSeadragon,
+            OceanFish.CoralSeadragon,
+            OceanFish.Roguesaurus,
+            OceanFish.MermansMane,
+            OceanFish.Sweeper,
+            OceanFish.Silencer,
+            OceanFish.DeepSeaEel,
+            OceanFish.Executioner,
+            OceanFish.WildUrchin,
+            OceanFish.TrueBarramundi,
+            OceanFish.Mopbeard,
+            OceanFish.Slipsnail,
+            OceanFish.Aronnax,
+            OceanFish.Coccosteus,
+            OceanFish.BartholomewTheChopper,
+            OceanFish.Prowler,
+            OceanFish.CharlatanSurvivor,
+            OceanFish.ProdigalSon,
+            OceanFish.Gugrusaurus,
+            OceanFish.FunnelShark,
+            OceanFish.SpectralMegalodon,
+            OceanFish.SpectralDiscus,
+            OceanFish.SpectralSeaBo,
+            OceanFish.SpectralBass,
+            OceanFish.TortoiseshellCrab,
+            OceanFish.LadysCameo,
+            OceanFish.MetallicBoxfish,
+            OceanFish.GoobbueRay,
+            OceanFish.Watermoura,
+            OceanFish.KingCobrafish,
+            OceanFish.MamahiMahi,
+            OceanFish.LavandinRemora,
+            OceanFish.SpectralButterfly,
+            OceanFish.CieldalaesGeode,
+            OceanFish.TitanshellCrab,
+            OceanFish.MythrilBoxfish,
+            OceanFish.MistbeardsCup,
+            OceanFish.AnomalocarisSaron,
+            OceanFish.FlamingEel,
+            OceanFish.JetborneManta,
+            OceanFish.DevilsSting,
+            OceanFish.Callichthyid,
+            OceanFish.MeanderingMora,
+            OceanFish.ThaliakCrab,
+            OceanFish.StarOfTheDestroyer,
+            OceanFish.TrueScad,
+            OceanFish.BloodedWrasse,
+            OceanFish.BloodpolishCrab,
+            OceanFish.BlueStitcher,
+            OceanFish.BloodfreshTuna,
+            OceanFish.SunkenMask,
+            OceanFish.SpectralEel,
+            OceanFish.Bareface,
+            OceanFish.OracularCrab,
+            OceanFish.DravanianBream,
+            OceanFish.Skaldminni,
+            OceanFish.SerratedClam,
+            OceanFish.BeatificVision,
+            OceanFish.Exterminator,
+            OceanFish.GoryTuna,
+            OceanFish.Ticinepomis,
+            OceanFish.QuartzHammerhead,
+            OceanFish.CrowPuffer,
+            OceanFish.StripOfRothlytKelp,
+            OceanFish.LivingLantern,
+            OceanFish.HoneycombFish,
+            OceanFish.Godsbed,
+            OceanFish.Lansquenet,
+            OceanFish.ThavnairianShark,
+            OceanFish.NephriteEel,
+            OceanFish.Spectresaur,
+            OceanFish.GinkgoFin,
+            OceanFish.GarumJug,
+            OceanFish.SmoothJaguar,
+            OceanFish.RothlytMussel,
+            OceanFish.LeviElver,
+            OceanFish.PearlBombfish,
+            OceanFish.Trollfish,
+            OceanFish.Panoptes,
+            OceanFish.CrepeSole,
+            OceanFish.Knifejaw
+        };
 
 		private static readonly string[] fullPattern = new[]{"BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN"};
 		
@@ -129,16 +400,16 @@ namespace OceanTripPlanner
 
 		private static readonly Tuple<uint, Vector3>[] SummoningBells = new Tuple<uint, Vector3>[]
 		{
-			new Tuple<uint, Vector3>(129, new Vector3(-123.888062f, 17.990356f, 21.469421f)), //Limsa
-			new Tuple<uint, Vector3>(131, new Vector3(148.91272f, 3.982544f, -44.205383f)), //Ul'dah
-			new Tuple<uint, Vector3>(133, new Vector3(160.234863f, 15.671021f, -55.649719f)), //Old Gridania(Gridania) 
-			new Tuple<uint, Vector3>(156, new Vector3(11.001709f, 28.976807f, -734.554077f)), //Mor Dhona(Mor Dhona) 
-			new Tuple<uint, Vector3>(419, new Vector3(-151.171204f, -12.64978f, -11.764771f)), //The Pillars(Ishgard) 
-			new Tuple<uint, Vector3>(478, new Vector3(34.775269f, 208.148193f, -50.858398f)), //Idyllshire(Dravania)  
-			new Tuple<uint, Vector3>(628, new Vector3(19.394226f, 4.043579f, 53.025024f)), //Kugane(Kugane) 
-			new Tuple<uint, Vector3>(635, new Vector3(-57.633362f, -0.01532f, 49.30188f)), //Rhalgr's Reach(Gyr Abania) 
-			new Tuple<uint, Vector3>(819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium
-			new Tuple<uint, Vector3>(820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore) 
+			new Tuple<uint, Vector3>(129, new Vector3(-123.888062f, 17.990356f, 21.469421f)),	// Limsa
+			new Tuple<uint, Vector3>(131, new Vector3(148.91272f, 3.982544f, -44.205383f)),		// Ul'dah
+			new Tuple<uint, Vector3>(133, new Vector3(160.234863f, 15.671021f, -55.649719f)),	// Old Gridania (Gridania) 
+			new Tuple<uint, Vector3>(156, new Vector3(11.001709f, 28.976807f, -734.554077f)),	// Mor Dhona (Mor Dhona) 
+			new Tuple<uint, Vector3>(419, new Vector3(-151.171204f, -12.64978f, -11.764771f)),	// The Pillars (Ishgard) 
+			new Tuple<uint, Vector3>(478, new Vector3(34.775269f, 208.148193f, -50.858398f)),	// Idyllshire (Dravania)  
+			new Tuple<uint, Vector3>(628, new Vector3(19.394226f, 4.043579f, 53.025024f)),		// Kugane 
+			new Tuple<uint, Vector3>(635, new Vector3(-57.633362f, -0.01532f, 49.30188f)),		// Rhalgr's Reach (Gyr Abania) 
+			new Tuple<uint, Vector3>(819, new Vector3(-69.840576f, -7.705872f, 123.491211f)),	// The Crystarium
+			new Tuple<uint, Vector3>(820, new Vector3(7.186951f, 83.17688f, 31.448853f))		// Eulmore 
 		};
 
 		private static Random rnd = new Random();
@@ -184,20 +455,22 @@ namespace OceanTripPlanner
 
 			if ((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute > 10))
 			{
-				stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 10, 0);
+				stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 0, 0);
 			}
 			else
 			{
-				stop = new TimeSpan(DateTime.UtcNow.Hour + DateTime.UtcNow.Hour % 2, 10, 0);
+				stop = new TimeSpan(DateTime.UtcNow.Hour + DateTime.UtcNow.Hour % 2, 0, 0);
 			}
 
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
-
-			execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
+			if (timeLeftUntilFirstRun.TotalMilliseconds < 0)
+				execute.Interval = 100;
+			else
+				execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
 			execute.Elapsed += new ElapsedEventHandler(KillLisbeth);
 			execute.Start();
 
-			Log($"Passing the time for {Math.Round(timeLeftUntilFirstRun.TotalMinutes)} minutes");
+			Log($"Passing the time for approximately {Math.Ceiling(timeLeftUntilFirstRun.TotalMinutes)} minutes.");
 
 
 			_root = new ActionRunCoroutine(r => Run());
@@ -205,19 +478,27 @@ namespace OceanTripPlanner
 
 		private async void KillLisbeth(object sender, ElapsedEventArgs e)
 		{
-			TimeSpan stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 10, 0);
+			TimeSpan stop = new TimeSpan(DateTime.UtcNow.Hour + 2, 0, 0);
 
 			var schedule = GetSchedule();
 
-			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) && ((missingFish.Contains(29788) && (schedule == ND || schedule == RS)) || (missingFish.Contains(29789) && (schedule == RD || schedule == NS)) || (missingFish.Contains(29790) && (schedule == RS)) || (missingFish.Contains(29791) && (schedule == ND)) || (missingFish.Contains(32074) && (schedule == BS || schedule == TS)) || (missingFish.Contains(32094) && (schedule == BD)) || (missingFish.Contains(32114) && (schedule == TS)))))
+			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) 
+				|| ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) 
+					&& ((missingFish.Contains((uint)OceanFish.Sothis) && (schedule == ND || schedule == RS)) 
+						|| (missingFish.Contains((uint)OceanFish.CoralManta) && (schedule == RD || schedule == NS)) 
+						|| (missingFish.Contains((uint)OceanFish.Stonescale) && (schedule == RS)) 
+						|| (missingFish.Contains((uint)OceanFish.Elasmosaurus) && (schedule == ND)) 
+						|| (missingFish.Contains((uint)OceanFish.Hafgufa) && (schedule == BS || schedule == TS)) 
+						|| (missingFish.Contains((uint)OceanFish.SeafaringToad) && (schedule == BD)) 
+						|| (missingFish.Contains((uint)OceanFish.Placodus) && (schedule == TS)))))
 			{
-				Log("Stop!");
-				Lisbeth.StopGently();
-				PassTheTime.freeToCraft = false;
+                Log("Stop!");
+                Lisbeth.StopGently();
+                PassTheTime.freeToCraft = false;
 			}
 			else
 			{
-				Log("Not getting on the boat, no fish needed");
+                Log("Not getting on the boat, no fish needed");
 			}
 			TimeSpan timeLeftUntilFirstRun = stop - DateTime.UtcNow.TimeOfDay;
 
@@ -277,17 +558,18 @@ namespace OceanTripPlanner
 				PassTheTime.freeToCraft = true;
 				await PassTheTime.Craft();
 
-				missingFish = await GetFishLog();
-				Log($"Missing Fish:");
-				foreach (var fish in missingFish)
-				{
-					Log($"{fish} {DataManager.GetItem(fish).CurrentLocaleName}");
-				}
+				Log($"Checking fishing log for missing fish:");
+                missingFish = await GetFishLog();
+				//foreach (var fish in missingFish)
+				//{
+				//	Log($"{fish} - {DataManager.GetItem(fish).CurrentLocaleName}");
+				//}
+				Log($"Total missing ocean fish: {missingFish.Count()}");
 
 				await SwitchToJob(ClassJobType.Fisher);
 				await Lisbeth.SelfRepairWithMenderFallback();
-				Log("Waiting for the boat...");
-				while (!((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute == 13)))
+				Log("Waiting for the boat queue to become available...");
+				while (!((DateTime.UtcNow.Hour % 2 == 0) && (DateTime.UtcNow.Minute <= 10)))
 				{
 					await Coroutine.Sleep(1000);
 					if (OceanTripSettings.Instance.Venturing != Venturing.None)
@@ -295,90 +577,133 @@ namespace OceanTripPlanner
 						await Retaining();
 					}
 				}
-				
-				await SwitchToJob(ClassJobType.Fisher);
+
+				if (Core.Me.CurrentJob != ClassJobType.Fisher)
+				{
+                    await SwitchToJob(ClassJobType.Fisher);
+					Log("Switching to FSH class...");
+                }
+                Log("Traveling to Limsa to queue up for the boat...");
 				await Navigation.GetTo(129, new Vector3(-410.1068f, 3.999944f, 74.89863f));
 
-				if (DataManager.GetItem(27870).ItemCount() >= 1 && OceanTripSettings.Instance.OceanFood == true)
-				{
-					Log("Eating food...");
-					do
-					{
-						foreach(BagSlot slot in InventoryManager.FilledSlots)	
-						{		
-							if(slot.RawItemId == 27870)	
-							{	
-								slot.UseItem();	
-							}
-						}
-						await Coroutine.Sleep(3000);
-					} while (!Core.Player.Auras.Any(x => x.Value == 10419));
-					await Coroutine.Sleep(1000);
-				}
-				else if (OceanTripSettings.Instance.OceanFood == true)
-				{
-					Log("Out of food!");
-				}
 
-				await GetOnBoat();
+				uint edibleFood = 0;
+				bool edibleFoodHQ = false;
+
+				if (OceanTripSettings.Instance.OceanFood)
+				{
+					if (DataManager.GetItem((uint)FoodList.CrabCakes, true).ItemCount() >= 1)
+					{
+						edibleFood = (uint)FoodList.CrabCakes;
+						edibleFoodHQ = true;
+					}
+					else if (DataManager.GetItem((uint)FoodList.CrabCakes, false).ItemCount() >= 1)
+					{
+						edibleFood = (uint)FoodList.CrabCakes;
+						edibleFoodHQ = false;
+					}
+					else if (DataManager.GetItem((uint)FoodList.PepperedPopotoes, true).ItemCount() >= 1)
+					{
+						edibleFood = (uint)FoodList.PepperedPopotoes;
+						edibleFoodHQ = true;
+					}
+					else if (DataManager.GetItem((uint)FoodList.PepperedPopotoes).ItemCount() >= 1)
+					{
+						edibleFood = (uint)FoodList.PepperedPopotoes;
+						edibleFoodHQ = false;
+
+                    }
+					else
+					{
+						edibleFood = 0;
+						edibleFoodHQ = false;
+					}
+
+					if (edibleFood > 0)
+					{
+							do
+							{
+								Log($"Eating {DataManager.GetItem(edibleFood, edibleFoodHQ).CurrentLocaleName}...");
+
+								foreach (BagSlot slot in InventoryManager.FilledSlots)
+								{
+									if (slot.RawItemId == (uint)FoodList.PepperedPopotoes)
+									{
+										slot.UseItem();
+									}
+								}
+								await Coroutine.Sleep(3000);
+
+							} while (!Core.Player.Auras.Any(x => x.Value == CharacterAuras.FoodBuff));
+							await Coroutine.Sleep(1000);
+					}
+                    else if (OceanTripSettings.Instance.OceanFood == true)
+                    {
+                        Log("Out of food!");
+                    }
+                }
+
+                await GetOnBoat();
 			}
 
 			int spot = rnd.Next(6);
 			var schedule = GetSchedule();
 			int posOnSchedule = 0;
 			
-			Log(posOnSchedule.ToString());
 			Log("Route:");
 			Log(schedule[posOnSchedule].Item1 + ", " + schedule[posOnSchedule].Item2);
 			Log(schedule[posOnSchedule+1].Item1 + ", " + schedule[posOnSchedule+1].Item2);
 			Log(schedule[posOnSchedule+2].Item1 + ", " + schedule[posOnSchedule+2].Item2);
 			
-			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","measure your catch"))
+			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
 				if (ChatCheck("[NPCAnnouncements]","southern Strait"))
 				{
 					Log($"Southern Merlthor, {schedule[posOnSchedule].Item2}");
-					await GoFish(29715, 2613, "south", schedule[posOnSchedule].Item2, spot);
+					await GoFish(FishBait.Krill, FishBait.ShrimpCageFeeder, "south", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","Galadion"))
 				{
 					Log($"Galadion Bay, {schedule[posOnSchedule].Item2}");
-					await GoFish(29716, 2603, "galadion", schedule[posOnSchedule].Item2, spot);		
+					await GoFish(FishBait.PlumpWorm, FishBait.GlowWorm, "galadion", schedule[posOnSchedule].Item2, spot);		
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","northern Strait"))
 				{
 					Log($"Northern Merlthor, {schedule[posOnSchedule].Item2}");
-					await GoFish(29714, 2619, "north", schedule[posOnSchedule].Item2, spot);
+					await GoFish(FishBait.Ragworm, FishBait.HeavySteelJig, "north", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]","Rhotano Sea"))
 				{
 					Log($"Rhotano Sea, {schedule[posOnSchedule].Item2}");
-					await GoFish(29714, 2591, "rhotano", schedule[posOnSchedule].Item2, spot);
+					await GoFish(FishBait.Ragworm, FishBait.RatTail, "rhotano", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]", "Cieldalaes"))
 				{
 					Log($"Cieldalaes, {schedule[posOnSchedule].Item2}");
-					await GoFish(29714, 27590, "ciel", schedule[posOnSchedule].Item2, spot);
+					await GoFish(FishBait.Ragworm, FishBait.StripOfJerkedOvim, "ciel", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]", "Bloodbrine"))
 				{
 					Log($"Bloodbrine, {schedule[posOnSchedule].Item2}");
-					await GoFish(29715, 2587, "blood", schedule[posOnSchedule].Item2, spot);
+					await GoFish(FishBait.Krill, FishBait.PillBug, "blood", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				if (ChatCheck("[NPCAnnouncements]", "Rothlyt Sound"))
 				{
 					Log($"Rothlyt Sound, {schedule[posOnSchedule].Item2}");
-					await GoFish(29716, 29714, "sound", schedule[posOnSchedule].Item2, spot);
+					await GoFish(FishBait.PlumpWorm, FishBait.Ragworm, "sound", schedule[posOnSchedule].Item2, spot);
 					posOnSchedule++;
 				}
 				await Coroutine.Sleep(500);
 			}
+
+			Log("Waiting for Results Window...");
+			await Coroutine.Sleep(12000);
 
 			AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
 			if (windowByName != null)
@@ -402,14 +727,14 @@ namespace OceanTripPlanner
 				if(baitWindow == null)
 				{
 					ActionManager.DoAction(288, GameObjectManager.LocalPlayer);
-					await Coroutine.Sleep(1000);
+					await Coroutine.Sleep(200);
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}							
 				if(baitWindow != null)
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					Log($"Applied {DataManager.GetItem((uint) baitId).CurrentLocaleName}");
-					await Coroutine.Sleep(1000);
+					await Coroutine.Sleep(200);
 					ActionManager.DoAction(288, GameObjectManager.LocalPlayer);
 				}	
 			}
@@ -429,9 +754,9 @@ namespace OceanTripPlanner
 			Core.Me.SetFacing(headings[spot]);
 			await Coroutine.Sleep(1000);
 
-			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]","measure your catch"))
+			while ((WorldManager.ZoneId == 900) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
-				if (WorldManager.CurrentWeatherId != 145) 
+				if (WorldManager.CurrentWeatherId != Weather.Spectral) 
 				{
 					if (spectraled == true)
 					{
@@ -466,41 +791,39 @@ namespace OceanTripPlanner
 						}
 					}
 
-					if (FishingManager.CanMooch && WorldManager.CurrentWeatherId == 145 && spectraled)
-					{
-						Log("Mooch!");
-						FishingManager.Mooch();
-						biteTimer.Start();
-					}
-					else if (ChatCheck("[2115]","Mooch II") && ActionManager.CanCast(268, Core.Me) && Core.Me.CurrentGP >= 200 && WorldManager.CurrentWeatherId == 145 && spectraled)
+					// Check for Mooch II before using Mooch
+					if (ChatCheck("[2115]","Mooch II") && ActionManager.CanCast(268, Core.Me) && Core.Me.CurrentGP >= 200 && WorldManager.CurrentWeatherId == Weather.Spectral && spectraled)
 					{
 						Log("Mooch II!");
 						ActionManager.DoAction(268, Core.Me);
 						biteTimer.Start();
 					}
-					else
-					{
-						//<!-- plump 29716 -->
-						//<!-- krill 29715 -->
-						//<!-- ragworm 29714 -->
-						if (WorldManager.CurrentWeatherId == 145)
+                    else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch && WorldManager.CurrentWeatherId == Weather.Spectral && spectraled)
+                    {
+                        Log("Mooch!");
+                        FishingManager.Mooch();
+                        biteTimer.Start();
+                    }
+                    else
+                    {
+						if (WorldManager.CurrentWeatherId == Weather.Spectral)
 						{
 							//Bait for Blue fish
-							if (((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains(29788)) || ((location == "south") && (timeOfDay == "Night") && missingFish.Contains(29789)) || ((location == "north") && (timeOfDay == "Day") && missingFish.Contains(29791)) || ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains(29790)) || ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains(32074)) || ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains(32094)) || ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains(32114)))
+							if (((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis)) || ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta)) || ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus)) || ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale)) || ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa)) || ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad)) || ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus)))
 							{
 								await ChangeBait(spectralbaitId);
 							}
 							else if (((location == "galadion") && (timeOfDay == "Sunset")) || ((location == "rhotano") && (timeOfDay == "Day")) || ((location == "north") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Night")) || ((location == "ciel") && (timeOfDay == "Sunset")) || ((location == "blood") && (timeOfDay == "Sunset")))
 							{
-								await ChangeBait(29716); //plump
+								await ChangeBait(FishBait.PlumpWorm); 
 							}
-							else if (((location == "south") && (timeOfDay == "Day")) || ((location == "rhotano") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29774))) || ((location == "north") && (timeOfDay == "Sunset") && missingFish.Contains(29783) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) || ((location == "north") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains(29777))) || ((location == "galadion") && (timeOfDay == "Night")) || ((location == "ciel") && (timeOfDay == "Day")) || ((location == "blood") && (timeOfDay == "Night")) || ((location == "sound")))
+							else if (((location == "south") && (timeOfDay == "Day")) || ((location == "rhotano") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains((uint)OceanFish.Slipsnail))) || ((location == "north") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.TheFallenOne) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) || ((location == "north") && (timeOfDay == "Night") && ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || !missingFish.Contains((uint)OceanFish.BartholomewTheChopper))) || ((location == "galadion") && (timeOfDay == "Night")) || ((location == "ciel") && (timeOfDay == "Day")) || ((location == "blood") && (timeOfDay == "Night")) || ((location == "sound")))
 							{
-								await ChangeBait(29715); //krill
+								await ChangeBait(FishBait.Krill); 
 							}
 							else if (((location == "galadion") && (timeOfDay == "Day")) || ((location == "south") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Sunset")) || ((location == "north") && (timeOfDay == "Night")) || ((location == "rhotano") && (timeOfDay == "Night")) || ((location == "blood") && (timeOfDay == "Day")))
 							{
-								await ChangeBait(29714); //ragworm
+								await ChangeBait(FishBait.Ragworm); 
 							}
 							else
 							{
@@ -510,21 +833,21 @@ namespace OceanTripPlanner
 						else
 						{
 							//Cieldalaes Geode
-							if (location == "ciel" && missingFish.Contains(32064))
+							if (location == "ciel" && missingFish.Contains((uint)OceanFish.CieldalaesGeode))
 							{
 								if (!Core.Player.HasAura(568))
 								{
-									await ChangeBait(29714);
+									await ChangeBait(FishBait.Ragworm);
 								}
 								else
 								{
-									await ChangeBait(29715);
+									await ChangeBait(FishBait.Krill);
 								}
 							}
 							//Ginkgo Fin
-							else if (location == "sound" && missingFish.Contains(32104))
+							else if (location == "sound" && missingFish.Contains((uint)OceanFish.GinkgoFin))
 							{
-								await ChangeBait(29714);
+								await ChangeBait(FishBait.Ragworm);
 							}
 							else
 							{
@@ -537,12 +860,13 @@ namespace OceanTripPlanner
 					await Coroutine.Sleep(50);
 					doubleHooked = false;
 				}
-				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]","measure your catch"))
+
+				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 				{
 					await Coroutine.Sleep(50);
 
 					//Spectral popped, don't wait for normal fish
-					if (WorldManager.CurrentWeatherId == 145 && !spectraled)
+					if (WorldManager.CurrentWeatherId == Weather.Spectral && !spectraled)
 					{
 						Log("Spectral popped!");
 						spectraled = true;
@@ -555,7 +879,22 @@ namespace OceanTripPlanner
 					{
 						biteTimer.Stop();
 						Log($"Bite Time: {biteTimer.Elapsed.TotalSeconds:F1}s");
-						if ((((location == "galadion") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (FishingManager.TugType != TugType.Medium) && (timeOfDay != "Night")) || ((biteTimer.Elapsed.TotalSeconds > 1) && (biteTimer.Elapsed.TotalSeconds <= 4) && (FishingManager.TugType == TugType.Medium)))) || ((location == "south") && (((biteTimer.Elapsed.TotalSeconds >= 6) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Heavy) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 2) && (biteTimer.Elapsed.TotalSeconds <= 6) && (timeOfDay == "Night") && (FishingManager.TugType == TugType.Medium) && (FishingManager.MoochLevel == 1)) || ((biteTimer.Elapsed.TotalSeconds >= 4) && (biteTimer.Elapsed.TotalSeconds <= 7) && (timeOfDay == "Day") && (FishingManager.TugType == TugType.Medium)))) || ((location == "north") && (((biteTimer.Elapsed.TotalSeconds >= 5) && (biteTimer.Elapsed.TotalSeconds <= 9) && (timeOfDay == "Night") && (FishingManager.TugType != TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 12) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 9) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Medium)))) || ((location == "rhotano") && (((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 11) && (timeOfDay == "Night") && (FishingManager.TugType == TugType.Light)) || ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 10) && (timeOfDay == "Day") && (FishingManager.TugType == TugType.Heavy))))) && (WorldManager.CurrentWeatherId == 145) && ActionManager.CanCast(269, Core.Me) && (Core.Me.CurrentGP >= 400))
+						if ((((location == "galadion") && 
+									(((biteTimer.Elapsed.TotalSeconds >= 7) && (FishingManager.TugType != TugType.Medium) && (timeOfDay != "Night")) 
+										|| ((biteTimer.Elapsed.TotalSeconds > 1) && (biteTimer.Elapsed.TotalSeconds <= 4) && (FishingManager.TugType == TugType.Medium)))) 
+								|| ((location == "south") && 
+									(((biteTimer.Elapsed.TotalSeconds >= 6) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Light)) 
+										|| ((biteTimer.Elapsed.TotalSeconds >= 2) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Heavy) && (FishingManager.MoochLevel == 1)) 
+										|| ((biteTimer.Elapsed.TotalSeconds >= 2) && (biteTimer.Elapsed.TotalSeconds <= 6) && (timeOfDay == "Night") && (FishingManager.TugType == TugType.Medium) && (FishingManager.MoochLevel == 1)) 
+										|| ((biteTimer.Elapsed.TotalSeconds >= 4) && (biteTimer.Elapsed.TotalSeconds <= 7) && (timeOfDay == "Day") && (FishingManager.TugType == TugType.Medium)))) 
+								|| ((location == "north") && 
+									(((biteTimer.Elapsed.TotalSeconds >= 5) && (biteTimer.Elapsed.TotalSeconds <= 9) && (timeOfDay == "Night") && (FishingManager.TugType != TugType.Light)) 
+										|| ((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 12) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Light)) 
+										|| ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 9) && (timeOfDay == "Sunset") && (FishingManager.TugType == TugType.Medium)))) 
+								|| ((location == "rhotano") && 
+									(((biteTimer.Elapsed.TotalSeconds >= 7) && (biteTimer.Elapsed.TotalSeconds <= 11) && (timeOfDay == "Night") && (FishingManager.TugType == TugType.Light)) 
+										|| ((biteTimer.Elapsed.TotalSeconds >= 6) && (biteTimer.Elapsed.TotalSeconds <= 10) && (timeOfDay == "Day") && (FishingManager.TugType == TugType.Heavy))))) 
+							&& (WorldManager.CurrentWeatherId == Weather.Spectral) && ActionManager.CanCast(269, Core.Me) && (Core.Me.CurrentGP >= 400))
 						{
 							Log("Double Hook!");
 							ActionManager.DoAction(269, Core.Me);
@@ -583,7 +922,7 @@ namespace OceanTripPlanner
 
 			spectraled = false;
 			await Coroutine.Sleep(2000);
-			Log("Waiting for next stop...");
+			//Log("Waiting for next stop...");
 			if (FishingManager.State != FishingState.None)
 			{
 				ActionManager.DoAction(299, Core.Me);
@@ -649,18 +988,31 @@ namespace OceanTripPlanner
 
 		private async Task UseCordial()
 		{
-			if (Core.Me.CurrentGP < 500)
+			await Coroutine.Sleep(500); // Sleep in case ability is in use
+
+			uint cordial = 0;
+
+			if (DataManager.GetItem(Cordials.HiCordial).ItemCount() > 0)
+				cordial = Cordials.HiCordial;
+			else if (DataManager.GetItem(Cordials.Cordial).ItemCount() > 0)
+				cordial = Cordials.Cordial;
+			else if (DataManager.GetItem(Cordials.WateredCordial).ItemCount() > 0)
+				cordial = Cordials.WateredCordial;
+
+			// Yay, we have a cordial!
+			if (cordial > 0)
 			{
-				await Coroutine.Sleep(500);
-				foreach(BagSlot slot in InventoryManager.FilledSlots)	
-				{	
-					if(slot.RawItemId == 12669)	
-					{	
-						slot.UseItem();	
+				foreach (BagSlot slot in InventoryManager.FilledSlots)
+				{
+					if (slot.RawItemId == cordial)
+					{
+						slot.UseItem();
 					}
 				}
-				await Coroutine.Sleep(2000);
 			}
+			Logging.Write(Colors.Aqua, $"Used a {DataManager.GetItem(cordial).CurrentLocaleName}...");
+
+            await Coroutine.Sleep(2000);
 		}
 
 		private static async Task LandRepair(int repairThreshold)
@@ -688,54 +1040,54 @@ namespace OceanTripPlanner
 						await Coroutine.Wait(5000, () => !Repair.IsOpen);
 					}
 				}
-				Logging.Write(Colors.Aqua, "Repair complete");
+				Logging.Write(Colors.Aqua, "Repair complete!");
 			}
 		}
 
 		private async Task RestockBait(int baitThreshold, uint baitCap)
 		{
 			List<uint> itemsToBuy = new List<uint>();
-			if (DataManager.GetItem(29714).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.Ragworm).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(29714);
+				itemsToBuy.Add(FishBait.Ragworm);
 			}
-			if (DataManager.GetItem(29715).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.Krill).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(29715);
+				itemsToBuy.Add(FishBait.Krill);
 			}
-			if (DataManager.GetItem(29716).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.PlumpWorm).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(29716);
+				itemsToBuy.Add(FishBait.PlumpWorm);
 			}
-			if (DataManager.GetItem(2591).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.RatTail).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(2591);
+				itemsToBuy.Add(FishBait.RatTail);
 			}
-			if (DataManager.GetItem(2603).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.GlowWorm).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(2603);
+				itemsToBuy.Add(FishBait.GlowWorm);
 			}
-			if (DataManager.GetItem(2619).ItemCount() < 5)
+			if (DataManager.GetItem(FishBait.HeavySteelJig).ItemCount() < 5)
 			{
-				itemsToBuy.Add(2619);
+				itemsToBuy.Add(FishBait.HeavySteelJig);
 			}
-			if (DataManager.GetItem(2613).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.ShrimpCageFeeder).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(2613);
+				itemsToBuy.Add(FishBait.ShrimpCageFeeder);
 			}
-			if (DataManager.GetItem(2587).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.PillBug).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(2587);
+				itemsToBuy.Add(FishBait.PillBug);
 			}
-			if (DataManager.GetItem(27590).ItemCount() < baitThreshold)
+			if (DataManager.GetItem(FishBait.StripOfJerkedOvim).ItemCount() < baitThreshold)
 			{
-				itemsToBuy.Add(27590);
+				itemsToBuy.Add(FishBait.StripOfJerkedOvim);
 			}
 
 			if (itemsToBuy.Any())
 			{
 				Log("Restocking bait...");
-				if (itemsToBuy.Contains(29714) || itemsToBuy.Contains(29715) || itemsToBuy.Contains(29716))
+				if (itemsToBuy.Contains(FishBait.Ragworm) || itemsToBuy.Contains(FishBait.Krill) || itemsToBuy.Contains(FishBait.PlumpWorm))
 				{
 					await Navigation.GetTo(129, new Vector3(-398.5143f, 3.099996f, 81.47765f));
 					await Coroutine.Sleep(1000);
@@ -747,7 +1099,7 @@ namespace OceanTripPlanner
 						await Coroutine.Wait(5000, () => Shop.Open);
 						foreach (uint item in itemsToBuy)
 						{
-							if ((item == 29714) || (item == 29715) || (item == 29716))
+							if ((item == FishBait.Ragworm) || (item == FishBait.Krill) || (item == FishBait.PlumpWorm))
 							{
 								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
 								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
@@ -760,7 +1112,7 @@ namespace OceanTripPlanner
 					Shop.Close();
 					await Coroutine.Wait(5000, () => !Shop.Open);
 				}
-				if (itemsToBuy.Contains(2591) || itemsToBuy.Contains(2603) || itemsToBuy.Contains(2613) || itemsToBuy.Contains(2587))
+				if (itemsToBuy.Contains(FishBait.RatTail) || itemsToBuy.Contains(FishBait.GlowWorm) || itemsToBuy.Contains(FishBait.ShrimpCageFeeder) || itemsToBuy.Contains(FishBait.PillBug))
 				{
 					await Navigation.GetTo(129, new Vector3(-247.6223f, 16.2f, 39.87407f));
 					await Coroutine.Sleep(1000);
@@ -772,7 +1124,7 @@ namespace OceanTripPlanner
 						await Coroutine.Wait(5000, () => Shop.Open);
 						foreach (uint item in itemsToBuy)
 						{
-							if ((item == 2591) || (item == 2603) || (item == 2613) || (item == 2587))
+							if ((item == FishBait.RatTail) || (item == FishBait.GlowWorm) || (item == FishBait.ShrimpCageFeeder) || (item == FishBait.PillBug))
 							{
 								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
 								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
@@ -786,13 +1138,14 @@ namespace OceanTripPlanner
 					await Coroutine.Wait(5000, () => !Shop.Open);
 				}
 
-				if (itemsToBuy.Contains(2619) && Core.Me.Levels[ClassJobType.Goldsmith] >= 36)
+				if (itemsToBuy.Contains(FishBait.HeavySteelJig) && Core.Me.Levels[ClassJobType.Goldsmith] >= 36)
 				{
-					await PassTheTime.IdleLisbeth(2619, 10, "Goldsmith", "true", 0);
+					await PassTheTime.IdleLisbeth((int)FishBait.HeavySteelJig, 10, "Goldsmith", "true", 0);
 				}
-				if (itemsToBuy.Contains(27590))
+
+				if (itemsToBuy.Contains(FishBait.StripOfJerkedOvim))
 				{
-					await PassTheTime.IdleLisbeth(27590, 300, "Exchange", "true", 0);
+					await PassTheTime.IdleLisbeth((int)FishBait.StripOfJerkedOvim, 300, "Exchange", "true", 0);
 				}
 				Log("Restocking bait complete");
 			}
@@ -832,9 +1185,9 @@ namespace OceanTripPlanner
 		private async Task EmptyScrips(int itemId, int scripThreshold)
 		{
 			//TODO: Buy other stuff with scrip
-			if (SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)25200) > scripThreshold)
+			if (SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) > scripThreshold)
 			{
-				await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)25200)/20, "Exchange", "false", 0);
+				await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips)/20, "Exchange", "false", 0);
 			}
 		}
 
@@ -908,7 +1261,8 @@ namespace OceanTripPlanner
 							if(m.Success)
 							{
 								DateTime ventureTime = DateTime.ParseExact(m.Value, "d/M H:mm", null);
-								if ((ventureTime < OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime > DateTime.Now) || (ventureTime > OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime < DateTime.Now))
+								if ((ventureTime < OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime > DateTime.Now) 
+									|| (ventureTime > OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime < DateTime.Now))
 								{
 									OceanTripSettings.Instance.VentureTime = ventureTime;
 								}
@@ -939,7 +1293,7 @@ namespace OceanTripPlanner
 
 		private async Task<List<uint>> GetFishLog()
 		{
-			List<uint> recordedFish = new List<uint>();
+			List<int> recordedFish = new List<int>();
 			if (!FishGuide.IsOpen)
 			{
 				FishGuide.Toggle();
@@ -957,7 +1311,7 @@ namespace OceanTripPlanner
 					{
 						if (fishy != 0 && fishy != uint.MaxValue)
 						{
-							recordedFish.Add(fishy);
+							recordedFish.Add((int)fishy);
 						}
 					}
 				}
@@ -965,7 +1319,10 @@ namespace OceanTripPlanner
 				FishGuide.Toggle();
 				await Coroutine.Wait(5000, () => !FishGuide.IsOpen);
 			}
-			return oceanFish.Except(recordedFish).ToList();
+
+			// Convert the list to uint
+			List<uint> newOceanFishList = oceanFish.Except(recordedFish).ToList().ConvertAll(x => (uint)x);
+			return newOceanFishList;
 		}
 
 		private bool ChatCheck(string chattype, string chatmessage)

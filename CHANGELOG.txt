@@ -1,0 +1,39 @@
+
+9/6/2022
+--------
+
+Completed:
+* Reduced the amount of Magic Numbers in the code
+
+* Added handling for HQ or Normal Crab Cakes, as well as HQ Peppered Popotoes or normal Peppered Popotoes (whichever is in the inventory). Ocean Trip will try to use HQ over regular, starting with Crab Cakes. If you don't have any Crab Cakes, it will look for Peppered Popotoes.
+
+* Updated Cordial logic to check for the correct one to use (Hi-Cordial, Cordial, Watered Cordial). Priority is given to Hi-Cordials, followed by Cordials, and lastly Watered Cordials. Whichever is in your inventory.
+
+* Changed timing of some of the events to occur at the correct times instead of 10+ minutes after.
+
+* Added additional logging information.
+
+* Removed the Missing Ocean Fish list and replaced it with the total number of missing ocean fish.
+
+* Fixed an issue that caused FFXIV to crash due to a conflict between OceanTrip and Dalamud Plugins.
+
+* If you start Ocean Trip and it's 10 minutes after the duty becomes available (IE: 2:10PM), the BotBase will automatically skip the current round and wait the 1 hour and 50 minutes (or whatever remains) until the next boat trip. You can override this by talking to Dryskthota and queueing up, then starting the bot while loading into the instance. The reasoning for this is that not everyone may make it in time./fc
+
+
+
+Want To Do:
+* Current focus tries to get Blues if they are missing, regardless of points setting. This causes the incorrect bait to be used in some circumstances where the user may want to prefer going for additional points.
+
+* Lisbeth is killed only if focus is on points, or if it's on Fishing Log and a legendary is missing. This should be adapted to also check if they are missing ANY fish, and not just legendaries. Perhaps an additional setting option?
+
+* Food handling needs to be better and allow for more than just hard coded checks. Maybe a selectable option in Settings?
+
+* Retaining option loves to keep looping over the retainers even if it's not time yet. Need to keep track fo the lowest retainer timer and keep it memorized while the bot is active when set to True.
+
+* Once you finish a round of fishing, it should display how much time there is until the next ocean trip.
+
+* A good fisher should never be 100% GP all the time. Need to add additional ability use (IE: Chum) when at full GP and not in Spectral. GP Regen should always be going.
+
+
+Known Issues:
+* If you are in a group, there may be issues with registering for the boat.
