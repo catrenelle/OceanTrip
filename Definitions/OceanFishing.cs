@@ -161,18 +161,6 @@ namespace OceanTripPlanner.Definitions
         public static uint Ragworm = 29714;
         public static uint Krill = 29715;
         public static uint PlumpWorm = 29716;
-        public static uint StripOfJerkedOvim = 27590; 
-    }
-
-    public static class Cordials
-    {
-        public static uint Cordial = 6141;
-        public static uint HiCordial = 12669;
-        public static uint WateredCordial = 16911;
-    }
-
-    public static class CharacterAuras
-    {
-        public static int FoodBuff = 10419;
+        public static uint SquidStrips = 27590; 
     }
 }

@@ -54,8 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Definitions\Weather.cs" />
-    <Compile Include="Definitions\FoodList.cs" />
+    <Compile Include="Definitions\FFXIV_Definitions.cs" />
     <Compile Include="Definitions\OceanFishing.cs" />
     <Compile Include="PassTheTime.cs" />
     <Compile Include="Helpers\Lisbeth.cs" />

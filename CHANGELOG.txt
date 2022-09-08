@@ -1,9 +1,13 @@
 
-9/6/2022
+9/7/2022
 --------
 
 Completed:
-* Reduced the amount of Magic Numbers in the code
+* Removed "Magic Numbers" from the code to make it easier to read. Definitions can be found in OceanFishing.cs and FFXIV_Definitions.cs.
+
+* Restructured multiple segments of code to be more readable instead of being entirely inline. Some instances were left alone.
+
+* Reduced the amount of log messages to the RebornBuddy console, added more log messages where it made sense.
 
 * Added handling for HQ or Normal Crab Cakes, as well as HQ Peppered Popotoes or normal Peppered Popotoes (whichever is in the inventory). Ocean Trip will try to use HQ over regular, starting with Crab Cakes. If you don't have any Crab Cakes, it will look for Peppered Popotoes.
 
@@ -11,29 +15,28 @@ Completed:
 
 * Changed timing of some of the events to occur at the correct times instead of 10+ minutes after.
 
-* Added additional logging information.
+* Removed the Missing Ocean Fish list and replaced it with the total number of missing ocean fish. Related messages now only appear at the start of Ocean Trip, and it refreshes after the results screen from a trip.
 
-* Removed the Missing Ocean Fish list and replaced it with the total number of missing ocean fish.
+* Fixed an issue that caused FFXIV to crash due to a conflict between OceanTrip and Dalamud Plugins. This may have been a unique situation to my own personal use case.
 
-* Fixed an issue that caused FFXIV to crash due to a conflict between OceanTrip and Dalamud Plugins.
+* If you start Ocean Trip and it's 10 minutes after the duty becomes available (IE: 2:10PM), the BotBase will automatically skip the current round and wait the 1 hour and 50 minutes (or whatever remains) until the next boat trip. You can override this by talking to Dryskthota and queueing up, then starting the bot while loading into the instance. The reasoning for this is that not everyone may make it in time.
 
-* If you start Ocean Trip and it's 10 minutes after the duty becomes available (IE: 2:10PM), the BotBase will automatically skip the current round and wait the 1 hour and 50 minutes (or whatever remains) until the next boat trip. You can override this by talking to Dryskthota and queueing up, then starting the bot while loading into the instance. The reasoning for this is that not everyone may make it in time./fc
-
+* Once you finish a round of fishing, it will display how much time there is until the next ocean trip.
 
 
 Want To Do:
-* Current focus tries to get Blues if they are missing, regardless of points setting. This causes the incorrect bait to be used in some circumstances where the user may want to prefer going for additional points.
-
-* Lisbeth is killed only if focus is on points, or if it's on Fishing Log and a legendary is missing. This should be adapted to also check if they are missing ANY fish, and not just legendaries. Perhaps an additional setting option?
+* Lisbeth is killed only if focus is on points, or if it's on Fishing Log and a legendary is missing. This should be adapted to also check if the user is missing ANY fish, and not just legendaries. Perhaps an additional setting option?
 
 * Food handling needs to be better and allow for more than just hard coded checks. Maybe a selectable option in Settings?
 
 * Retaining option loves to keep looping over the retainers even if it's not time yet. Need to keep track fo the lowest retainer timer and keep it memorized while the bot is active when set to True.
-
-* Once you finish a round of fishing, it should display how much time there is until the next ocean trip.
 
 * A good fisher should never be 100% GP all the time. Need to add additional ability use (IE: Chum) when at full GP and not in Spectral. GP Regen should always be going.
 
 
 Known Issues:
 * If you are in a group, there may be issues with registering for the boat.
+
+* If you start the bot mid-trip, it may not like that and appear unresponsive.
+
+* Current focus tries to get Blues if they are missing, regardless of points setting. This causes the incorrect bait to be used in some circumstances where the user may want to prefer going for additional points. This likely won't be fixed, so this is documentation for posterity.
