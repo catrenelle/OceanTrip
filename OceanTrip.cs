@@ -642,7 +642,7 @@ namespace OceanTripPlanner
 
 								foreach (BagSlot slot in InventoryManager.FilledSlots)
 								{
-									if (slot.RawItemId == (uint)FoodList.PepperedPopotoes)
+									if (slot.RawItemId == (uint)edibleFood)
 									{
 										slot.UseItem();
 									}
@@ -1002,7 +1002,7 @@ namespace OceanTripPlanner
 					}
 				}
 
-				if (Dryskthota != null)
+				if (Dryskthota != null && Dryskthota.IsWithinInteractRange)
 				{
 					Dryskthota.Interact();
 					if (await Coroutine.Wait(5000, () => Talk.DialogOpen))
