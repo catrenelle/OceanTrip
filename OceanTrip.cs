@@ -466,7 +466,8 @@ namespace OceanTripPlanner
 
 
             Log("BotBase is initialized, beginning execution.");
-			_root = new ActionRunCoroutine(r => Run());
+
+            _root = new ActionRunCoroutine(r => Run());
 		}
 
 		private TimeSpan TimeUntilNextBoat()
@@ -527,7 +528,6 @@ namespace OceanTripPlanner
 			Navigator.PlayerMover = new SlideMover();
 			Navigator.NavigationProvider = new ServiceNavigationProvider();
 
-			await RefreshMissingFish();
             await OceanFishing();
 
 			return true;
@@ -543,7 +543,7 @@ namespace OceanTripPlanner
         private async Task OceanFishing()
 		{
 			GetSchedule();
-			if (WorldManager.RawZoneId != Zones.OceanFishing)
+			if (WorldManager.RawZoneId != Zones.TheEndeavor)
 			{
 				//missingFish = await GetFishLog();
 				if (Core.Me.CurrentJob == ClassJobType.Fisher)
@@ -562,18 +562,28 @@ namespace OceanTripPlanner
 				}
 
 				await RestockBait(150, 500);
+
+				/* Lisbeth exchange doesn't work properly, so temporarily disabling this */
+				/*
 				if (OceanTripSettings.Instance.EmptyScrips)
 				{
 					await EmptyScrips(12669, 1500);
-				}
+				}*/
 
 				if (OceanTripSettings.Instance.Venturing != Venturing.None)
 				{
 					await Retaining();
 				}
 
+
+				await RefreshMissingFish();
+
                 TimeSpan timeLeftUntilNextSpawn = TimeUntilNextBoat();
-                Log($"Next boat is in {Math.Ceiling(timeLeftUntilNextSpawn.TotalMinutes)} minutes. Passing the time until then.");
+				if (timeLeftUntilNextSpawn.TotalMinutes < 1)
+                    Log($"The boat is ready to be boarded!");
+                else
+                    Log($"Next boat is in {Math.Ceiling(timeLeftUntilNextSpawn.TotalMinutes)} minutes. Passing the time until then.");
+
                 PassTheTime.freeToCraft = true;
 				await PassTheTime.Craft();
 
@@ -606,29 +616,18 @@ namespace OceanTripPlanner
 				uint edibleFood = 0;
 				bool edibleFoodHQ = false;
 
-				if (OceanTripSettings.Instance.OceanFood)
+				if (OceanTripSettings.Instance.OceanFood != OceanFood.None)
 				{
-					if (DataManager.GetItem((uint)FoodList.CrabCakes, true).ItemCount() >= 1)
+					if (DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood, true).ItemCount() >= 1)
 					{
-						edibleFood = (uint)FoodList.CrabCakes;
+						edibleFood = (uint)OceanTripSettings.Instance.OceanFood;
 						edibleFoodHQ = true;
 					}
-					else if (DataManager.GetItem((uint)FoodList.CrabCakes, false).ItemCount() >= 1)
+					else if (DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood, false).ItemCount() >= 1)
 					{
-						edibleFood = (uint)FoodList.CrabCakes;
+						edibleFood = (uint)OceanTripSettings.Instance.OceanFood;
 						edibleFoodHQ = false;
 					}
-					else if (DataManager.GetItem((uint)FoodList.PepperedPopotoes, true).ItemCount() >= 1)
-					{
-						edibleFood = (uint)FoodList.PepperedPopotoes;
-						edibleFoodHQ = true;
-					}
-					else if (DataManager.GetItem((uint)FoodList.PepperedPopotoes).ItemCount() >= 1)
-					{
-						edibleFood = (uint)FoodList.PepperedPopotoes;
-						edibleFoodHQ = false;
-
-                    }
 					else
 					{
 						edibleFood = 0;
@@ -653,9 +652,9 @@ namespace OceanTripPlanner
 							} while (!Core.Player.Auras.Any(x => x.Value == CharacterAuras.FoodBuff));
 							await Coroutine.Sleep(1000);
 					}
-                    else if (OceanTripSettings.Instance.OceanFood == true)
+                    else 
                     {
-                        Log("Out of food!");
+                        Log($"Out of {DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood, false).CurrentLocaleName} to eat!");
                     }
                 }
 
@@ -675,7 +674,7 @@ namespace OceanTripPlanner
 				RouteShown = true;
 			}
 			
-			while ((WorldManager.ZoneId == Zones.OceanFishing) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+			while ((WorldManager.ZoneId == Zones.TheEndeavor) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
 				if (ChatCheck("[NPCAnnouncements]","southern Strait"))
 				{
@@ -726,15 +725,21 @@ namespace OceanTripPlanner
 			AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
 			if (windowByName != null)
 			{
-				await Coroutine.Sleep(12000);
-				windowByName.SendAction(1, 3, 0);
+                // This is super sloppy as we have to rely on a bunch of sleeps right now.
+
+                await Coroutine.Sleep(12000); 
+
+				// What if the player already clicked the button and we're now loading or something else? This will potentially CRASH the client. Look into refining this later.
+               	windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
+				if (windowByName != null)
+					windowByName.SendAction(1, 3, 0);
+				
 				if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
 				{
 					await Coroutine.Yield();
 					await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
 				}
 
-                await RefreshMissingFish();
 				RouteShown = false;
             }
 
@@ -776,7 +781,7 @@ namespace OceanTripPlanner
 			Core.Me.SetFacing(headings[spot]);
 			await Coroutine.Sleep(1000);
 
-			while ((WorldManager.ZoneId == Zones.OceanFishing) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+			while ((WorldManager.ZoneId == Zones.TheEndeavor) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
 				if (WorldManager.CurrentWeatherId != Weather.Spectral) 
 				{
@@ -795,12 +800,24 @@ namespace OceanTripPlanner
 					}		
 				}
 
-				if (FishingManager.AvailableMooch.Both == FishingManager.CanMoochAny && !ChatCheck("[2115]","Mooch II") && (Core.Me.CurrentGP < 500) && spectraled)
-				{
+				if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && spectraled)
 					await UseCordial();
-				}
+				else if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && Core.Me.CurrentGPPercent < 25.00)
+					await UseCordial();
 
-				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
+				// Should we use Thaliak's Favor?
+				if (spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
+				{
+					Log("Using Thaliak's Favor!");
+					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
+				}
+				else if (!spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me) && Core.Player.Auras.Where(x => x.Id == CharacterAuras.AnglersArt && x.Value >= 10) != null)
+				{
+                    Log("Currently at 10 Angler's Art Stacks - Using Thaliak's Favor!");
+                    ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
+                }
+
+                if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
 					//Identical Cast for Blue fish
 					if ((ChatCheck("You land a","gugrusaurus") || ChatCheck("You land a","heavenskey") || ChatCheck("You land a", "grandmarlin")) && (Core.Me.CurrentGP >= DataManager.SpellCache[Actions.IdenticalCast].Cost) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
@@ -876,8 +893,20 @@ namespace OceanTripPlanner
 							{
 								await ChangeBait(baitId);
 							}
-						}
-						biteTimer.Start();
+
+                            // Should we use Chum?
+                            if (Core.Me.MaxGP >= 100 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && OceanTripSettings.Instance.FullGPAction == FullGPAction.Chum)
+                            {
+                                if (ActionManager.CanCast(Actions.Chum, Core.Me))
+                                {
+                                    Log("Triggering Full GP Action to keep regen going - Chum!");
+                                    ActionManager.DoAction(Actions.Chum, Core.Me);
+                                    await Coroutine.Sleep(100);
+                                }
+                            }
+                        }
+
+                        biteTimer.Start();
 						FishingManager.Cast();	
 					}
 					await Coroutine.Sleep(50);
@@ -936,7 +965,13 @@ namespace OceanTripPlanner
 						}
 						else
 						{
-							FishingManager.Hook();
+							if (Core.Me.MaxGP >= 500 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && OceanTripSettings.Instance.FullGPAction == FullGPAction.DoubleHook)
+							{
+								Log("Triggering Full GP Action to keep regen going - Double Hook!");
+								ActionManager.DoAction(Actions.DoubleHook, Core.Me);
+							}
+							else
+								FishingManager.Hook();
 						}
 						biteTimer.Reset();
 					}
@@ -956,44 +991,56 @@ namespace OceanTripPlanner
 		{	
 			var Dryskthota = GameObjectManager.GetObjectByNPCId(NPC.Dryskthota);
 
-			if (Dryskthota != null)
+			if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader && !PartyManager.CrossRealm))
 			{
-				Dryskthota.Interact();
-				if (await Coroutine.Wait(5000, () => Talk.DialogOpen))
+				// Check if party members are nearby
+				if (PartyManager.IsInParty)
 				{
-					Talk.Next();
-				}
-
-				await Coroutine.Wait(5000, () => SelectString.IsOpen);
-
-				if (SelectString.IsOpen)
-				{
-					SelectString.ClickSlot(0);
-					await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
-					SelectYesno.Yes();
-
-					await Coroutine.Wait(1000000, () => ContentsFinderConfirm.IsOpen);
-
-					await Coroutine.Yield();
-					while (ContentsFinderConfirm.IsOpen)
-					{
-						DutyManager.Commence();
-						await Coroutine.Yield();
-						if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
-						{
-							await Coroutine.Yield();
-							await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
-						}
-					}
-					while (WorldManager.ZoneId != Zones.OceanFishing)
+					while (PartyManager.AllMembers.Where(x => !x.GameObject.IsTargetable).Count() > 0 && PartyManager.IsInParty)
 					{
 						await Coroutine.Sleep(1000);
 					}
-					await Coroutine.Sleep(2500);
-					Logging.Write(Colors.Aqua, "We're on the boat!");
+				}
+
+				if (Dryskthota != null)
+				{
+					Dryskthota.Interact();
+					if (await Coroutine.Wait(5000, () => Talk.DialogOpen))
+					{
+						Talk.Next();
+					}
+
+					await Coroutine.Wait(5000, () => SelectString.IsOpen);
+
+					if (SelectString.IsOpen)
+					{
+						SelectString.ClickSlot(0);
+						await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+						SelectYesno.Yes();
+					}
 				}
 			}
-		}
+
+            await Coroutine.Wait(1000000, () => ContentsFinderConfirm.IsOpen);
+
+            await Coroutine.Yield();
+            while (ContentsFinderConfirm.IsOpen)
+            {
+                DutyManager.Commence();
+                await Coroutine.Yield();
+                if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+                {
+                    await Coroutine.Yield();
+                    await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
+                }
+            }
+            while (WorldManager.ZoneId != Zones.TheEndeavor)
+            {
+                await Coroutine.Sleep(1000);
+            }
+            await Coroutine.Sleep(2500);
+            Logging.Write(Colors.Aqua, "We're on the boat!");
+        }
 
 		private static async Task SwitchToJob(ClassJobType job)
 		{
@@ -1033,8 +1080,8 @@ namespace OceanTripPlanner
 					}
 				}
 			}
-			Logging.Write(Colors.Aqua, $"Used a {DataManager.GetItem(cordial).CurrentLocaleName}...");
 
+			Logging.Write(Colors.Aqua, $"Used a {DataManager.GetItem(cordial).CurrentLocaleName}!");
             await Coroutine.Sleep(2000);
 		}
 

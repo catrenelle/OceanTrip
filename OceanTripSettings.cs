@@ -3,6 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.ComponentModel;
 using ff14bot.Helpers;
+using System.Runtime.InteropServices;
 
 namespace OceanTripPlanner
 {
@@ -43,6 +44,20 @@ namespace OceanTripPlanner
 		Crystarium,
 		Eulmore,
 		None
+	}
+
+	public enum FullGPAction : uint
+	{
+		Chum,
+		DoubleHook,
+		None
+	}
+
+	public enum OceanFood : int
+	{
+        PepperedPopotoes = 27870,
+		CrabCakes = 30481,
+		None = 0
 	}
 
 	internal class OceanTripSettings : JsonSettings
@@ -122,15 +137,37 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private bool _OceanFood;
+
+        private FullGPAction _FullGPAction;
+        [Setting]
+
+        [DisplayName("Full GP Action")]
+        [Description("What to do when your current GP is at its maximum. Does not apply during Spectral events. Double Hook will not work if Patience is in use.")]
+        [Category("Ocean")]
+
+        [DefaultValueAttribute(FullGPAction.Chum)]
+        public FullGPAction FullGPAction
+        {
+            get { return _FullGPAction; }
+            set
+            {
+                if (_FullGPAction != value)
+                {
+                    _FullGPAction = value;
+                    Save();
+                }
+            }
+        }
+        
+		private OceanFood _OceanFood;
 		[Setting]
 
 		[DisplayName("Ocean Food")]
-		[Description("Craft and use Peppered Popotos for ocean fishing.")]
+		[Description("What food item do you want to use for fishing? HQ food will be used first if you have it.")]
 		[Category("Ocean")]
 
-		[DefaultValueAttribute(true)]
-		public bool OceanFood
+		[DefaultValueAttribute(OceanFood.None)]
+		public OceanFood OceanFood
 		{
 			get { return _OceanFood; }
 			set
@@ -147,7 +184,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Exchange Fish")]
-		[Description("What to do with fish caught by ocean fishing(won't dispose of blue fish).")]
+		[Description("What to do with fish caught by ocean fishing (won't dispose of blue fish).")]
 		[Category("Ocean")]
 
 		[DefaultValueAttribute(ExchangeFish.Sell)]
@@ -248,6 +285,8 @@ namespace OceanTripPlanner
 			}
 		}
 
+		// Lisbeth cannot properly exchange for materia  right now - disabling this
+		/*
 		private bool _GetMateria;
 		[Setting]
 
@@ -268,6 +307,7 @@ namespace OceanTripPlanner
 				}
 			}
 		}
+		*/
 
 		private bool _RefillScrips;
 		[Setting]
@@ -290,7 +330,10 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private bool _EmptyScrips;
+
+        /* Lisbeth Exchange doesn't work properly right now - disabling */
+		/*
+        private bool _EmptyScrips;
 		[Setting]
 
 		[DisplayName("Empty Gatherer Scrips")]
@@ -309,8 +352,10 @@ namespace OceanTripPlanner
 					Save();
 				}
 			}
-		}
+		}*/
 
+		/* Lisbeth Exchange doesn't work properly right now - disabling */
+		/*
 		private bool _CraftMats;
 		[Setting]
 
@@ -331,6 +376,7 @@ namespace OceanTripPlanner
 				}
 			}
 		}
+		*/
 
 		private bool _GatherShards;
 		[Setting]

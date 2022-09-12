@@ -12,6 +12,7 @@ using ff14bot.Helpers;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using OceanTripPlanner.Helpers;
+using OceanTripPlanner.Definitions;
 using System.IO;
 
 namespace OceanTripPlanner
@@ -28,13 +29,17 @@ namespace OceanTripPlanner
 				int lisFood = (int)OceanTripSettings.Instance.LisbethFood;
 
 				//Ocean Food
-				if ((freeToCraft && DataManager.GetItem(27870).ItemCount() < 10) && OceanTripSettings.Instance.OceanFood)
+				if (OceanTripSettings.Instance.OceanFood != OceanFood.None)
 				{
-					await IdleLisbeth(27870, 40, "Culinarian", "false", lisFood); //Peppered Popotos
+					if ((freeToCraft && DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood).ItemCount() < 10))
+					{
+						await IdleLisbeth((int)OceanTripSettings.Instance.OceanFood, 40, "Culinarian", "false", lisFood);
+					}
 				}
 
-				//Resume last order
-				if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripSettings.Instance.ResumeOrder)
+
+                //Resume last order
+                if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripSettings.Instance.ResumeOrder)
 				{
 					if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") != "[]")
 					{
@@ -91,6 +96,9 @@ namespace OceanTripPlanner
 					}
 				}
 
+
+				/* MATS and MATERIA are removed because Lisbeth Exchange is broken */
+				/*
 				//Mats
 				if (freeToCraft && OceanTripSettings.Instance.CraftMats)
 				{
@@ -128,18 +136,18 @@ namespace OceanTripPlanner
 					{
 						await IdleLisbeth(33940, 30, "Exchange", "false", 0); //crafter command X
 					}
-				}
+				}*/
 
 				//Scrip
 				if (freeToCraft && OceanTripSettings.Instance.RefillScrips)
 				{
-					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)25199) <= 1500)
+					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.WhiteCraftersScrips) <= 1500)
 					{
-						await IdleLisbeth(25199, 500, "CraftMasterpiece", "false", 0); //White Scrip
+						await IdleLisbeth((int)Currency.WhiteCraftersScrips, 500, "CraftMasterpiece", "false", 0); 
 					}
-					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)33913) <= 1500)
+					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.PurpleCraftersScrips) <= 1500)
 					{
-						await IdleLisbeth(33913, 500, "CraftMasterpiece", "false", 0); //Purple Scrip
+						await IdleLisbeth((int)Currency.PurpleCraftersScrips, 500, "CraftMasterpiece", "false", 0); 
 					}
 				}
 
@@ -223,8 +231,7 @@ namespace OceanTripPlanner
 			}
 		}
 
-		//stone soup: 4717
-		//seafood stew: 12865
+
 		public static async Task IdleLisbeth(int itemId, int amount, string type, string quicksynth, int food)
 		{
 			Log($"{type}ing {amount} {DataManager.GetItem((uint)itemId).CurrentLocaleName}");

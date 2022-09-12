@@ -13,13 +13,16 @@ namespace OceanTripPlanner.Definitions
         public const uint OpenCloseBaitMenu = 288;
         public const uint Quit = 299;
         public const uint PowerfulHookset = 4103;
+        public const uint Chum = 4104;
         public const uint PrecisionHookset = 4179;
         public const uint IdenticalCast = 4596;
+        public const uint ThaliaksFavor = 26804;
     }
 
     public static class CharacterAuras
     {
         public static uint FishersIntuition = 568;
+        public static uint AnglersArt = 2778;
         public static uint FoodBuff = 10419;
     }
 
@@ -28,6 +31,12 @@ namespace OceanTripPlanner.Definitions
         public static uint Cordial = 6141;
         public static uint HiCordial = 12669;
         public static uint WateredCordial = 16911;
+    }
+
+    public enum Currency : uint
+    {
+        WhiteCraftersScrips = 25199,
+        PurpleCraftersScrips = 33913
     }
 
     public static class FoodList
@@ -60,6 +69,6 @@ namespace OceanTripPlanner.Definitions
         public const uint RhalgrsReach = 635;
         public const uint Crystarium = 819;
         public const uint Eulmore = 820;
-        public const uint OceanFishing = 900;
+        public const uint TheEndeavor = 900;
     }
 }
