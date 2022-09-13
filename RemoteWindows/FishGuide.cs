@@ -40,7 +40,8 @@ namespace OceanTripPlanner.RemoteWindows
 		public static void ClickTab(int index)
 		{
 			AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("FishGuide");
-			windowByName.SendAction(2, 3, 8, 3, (ulong)index);
+			if (windowByName != null)
+				windowByName.SendAction(2, 3, 8, 3, (ulong)index);
 		}
 
 		public static void Toggle()

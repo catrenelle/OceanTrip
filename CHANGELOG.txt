@@ -1,3 +1,21 @@
+9/11/2022
+---------
+
+Completed:
+* Basic handling of parties. If you're in a party and not a party leader, you'll stand near Dryskthota and wait for the Commence dialog to pop. If the party is a Cross Realm party, nothing further will happen and you will not queue up. If it is a local party and you are the party leader, it will check that all party members are nearby and targetable before queueing up the party.
+
+* Improved Cordials further. During spectral events, if the difference between your current GP and your max GP is 400 or greater, a cordial will be used.  If it is not a spectral event and the difference between your current GP and max GP is 400 or greater, and your current GP is 25% or less of your max GP, then a cordial will be use.
+
+* Added a setting for Full GP Action. If it is a Non-Spectral event and you're within 100GP of your max GP, will perform the action chosen if you are able to use it and have enough GP to cover the use. Current abilities added are Chum and Double Hook.
+
+* Changed Ocean Food setting from a boolean to a list of available foods. If inventory is low (less than 10) for the selected food, Lisbeth will attempt to craft 40 more.
+
+* Will now use Thaliak's Favor if you are 200GP or more below your maximum GP value and the Spectral event is active or you have 10 stacks of Angler's Art.  Will only trigger if you are able to cast Thaliak's Favor (Requires at least 3 Angler's Art stacks).
+
+* Fix for potential crash scenario - When looking at the results screen, there is a 12 second sleep. What if the user clicks the button on the results screen before the botbase does? Can potentially make things bad. Adds a second check to ensure the results window is still not null (this is sloppy and needs to be refined later).
+
+* FEATURES REMOVED: Exchange for Materia, Empty Gatherer Scrips, Craft Mats. All of these use Lisbeth to Exchange with a scrip vendor, and that code just doesn't work right now. Craft Mats currently only exchanges for Immutable Solution's. This may be expanded and re-enabled in the future.
+
 
 9/7/2022
 --------
