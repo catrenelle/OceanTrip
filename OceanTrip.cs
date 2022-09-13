@@ -649,7 +649,7 @@ namespace OceanTripPlanner
 								}
 								await Coroutine.Sleep(3000);
 
-							} while (!Core.Player.Auras.Any(x => x.Value == CharacterAuras.FoodBuff));
+							} while (!Core.Player.Auras.Any(x => x.Id == CharacterAuras.WellFed));
 							await Coroutine.Sleep(1000);
 					}
                     else 
@@ -993,16 +993,10 @@ namespace OceanTripPlanner
 
 			if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader && !PartyManager.CrossRealm))
 			{
-				// Check if party members are nearby
-				if (PartyManager.IsInParty)
-				{
-					while (PartyManager.AllMembers.Where(x => !x.GameObject.IsTargetable).Count() > 0 && PartyManager.IsInParty)
-					{
-						await Coroutine.Sleep(1000);
-					}
-				}
+                // Wait for party members to be nearby - Thanks zzi and nt153133!
+                await Coroutine.Wait(TimeSpan.FromMinutes(30), PartyLeaderWaitConditions);
 
-				if (Dryskthota != null && Dryskthota.IsWithinInteractRange)
+                if (Dryskthota != null && Dryskthota.IsWithinInteractRange)
 				{
 					Dryskthota.Interact();
 					if (await Coroutine.Wait(5000, () => Talk.DialogOpen))
@@ -1076,7 +1070,8 @@ namespace OceanTripPlanner
 				{
 					if (slot.RawItemId == cordial)
 					{
-						slot.UseItem();
+						if (slot.Item.Cooldown == 0)
+							slot.UseItem();
 					}
 				}
 			}
@@ -1442,11 +1437,15 @@ namespace OceanTripPlanner
 			return null;
 		}
 
-		private void Log(string text, params object[] args)
+        private static bool PartyLeaderWaitConditions()
+        {
+            return PartyManager.VisibleMembers.Count() == PartyManager.AllMembers.Count();
+        }
+
+        private void Log(string text, params object[] args)
 		{
 			var msg = string.Format("[" + Name + "] " + text, args);
 			Logging.Write(Colors.Aqua, msg);
 		}
-
 	}
 }

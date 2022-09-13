@@ -21,9 +21,31 @@ namespace OceanTripPlanner.Definitions
 
     public static class CharacterAuras
     {
+        public static uint WellFed = 48;
         public static uint FishersIntuition = 568;
         public static uint AnglersArt = 2778;
-        public static uint FoodBuff = 10419;
+    }
+
+    public static class Crystals 
+    {
+        public static int FireShard = 2;
+        public static int IceShard = 3;
+        public static int WindShard = 4;
+        public static int EarthShard = 5;
+        public static int LightningShard = 6;
+        public static int WaterShard = 7;
+        public static int FireCrystal = 8;
+        public static int IceCrystal = 9;
+        public static int WindCrystal = 10;
+        public static int EarthCrystal = 11;
+        public static int LightningCrystal = 12;
+        public static int WaterCrystal = 13;
+        public static int FireCluster = 14;
+        public static int IceCluster = 15;
+        public static int WindCluster = 16;
+        public static int EarthCluster = 17;
+        public static int LightningCluster = 18;
+        public static int WaterCluster = 19;
     }
 
     public static class Cordials
@@ -43,6 +65,11 @@ namespace OceanTripPlanner.Definitions
     {
         public static int PepperedPopotoes = 27870;
         public static int CrabCakes = 30481;
+        public static int TsaiTouVounou = 36060;
+        public static int PumpkinRatatouille = 36069;
+        public static int ArchonBurger = 36067;
+        public static int PumpkinPotage = 36070;
+        public static int ThavnairianChai = 36074;
     }
 
     public static class NPC
@@ -50,6 +77,13 @@ namespace OceanTripPlanner.Definitions
         public const uint Syneyhil = 1003254;
         public const uint Dryskthota = 1005421;
         public const uint LimsaFishingMerchantMender = 1005422;
+    }
+
+    public static class Potions
+    {
+        public static int Grade6TinctureStrength = 36109;
+        public static int Grade6TinctureDexterity = 36110;
+        public static int Grade6TinctureIntelligence = 36112;
     }
 
     public static class Weather
