@@ -1,3 +1,32 @@
+9/18/2022
+---------
+
+* Added basic open-world fishing assistance. Go to a fishing spot, equip the right bait and then cast. The bot will take over from there until you use the quit ability, run out of bait, or the boat triggers and becomes available. This might be enhanced more in the future. This was added to help fill out the fishing log while waiting for the boat. The bot will mooch when available, use Thaliak's Favor, and hook when ready. It does not use cordials, double hook, or other abilities. There is a slight delay between re-casting to give users the ability use other skills such as Fish Eyes.
+
+* Started implementation of Zeke's rules for points. Allowing for a +/- 1 second margin of error in bite times.
+https://docs.google.com/spreadsheets/d/17A_IIlSO0wWmn8I3-mrH6JRok0ZIxiNFaDH2MhN63cI/edit#gid=1411459855
+
+* Cleaned up some redundant checks in the code.
+
+* Corrected an issue where if you start the bot in the middle of an Ocean Trip, it would either do nothing, or get the wrong time of day. This caused the bot to select the incorrect bait and use incorrect logic.
+
+* Added bait switching for all Non-Spectral fish when Fish Priority is set to "Fishing Log". The Spectral version of this is coming soon, as there are a lot of conditions to check.
+
+
+9/14/2022
+---------
+
+* Fixed an issue with using Cordials.
+
+* Fixed an issue with Angler's Art triggering during Non-Spectral events when stacks are less than 10.
+
+* Added try/catch around IO operations for loading BoatOrder.json and lisbeth-resume.json files with logging to the RebornBuddy console.
+
+* Additional magic numbers removed from PassTheTime.cs.
+
+* Added a setting for Late Boat Queues. If set to true, the bot base will wait until the 13th minute to queue up for the boat. If set to false, the bot base will queue up as soon as the boat is available. Late Boat Queues lead to higher chances of being on the boat alone, which will lead to potentially higher point gains and easier percentage boosts.
+
+
 9/11/2022
 ---------
 
