@@ -4,6 +4,7 @@ using System.IO;
 using System.ComponentModel;
 using ff14bot.Helpers;
 using System.Runtime.InteropServices;
+using System.Windows.Media;
 
 namespace OceanTripPlanner
 {
@@ -143,7 +144,7 @@ namespace OceanTripPlanner
 
         [DisplayName("Full GP Action")]
         [Description("What to do when your current GP is at its maximum. Does not apply during Spectral events. Double Hook will not work if Patience is in use.")]
-        [Category("Ocean")]
+        [Category("Ocean Fishing")]
 
         [DefaultValueAttribute(FullGPAction.Chum)]
         public FullGPAction FullGPAction
@@ -158,13 +159,39 @@ namespace OceanTripPlanner
                 }
             }
         }
+
+        private bool _LateBoatQueue;
+        [Setting]
+
+        [DisplayName("Late Queue")]
+        [Description("Queues for the boat at 13 minutes if true instead of within 10 minutes. Potential for more points.")]
+        [Category("Ocean Fishing")]
+
+        [DefaultValueAttribute(false)]
+        public bool LateBoatQueue
+        {
+            get { return _LateBoatQueue; }
+            set
+            {
+                if (_LateBoatQueue != value)
+                {
+                    _LateBoatQueue = value;
+                    Save();
+                    //TimeSpan timeLeftUntilNextSpawn = OceanTrip.TimeUntilNextBoat();
+                    //if (timeLeftUntilNextSpawn.TotalMinutes < 1)
+                    //    Logging.Write(Colors.Aqua, $"[Ocean Trip] Late Boat Queue setting changed! The boat is ready to be boarded!");
+                    //else
+                    //    Logging.Write(Colors.Aqua, $"[Ocean Trip] Late Boat Queue setting changed! Next boat is in {Math.Ceiling(timeLeftUntilNextSpawn.TotalMinutes)} minutes.")
+                }
+            }
+        }
         
 		private OceanFood _OceanFood;
 		[Setting]
 
 		[DisplayName("Ocean Food")]
 		[Description("What food item do you want to use for fishing? HQ food will be used first if you have it.")]
-		[Category("Ocean")]
+		[Category("Ocean Fishing")]
 
 		[DefaultValueAttribute(OceanFood.None)]
 		public OceanFood OceanFood
@@ -185,7 +212,7 @@ namespace OceanTripPlanner
 
 		[DisplayName("Exchange Fish")]
 		[Description("What to do with fish caught by ocean fishing (won't dispose of blue fish).")]
-		[Category("Ocean")]
+		[Category("Ocean Fishing")]
 
 		[DefaultValueAttribute(ExchangeFish.Sell)]
 		public ExchangeFish ExchangeFish
@@ -227,7 +254,7 @@ namespace OceanTripPlanner
 
 		[DisplayName("Fish Priority")]
 		[Description("Prioritize fish log completion or points while ocean fishing. This will skip the upcoming boat if you have all the relevant blue fish.")]
-		[Category("Ocean")]
+		[Category("Ocean Fishing")]
 
 		[DefaultValueAttribute(FishPriority.Points)]
 		public FishPriority FishPriority
@@ -416,5 +443,26 @@ namespace OceanTripPlanner
 				}
 			}
 		}
-	}
+
+        private bool _OpenWorldFishing;
+        [Setting]
+
+        [DisplayName("Fishing")]
+        [Description("Allows the bot to do basic fishing for you in the open world.")]
+        [Category("Open World Fishing")]
+
+        [DefaultValueAttribute(false)]
+        public bool OpenWorldFishing
+        {
+            get { return _OpenWorldFishing; }
+            set
+            {
+                if (_OpenWorldFishing != value)
+                {
+                    _OpenWorldFishing = value;
+                    Save();
+                }
+            }
+        }
+    }
 }

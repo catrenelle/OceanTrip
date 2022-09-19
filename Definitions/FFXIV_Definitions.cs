@@ -11,6 +11,8 @@ namespace OceanTripPlanner.Definitions
         public const uint MoochII = 268;
         public const uint DoubleHook = 269;
         public const uint OpenCloseBaitMenu = 288;
+        public const uint Cast = 289;
+        public const uint Mooch = 297;
         public const uint Quit = 299;
         public const uint PowerfulHookset = 4103;
         public const uint Chum = 4104;

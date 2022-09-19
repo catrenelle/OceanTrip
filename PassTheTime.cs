@@ -39,23 +39,31 @@ namespace OceanTripPlanner
 
 
                 //Resume last order
-                if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripSettings.Instance.ResumeOrder)
-				{
-					if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") != "[]")
+                try
+                {
+                    if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripSettings.Instance.ResumeOrder)
 					{
-						Log("Resuming last Lisbeth order.");
-						await Lisbeth.ExecuteOrders(File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json"));
+							if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") != "[]")
+							{
+								Log("Resuming last Lisbeth order.");
+								await Lisbeth.ExecuteOrders(File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json"));
+							}
 					}
-				}
+                }
+                catch { Log("Encountered an error with lisbeth-resume.json, ignoring the file/setting."); }
 
-				//Custom Order
-				if (freeToCraft && File.Exists("BoatOrder.json") && OceanTripSettings.Instance.CustomOrder)
-				{
-					await Lisbeth.ExecuteOrders(File.ReadAllText("BoatOrder.json"));
-				}
+                //Custom Order
+                try
+                {
+                    if (freeToCraft && File.Exists("BoatOrder.json") && OceanTripSettings.Instance.CustomOrder)
+					{
+							await Lisbeth.ExecuteOrders(File.ReadAllText("BoatOrder.json"));
+					}
+                }
+                catch { Log("Encountered error reading BoatOrder.json, ignoring the file."); }
 
-				//Potions
-				if (freeToCraft && OceanTripSettings.Instance.CraftPotions)
+                //Potions
+                if (freeToCraft && OceanTripSettings.Instance.CraftPotions)
 				{ 
 					while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade6TinctureStrength).ItemCount() <= 200))
 					{
