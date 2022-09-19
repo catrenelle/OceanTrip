@@ -998,10 +998,10 @@ namespace OceanTripPlanner
 									if (missingFish.Contains((uint)OceanFish.Drunkfish) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
 
-									else if (missingFish.Contains((uint)OceanFish.TarnishedShark) && WorldManager.CurrentWeather == "Showers")
+									else if (missingFish.Contains((uint)OceanFish.TarnishedShark) && WorldManager.CurrentWeather != "Showers")
 										await ChangeBait(FishBait.PlumpWorm);
 
-									else if (missingFish.Contains((uint)OceanFish.Jasperhead) && (WorldManager.CurrentWeather == "Clouds" || WorldManager.CurrentWeather == "Fog"))
+									else if (missingFish.Contains((uint)OceanFish.Jasperhead) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
 										await ChangeBait(FishBait.Krill);
 
 									else if (missingFish.Contains((uint)OceanFish.CyanOctopus) || missingFish.Contains((uint)OceanFish.RosyBream) || missingFish.Contains((uint)OceanFish.GaladionChovy))
@@ -1010,16 +1010,16 @@ namespace OceanTripPlanner
 									else if (missingFish.Contains((uint)OceanFish.GaladionGoby) || missingFish.Contains((uint)OceanFish.Heavenswimmer))
 										await ChangeBait(FishBait.Ragworm);
 
-									else if (missingFish.Contains((uint)OceanFish.LeopardEel) && (WorldManager.CurrentWeather == "Rain" || WorldManager.CurrentWeather == "Showers"))
+									else if (missingFish.Contains((uint)OceanFish.LeopardEel) && (WorldManager.CurrentWeather != "Rain" && WorldManager.CurrentWeather != "Showers"))
 										await ChangeBait(FishBait.PlumpWorm);
 								}
 								else if (location == "south")
 								{
-									if ((WorldManager.CurrentWeather == "Wind" || WorldManager.CurrentWeather == "Gales")
+									if ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales")
 											&& Core.Player.HasAura(CharacterAuras.FishersIntuition) && missingFish.Contains((uint)OceanFish.LittleLeviathan))
 										await ChangeBait(FishBait.PlumpWorm);
 
-									else if ((WorldManager.CurrentWeather == "Clouds" || WorldManager.CurrentWeather == "Fog")
+									else if ((WorldManager.CurrentWeather != "Clouds" || WorldManager.CurrentWeather != "Fog")
 											&& missingFish.Contains((uint)OceanFish.ShaggySeadragon))
 										await ChangeBait(FishBait.Ragworm);
 
@@ -1027,7 +1027,7 @@ namespace OceanTripPlanner
 										await ChangeBait(FishBait.Ragworm);
 
 									// No aura and missing Little Leviathan. Needs to catch Ghoul Barracuda and Mooch to Gladius for intuition.
-									else if ((WorldManager.CurrentWeather == "Wind" || WorldManager.CurrentWeather == "Gales")
+									else if ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales")
 											&& !Core.Player.HasAura(CharacterAuras.FishersIntuition) && missingFish.Contains((uint)OceanFish.LittleLeviathan))
 										await ChangeBait(FishBait.Krill);
 								}
@@ -1036,10 +1036,10 @@ namespace OceanTripPlanner
 									if (missingFish.Contains((uint)OceanFish.ShootingStar) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Ragworm);
 
-									else if (missingFish.Contains((uint)OceanFish.Floefish) && (WorldManager.CurrentWeather == "Blizzards" || WorldManager.CurrentWeather == "Snow"))
+									else if (missingFish.Contains((uint)OceanFish.Floefish) && (WorldManager.CurrentWeather != "Blizzards" && WorldManager.CurrentWeather != "Snow"))
 										await ChangeBait(FishBait.Ragworm);
 
-									else if (missingFish.Contains((uint)OceanFish.TripodFish) && (WorldManager.CurrentWeather == "Clouds" || WorldManager.CurrentWeather == "Fog"))
+									else if (missingFish.Contains((uint)OceanFish.TripodFish) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
 										await ChangeBait(FishBait.Krill);
 
 									else if (missingFish.Contains((uint)OceanFish.MerlthorLobster) || missingFish.Contains((uint)OceanFish.NetCrawler))
@@ -1057,13 +1057,13 @@ namespace OceanTripPlanner
 									if (missingFish.Contains((uint)OceanFish.Sabaton) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
 
-									else if (missingFish.Contains((uint)OceanFish.OgreEel) && (WorldManager.CurrentWeather == "Clouds" || WorldManager.CurrentWeather == "Fog"))
+									else if (missingFish.Contains((uint)OceanFish.OgreEel) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
 										await ChangeBait(FishBait.PlumpWorm);
 
-									else if (missingFish.Contains((uint)OceanFish.DeepPlaice) && WorldManager.CurrentWeather == "Dust Storms")
+									else if (missingFish.Contains((uint)OceanFish.DeepPlaice) && WorldManager.CurrentWeather != "Dust Storms")
 										await ChangeBait(FishBait.Krill);
 
-									else if (missingFish.Contains((uint)OceanFish.RhotanoWahoo) && WorldManager.CurrentWeather == "Heat Waves")
+									else if (missingFish.Contains((uint)OceanFish.RhotanoWahoo) && WorldManager.CurrentWeather != "Heat Waves")
 										await ChangeBait(FishBait.Krill);
 
 									else if (missingFish.Contains((uint)OceanFish.RhotanoSardine) || missingFish.Contains((uint)OceanFish.Lampfish))
@@ -1081,13 +1081,13 @@ namespace OceanTripPlanner
 									if (missingFish.Contains((uint)OceanFish.CieldalaesGeode) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
 
-									else if (missingFish.Contains((uint)OceanFish.KingCobrafish) && (WorldManager.CurrentWeather == "Clouds" || WorldManager.CurrentWeather == "Fog"))
+									else if (missingFish.Contains((uint)OceanFish.KingCobrafish) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
 										await ChangeBait(FishBait.PlumpWorm);
 
-									else if (missingFish.Contains((uint)OceanFish.Watermoura) && (WorldManager.CurrentWeather == "Thunderstorms"))
+									else if (missingFish.Contains((uint)OceanFish.Watermoura) && (WorldManager.CurrentWeather != "Thunderstorms"))
 										await ChangeBait(FishBait.Krill);
 
-									else if (missingFish.Contains((uint)OceanFish.LadysCameo) && (WorldManager.CurrentWeather == "Thunder"))
+									else if (missingFish.Contains((uint)OceanFish.LadysCameo) && (WorldManager.CurrentWeather != "Thunder"))
 										await ChangeBait(FishBait.Ragworm);
 
 									else if (missingFish.Contains((uint)OceanFish.LavandinRemora) || missingFish.Contains((uint)OceanFish.TortoiseshellCrab))
@@ -1105,13 +1105,13 @@ namespace OceanTripPlanner
 									if (missingFish.Contains((uint)OceanFish.Bareface) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
 
-									else if (missingFish.Contains((uint)OceanFish.BloodedWrasse) && WorldManager.CurrentWeather == "Showers")
+									else if (missingFish.Contains((uint)OceanFish.BloodedWrasse) && WorldManager.CurrentWeather != "Showers")
 										await ChangeBait(FishBait.PlumpWorm);
 
-									else if (missingFish.Contains((uint)OceanFish.StarOfTheDestroyer) && WorldManager.CurrentWeather == "Rain")
+									else if (missingFish.Contains((uint)OceanFish.StarOfTheDestroyer) && WorldManager.CurrentWeather != "Rain")
 										await ChangeBait(FishBait.Ragworm);
 
-									else if (missingFish.Contains((uint)OceanFish.BlueStitcher) && (WorldManager.CurrentWeather == "Clouds" || WorldManager.CurrentWeather == "Fog"))
+									else if (missingFish.Contains((uint)OceanFish.BlueStitcher) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
 										await ChangeBait(FishBait.Krill);
 
 									else if (missingFish.Contains((uint)OceanFish.ThaliakCrab) || missingFish.Contains((uint)OceanFish.BloodpolishCrab))
@@ -1130,13 +1130,13 @@ namespace OceanTripPlanner
 									if (missingFish.Contains((uint)OceanFish.GinkgoFin) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Ragworm);
 
-									else if (missingFish.Contains((uint)OceanFish.Lansquenet) && WorldManager.CurrentWeather == "Thunderstorms")
+									else if (missingFish.Contains((uint)OceanFish.Lansquenet) && WorldManager.CurrentWeather != "Thunderstorms")
 										await ChangeBait(FishBait.PlumpWorm);
 
-									else if (missingFish.Contains((uint)OceanFish.Godsbed) && (WorldManager.CurrentWeather == "Clouds" || WorldManager.CurrentWeather == "Fog"))
+									else if (missingFish.Contains((uint)OceanFish.Godsbed) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
 										await ChangeBait(FishBait.Ragworm);
 
-									else if (missingFish.Contains((uint)OceanFish.LivingLantern) && WorldManager.CurrentWeather == "Thunder")
+									else if (missingFish.Contains((uint)OceanFish.LivingLantern) && WorldManager.CurrentWeather != "Thunder")
 										await ChangeBait(FishBait.Krill);
 
 									else if (missingFish.Contains((uint)OceanFish.CrowPuffer) || missingFish.Contains((uint)OceanFish.HoneycombFish))
