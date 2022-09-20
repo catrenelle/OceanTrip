@@ -447,8 +447,8 @@ namespace OceanTripPlanner
         private bool _OpenWorldFishing;
         [Setting]
 
-        [DisplayName("Fishing")]
-        [Description("Allows the bot to do basic fishing for you in the open world.")]
+        [DisplayName("Assisted Fishing")]
+        [Description("Allows the bot to do basic fishing for you in the open world. You must start the cast to put you into Pole Ready, and manually use quit to stop the bot.")]
         [Category("Open World Fishing")]
 
         [DefaultValueAttribute(false)]
