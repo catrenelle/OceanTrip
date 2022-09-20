@@ -15,7 +15,9 @@ namespace OceanTripPlanner.Definitions
         public const uint Mooch = 297;
         public const uint Quit = 299;
         public const uint PowerfulHookset = 4103;
+        public const uint Patience = 4102;
         public const uint Chum = 4104;
+        public const uint PatienceII = 4106;
         public const uint PrecisionHookset = 4179;
         public const uint IdenticalCast = 4596;
         public const uint ThaliaksFavor = 26804;
