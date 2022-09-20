@@ -48,6 +48,9 @@ namespace OceanTripPlanner
 		private static readonly float[] headings = new[] { 4.622331f, 4.684318f, 1.569952f, 1.509215f, 1.553197f, 1.576235f };
 
 
+		private List<uint> caughtFish;
+		private uint lastCaughtFish = 0;
+
 		private readonly int[] oceanFish = new[] {
             OceanFish.GaladionGoby,
             OceanFish.RosyBream,
@@ -458,6 +461,8 @@ namespace OceanTripPlanner
 		{
 			TreeHooks.Instance.ClearAll();
 
+			caughtFish = new List<uint>();
+			lastCaughtFish = 0;
 
             RouteShown = false;
             
@@ -503,15 +508,16 @@ namespace OceanTripPlanner
 
             schedule = GetSchedule();
 
-			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) 
-				|| ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) 
-					&& ((missingFish.Contains((uint)OceanFish.Sothis) && (schedule == ND || schedule == RS)) 
-						|| (missingFish.Contains((uint)OceanFish.CoralManta) && (schedule == RD || schedule == NS)) 
-						|| (missingFish.Contains((uint)OceanFish.Stonescale) && (schedule == RS)) 
-						|| (missingFish.Contains((uint)OceanFish.Elasmosaurus) && (schedule == ND)) 
-						|| (missingFish.Contains((uint)OceanFish.Hafgufa) && (schedule == BS || schedule == TS)) 
-						|| (missingFish.Contains((uint)OceanFish.SeafaringToad) && (schedule == BD)) 
-						|| (missingFish.Contains((uint)OceanFish.Placodus) && (schedule == TS)))))
+			//if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) 
+			//	|| ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) 
+			//		&& ((missingFish.Contains((uint)OceanFish.Sothis) && (schedule == ND || schedule == RS)) 
+			//			|| (missingFish.Contains((uint)OceanFish.CoralManta) && (schedule == RD || schedule == NS)) 
+			//			|| (missingFish.Contains((uint)OceanFish.Stonescale) && (schedule == RS)) 
+			//			|| (missingFish.Contains((uint)OceanFish.Elasmosaurus) && (schedule == ND)) 
+			//			|| (missingFish.Contains((uint)OceanFish.Hafgufa) && (schedule == BS || schedule == TS)) 
+			//			|| (missingFish.Contains((uint)OceanFish.SeafaringToad) && (schedule == BD)) 
+			//			|| (missingFish.Contains((uint)OceanFish.Placodus) && (schedule == TS)))))
+			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog && missingFish.Count() > 0))
 			{
                 //Log("Stopping Lisbeth!");
                 Lisbeth.StopGently();
@@ -709,6 +715,10 @@ namespace OceanTripPlanner
 			
 			while ((WorldManager.ZoneId == Zones.TheEndeavor) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
+				// Reset for this round
+                caughtFish.Clear();
+                lastCaughtFish = 0;
+
                 if (FishingLog.AreaName.Contains("Southern Strait"))
 				{
 					TimeOfDay = GetBoatTimeOfDay(schedule, "south");
@@ -887,6 +897,14 @@ namespace OceanTripPlanner
 					}		
 				}
 
+				// Did we catch a fish? Let's log it.
+				if (ChatCheck("You land a","measuring"))
+				{
+					lastCaughtFish = FishingLog.LastFishCaught;
+					caughtFish.Add(FishingLog.LastFishCaught);
+				}
+
+
 				// Should we Cordial?
 				if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && spectraled)
 					await UseCordial();
@@ -908,7 +926,14 @@ namespace OceanTripPlanner
                 if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
 					//Identical Cast for Blue fish
-					if ((ChatCheck("You land a","gugrusaurus") || ChatCheck("You land a","heavenskey") || ChatCheck("You land a", "grandmarlin")) && (Core.Me.CurrentGP >= DataManager.SpellCache[Actions.IdenticalCast].Cost) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
+					if (((lastCaughtFish == OceanFish.Gugrusaurus && caughtFish.Where(x => x == OceanFish.Gugrusaurus).Count() < 3)
+                            || (lastCaughtFish == OceanFish.Heavenskey && caughtFish.Where(x => x == OceanFish.Heavenskey).Count() < 2)
+                            || (lastCaughtFish == OceanFish.GreatGrandmarlin && caughtFish.Where(x => x == OceanFish.GreatGrandmarlin).Count() < 2)
+							|| (lastCaughtFish == OceanFish.CrimsonMonkfish && caughtFish.Where(x => x == OceanFish.CrimsonMonkfish).Count() < 2)
+							|| (lastCaughtFish == OceanFish.JetborneManta && caughtFish.Where(x => x == OceanFish.JetborneManta).Count() < 2)
+							|| (lastCaughtFish == OceanFish.BeatificVision && caughtFish.Where(x => x == OceanFish.BeatificVision).Count() < 3)
+                        )
+						&& (ActionManager.CanCast(Actions.IdenticalCast, Core.Me)) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 					{
 						await Coroutine.Sleep(100);
 						if (ActionManager.CanCast(Actions.IdenticalCast, Core.Me))
@@ -920,14 +945,14 @@ namespace OceanTripPlanner
 					}
 
 					// Check for Mooch II before using Mooch
-					if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo && spectraled)
+					if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
 					{
 						Log("Using Mooch II!");
 						FishingManager.MoochTwo();
 						lastCastMooch = true;
                         biteTimer.Start();
 					}
-                    else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch && spectraled)
+                    else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch)
                     {
                         Log("Using Mooch!");
                         FishingManager.Mooch();
@@ -939,50 +964,172 @@ namespace OceanTripPlanner
 						if (WorldManager.CurrentWeatherId == Weather.Spectral)
 						{
 							//Bait for Blue fish
-							if (((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis)) || ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta)) || ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus)) || ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale)) || ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa)) || ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad)) || ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus)))
+							if (
+									Core.Player.HasAura(CharacterAuras.FishersIntuition) &&
+									(((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis))
+									|| ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta))
+									|| ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus))
+									|| ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale))
+									|| ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa))
+									|| ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad))
+									|| ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus)))
+							)
 							{
 								await ChangeBait(spectralbaitId);
 							}
+							else if ((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+							{
+								if (caughtFish.Where(x => x == OceanFish.Heavenskey).Count() < 2) // Needs 2 Heavenskey. Use Ragworm to catch.
+									await ChangeBait(FishBait.Ragworm);
+								else if (!caughtFish.Contains(OceanFish.NavigatorsPrint)) // Requires 1 Navigators Print.
+									await ChangeBait(FishBait.Krill);
+                            }
+							else if ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+							{
+								if (caughtFish.Where(x => x == OceanFish.GreatGrandmarlin).Count() < 2) // Needs 2 Great Grandmarlin. Mooch from Hi-Aetherlouse.
+									await ChangeBait(FishBait.PlumpWorm);
+							}
+							else if ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+							{
+								if (caughtFish.Where(x => x == OceanFish.Gugrusaurus).Count() < 3) // Needs 3 Gugrusaurus
+									await ChangeBait(FishBait.PlumpWorm);
+							}
+							else if ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+							{
+								if (caughtFish.Where(x => x == OceanFish.CrimsonMonkfish).Count() < 2) // Needs 2 Crimson Monkfish
+									await ChangeBait(FishBait.PlumpWorm);
+							}
+							else if ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+							{
+								if (caughtFish.Where(x => x == OceanFish.JetborneManta).Count() < 2) // Needs 2 Jetborne Manta
+									await ChangeBait(FishBait.PlumpWorm);
+								else if (!caughtFish.Contains(OceanFish.MistbeardsCup)) // Needs 1 Mistbeard's Cup
+									await ChangeBait(FishBait.Krill);
+							}
+							else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+							{
+                                // This will help increase the chances of catching Seafaring Toad.
+                                if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.PatienceII, Core.Me))
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.Patience, Core.Me))
+                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+
+
+                                if (caughtFish.Where(x => x == OceanFish.BeatificVision).Count() < 3) // Requires 3 Beatific Vision
+									await ChangeBait(FishBait.Krill);
+							}
+							else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+							{
+								// This will help increase the chances of catching Placodus.
+								if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.PatienceII, Core.Me))
+									ActionManager.DoAction(Actions.PatienceII, Core.Me);
+								else if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.Patience, Core.Me))
+                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+
+
+                                if (!caughtFish.Contains(OceanFish.Trollfish)) // Needs a Trollfish. Mooch from Rothlyt Mussel.
+									await ChangeBait(FishBait.Ragworm);
+								else if (lastCaughtFish != OceanFish.RothlytMussel)
+									await ChangeBait(FishBait.Ragworm);
+							}
+                            else if (
+                                    (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) &&
+                                    (((location == "galadion") && (timeOfDay == "Sunset") && (missingFish.Contains((uint)OceanFish.QuicksilverBlade) || missingFish.Contains((uint)OceanFish.FunnelShark)))
+									|| ((location == "galadion") && (missingFish.Contains((uint)OceanFish.Fishmonger) || missingFish.Contains((uint)OceanFish.GhostShark)))
+									|| ((location == "south") && (missingFish.Contains((uint)OceanFish.HiAetherlouse) || missingFish.Contains((uint)OceanFish.ShipwrecksSail)))
+									|| ((location == "north") && (missingFish.Contains((uint)OceanFish.Coccosteus) || missingFish.Contains((uint)OceanFish.Gugrusaurus)))
+									|| ((location == "rhotano") && (missingFish.Contains((uint)OceanFish.DeepSeaEel)))
+									|| ((location == "rhotano") && (timeOfDay == "Day") && (missingFish.Contains((uint)OceanFish.Sweeper) || missingFish.Contains((uint)OceanFish.Executioner)))
+									|| ((location == "ciel") && (missingFish.Contains((uint)OceanFish.JetborneManta)))
+									|| ((location == "ciel") && (timeOfDay == "Day") && (missingFish.Contains((uint)OceanFish.Callichthyid)))
+									|| ((location == "ciel") && (timeOfDay == "Sunset") && (missingFish.Contains((uint)OceanFish.MeanderingMora)))
+									|| ((location == "blood") && (missingFish.Contains((uint)OceanFish.GoryTuna) || missingFish.Contains((uint)OceanFish.Ticinepomis) || missingFish.Contains((uint)OceanFish.QuartzHammerhead)))
+									|| ((location == "sound") && (missingFish.Contains((uint)OceanFish.SmoothJaguar)))
+									|| ((location == "sound") && (timeOfDay == "Day") && (missingFish.Contains((uint)OceanFish.Panoptes))))
+							)
+							{
+								await ChangeBait(FishBait.PlumpWorm);
+							}
 							else if (
-										((location == "galadion") && (timeOfDay == "Sunset")) 
-										|| ((location == "rhotano") && (timeOfDay == "Day")) 
-										|| ((location == "north") && (timeOfDay == "Day")) 
-										|| ((location == "south") && (timeOfDay == "Night")) 
-										|| ((location == "ciel") && (timeOfDay == "Sunset")) 
+                                (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) &&
+                                (((location == "galadion") && (missingFish.Contains((uint)OceanFish.NavigatorsPrint) || missingFish.Contains((uint)OceanFish.MermansMane)))
+								|| ((location == "south") && (timeOfDay == "Day") && (missingFish.Contains((uint)OceanFish.MythrilSovereign)))
+								|| ((location == "south") && (missingFish.Contains((uint)OceanFish.CharlatanSurvivor) || missingFish.Contains((uint)OceanFish.AzeymasSleeve)))
+								|| ((location == "north") && (missingFish.Contains((uint)OceanFish.Hammerclaw)))
+								|| ((location == "north") && (timeOfDay == "Night") && (missingFish.Contains((uint)OceanFish.Mopbeard)))
+								|| ((location == "north") && (timeOfDay == "Sunset") && (missingFish.Contains((uint)OceanFish.TheFallenOne)))
+								|| ((location == "rhotano") && (missingFish.Contains((uint)OceanFish.Aronnax) || missingFish.Contains((uint)OceanFish.TrueBarramundi) || missingFish.Contains((uint)OceanFish.ProdigalSon)))
+								|| ((location == "rhotano") && (timeOfDay == "Night") && (missingFish.Contains((uint)OceanFish.FloatingSaucer)))
+								|| ((location == "ciel") && (missingFish.Contains((uint)OceanFish.AnomalocarisSaron) || missingFish.Contains((uint)OceanFish.TitanshellCrab) || missingFish.Contains((uint)OceanFish.MistbeardsCup)))
+								|| ((location == "ciel") && (timeOfDay == "Day") && (missingFish.Contains((uint)OceanFish.DevilsSting)))
+								|| ((location == "ciel") && (timeOfDay == "Sunset") && (missingFish.Contains((uint)OceanFish.FlamingEel)))
+								|| ((location == "blood") && (missingFish.Contains((uint)OceanFish.DravanianBream) || missingFish.Contains((uint)OceanFish.BeatificVision)))
+								|| ((location == "blood") && (timeOfDay == "Night") && (missingFish.Contains((uint)OceanFish.Skaldminni)))
+								|| ((location == "sound") && (missingFish.Contains((uint)OceanFish.LeviElver) || missingFish.Contains((uint)OceanFish.Knifejaw)))
+								|| ((location == "sound") && (timeOfDay == "Day" || timeOfDay == "Night") && (missingFish.Contains((uint)OceanFish.PearlBombfish))))
+							)
+							{
+								await ChangeBait(FishBait.Krill);
+							}
+							else if (
+                                (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) &&
+                                (((location == "galadion") && (missingFish.Contains((uint)OceanFish.Heavenskey)))
+								|| ((location == "galadion") && (timeOfDay == "Day") && (missingFish.Contains((uint)OceanFish.CasketOyster) || missingFish.Contains((uint)OceanFish.NimbleDancer)))
+								|| ((location == "south") && (timeOfDay == "Sunset") && (missingFish.Contains((uint)OceanFish.SeaNettle)))
+								|| ((location == "north") && (missingFish.Contains((uint)OceanFish.Prowler) || missingFish.Contains((uint)OceanFish.WildUrchin)))
+								|| ((location == "north") && (timeOfDay == "Night") && (missingFish.Contains((uint)OceanFish.BartholomewTheChopper)))
+								|| ((location == "north") && (timeOfDay == "Sunset") && (missingFish.Contains((uint)OceanFish.CoralSeadragon)))
+								|| ((location == "rhotano") && (missingFish.Contains((uint)OceanFish.Silencer)))
+								|| ((location == "rhotano") && (timeOfDay == "Night") && (missingFish.Contains((uint)OceanFish.Slipsnail)))
+								|| ((location == "ciel") && (missingFish.Contains((uint)OceanFish.MythrilBoxfish)))
+								|| ((location == "blood") && (missingFish.Contains((uint)OceanFish.SerratedClam)))
+								|| ((location == "blood") && (timeOfDay == "Day") && (missingFish.Contains((uint)OceanFish.OracularCrab) || missingFish.Contains((uint)OceanFish.Exterminator)))
+								|| ((location == "sound") && (missingFish.Contains((uint)OceanFish.RothlytMussel) || missingFish.Contains((uint)OceanFish.CrepeSole)))
+								|| ((location == "sound") && (timeOfDay == "Day" || timeOfDay == "Night") && (missingFish.Contains((uint)OceanFish.GarumJug))))
+							)
+							{
+								await ChangeBait(FishBait.Ragworm);
+							}
+							else if (
+										((location == "galadion") && (timeOfDay == "Sunset"))
+										|| ((location == "rhotano") && (timeOfDay == "Day"))
+										|| ((location == "north") && (timeOfDay == "Day"))
+										|| ((location == "south") && (timeOfDay == "Night"))
+										|| ((location == "ciel") && (timeOfDay == "Sunset"))
 										|| ((location == "blood") && (timeOfDay == "Sunset"))
 							)
 							{
-								await ChangeBait(FishBait.PlumpWorm); 
+								await ChangeBait(FishBait.PlumpWorm);
 							}
 							else if (
-										((location == "south") && (timeOfDay == "Day")) 
-										|| ((location == "rhotano") && (timeOfDay == "Night") 
-											&& ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) 
+										((location == "south") && (timeOfDay == "Day"))
+										|| ((location == "rhotano") && (timeOfDay == "Night")
+											&& ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog)
 											|| !missingFish.Contains((uint)OceanFish.Slipsnail)))
-										|| ((location == "north") && (timeOfDay == "Sunset") 
-											&& missingFish.Contains((uint)OceanFish.TheFallenOne) 
-											&& (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)) 
-										|| ((location == "north") && (timeOfDay == "Night") 
-											&& ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) 
-											|| !missingFish.Contains((uint)OceanFish.BartholomewTheChopper))) 
-										|| ((location == "galadion") && (timeOfDay == "Night")) 
-										|| ((location == "ciel") && (timeOfDay == "Day")) 
-										|| ((location == "blood") && (timeOfDay == "Night")) 
+										|| ((location == "north") && (timeOfDay == "Sunset")
+											&& missingFish.Contains((uint)OceanFish.TheFallenOne)
+											&& (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
+										|| ((location == "north") && (timeOfDay == "Night")
+											&& ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog)
+											|| !missingFish.Contains((uint)OceanFish.BartholomewTheChopper)))
+										|| ((location == "galadion") && (timeOfDay == "Night"))
+										|| ((location == "ciel") && (timeOfDay == "Day"))
+										|| ((location == "blood") && (timeOfDay == "Night"))
 										|| ((location == "sound"))
 							)
 							{
-								await ChangeBait(FishBait.Krill); 
+								await ChangeBait(FishBait.Krill);
 							}
 							else if (
-										((location == "galadion") && (timeOfDay == "Day")) 
-										|| ((location == "south") && (timeOfDay == "Sunset")) 
-										|| ((location == "north") && (timeOfDay == "Sunset")) 
-										|| ((location == "north") && (timeOfDay == "Night")) 
-										|| ((location == "rhotano") && (timeOfDay == "Night")) 
+										((location == "galadion") && (timeOfDay == "Day"))
+										|| ((location == "south") && (timeOfDay == "Sunset"))
+										|| ((location == "north") && (timeOfDay == "Sunset"))
+										|| ((location == "north") && (timeOfDay == "Night"))
+										|| ((location == "rhotano") && (timeOfDay == "Night"))
 										|| ((location == "blood") && (timeOfDay == "Day"))
 							)
 							{
-								await ChangeBait(FishBait.Ragworm); 
+								await ChangeBait(FishBait.Ragworm);
 							}
 							else
 							{
@@ -993,7 +1140,7 @@ namespace OceanTripPlanner
 						{
 							if (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)
 							{
-								if (location == "galadion")
+								if (location == "galadion" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 								{
 									if (missingFish.Contains((uint)OceanFish.Drunkfish) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
@@ -1013,7 +1160,7 @@ namespace OceanTripPlanner
 									else if (missingFish.Contains((uint)OceanFish.LeopardEel) && (WorldManager.CurrentWeather != "Rain" && WorldManager.CurrentWeather != "Showers"))
 										await ChangeBait(FishBait.PlumpWorm);
 								}
-								else if (location == "south")
+								else if (location == "south" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 								{
 									if ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales")
 											&& Core.Player.HasAura(CharacterAuras.FishersIntuition) && missingFish.Contains((uint)OceanFish.LittleLeviathan))
@@ -1031,7 +1178,7 @@ namespace OceanTripPlanner
 											&& !Core.Player.HasAura(CharacterAuras.FishersIntuition) && missingFish.Contains((uint)OceanFish.LittleLeviathan))
 										await ChangeBait(FishBait.Krill);
 								}
-								else if (location == "north")
+								else if (location == "north" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 								{
 									if (missingFish.Contains((uint)OceanFish.ShootingStar) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Ragworm);
@@ -1052,7 +1199,7 @@ namespace OceanTripPlanner
 									else if (missingFish.Contains((uint)OceanFish.ShootingStar) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Ragworm);
 								}
-								else if (location == "rhotano")
+								else if (location == "rhotano" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 								{
 									if (missingFish.Contains((uint)OceanFish.Sabaton) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
@@ -1076,7 +1223,7 @@ namespace OceanTripPlanner
 									else if (missingFish.Contains((uint)OceanFish.Sabaton) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.PlumpWorm);
                                 }
-								else if (location == "ciel")
+								else if (location == "ciel" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 								{
 									if (missingFish.Contains((uint)OceanFish.CieldalaesGeode) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
@@ -1100,7 +1247,7 @@ namespace OceanTripPlanner
 									else if (missingFish.Contains((uint)OceanFish.CieldalaesGeode) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Ragworm);
 								}
-								else if (location == "blood")
+								else if (location == "blood" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 								{
 									if (missingFish.Contains((uint)OceanFish.Bareface) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Krill);
@@ -1125,7 +1272,7 @@ namespace OceanTripPlanner
 										await ChangeBait(FishBait.Ragworm);
 								}
 
-								else if (location == "sound")
+								else if (location == "sound" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 								{
 									if (missingFish.Contains((uint)OceanFish.GinkgoFin) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Ragworm);
@@ -1145,7 +1292,7 @@ namespace OceanTripPlanner
 									else if (missingFish.Contains((uint)OceanFish.NephriteEel) || missingFish.Contains((uint)OceanFish.ThavnairianShark))
 										await ChangeBait(FishBait.Krill);
 
-									// Needs Ginkgo Fin but doesn't have intution - Use Ragworm to get 3 Rothlyt Kelp
+									// Needs Ginkgo Fin but doesn't have intuition - Use Ragworm to get 3 Rothlyt Kelp
 									else if (missingFish.Contains((uint)OceanFish.GinkgoFin) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 										await ChangeBait(FishBait.Ragworm);
                                 }
@@ -1203,7 +1350,7 @@ namespace OceanTripPlanner
 						Log($"Bite Time: {biteTimer.Elapsed.TotalSeconds:F1}s");
 
 						// Made this more readable.
-						if (location == "galadion") //Galadion Bay					
+						if (location == "galadion" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points)) //Galadion Bay					
                         {
 							if (timeOfDay == "Day")
 							{
@@ -1235,7 +1382,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "south") //Southern Merlthor
+						if (location == "south" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points)) //Southern Merlthor
                         {
 							if (timeOfDay == "Day")
 							{
@@ -1263,7 +1410,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "north")
+						if (location == "north" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1295,7 +1442,7 @@ namespace OceanTripPlanner
                             }
                         }
 
-						if (location == "rhotano")
+						if (location == "rhotano" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1327,7 +1474,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "ciel")
+						if (location == "ciel" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1359,7 +1506,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "blood")
+						if (location == "blood" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1391,7 +1538,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "sound")
+						if (location == "sound" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points))
 						{
 							if (timeOfDay == "Day")
 							{

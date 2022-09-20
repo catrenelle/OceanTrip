@@ -1,3 +1,13 @@
+9/19/2022
+---------
+
+* Added bait switching logic to catch all of the spectral fish when Fish Priority is set to "Fishing Log".
+
+* Added special condition handling for catching spectral blues. Some of them require the use of Patience, so Patience II is used where possible. If users don't have Patience II, it will use Patience instead. This works by tracking all of the fish caught for the current "round" and quantifying certain fish types. In case of mooching, it will use the required bait to catch the mooching fish. Example is Placodus, which requires you to mooch a trollfish from a Rothlyt Mussle, and then you can mooch Placodus from a Rothlyt Mussle.
+
+* If you are attempting to complete your fishing log, Double Hooks will NOT happen.
+
+
 9/18/2022
 ---------
 

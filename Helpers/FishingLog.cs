@@ -20,9 +20,7 @@ namespace OceanTrip
             get 
             {
                 if (elementCount > 0)
-                {
                     return Core.Memory.ReadString((IntPtr)Elements[2].Data, Encoding.UTF8);
-                }
 
                 return ""; 
             } 
@@ -33,9 +31,18 @@ namespace OceanTrip
             get 
             {
                 if (elementCount > 0)
-                {
                     return Elements[7].TrimmedData;
-                }
+
+                return 0;
+            }
+        }
+
+        public static uint LastFishCaught
+        {
+            get
+            {
+                if (elementCount > 0)
+                    return (uint)Elements[8].TrimmedData;
 
                 return 0;
             }
