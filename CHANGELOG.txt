@@ -1,3 +1,16 @@
+9/21/2022
+---------
+
+* Fixed bug with using Patience II. It wasn't checking to see if the Patience aura was active and kept using Patience II. Whoops!
+
+* Tightened up Bite Timer timings to be closer to what appears in-game for the Fish Timer found in the Gather Buddy Dalamud Plugin. (Hopefully)
+
+* Added Bite Timer to Open World Fishing as a test of the tighter timings.
+
+* Moved Bait Restock Threshold and Bait Restock Amount into the settings list instead of being hard coded to 150 and 500 respectively.
+
+
+
 9/19/2022
 ---------
 

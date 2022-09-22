@@ -586,7 +586,7 @@ namespace OceanTripPlanner
 					await LandRepair(50);
 				}
 
-				await RestockBait(150, 500);
+				await RestockBait(OceanTripSettings.Instance.BaitRestockThreshold, (uint)OceanTripSettings.Instance.BaitRestockAmount);
 
 				/* Lisbeth exchange doesn't work properly, so temporarily disabling this */
 				/*
@@ -836,14 +836,17 @@ namespace OceanTripPlanner
                 if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
                 {
                     FishingManager.MoochTwo();
+					biteTimer.Start();
                 }
                 else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch)
                 {
                     FishingManager.Mooch();
+                    biteTimer.Start();
                 }
 
                 FishingManager.Cast();
-			}
+                biteTimer.Start();
+            }
 
             if ((Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
             {
@@ -854,10 +857,13 @@ namespace OceanTripPlanner
 			{
                 if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 				{
-						FishingManager.Hook();
-				}
+                    biteTimer.Stop();
+                    Log($"Bite Time: {biteTimer.Elapsed.TotalSeconds:F1}s");
+                    FishingManager.Hook();
+                    biteTimer.Reset();
+                }
 
-                await Coroutine.Sleep(2000);
+                await Coroutine.Sleep(100);
             }
         }
 
@@ -939,13 +945,13 @@ namespace OceanTripPlanner
                         )
 						&& (ActionManager.CanCast(Actions.IdenticalCast, Core.Me)) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 					{
-						await Coroutine.Sleep(100);
 						if (ActionManager.CanCast(Actions.IdenticalCast, Core.Me))
 						{
 							Log("Identical Cast!");
 							lastCastMooch = false;
                             ActionManager.DoAction(Actions.IdenticalCast, Core.Me);
-						}
+                            biteTimer.Start();
+                        }
 					}
 
 					// Check for Mooch II before using Mooch
@@ -1013,9 +1019,9 @@ namespace OceanTripPlanner
 							else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 							{
                                 // This will help increase the chances of catching Seafaring Toad.
-                                if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.PatienceII, Core.Me))
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.PatienceII, Core.Me);
-                                else if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.Patience, Core.Me))
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.Patience, Core.Me);
 
 
@@ -1025,9 +1031,9 @@ namespace OceanTripPlanner
 							else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 							{
 								// This will help increase the chances of catching Placodus.
-								if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.PatienceII, Core.Me))
-									ActionManager.DoAction(Actions.PatienceII, Core.Me);
-								else if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.Patience, Core.Me))
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.Patience, Core.Me);
 
 
@@ -1321,16 +1327,16 @@ namespace OceanTripPlanner
                                 {
                                     Log("Triggering Full GP Action to keep regen going - Chum!");
                                     ActionManager.DoAction(Actions.Chum, Core.Me);
-                                    await Coroutine.Sleep(100);
                                 }
                             }
                         }
 
-                        biteTimer.Start();
 						FishingManager.Cast();
+                        biteTimer.Start();
 						lastCastMooch = false;
 
                     }
+
 					await Coroutine.Sleep(50);
 				}
 
@@ -1346,8 +1352,11 @@ namespace OceanTripPlanner
 						if (FishingManager.CanHook)
 						{
 							FishingManager.Hook();
-						}
-					}
+                            biteTimer.Stop();
+							biteTimer.Reset();
+                        }
+                    }
+
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
 						biteTimer.Stop();
