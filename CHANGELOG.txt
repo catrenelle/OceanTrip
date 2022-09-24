@@ -1,3 +1,11 @@
+9/24/2022
+---------
+
+* Added support for other languages, and a log message for when the botbase cannot detect your boat trip. Please share this in Discord if your character does not do anything on the boat.
+
+* Raised the minimum values for Bait Restock Threshold and Amount.
+
+
 9/23/2022
 ---------
 

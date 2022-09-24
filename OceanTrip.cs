@@ -725,47 +725,72 @@ namespace OceanTripPlanner
                 lastCaughtFish = 0;
 				caughtFishLogged = false;
 
-                if (FishingLog.AreaName.Contains("Southern Strait"))
+
+                // English
+                // Deutsch
+                // Francais
+                // 日本語
+                // 中文
+                // 한국어
+                if (FishingLog.AreaName.Contains("Southern Strait") || FishingLog.AreaName.Contains("Merlthorstraße (Süd)")
+					|| FishingLog.AreaName.Contains("Détroit sud de Merlthor") || FishingLog.AreaName.Contains("メルトール海峡南")
+					|| FishingLog.AreaName.Contains("梅尔托尔海峡南") || FishingLog.AreaName.Contains("멜토르 해협 남쪽"))
 				{
 					TimeOfDay = GetBoatTimeOfDay(schedule, "south");
 					Log($"Southern Merlthor, {TimeOfDay}");
 					await GoFish(FishBait.Krill, FishBait.ShrimpCageFeeder, "south", TimeOfDay, spot);
 				}
-				if (FishingLog.AreaName.Contains("Galadion"))
+				else if (FishingLog.AreaName.Contains("Galadion") || FishingLog.AreaName.Contains("Galadion-Bucht")
+					|| FishingLog.AreaName.Contains("Baie de Galadion") || FishingLog.AreaName.Contains("ガラディオン湾")
+					|| FishingLog.AreaName.Contains("加拉迪翁湾") || FishingLog.AreaName.Contains("갈라디온 만"))
 				{
                     TimeOfDay = GetBoatTimeOfDay(schedule, "galadion");
                     Log($"Galadion Bay, {TimeOfDay}");
 					await GoFish(FishBait.PlumpWorm, FishBait.GlowWorm, "galadion", TimeOfDay, spot);		
 				}
-				if (FishingLog.AreaName.Contains("Northern Strait"))
+                else if (FishingLog.AreaName.Contains("Northern Strait") || FishingLog.AreaName.Contains("Merlthorstraße (Nord)")
+					|| FishingLog.AreaName.Contains("Détroit nord de Merlthor") || FishingLog.AreaName.Contains("メルトール海峡北")
+					|| FishingLog.AreaName.Contains("梅尔托尔海峡北") || FishingLog.AreaName.Contains("멜토르 해협 북쪽"))
 				{
                     TimeOfDay = GetBoatTimeOfDay(schedule, "north");
                     Log($"Northern Merlthor, {TimeOfDay}");
 					await GoFish(FishBait.Ragworm, FishBait.HeavySteelJig, "north", TimeOfDay, spot);
 				}
-				if (FishingLog.AreaName.Contains("Rhotano Sea"))
+                else if (FishingLog.AreaName.Contains("Rhotano Sea") || FishingLog.AreaName.Contains("Rhotano-See")
+					|| FishingLog.AreaName.Contains("Mer de Rhotano") || FishingLog.AreaName.Contains("ロータノ海")
+					|| FishingLog.AreaName.Contains("罗塔诺海") || FishingLog.AreaName.Contains("로타노 해"))
 				{
                     TimeOfDay = GetBoatTimeOfDay(schedule, "rhotano");
                     Log($"Rhotano Sea, {TimeOfDay}");
 					await GoFish(FishBait.Ragworm, FishBait.RatTail, "rhotano", TimeOfDay, spot);
 				}
-				if (FishingLog.AreaName.Contains("Cieldalaes"))
+                else if (FishingLog.AreaName.Contains("Cieldalaes") || FishingLog.AreaName.Contains("Cieldaläen")
+					|| FishingLog.AreaName.Contains("Cieldalaes") || FishingLog.AreaName.Contains("シェルダレー諸島")
+					|| FishingLog.AreaName.Contains("谢尔达莱群岛") || FishingLog.AreaName.Contains("시엘달레 제도"))
 				{
                     TimeOfDay = GetBoatTimeOfDay(schedule, "ciel");
                     Log($"Cieldalaes, {TimeOfDay}");
 					await GoFish(FishBait.Ragworm, FishBait.SquidStrips, "ciel", TimeOfDay, spot);
 				}
-				if (FishingLog.AreaName.Contains("Bloodbrine"))
+                else if (FishingLog.AreaName.Contains("Bloodbrine") || FishingLog.AreaName.Contains("Schwerblütiges")
+					|| FishingLog.AreaName.Contains("Mer Pourpre") || FishingLog.AreaName.Contains("緋汐海")
+					|| FishingLog.AreaName.Contains("绯汐海") || FishingLog.AreaName.Contains("붉은물결 바다"))
 				{
                     TimeOfDay = GetBoatTimeOfDay(schedule, "blood");
                     Log($"Bloodbrine, {TimeOfDay}");
 					await GoFish(FishBait.Krill, FishBait.PillBug, "blood", TimeOfDay, spot);
 				}
-				if (FishingLog.AreaName.Contains("Rothlyt Sound"))
+                else if (FishingLog.AreaName.Contains("Rothlyt Sound") || FishingLog.AreaName.Contains("Rothlyt-Meerbusen")
+					|| FishingLog.AreaName.Contains("Golfe de Rothlyt") || FishingLog.AreaName.Contains("ロズリト湾")
+					|| FishingLog.AreaName.Contains("罗斯利特湾") || FishingLog.AreaName.Contains("로들리트 만"))
 				{
                     TimeOfDay = GetBoatTimeOfDay(schedule, "sound");
                     Log($"Rothlyt Sound, {TimeOfDay}");
 					await GoFish(FishBait.PlumpWorm, FishBait.Ragworm, "sound", TimeOfDay, spot);
+				}
+				else
+				{
+					Log($"Cannot determine location: {FishingLog.AreaName}");
 				}
 
 				await Coroutine.Sleep(2000);
