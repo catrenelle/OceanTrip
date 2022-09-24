@@ -22,29 +22,32 @@ Ideally, you should aim for the following point values and can use this to gauge
 
 ## BotBase Settings
 When Idling:
+
 | Idle Stuff | Description|
 | :--- | :--- |
-| Craft Food | True/False - Should the bot craft lvl 90 food while passing the time? |
-| Craft Potions | True/False - Should the bot craft lvl 90 potions while passing the time? | 
+| Craft Food | True/False - Should the bot craft lvl 90 food while passing the time? Currently crafts Tsai Tou Vounou, Pumpkin Ratatouille, Archon Burger, Pumpkin Potage, and Thavnairian Chai. |
+| Craft Potions | True/False - Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6 Tinctures of Strength, Dexterity, and Intelligence. | 
 | Custom Order | True/False - Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
 | Gather Shards | True/False - Should the bot gather shards and crystals while passing the time? |
 | Lisbeth Food | None, Stone Soup, Seafood Stew (Normal/HQ), Chili Crab (HQ), Tasi tou Vounou (HQ) - What food should be used while crafting? |
-| Refill Scrips | True/False - Should the bot refill your white/purple crafter scrips while passing the time? |
-| Resume Order | True/False - If something was left mid-progress in Lisbeth, should it continue with that path? |
-| Retaining | None, Any city with summing bell - Should the bot automatically complete and reassign ventures? |
+| Refill Scrips | True/False - Should the bot refill your white/purple crafter scrips while passing the time? Currently refilles up to 1500 scrips. |
+| Resume Order | True/False - If something was left mid-progress in Lisbeth, should it continue where it left off? |
+| Retaining | None, Any city with a summoning bell - Should the bot automatically complete and reassign ventures? |
 
 When Ocean Fishing:
+
 | Ocean Fishing | Description |
 | :--- | :--- |
-| Bait Restock Amount | 0 or higher - How much bait should the bot keep in inventory? |
-| Bait Restock Threshold | 0 or higher - How low on bait should the bot be before it purchases more? |
+| Bait Restock Amount | 0 or higher - How much bait should the bot keep in inventory? Set to 0 to disable restocking of bait (not advised). |
+| Bait Restock Threshold | 0 or higher - How low on bait should the bot be before it purchases more? Set to 0 to disable restocking of bait (not advised). |
 | Exchange Fish | Sell, Desynth, None - What should the bot do with the fish after finishing an Ocean Trip? No blues will be sold or desynthesized. |
-| Fish Priority | FishLog, Points - What should the focus be when fishing on the boat? FishLog may give a really low score as it focuses entirely on missing fish entries. No doublehooking will occur during spectral events while  this is set to FishLog. Points will focus on point values, regardless of intuition or missing fish. Double Hooking will occur during spectral events based on Zeke's rules. |
-| Full GP Action | None, Chum, DoubleHook - What should the bot do when you have full GP? Chum is a good choice while going for your Fishing Log. Double Hook is useless it's a spectral event or you're trying to trigger intuition for certain fish. | 
-| Late Queue | True, False - Should the bot queue up late as soon it becomes available or 13 minutes after? If set to true, the bot will wait until the 13 minute mark before attempting to queue. Late queues may contribute to better points, as it is easier to get higher scores and multipliers when less people are on the boat. |
-| Ocean Food | None, Peppered Popotoes, Crab Cakes - What food should be used for Ocean Trips? These items give +GP and +Perception. The more GP you have, the better. |
+| Fish Priority | FishLog, Points - What should the focus be when fishing on the boat? FishLog may give a really low score as it focuses entirely on missing fish entries. No doublehooking will occur during spectral events while this is set to FishLog. Points will focus on point values, regardless of intuition or missing fish. Double Hooking will occur during spectral events based on Zeke's rules. |
+| Full GP Action | None, Chum, DoubleHook - What should the bot do when you have full GP? Chum is a good choice while going for your Fishing Log. Double Hook is useless unless it's a spectral event or you're trying to trigger intuition for certain fish. The bot handles that already. | 
+| Late Queue | True, False - Should the bot queue up as soon as the boat becomes available or 13 minutes after? If set to true, the bot will wait until the 13 minute mark before attempting to queue. Late queues may contribute to better points, as it is easier to get higher scores and multipliers when less people are on the boat. |
+| Ocean Food | None, Peppered Popotoes, Crab Cakes - What food should be used for Ocean Trips? These items give +GP and +Perception. The more GP you have, the better.  If you have less than 10 of the selected food in stock, Lisbeth will attempt to craft 40 more. |
 
 When out in the open world trying to complete your fish log, you can settle down at a fishing hole and allow the bot to assist you in fishing:
+
 | Open World Fishing | |
 | :--- | :--- |
 | Assisted Fishing | True/False - Should the bot assist when fishing in the open world? You will need to do the initial cast, and the bot will take over until you decide to use the quit ability. The bot will auto-quit and queue up when the boat becomes available. Assisted fishing will auto-mooch, cast, hook, and use Thaliak's favor. |
@@ -54,7 +57,7 @@ When out in the open world trying to complete your fish log, you can settle down
 
 In the plugins tab of RebornBuddy, go to "repoBuddy" and click settings.
 
-In the bottom of the window, you'll see 3 options. Enter the following and click "Add Row".
+In the bottom of the window, you'll see 3 text boxes. Enter the following and click "Add Row".
 Repo Name: OceanTrip
 Dropdown:  BotBase
 Repo URL:  https://github.com/catrenelle/OceanTrip.git/trunk

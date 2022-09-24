@@ -1,3 +1,12 @@
+9/23/2022
+---------
+
+* Restructured Non-Spectral Missing Fish handler to consolidate unoptimized code.
+
+* Users can now skip Bait Restock by setting the Threshold or Amount to 0. While this is inadvisable, it was requested as an option. Failure to have the appropriate bait in your inventory can lead to issues with trying to fish. Always ensure you have an adequate amount of bait.
+
+
+
 9/21/2022
 ---------
 
