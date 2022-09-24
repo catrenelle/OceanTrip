@@ -269,8 +269,50 @@ namespace OceanTripPlanner
 				}
 			}
 		}
-		
-		private bool _CraftPotions;
+
+		private int _BaitRestockThreshold;
+		[Setting]
+
+		[DisplayName("Bait Restock Threshold")]
+		[Description("How low must your bait be before we restock?")]
+		[Category("Ocean Fishing")]
+
+		[DefaultValueAttribute(10)]
+		public int BaitRestockThreshold
+		{
+			get { return _BaitRestockThreshold; }
+			set
+			{
+				if (_BaitRestockThreshold != value)
+				{
+					_BaitRestockThreshold = value;
+					Save();
+				}
+			}
+		}
+
+        private int _BaitRestockAmount;
+        [Setting]
+
+        [DisplayName("Bait Restock Amount")]
+        [Description("How much bait do we need to buy when restocking?")]
+        [Category("Ocean Fishing")]
+
+        [DefaultValueAttribute(99)]
+        public int BaitRestockAmount
+        {
+            get { return _BaitRestockAmount; }
+            set
+            {
+                if (_BaitRestockAmount != value)
+                {
+                    _BaitRestockAmount = value;
+                    Save();
+                }
+            }
+        }
+
+        private bool _CraftPotions;
 		[Setting]
 
 		[DisplayName("Craft Potions")]

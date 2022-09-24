@@ -586,7 +586,10 @@ namespace OceanTripPlanner
 					await LandRepair(50);
 				}
 
-				await RestockBait(150, 500);
+				if (OceanTripSettings.Instance.BaitRestockThreshold > 10 && OceanTripSettings.Instance.BaitRestockAmount > 30)
+					await RestockBait(OceanTripSettings.Instance.BaitRestockThreshold, (uint)OceanTripSettings.Instance.BaitRestockAmount);
+				else
+					Log("Bait Restock Threshold or Restock Amount is set too low. Skipping bait restock. If you are missing the required baits for ocean fishing, the bot may not operate properly.");
 
 				/* Lisbeth exchange doesn't work properly, so temporarily disabling this */
 				/*
@@ -836,14 +839,17 @@ namespace OceanTripPlanner
                 if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
                 {
                     FishingManager.MoochTwo();
+					biteTimer.Start();
                 }
                 else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch)
                 {
                     FishingManager.Mooch();
+                    biteTimer.Start();
                 }
 
                 FishingManager.Cast();
-			}
+                biteTimer.Start();
+            }
 
             if ((Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
             {
@@ -854,10 +860,13 @@ namespace OceanTripPlanner
 			{
                 if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 				{
-						FishingManager.Hook();
-				}
+                    biteTimer.Stop();
+                    Log($"Bite Time: {biteTimer.Elapsed.TotalSeconds:F1}s");
+                    FishingManager.Hook();
+                    biteTimer.Reset();
+                }
 
-                await Coroutine.Sleep(2000);
+                await Coroutine.Sleep(100);
             }
         }
 
@@ -912,11 +921,13 @@ namespace OceanTripPlanner
 				{
 					Log("Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
+					await Coroutine.Sleep(100);
 				}
 				else if (!spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me) && Core.Player.Auras.Any(x => x.Id == CharacterAuras.AnglersArt && x.Value >= 10))
 				{
                     Log("Currently at 10 Angler's Art Stacks - Using Thaliak's Favor!");
                     ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
+                    await Coroutine.Sleep(100);
                 }
 
                 if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
@@ -939,13 +950,13 @@ namespace OceanTripPlanner
                         )
 						&& (ActionManager.CanCast(Actions.IdenticalCast, Core.Me)) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 					{
-						await Coroutine.Sleep(100);
 						if (ActionManager.CanCast(Actions.IdenticalCast, Core.Me))
 						{
 							Log("Identical Cast!");
 							lastCastMooch = false;
                             ActionManager.DoAction(Actions.IdenticalCast, Core.Me);
-						}
+                            biteTimer.Start();
+                        }
 					}
 
 					// Check for Mooch II before using Mooch
@@ -1013,9 +1024,9 @@ namespace OceanTripPlanner
 							else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 							{
                                 // This will help increase the chances of catching Seafaring Toad.
-                                if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.PatienceII, Core.Me))
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.PatienceII, Core.Me);
-                                else if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.Patience, Core.Me))
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.Patience, Core.Me);
 
 
@@ -1025,9 +1036,9 @@ namespace OceanTripPlanner
 							else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
 							{
 								// This will help increase the chances of catching Placodus.
-								if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.PatienceII, Core.Me))
-									ActionManager.DoAction(Actions.PatienceII, Core.Me);
-								else if (!ActionManager.CanCast(Actions.MoochII, Core.Me) && ActionManager.CanCast(Actions.Patience, Core.Me))
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.Patience, Core.Me);
 
 
@@ -1142,177 +1153,73 @@ namespace OceanTripPlanner
 						}
 						else
 						{
-							if (location == "galadion" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
-							{
-								if (
-										(missingFish.Contains((uint)OceanFish.Drunkfish) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
-										|| (missingFish.Contains((uint)OceanFish.Jasperhead) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog")) 
-										|| (missingFish.Contains((uint)OceanFish.CyanOctopus) || missingFish.Contains((uint)OceanFish.RosyBream) || missingFish.Contains((uint)OceanFish.GaladionChovy))
-									)
-									await ChangeBait(FishBait.Krill);
+							// Deal with Intuition fish first... if we have the intution buff
+							if (Core.Player.HasAura(CharacterAuras.FishersIntuition) && (location == "galadion" || location == "rhotano" || location == "ciel" || location == "blood"))
+								await ChangeBait(FishBait.Krill);
+							else if (location == "south" && ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales") && Core.Player.HasAura(CharacterAuras.FishersIntuition)))
+								await ChangeBait(FishBait.PlumpWorm);
+							else if (Core.Player.HasAura(CharacterAuras.FishersIntuition) && (location == "sound" || location == "north"))
+								await ChangeBait(FishBait.Ragworm);
 
-								else if (
-										(missingFish.Contains((uint)OceanFish.TarnishedShark) && WorldManager.CurrentWeather != "Showers")
-										|| (missingFish.Contains((uint)OceanFish.LeopardEel) && (WorldManager.CurrentWeather != "Rain" && WorldManager.CurrentWeather != "Showers"))
-                                    )
-									await ChangeBait(FishBait.PlumpWorm);
+							// Deal with all the rest
+							else if (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog && (
+										(location == "galadion" && missingFish.Contains((uint)OceanFish.Jasperhead) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
+										|| (location == "galadion" && (missingFish.Contains((uint)OceanFish.CyanOctopus) || missingFish.Contains((uint)OceanFish.RosyBream) || missingFish.Contains((uint)OceanFish.GaladionChovy)))
+										|| (location == "south" && ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales") && !Core.Player.HasAura(CharacterAuras.FishersIntuition) && missingFish.Contains((uint)OceanFish.LittleLeviathan)))
+										|| (location == "north" && missingFish.Contains((uint)OceanFish.TripodFish) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
+										|| (location == "north" && (missingFish.Contains((uint)OceanFish.MerlthorLobster) || missingFish.Contains((uint)OceanFish.NetCrawler)))
+										|| (location == "rhotano" && (missingFish.Contains((uint)OceanFish.DeepPlaice) && WorldManager.CurrentWeather != "Dust Storms"))
+										|| (location == "rhotano" && missingFish.Contains((uint)OceanFish.RhotanoWahoo) && WorldManager.CurrentWeather != "Heat Waves")
+										|| (location == "rhotano" && missingFish.Contains((uint)OceanFish.DarkNautilus))
+										|| (location == "ciel" && missingFish.Contains((uint)OceanFish.Watermoura) && (WorldManager.CurrentWeather != "Thunderstorms"))
+										|| (location == "ciel" && (missingFish.Contains((uint)OceanFish.LavandinRemora) || missingFish.Contains((uint)OceanFish.TortoiseshellCrab)))
+										|| (location == "blood" && (missingFish.Contains((uint)OceanFish.BlueStitcher) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog")))
+                                        || (location == "sound" && missingFish.Contains((uint)OceanFish.LivingLantern) && WorldManager.CurrentWeather != "Thunder")
+                                        || (location == "sound" && (missingFish.Contains((uint)OceanFish.NephriteEel) || missingFish.Contains((uint)OceanFish.ThavnairianShark)))
+                                    ))
+								await ChangeBait(FishBait.Krill);
 
-								else if (missingFish.Contains((uint)OceanFish.GaladionGoby) || missingFish.Contains((uint)OceanFish.Heavenswimmer))
-									await ChangeBait(FishBait.Ragworm);
+							else if (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog && (
+									(location == "galadion" && missingFish.Contains((uint)OceanFish.TarnishedShark) && WorldManager.CurrentWeather != "Showers")
+									|| (location == "galadion" && (missingFish.Contains((uint)OceanFish.LeopardEel) && (WorldManager.CurrentWeather != "Rain" && WorldManager.CurrentWeather != "Showers")))
+									|| (location == "north" && (missingFish.Contains((uint)OceanFish.Megasquid) || missingFish.Contains((uint)OceanFish.OschonsStone)))
+									|| (location == "rhotano" && missingFish.Contains((uint)OceanFish.OgreEel) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
+									|| (location == "rhotano" && missingFish.Contains((uint)OceanFish.Sabaton) && !Core.Player.HasAura(CharacterAuras.FishersIntuition)) // To catch Sabaton, need 2 Crimson Monkfish
+									|| (location == "ciel" && missingFish.Contains((uint)OceanFish.KingCobrafish) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
+									|| (location == "ciel" && (missingFish.Contains((uint)OceanFish.GoobbueRay) || missingFish.Contains((uint)OceanFish.MamahiMahi)))
+									|| (location == "blood" && missingFish.Contains((uint)OceanFish.BloodedWrasse) && WorldManager.CurrentWeather != "Showers")
+									|| (location == "blood" && missingFish.Contains((uint)OceanFish.BloodfreshTuna))
+									|| (location == "sound" && missingFish.Contains((uint)OceanFish.Lansquenet) && WorldManager.CurrentWeather != "Thunderstorms")
+                                ))
+								await ChangeBait(FishBait.PlumpWorm);
 
-								else
-                                    await ChangeBait(FishBait.PlumpWorm);
+							else if (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog && (
+									(location == "galadion" && (missingFish.Contains((uint)OceanFish.GaladionGoby) || missingFish.Contains((uint)OceanFish.Heavenswimmer)))
+										|| (location == "south" && (WorldManager.CurrentWeather != "Clouds" || WorldManager.CurrentWeather != "Fog") && missingFish.Contains((uint)OceanFish.ShaggySeadragon))
+										|| (location == "south" && (missingFish.Contains((uint)OceanFish.MerlthorButterfly) || missingFish.Contains((uint)OceanFish.Sunfly) || missingFish.Contains((uint)OceanFish.LaNosceanJelly)))
+										|| (location == "north" && missingFish.Contains((uint)OceanFish.ShootingStar))
+										|| (location == "north" && (missingFish.Contains((uint)OceanFish.Floefish) && (WorldManager.CurrentWeather != "Blizzards" && WorldManager.CurrentWeather != "Snow")))
+										|| (location == "rhotano" && (missingFish.Contains((uint)OceanFish.RhotanoSardine) || missingFish.Contains((uint)OceanFish.Lampfish)))
+										|| (location == "ciel" && missingFish.Contains((uint)OceanFish.LadysCameo) && (WorldManager.CurrentWeather != "Thunder"))
+										|| (location == "ciel" && missingFish.Contains((uint)OceanFish.CieldalaesGeode) && !Core.Player.HasAura(CharacterAuras.FishersIntuition)) // 3 Metallic Boxfish required to get Cieldalaes Geode
+										|| (location == "blood" && missingFish.Contains((uint)OceanFish.StarOfTheDestroyer) && WorldManager.CurrentWeather != "Rain")
+										|| (location == "blood" && (missingFish.Contains((uint)OceanFish.ThaliakCrab) || missingFish.Contains((uint)OceanFish.BloodpolishCrab)))
+										|| (location == "blood" && (missingFish.Contains((uint)OceanFish.Bareface) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))) // Need Bareface but doesn't have intuition - Catch Sunken Mask using Ragworm
+                                        || (location == "sound" && (missingFish.Contains((uint)OceanFish.Godsbed) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog")))
+                                        || (location == "sound" && (missingFish.Contains((uint)OceanFish.CrowPuffer) || missingFish.Contains((uint)OceanFish.HoneycombFish)))
+                                        || (location == "sound" && (missingFish.Contains((uint)OceanFish.GinkgoFin) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))) // Needs Ginkgo Fin but doesn't have intuition - Use Ragworm to get 3 Rothlyt Kelp
+                                ))
+								await ChangeBait(FishBait.Ragworm);
 
-                            }
-                            else if (location == "south" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
-							{
-								if ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales")
-										&& Core.Player.HasAura(CharacterAuras.FishersIntuition) && missingFish.Contains((uint)OceanFish.LittleLeviathan))
-									await ChangeBait(FishBait.PlumpWorm);
+							else if (location == "galadion" || location == "rhotano" || location == "sound")
+								await ChangeBait(FishBait.PlumpWorm);
+							else if (location == "south" || location == "blood")
+								await ChangeBait(FishBait.Krill);
+							else if (location == "north" || location == "ciel")
+								await ChangeBait(FishBait.Ragworm);
+							else
+								await ChangeBait(baitId);
 
-								else if (
-										((WorldManager.CurrentWeather != "Clouds" || WorldManager.CurrentWeather != "Fog") && missingFish.Contains((uint)OceanFish.ShaggySeadragon))
-										|| (missingFish.Contains((uint)OceanFish.MerlthorButterfly) || missingFish.Contains((uint)OceanFish.Sunfly) || missingFish.Contains((uint)OceanFish.LaNosceanJelly))
-                                    )
-									await ChangeBait(FishBait.Ragworm);
-
-								// No aura and missing Little Leviathan. Needs to catch Ghoul Barracuda and Mooch to Gladius for intuition.
-								else if ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales")
-										&& !Core.Player.HasAura(CharacterAuras.FishersIntuition) && missingFish.Contains((uint)OceanFish.LittleLeviathan))
-									await ChangeBait(FishBait.Krill);
-
-								else
-                                    await ChangeBait(FishBait.Krill);
-
-                            }
-                            else if (location == "north" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
-							{
-                                // Needs Shooting Star but doesn't have intuition - need to trigger it - Uses same bait once triggered.
-                                if (
-										(missingFish.Contains((uint)OceanFish.ShootingStar))
-										|| (missingFish.Contains((uint)OceanFish.Floefish) && (WorldManager.CurrentWeather != "Blizzards" && WorldManager.CurrentWeather != "Snow"))
-                                    )
-									await ChangeBait(FishBait.Ragworm);
-
-								else if (
-										(missingFish.Contains((uint)OceanFish.TripodFish) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
-										|| (missingFish.Contains((uint)OceanFish.MerlthorLobster) || missingFish.Contains((uint)OceanFish.NetCrawler))
-                                    )
-									await ChangeBait(FishBait.Krill);
-
-								else if (missingFish.Contains((uint)OceanFish.Megasquid) || missingFish.Contains((uint)OceanFish.OschonsStone))
-									await ChangeBait(FishBait.PlumpWorm);
-
-								else
-                                    await ChangeBait(FishBait.Ragworm);
-
-                            }
-                            else if (location == "rhotano" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
-							{
-								if (
-										(missingFish.Contains((uint)OceanFish.Sabaton) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
-										|| (missingFish.Contains((uint)OceanFish.DeepPlaice) && WorldManager.CurrentWeather != "Dust Storms")
-										|| (missingFish.Contains((uint)OceanFish.RhotanoWahoo) && WorldManager.CurrentWeather != "Heat Waves")
-										|| (missingFish.Contains((uint)OceanFish.DarkNautilus))
-                                    )
-									await ChangeBait(FishBait.Krill);
-
-								else if (
-										(missingFish.Contains((uint)OceanFish.OgreEel) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
-                                        || (missingFish.Contains((uint)OceanFish.Sabaton) && !Core.Player.HasAura(CharacterAuras.FishersIntuition)) // To catch Sabaton, need 2 Crimson Monkfish
-                                    )
-									await ChangeBait(FishBait.PlumpWorm);
-
-								else if (missingFish.Contains((uint)OceanFish.RhotanoSardine) || missingFish.Contains((uint)OceanFish.Lampfish))
-									await ChangeBait(FishBait.Ragworm);
-
-								else
-                                    await ChangeBait(FishBait.PlumpWorm);
-
-                            }
-                            else if (location == "ciel" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
-							{
-								if (
-										(missingFish.Contains((uint)OceanFish.CieldalaesGeode) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
-										|| (missingFish.Contains((uint)OceanFish.Watermoura) && (WorldManager.CurrentWeather != "Thunderstorms"))
-										|| (missingFish.Contains((uint)OceanFish.LavandinRemora) || missingFish.Contains((uint)OceanFish.TortoiseshellCrab))
-                                    )
-									await ChangeBait(FishBait.Krill);
-
-								else if (
-										(missingFish.Contains((uint)OceanFish.KingCobrafish) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
-										|| (missingFish.Contains((uint)OceanFish.GoobbueRay) || missingFish.Contains((uint)OceanFish.MamahiMahi))
-                                    )
-									await ChangeBait(FishBait.PlumpWorm);
-
-
-								else if (
-										(missingFish.Contains((uint)OceanFish.LadysCameo) && (WorldManager.CurrentWeather != "Thunder"))
-										|| (missingFish.Contains((uint)OceanFish.CieldalaesGeode) && !Core.Player.HasAura(CharacterAuras.FishersIntuition)) // 3 Metallic Boxfish required to get Cieldalaes Geode
-                                    )
-									await ChangeBait(FishBait.Ragworm);
-
-								else
-                                    await ChangeBait(FishBait.Ragworm);
-                            }
-                            else if (location == "blood" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
-							{
-								if (
-										(missingFish.Contains((uint)OceanFish.Bareface) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
-										|| (missingFish.Contains((uint)OceanFish.BlueStitcher) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
-                                    )
-									await ChangeBait(FishBait.Krill);
-
-								else if (
-										(missingFish.Contains((uint)OceanFish.BloodedWrasse) && WorldManager.CurrentWeather != "Showers")
-										|| (missingFish.Contains((uint)OceanFish.BloodfreshTuna))
-                                    )
-									await ChangeBait(FishBait.PlumpWorm);
-
-								else if (
-										(missingFish.Contains((uint)OceanFish.StarOfTheDestroyer) && WorldManager.CurrentWeather != "Rain")
-										|| (missingFish.Contains((uint)OceanFish.ThaliakCrab) || missingFish.Contains((uint)OceanFish.BloodpolishCrab))
-                                        || (missingFish.Contains((uint)OceanFish.Bareface) && !Core.Player.HasAura(CharacterAuras.FishersIntuition)) // Need Bareface but doesn't have intuition - Catch Sunken Mask using Ragworm
-                                    )
-									await ChangeBait(FishBait.Ragworm);
-								
-								else
-                                    await ChangeBait(FishBait.Krill);
-
-                            }
-                            else if (location == "sound" && (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog))
-							{
-								if (
-										(missingFish.Contains((uint)OceanFish.GinkgoFin) && Core.Player.HasAura(CharacterAuras.FishersIntuition))
-										|| (missingFish.Contains((uint)OceanFish.Godsbed) && (WorldManager.CurrentWeather != "Clouds" && WorldManager.CurrentWeather != "Fog"))
-										|| (missingFish.Contains((uint)OceanFish.CrowPuffer) || missingFish.Contains((uint)OceanFish.HoneycombFish))
-										|| (missingFish.Contains((uint)OceanFish.GinkgoFin) && !Core.Player.HasAura(CharacterAuras.FishersIntuition)) // Needs Ginkgo Fin but doesn't have intuition - Use Ragworm to get 3 Rothlyt Kelp
-                                    )
-									await ChangeBait(FishBait.Ragworm);
-								
-								else if (
-										(missingFish.Contains((uint)OceanFish.LivingLantern) && WorldManager.CurrentWeather != "Thunder")
-										|| (missingFish.Contains((uint)OceanFish.NephriteEel) || missingFish.Contains((uint)OceanFish.ThavnairianShark))
-                                    )
-									await ChangeBait(FishBait.Krill);
-
-								else if (missingFish.Contains((uint)OceanFish.Lansquenet) && WorldManager.CurrentWeather != "Thunderstorms")
-									await ChangeBait(FishBait.PlumpWorm);
-
-								else
-                                    await ChangeBait(FishBait.PlumpWorm);
-                            }
-                            else
-							{
-								if (location == "galadion" || location == "rhotano" || location == "sound")
-									await ChangeBait(FishBait.PlumpWorm);
-								else if (location == "south" || location == "blood")
-									await ChangeBait(FishBait.Krill);
-								else if (location == "north" || location == "ciel")
-									await ChangeBait(FishBait.Ragworm);
-								else
-									await ChangeBait(baitId);
-							}
 
                             // Should we use Chum?
                             if (Core.Me.MaxGP >= 100 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && OceanTripSettings.Instance.FullGPAction == FullGPAction.Chum)
@@ -1321,16 +1228,16 @@ namespace OceanTripPlanner
                                 {
                                     Log("Triggering Full GP Action to keep regen going - Chum!");
                                     ActionManager.DoAction(Actions.Chum, Core.Me);
-                                    await Coroutine.Sleep(100);
                                 }
                             }
                         }
 
-                        biteTimer.Start();
 						FishingManager.Cast();
+                        biteTimer.Start();
 						lastCastMooch = false;
 
                     }
+
 					await Coroutine.Sleep(50);
 				}
 
@@ -1346,8 +1253,11 @@ namespace OceanTripPlanner
 						if (FishingManager.CanHook)
 						{
 							FishingManager.Hook();
-						}
-					}
+                            biteTimer.Stop();
+							biteTimer.Reset();
+                        }
+                    }
+
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
 						biteTimer.Stop();
@@ -1734,7 +1644,7 @@ namespace OceanTripPlanner
                 if (slot.UseItem())
 					Logging.Write(Colors.Aqua, $"[Ocean Trip] Used a {DataManager.GetItem(cordial).CurrentLocaleName}!");
 
-				//await Coroutine.Sleep(2000);
+				await Coroutine.Sleep(100);
 			}
 		}
 

@@ -27,6 +27,7 @@ namespace OceanTripPlanner.Definitions
     {
         public static uint WellFed = 48;
         public static uint FishersIntuition = 568;
+        public static uint AnglersFortune = 850;
         public static uint AnglersArt = 2778;
     }
 
