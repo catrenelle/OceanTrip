@@ -277,7 +277,7 @@ namespace OceanTripPlanner
 		[Description("How low must your bait be before we restock?")]
 		[Category("Ocean Fishing")]
 
-		[DefaultValueAttribute(10)]
+		[DefaultValueAttribute(100)]
 		public int BaitRestockThreshold
 		{
 			get { return _BaitRestockThreshold; }
@@ -298,7 +298,7 @@ namespace OceanTripPlanner
         [Description("How much bait do we need to buy when restocking?")]
         [Category("Ocean Fishing")]
 
-        [DefaultValueAttribute(99)]
+        [DefaultValueAttribute(500)]
         public int BaitRestockAmount
         {
             get { return _BaitRestockAmount; }
