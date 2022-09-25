@@ -790,7 +790,8 @@ namespace OceanTripPlanner
 				}
 				else
 				{
-					Log($"Cannot determine location: {FishingLog.AreaName}");
+					if (!String.IsNullOrEmpty(FishingLog.AreaName))
+						Log($"Cannot determine location: {FishingLog.AreaName}");
 				}
 
 				await Coroutine.Sleep(2000);
