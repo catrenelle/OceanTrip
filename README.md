@@ -5,7 +5,7 @@ This BotBase will take the most complicated parts of Ocean Fishing and simplify 
 
 For best results, you should be level 90 with 900+GP available to you. In my own runs, I'm using fully pentamelded gathering gear with 973 GP (after eating Crab Cakes). Please note that as far as food goes, the focus should be on GP+ rather than Perception/Gathering. If you can do GP+ and Perception (IE: Crab Cakes or Peppered Popotoes) then you are all set!
 
-Please note that your success rates will vary. Some runs will be very low scoring, others can be very high. Ocean Trip has less to do with stats and everything to do with RNG. You can manipulate some factors, such as double hooking at the right time and instacasting when required.
+Please note that your success rates will vary. Some runs will be very low scoring, others can be very high. Ocean Trip has less to do with stats and everything to do with RNG. You can manipulate some factors, such as double hooking at the right time and instacasting when required. I've hit 20k points using this bot many times now, so I know it's easily accomplished.
 
 Ideally, you should aim for the following point values and can use this to gauge your potential success rate:
 
@@ -23,21 +23,23 @@ Ideally, you should aim for the following point values and can use this to gauge
 ## BotBase Settings
 When Idling:
 
-| Idle Stuff | Description|
-| :--- | :--- |
-| Craft Food | True/False - Should the bot craft lvl 90 food while passing the time? Currently crafts Tsai Tou Vounou, Pumpkin Ratatouille, Archon Burger, Pumpkin Potage, and Thavnairian Chai. |
-| Craft Potions | True/False - Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6 Tinctures of Strength, Dexterity, and Intelligence. | 
-| Custom Order | True/False - Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
-| Gather Shards | True/False - Should the bot gather shards and crystals while passing the time? |
-| Lisbeth Food | None, Stone Soup, Seafood Stew (Normal/HQ), Chili Crab (HQ), Tasi tou Vounou (HQ) - What food should be used while crafting? |
-| Refill Scrips | True/False - Should the bot refill your white/purple crafter scrips while passing the time? Currently refilles up to 1500 scrips. |
-| Resume Order | True/False - If something was left mid-progress in Lisbeth, should it continue where it left off? |
-| Retaining | None, Any city with a summoning bell - Should the bot automatically complete and reassign ventures? |
+| Idle Stuff | Values | Description|
+| :--- | :--- | :--- |
+| Craft Food | True/False | Should the bot craft lvl 90 food while passing the time? Currently crafts Tsai Tou Vounou, Pumpkin Ratatouille, Archon Burger, Pumpkin Potage, and Thavnairian Chai. |
+| Craft Mats | True/False | Should the bot craft lvl 80 stuff while waiting? Right now, this only exchanges scripts for Immutable Solution.
+| Craft Potions | None, Grade7, Grade6 | Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6/7 Tinctures of Strength, Dexterity, and Intelligence. Grade 7 requires Palaka Mistletoe, which can only be obtained using battle scrips (Astronomy). Ocean Trip will NOT gather Astronomy scrips for you. | 
+| Custom Order | True/False | Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
+| Gather Shards | True/False | Should the bot gather shards and crystals while passing the time? |
+| Get Materia | True/False | Should the bot purchase IX and X materia using scripts while waiting for the boat? |
+| Lisbeth Food | None, Stone Soup, Seafood Stew (Normal/HQ), Chili Crab (HQ), Tasi tou Vounou (HQ), Calamari Ripieni (Normal/HQ) | What food should be used while crafting? |
+| Refill Scrips | True/False | Should the bot refill your white/purple crafter scrips while passing the time? Currently refilles up to 1500 scrips. |
+| Resume Order | True/False | If something was left mid-progress in Lisbeth, should it continue where it left off? |
+| Retaining | None, Any city with a summoning bell | Should the bot automatically complete and reassign ventures? |
 
 When Ocean Fishing:
 
-| Ocean Fishing | Description |
-| :--- | :--- |
+| Ocean Fishing | Values | Description |
+| :--- | :--- | :--- |
 | Bait Restock Amount | 0 or higher - How much bait should the bot keep in inventory? Set to 0 to disable restocking of bait (not advised). |
 | Bait Restock Threshold | 0 or higher - How low on bait should the bot be before it purchases more? Set to 0 to disable restocking of bait (not advised). |
 | Exchange Fish | Sell, Desynth, None - What should the bot do with the fish after finishing an Ocean Trip? No blues will be sold or desynthesized. |

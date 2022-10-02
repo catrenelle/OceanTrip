@@ -75,6 +75,7 @@ namespace OceanTripPlanner.Definitions
         public static int ArchonBurger = 36067;
         public static int PumpkinPotage = 36070;
         public static int ThavnairianChai = 36074;
+        public static int CalamariRipieni = 37282;
     }
 
     public static class NPC
@@ -89,6 +90,10 @@ namespace OceanTripPlanner.Definitions
         public static int Grade6TinctureStrength = 36109;
         public static int Grade6TinctureDexterity = 36110;
         public static int Grade6TinctureIntelligence = 36112;
+
+        public static int Grade7TinctureStrength = 37840;
+        public static int Grade7TinctureDexterity = 37841;
+        public static int Grade7TinctureIntelligence = 37843;
     }
 
     public static class Weather
