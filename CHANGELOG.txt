@@ -1,3 +1,21 @@
+10/02/2022
+---------
+
+* Support for other languages did not work, so this BotBase will remain English language only for now. Once it's to a place where I am satisfied with it, I'll re-explore adding other language support.
+
+* Fixed an issue when changing baits that wouldn't equip proper lures/baits if there were less than 20 in your inventory. This prevented capturing fish such as Elasmosauros as you would only carry one or two lures.
+
+* Fixed an issue where Lisbeth wasn't triggering properly for "Pass the Time" events.
+
+* Changed Craft Potions to be a dropdown, with Grade 7 and Grade 6 as selectable. Grade 7 requires at least 3700 craftsmanship as an Alchemist to work properly. Crafting food may be required to reach this goal. Set Crafting food to Calimari Ripieni for extra craftsmanship and CP. Palaka Mistletoe is also required, which can be purchased on the Market Board or exchanged for astronomy tomestones. Ocean Trip will NOT farm astronomy tomestones.
+
+* Added Calamari Ripieni to the Craft Food table, along with previous entries. It is also set as the first food that is checked to create as it provides necessary crafting boosts. If food is required, you will need to enable "Ignore stat requirements" in Lisbeth under the "Character" section.
+
+* Re-enabled Lisbeth Exchange items. If there are issues, it's due to conflicts with other mods or plugins such as "Yes Already". If "Yes Already" is enabled, you will need to disable and restart the game before Lisbeth Exchange works properly.
+
+* Changed crafting order for Lisbeth options. Current order is now Shards -> Ocean Food -> Resume Last Order -> Custom Order -> Scrips -> Food -> Pots -> Mats (immutable solution) -> Materia.
+
+
 9/24/2022
 ---------
 

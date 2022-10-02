@@ -424,6 +424,7 @@ namespace OceanTripPlanner
 		private bool RouteShown = false;
 
 		private List<uint> missingFish = new List<uint>();
+		private bool missingFishRefreshed = false;
 		private Tuple<string, string>[] schedule;
 		private bool lastCastMooch = false;
 
@@ -465,6 +466,7 @@ namespace OceanTripPlanner
 			caughtFish = new List<uint>();
 			lastCaughtFish = 0;
 			caughtFishLogged = false;
+            missingFishRefreshed = false;
 
             RouteShown = false;
             
@@ -505,21 +507,13 @@ namespace OceanTripPlanner
 
 		private async void KillLisbeth(object sender, ElapsedEventArgs e)
 		{
-			TimeSpan stop = TimeUntilNextBoat(); //new TimeSpan(DateTime.UtcNow.Hour + 2, 0, 0);
+			TimeSpan stop =  new TimeSpan((DateTime.UtcNow.Hour % 2 == 0 ? DateTime.UtcNow.Hour + 2 : DateTime.UtcNow.Hour), (OceanTripSettings.Instance.LateBoatQueue ? 13 : 0), 0); //TimeUntilNextBoat();
 
 
             schedule = GetSchedule();
 
-			//if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) 
-			//	|| ((OceanTripSettings.Instance.FishPriority == FishPriority.FishLog) 
-			//		&& ((missingFish.Contains((uint)OceanFish.Sothis) && (schedule == ND || schedule == RS)) 
-			//			|| (missingFish.Contains((uint)OceanFish.CoralManta) && (schedule == RD || schedule == NS)) 
-			//			|| (missingFish.Contains((uint)OceanFish.Stonescale) && (schedule == RS)) 
-			//			|| (missingFish.Contains((uint)OceanFish.Elasmosaurus) && (schedule == ND)) 
-			//			|| (missingFish.Contains((uint)OceanFish.Hafgufa) && (schedule == BS || schedule == TS)) 
-			//			|| (missingFish.Contains((uint)OceanFish.SeafaringToad) && (schedule == BD)) 
-			//			|| (missingFish.Contains((uint)OceanFish.Placodus) && (schedule == TS)))))
-			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) || (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog && missingFish.Count() > 0))
+			if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog) 
+					|| (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog && missingFish.Count() > 0 && missingFishRefreshed))
 			{
                 //Log("Stopping Lisbeth!");
                 Lisbeth.StopGently();
@@ -552,17 +546,26 @@ namespace OceanTripPlanner
 		{
 			Navigator.PlayerMover = new SlideMover();
 			Navigator.NavigationProvider = new ServiceNavigationProvider();
+			missingFishRefreshed = false;
+			caughtFish.Clear();
 
-            await OceanFishing();
+			if (missingFish.Count == 0 && OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)
+				await RefreshMissingFish();
+            
+			await OceanFishing();
 
 			return true;
 		}
 
 		private async Task RefreshMissingFish()
 		{
-            Log("Obtaining current list of missing ocean fish.");
-            missingFish = await GetFishLog();
-            Log($"Total missing ocean fish: {missingFish.Count()}");
+			if (!missingFishRefreshed)
+			{
+				Log("Obtaining current list of missing ocean fish.");
+				missingFish = await GetFishLog();
+				Log($"Total missing ocean fish: {missingFish.Count()}");
+				missingFishRefreshed = true;
+			}
         }
 
         private async Task OceanFishing()
@@ -608,12 +611,17 @@ namespace OceanTripPlanner
 
 				TimeSpan timeLeftUntilNextSpawn = TimeUntilNextBoat();
 				if (timeLeftUntilNextSpawn.TotalMinutes < 1)
+				{
 					Log($"The boat is ready to be boarded!");
+					PassTheTime.freeToCraft = false;
+				}
 				else
+				{
 					Log($"Next boat is in {Math.Ceiling(timeLeftUntilNextSpawn.TotalMinutes)} minutes. Passing the time until then.");
+                    PassTheTime.freeToCraft = true;
+                }
 
-				PassTheTime.freeToCraft = true;
-				await PassTheTime.Craft();
+                await PassTheTime.Craft();
 
 				if (Core.Me.CurrentJob != ClassJobType.Fisher)
 				{
@@ -642,9 +650,7 @@ namespace OceanTripPlanner
 				}
 
                 if (FishingManager.State != FishingState.None)
-                {
                     ActionManager.DoAction(Actions.Quit, Core.Me);
-                }
 
                 if (Core.Me.CurrentJob != ClassJobType.Fisher)
 				{
@@ -720,11 +726,13 @@ namespace OceanTripPlanner
 			
 			while ((WorldManager.ZoneId == Zones.TheEndeavor) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
-				// Reset for this round
-                caughtFish.Clear();
-                lastCaughtFish = 0;
-				caughtFishLogged = false;
-
+				if (!String.IsNullOrEmpty(FishingLog.AreaName))
+				{ 
+					// Reset for this round
+					caughtFish.Clear();
+					lastCaughtFish = 0;
+					caughtFishLogged = false;
+				}
 
                 // English
                 // Deutsch
@@ -802,7 +810,6 @@ namespace OceanTripPlanner
 			if (windowByName != null)
 			{
                 // This is super sloppy as we have to rely on a bunch of sleeps right now.
-
                 await Coroutine.Sleep(12000); 
 
 				// What if the player already clicked the button and we're now loading or something else? This will potentially CRASH the client. Look into refining this later.
@@ -817,6 +824,8 @@ namespace OceanTripPlanner
 				}
 
 				RouteShown = false;
+				missingFishRefreshed = false;
+                PassTheTime.freeToCraft = true;
             }
 
 			await Coroutine.Sleep(1000);
@@ -834,7 +843,7 @@ namespace OceanTripPlanner
 
         private async Task ChangeBait(ulong baitId)
 		{
-			if ((baitId != FishingManager.SelectedBaitItemId) && (DataManager.GetItem((uint)baitId).ItemCount() > 20) && (DataManager.GetItem((uint)baitId).RequiredLevel <= Core.Me.ClassLevel))
+			if ((baitId != FishingManager.SelectedBaitItemId) && (DataManager.GetItem((uint)baitId).RequiredLevel <= Core.Me.ClassLevel))
 			{
 				AtkAddonControl baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				if(baitWindow == null)
@@ -1002,18 +1011,18 @@ namespace OceanTripPlanner
                     }
                     else
                     {
-						if (WorldManager.CurrentWeatherId == Weather.Spectral)
+						if (spectraled)
 						{
 							//Bait for Blue fish
 							if (
 									Core.Player.HasAura(CharacterAuras.FishersIntuition) &&
-									(((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis))
-									|| ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta))
-									|| ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus))
-									|| ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale))
-									|| ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa))
-									|| ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad))
-									|| ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus)))
+									(((location == "galadion") && (timeOfDay == "Night"))
+									|| ((location == "south") && (timeOfDay == "Night"))
+									|| ((location == "north") && (timeOfDay == "Day"))
+									|| ((location == "rhotano") && (timeOfDay == "Sunset"))
+									|| ((location == "ciel") && (timeOfDay == "Night"))
+									|| ((location == "blood") && (timeOfDay == "Day"))
+									|| ((location == "sound") && (timeOfDay == "Sunset")))
 							)
 							{
 								await ChangeBait(spectralbaitId);

@@ -24,7 +24,84 @@ namespace OceanTripPlanner
 
 		public static async Task Craft()
 		{
-			if (freeToCraft)
+            //Shards
+            if (freeToCraft && OceanTripSettings.Instance.GatherShards)
+            {
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WindShard) < 9000))
+                {
+                    await IdleLisbeth(Crystals.WindShard, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WindCluster) < 9000))
+                {
+                    await IdleLisbeth(Crystals.WindCluster, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WindCrystal) < 9000))
+                {
+                    await IdleLisbeth(Crystals.WindCrystal, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.FireShard) < 9000))
+                {
+                    await IdleLisbeth(Crystals.FireShard, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.FireCluster) < 9000))
+                {
+                    await IdleLisbeth(Crystals.FireCluster, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.FireCrystal) < 9000))
+                {
+                    await IdleLisbeth(Crystals.FireCrystal, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.IceShard) < 9000))
+                {
+                    await IdleLisbeth(Crystals.IceShard, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.IceCluster) < 9000))
+                {
+                    await IdleLisbeth(Crystals.IceCluster, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.IceCrystal) < 9000))
+                {
+                    await IdleLisbeth(Crystals.IceCrystal, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.EarthShard) < 9000))
+                {
+                    await IdleLisbeth(Crystals.EarthShard, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.EarthCluster) < 9000))
+                {
+                    await IdleLisbeth(Crystals.EarthCluster, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.EarthCrystal) < 9000))
+                {
+                    await IdleLisbeth(Crystals.EarthCrystal, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.LightningShard) < 9000))
+                {
+                    await IdleLisbeth(Crystals.LightningShard, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.LightningCluster) < 9000))
+                {
+                    await IdleLisbeth(Crystals.LightningCluster, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.LightningCrystal) < 9000))
+                {
+                    await IdleLisbeth(Crystals.LightningCrystal, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WaterShard) < 9000))
+                {
+                    await IdleLisbeth(Crystals.WaterShard, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WaterCluster) < 9000))
+                {
+                    await IdleLisbeth(Crystals.WaterCluster, 500, "Gather", "false", 0);
+                }
+                while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WaterCrystal) < 9000))
+                {
+                    await IdleLisbeth(Crystals.WaterCrystal, 500, "Gather", "false", 0);
+                }
+            }
+
+            if (freeToCraft)
 			{
 				int lisFood = (int)OceanTripSettings.Instance.LisbethFood;
 
@@ -62,26 +139,29 @@ namespace OceanTripPlanner
                 }
                 catch { Log("Encountered error reading BoatOrder.json, ignoring the file."); }
 
-                //Potions
-                if (freeToCraft && OceanTripSettings.Instance.CraftPotions)
-				{ 
-					while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade6TinctureStrength).ItemCount() <= 200))
-					{
-						await IdleLisbeth(Potions.Grade6TinctureStrength, 150, "Alchemist", "false", lisFood); 
-					}
-					while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade6TinctureDexterity).ItemCount() <= 200))
-					{
-						await IdleLisbeth(Potions.Grade6TinctureDexterity, 150, "Alchemist", "false", lisFood); 
-					}
-					while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade6TinctureIntelligence).ItemCount() <= 200))
-					{
-						await IdleLisbeth(Potions.Grade6TinctureIntelligence, 150, "Alchemist", "false", lisFood); 
-					}
-				}
+
+                //Scrip
+                if (freeToCraft && OceanTripSettings.Instance.RefillScrips)
+                {
+                    while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.WhiteCraftersScrips) <= 1500)
+                    {
+                        await IdleLisbeth((int)Currency.WhiteCraftersScrips, 500, "CraftMasterpiece", "false", 0);
+                    }
+                    while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.PurpleCraftersScrips) <= 1500)
+                    {
+                        await IdleLisbeth((int)Currency.PurpleCraftersScrips, 500, "CraftMasterpiece", "false", 0);
+                    }
+                }
+
+
 
 				//Food
 				if (freeToCraft && OceanTripSettings.Instance.CraftFood)
 				{
+					while (freeToCraft && DataManager.GetItem((uint)FoodList.CalamariRipieni).ItemCount() < 150)
+					{
+						await IdleLisbeth(FoodList.CalamariRipieni, 400, "Culinarian", "false", lisFood);
+                    }
 					while (freeToCraft && DataManager.GetItem((uint)FoodList.TsaiTouVounou).ItemCount() < 150)
 					{
 						await IdleLisbeth(FoodList.TsaiTouVounou, 400, "Culinarian", "false", lisFood);
@@ -102,13 +182,45 @@ namespace OceanTripPlanner
 					{
 						await IdleLisbeth(FoodList.ThavnairianChai, 400, "Culinarian", "false", lisFood); 
 					}
-				}
+                }
 
+                //Potions
+                if (freeToCraft && OceanTripSettings.Instance.CraftPotions != 0)
+                {
+                    if (OceanTripSettings.Instance.CraftPotions == LisbethPotionCrafting.Grade7)
+                    {
+                        while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade7TinctureStrength).ItemCount() <= 200))
+                        {
+                            await IdleLisbeth(Potions.Grade7TinctureStrength, 150, "Alchemist", "false", lisFood);
+                        }
+                        while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade7TinctureDexterity).ItemCount() <= 200))
+                        {
+                            await IdleLisbeth(Potions.Grade7TinctureDexterity, 150, "Alchemist", "false", lisFood);
+                        }
+                        while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade7TinctureIntelligence).ItemCount() <= 200))
+                        {
+                            await IdleLisbeth(Potions.Grade7TinctureIntelligence, 150, "Alchemist", "false", lisFood);
+                        }
+                    }
+                    else if (OceanTripSettings.Instance.CraftPotions == LisbethPotionCrafting.Grade6)
+                    {
+                        while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade6TinctureStrength).ItemCount() <= 200))
+                        {
+                            await IdleLisbeth(Potions.Grade6TinctureStrength, 150, "Alchemist", "false", lisFood);
+                        }
+                        while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade6TinctureDexterity).ItemCount() <= 200))
+                        {
+                            await IdleLisbeth(Potions.Grade6TinctureDexterity, 150, "Alchemist", "false", lisFood);
+                        }
+                        while (freeToCraft && (DataManager.GetItem((uint)Potions.Grade6TinctureIntelligence).ItemCount() <= 200))
+                        {
+                            await IdleLisbeth(Potions.Grade6TinctureIntelligence, 150, "Alchemist", "false", lisFood);
+                        }
+                    }
+                }
 
-				/* MATS and MATERIA are removed because Lisbeth Exchange is broken */
-				/*
-				//Mats
-				if (freeToCraft && OceanTripSettings.Instance.CraftMats)
+                //Mats
+                if (freeToCraft && OceanTripSettings.Instance.CraftMats)
 				{
 					while (freeToCraft && (DataManager.GetItem(37284).ItemCount() <= 300))
 					{
@@ -144,99 +256,11 @@ namespace OceanTripPlanner
 					{
 						await IdleLisbeth(33940, 30, "Exchange", "false", 0); //crafter command X
 					}
-				}*/
-
-				//Scrip
-				if (freeToCraft && OceanTripSettings.Instance.RefillScrips)
-				{
-					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.WhiteCraftersScrips) <= 1500)
-					{
-						await IdleLisbeth((int)Currency.WhiteCraftersScrips, 500, "CraftMasterpiece", "false", 0); 
-					}
-					while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.PurpleCraftersScrips) <= 1500)
-					{
-						await IdleLisbeth((int)Currency.PurpleCraftersScrips, 500, "CraftMasterpiece", "false", 0); 
-					}
 				}
 
 			}
 
-			//Shards
-			if (freeToCraft && OceanTripSettings.Instance.GatherShards)
-			{
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WindShard) < 9000))
-				{
-					await IdleLisbeth(Crystals.WindShard, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WindCrystal) < 9000))
-				{
-					await IdleLisbeth(Crystals.WindCrystal, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WindCluster) < 9000))
-				{
-					await IdleLisbeth(Crystals.WindCluster, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.FireShard) < 9000))
-				{
-					await IdleLisbeth(Crystals.FireShard, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.FireCrystal) < 9000))
-				{
-					await IdleLisbeth(Crystals.FireCrystal, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.FireCluster) < 9000))
-				{
-					await IdleLisbeth(Crystals.FireCluster, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.IceShard) < 9000))
-				{
-					await IdleLisbeth(Crystals.IceShard, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.IceCrystal) < 9000))
-				{
-					await IdleLisbeth(Crystals.IceCrystal, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.IceCluster) < 9000))
-				{
-					await IdleLisbeth(Crystals.IceCluster, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.EarthShard) < 9000))
-				{
-					await IdleLisbeth(Crystals.EarthShard, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.EarthCrystal) < 9000))
-				{
-					await IdleLisbeth(Crystals.EarthCrystal, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.EarthCluster) < 9000))
-				{
-					await IdleLisbeth(Crystals.EarthCluster, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.LightningShard) < 9000))
-				{
-					await IdleLisbeth(Crystals.LightningShard, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.LightningCrystal) < 9000))
-				{
-					await IdleLisbeth(Crystals.LightningCrystal, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.LightningCluster) < 9000))
-				{
-					await IdleLisbeth(Crystals.LightningCluster, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WaterShard) < 9000))
-				{
-					await IdleLisbeth(Crystals.WaterShard, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WaterCrystal) < 9000))
-				{
-					await IdleLisbeth(Crystals.WaterCrystal, 500, "Gather", "false", 0); 
-				}
-				while (freeToCraft && (ConditionParser.ItemCount((uint)Crystals.WaterCluster) < 9000))
-				{
-					await IdleLisbeth(Crystals.WaterCluster, 500, "Gather", "false", 0); 
-				}
-			}
+
 		}
 
 

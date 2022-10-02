@@ -16,7 +16,10 @@ namespace OceanTripPlanner
 		SeafoodStewHQ = 1012865,
 		ChiliCrabHQ = 1030482,
 		TsaitouVounouHQ = 1036060,
-		None = 0
+		CalamariRipieni = 37282,
+		CalamariRipieniHQ = 1037282,
+
+        None = 0
 	}
 
 	public enum ExchangeFish : uint
@@ -58,6 +61,13 @@ namespace OceanTripPlanner
 	{
         PepperedPopotoes = 27870,
 		CrabCakes = 30481,
+		None = 0
+	}
+
+	public enum LisbethPotionCrafting : int
+	{
+		Grade7 = 1,
+		Grade6 = 2,
 		None = 0
 	}
 
@@ -312,15 +322,15 @@ namespace OceanTripPlanner
             }
         }
 
-        private bool _CraftPotions;
+        private LisbethPotionCrafting _CraftPotions;
 		[Setting]
 
 		[DisplayName("Craft Potions")]
 		[Description("Use Lisbeth to craft various (lvl90) potions while waiting for the boat.")]
 		[Category("Idle Stuff")]
 		
-		[DefaultValueAttribute(true)]
-		public bool CraftPotions
+		[DefaultValueAttribute(LisbethPotionCrafting.Grade6)]
+		public LisbethPotionCrafting CraftPotions
 		{
 			get { return _CraftPotions; }
 			set
@@ -354,8 +364,6 @@ namespace OceanTripPlanner
 			}
 		}
 
-		// Lisbeth cannot properly exchange for materia  right now - disabling this
-		/*
 		private bool _GetMateria;
 		[Setting]
 
@@ -376,7 +384,6 @@ namespace OceanTripPlanner
 				}
 			}
 		}
-		*/
 
 		private bool _RefillScrips;
 		[Setting]
@@ -399,9 +406,6 @@ namespace OceanTripPlanner
 			}
 		}
 
-
-        /* Lisbeth Exchange doesn't work properly right now - disabling */
-		/*
         private bool _EmptyScrips;
 		[Setting]
 
@@ -421,10 +425,8 @@ namespace OceanTripPlanner
 					Save();
 				}
 			}
-		}*/
+		}
 
-		/* Lisbeth Exchange doesn't work properly right now - disabling */
-		/*
 		private bool _CraftMats;
 		[Setting]
 
@@ -445,7 +447,6 @@ namespace OceanTripPlanner
 				}
 			}
 		}
-		*/
 
 		private bool _GatherShards;
 		[Setting]
