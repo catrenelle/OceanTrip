@@ -143,16 +143,15 @@ namespace OceanTripPlanner
                 //Scrip
                 if (freeToCraft && OceanTripSettings.Instance.RefillScrips)
                 {
-                    while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.WhiteCraftersScrips) <= 1500)
+                    while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.WhiteCraftersScrips) <= 3000)
                     {
                         await IdleLisbeth((int)Currency.WhiteCraftersScrips, 500, "CraftMasterpiece", "false", 0);
                     }
-                    while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.PurpleCraftersScrips) <= 1500)
+                    while (freeToCraft && SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)Currency.PurpleCraftersScrips) <= 3000)
                     {
                         await IdleLisbeth((int)Currency.PurpleCraftersScrips, 500, "CraftMasterpiece", "false", 0);
                     }
                 }
-
 
 
 				//Food
@@ -222,39 +221,39 @@ namespace OceanTripPlanner
                 //Mats
                 if (freeToCraft && OceanTripSettings.Instance.CraftMats)
 				{
-					while (freeToCraft && (DataManager.GetItem(37284).ItemCount() <= 300))
+					while (freeToCraft && (DataManager.GetItem((uint)Material.ImmutableSolution).ItemCount() <= 300))
 					{
-						await IdleLisbeth(37284, 50, "Exchange", "false", lisFood); //Immutable Solution
+						await IdleLisbeth(Material.ImmutableSolution, 50, "Exchange", "false", lisFood); 
 					}
 				}
 
 				//Materia
 				if (freeToCraft && OceanTripSettings.Instance.GetMateria)
 				{				
-					while (freeToCraft && DataManager.GetItem(33925).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem((uint)Materia.CrafterCompetenceIX).ItemCount() < 200)
 					{
-						await IdleLisbeth(33925, 20, "Exchange", "false", 0); //crafter competence IX
+						await IdleLisbeth(Materia.CrafterCompetenceIX, 20, "Exchange", "false", 0);
 					}
-					while (freeToCraft && DataManager.GetItem(33926).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem((uint)Materia.CrafterCunningIX).ItemCount() < 200)
 					{
-						await IdleLisbeth(33926, 20, "Exchange", "false", 0); //crafter cunning IX
+						await IdleLisbeth(Materia.CrafterCunningIX, 20, "Exchange", "false", 0);
 					}
-					while (freeToCraft && DataManager.GetItem(33927).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem((uint)Materia.CrafterCommandIX).ItemCount() < 200)
 					{
-						await IdleLisbeth(33927, 20, "Exchange", "false", 0); //crafter command IX
+						await IdleLisbeth(Materia.CrafterCommandIX, 20, "Exchange", "false", 0);
 					}
 
-					while (freeToCraft && DataManager.GetItem(33938).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem((uint)Materia.CrafterCompetenceX).ItemCount() < 200)
 					{
-						await IdleLisbeth(33938, 30, "Exchange", "false", 0); //crafter competence X
+						await IdleLisbeth(Materia.CrafterCompetenceX, 30, "Exchange", "false", 0); 
 					}
-					while (freeToCraft && DataManager.GetItem(33939).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem((uint)Materia.CrafterCunningX).ItemCount() < 200)
 					{
-						await IdleLisbeth(33939, 30, "Exchange", "false", 0); //crafter cunning X
+						await IdleLisbeth(Materia.CrafterCunningX, 30, "Exchange", "false", 0); 
 					}
-					while (freeToCraft && DataManager.GetItem(33940).ItemCount() < 200)
+					while (freeToCraft && DataManager.GetItem((uint)Materia.CrafterCommandX).ItemCount() < 200)
 					{
-						await IdleLisbeth(33940, 30, "Exchange", "false", 0); //crafter command X
+						await IdleLisbeth(Materia.CrafterCommandX, 30, "Exchange", "false", 0); 
 					}
 				}
 

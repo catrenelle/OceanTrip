@@ -1,5 +1,15 @@
+10/08/2022
+----------
+
+* Added new "Auto" mode for the Fishing Priority list. If set to auto, the bot will act in "Fishing Log" priority if there is an available missing fish to be caught. Otherwise, it'll act as if it's in "Points" mode. This will allow you to use a single setting, and slowly focus more on points as you fill in your fishing log.
+
+* Increased Scrip Refilling from 1500 to 3000. The bot will refill in allotments of 500.
+
+* Removed additional magic numbers from "PassTheTime.cs" for the segments that were re-enabled on 10/02/2022.
+
+
 10/02/2022
----------
+----------
 
 * Support for other languages did not work, so this BotBase will remain English language only for now. Once it's to a place where I am satisfied with it, I'll re-explore adding other language support.
 
