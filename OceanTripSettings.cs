@@ -32,7 +32,8 @@ namespace OceanTripPlanner
 	public enum FishPriority : uint
 	{
 		FishLog,
-		Points
+		Points,
+		Auto
 	}
 
 	public enum Venturing : uint
@@ -263,10 +264,10 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Fish Priority")]
-		[Description("Prioritize fish log completion or points while ocean fishing. This will skip the upcoming boat if you have all the relevant blue fish.")]
+		[Description("Prioritize fish log completion or points while ocean fishing. Setting to Auto will attempt to complete the fish log if any fish are available before switching to Points mode. Setting to Fish Log will skip the upcoming boat if you have no missing fish.")]
 		[Category("Ocean Fishing")]
 
-		[DefaultValueAttribute(FishPriority.Points)]
+		[DefaultValueAttribute(FishPriority.Auto)]
 		public FishPriority FishPriority
 		{
 			get { return _FishPriority; }

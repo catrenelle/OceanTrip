@@ -78,6 +78,21 @@ namespace OceanTripPlanner.Definitions
         public static int CalamariRipieni = 37282;
     }
 
+    public static class Materia
+    {
+        public static int CrafterCompetenceIX = 33925;
+        public static int CrafterCunningIX = 33926;
+        public static int CrafterCommandIX = 33927;
+        public static int CrafterCompetenceX = 33938;
+        public static int CrafterCunningX = 33939;
+        public static int CrafterCommandX = 33940;
+    }
+
+    public static class Material
+    {
+        public static int ImmutableSolution = 37284;
+    }
+
     public static class NPC
     {
         public const uint Syneyhil = 1003254;
