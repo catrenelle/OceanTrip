@@ -1,3 +1,16 @@
+10/16/2022
+----------
+
+* Added new Fish Priority: IgnoreBoat - Will bypass going out for an Ocean Trip and focus on farming.
+
+* Re-enabled purchasing Hi-Cordials with excess White Gatherer's Scrips. Bot will purchase Hi-Cordials until it hits ~1500 scrips and then stop.
+
+* Fixed an issue with bait selection during spectral not selecting the correct bait.
+
+* Fixed an issue with desynthesizing fish being extremely slow.
+
+
+
 10/08/2022
 ----------
 

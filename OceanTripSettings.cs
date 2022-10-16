@@ -33,7 +33,8 @@ namespace OceanTripPlanner
 	{
 		FishLog,
 		Points,
-		Auto
+		Auto,
+		IgnoreBoat
 	}
 
 	public enum Venturing : uint
