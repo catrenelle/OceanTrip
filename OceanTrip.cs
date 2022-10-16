@@ -1708,42 +1708,27 @@ namespace OceanTripPlanner
 		private async Task RestockBait(int baitThreshold, uint baitCap)
 		{
 			List<uint> itemsToBuy = new List<uint>();
-			if (DataManager.GetItem(FishBait.Ragworm).ItemCount() < baitThreshold)
+			List<uint> baitList = new List<uint>();
+
+			baitList.Add(FishBait.Ragworm);
+			baitList.Add(FishBait.Krill);
+			baitList.Add(FishBait.PlumpWorm);
+			baitList.Add(FishBait.RatTail);
+			baitList.Add(FishBait.GlowWorm);
+			baitList.Add(FishBait.HeavySteelJig);
+			baitList.Add(FishBait.ShrimpCageFeeder);
+			baitList.Add(FishBait.PillBug);
+			baitList.Add(FishBait.SquidStrips);
+
+			foreach (var bait in baitList)
 			{
-				itemsToBuy.Add(FishBait.Ragworm);
-			}
-			if (DataManager.GetItem(FishBait.Krill).ItemCount() < baitThreshold)
-			{
-				itemsToBuy.Add(FishBait.Krill);
-			}
-			if (DataManager.GetItem(FishBait.PlumpWorm).ItemCount() < baitThreshold)
-			{
-				itemsToBuy.Add(FishBait.PlumpWorm);
-			}
-			if (DataManager.GetItem(FishBait.RatTail).ItemCount() < baitThreshold)
-			{
-				itemsToBuy.Add(FishBait.RatTail);
-			}
-			if (DataManager.GetItem(FishBait.GlowWorm).ItemCount() < baitThreshold)
-			{
-				itemsToBuy.Add(FishBait.GlowWorm);
-			}
-			if (DataManager.GetItem(FishBait.HeavySteelJig).ItemCount() < 5)
-			{
-				itemsToBuy.Add(FishBait.HeavySteelJig);
-			}
-			if (DataManager.GetItem(FishBait.ShrimpCageFeeder).ItemCount() < baitThreshold)
-			{
-				itemsToBuy.Add(FishBait.ShrimpCageFeeder);
-			}
-			if (DataManager.GetItem(FishBait.PillBug).ItemCount() < baitThreshold)
-			{
-				itemsToBuy.Add(FishBait.PillBug);
-			}
-			if (DataManager.GetItem(FishBait.SquidStrips).ItemCount() < baitThreshold)
-			{
-				itemsToBuy.Add(FishBait.SquidStrips);
-			}
+				var baitFound = InventoryManager.FilledSlots.FirstOrDefault(x => x.RawItemId == bait);
+
+				if ((baitFound != null && ((bait == FishBait.HeavySteelJig && baitFound.Count < 5) || (bait != FishBait.HeavySteelJig && baitFound.Count < baitThreshold)))
+					|| baitFound is null)
+					itemsToBuy.Add(bait);
+            }
+
 
 			if (itemsToBuy.Any())
 			{
