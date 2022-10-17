@@ -11,6 +11,8 @@
 
 * Improved Bait detection. Bait must be in your inventory or else the botbase will restock. A future release may include checking retainers and chocobo saddles, then withdrawing the bait to your inventory.
 
+* Cleaned up BotBase Settings list. Some option descriptions have been updated to better clarify what it means. For example, "Empty Gatherer Scrips" is now "Purchase Hi-Cordials"
+
 
 10/08/2022
 ----------
