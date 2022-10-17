@@ -90,7 +90,7 @@ namespace OceanTripPlanner
 		private Venturing _Venturing;
 		[Setting]
 
-		[DisplayName("Retaining")]
+		[DisplayName("Refresh Retainers")]
 		[Description("Go to a summoning bell and refresh ventures.")]
 		[Category("Idle Stuff")]
 		
@@ -111,7 +111,7 @@ namespace OceanTripPlanner
 		private bool _ResumeOrder;
 		[Setting]
 
-		[DisplayName("Resume Order")]
+		[DisplayName("Resume Lisbeth Order")]
 		[Description("Resume last order before making new ones. This will resume any unfinished Lisbeth order, even if started from somewhere else.")]
 		[Category("Idle Stuff")]
 
@@ -132,7 +132,7 @@ namespace OceanTripPlanner
 		private bool _CustomOrder;
 		[Setting]
 
-		[DisplayName("Custom Order")]
+		[DisplayName("Custom Lisbeth Order")]
 		[Description("Use your own Lisbeth json order while waiting for the boat. Save it as \"BoatOrder.json\" in your RebornBuddy root folder")]
 		[Category("Idle Stuff")]
 
@@ -201,7 +201,7 @@ namespace OceanTripPlanner
 		private OceanFood _OceanFood;
 		[Setting]
 
-		[DisplayName("Ocean Food")]
+		[DisplayName("Use Ocean Fishing Food")]
 		[Description("What food item do you want to use for fishing? HQ food will be used first if you have it.")]
 		[Category("Ocean Fishing")]
 
@@ -243,7 +243,7 @@ namespace OceanTripPlanner
 		private LisbethFood _LisbethFood;
 		[Setting]
 
-		[DisplayName("Lisbeth Food")]
+		[DisplayName("Use Crafting Food")]
 		[Description("Food to use while crafting.")]
 		[Category("Idle Stuff")]
 
@@ -264,7 +264,7 @@ namespace OceanTripPlanner
 		private FishPriority _FishPriority;
 		[Setting]
 
-		[DisplayName("Fish Priority")]
+		[DisplayName("Fishing Priority")]
 		[Description("Prioritize fish log completion or points while ocean fishing. Setting to Auto will attempt to complete the fish log if any fish are available before switching to Points mode. Setting to Fish Log will skip the upcoming boat if you have no missing fish.")]
 		[Category("Ocean Fishing")]
 
@@ -327,7 +327,7 @@ namespace OceanTripPlanner
         private LisbethPotionCrafting _CraftPotions;
 		[Setting]
 
-		[DisplayName("Craft Potions")]
+		[DisplayName("Craft Raid Potions")]
 		[Description("Use Lisbeth to craft various (lvl90) potions while waiting for the boat.")]
 		[Category("Idle Stuff")]
 		
@@ -348,7 +348,7 @@ namespace OceanTripPlanner
 		private bool _CraftFood;
 		[Setting]
 
-		[DisplayName("Craft Food")]
+		[DisplayName("Craft Raid Food")]
 		[Description("Use Lisbeth to craft various (lvl90) food while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
@@ -369,7 +369,7 @@ namespace OceanTripPlanner
 		private bool _GetMateria;
 		[Setting]
 
-		[DisplayName("Get Materia")]
+		[DisplayName("Purchase Materia")]
 		[Description("Use Lisbeth to buy IX and X materia while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
@@ -390,7 +390,7 @@ namespace OceanTripPlanner
 		private bool _RefillScrips;
 		[Setting]
 
-		[DisplayName("Refill Scrips")]
+		[DisplayName("Refill Crafter Scrips")]
 		[Description("Use Lisbeth to refill White and Purple Crafter Scrips while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
@@ -411,9 +411,9 @@ namespace OceanTripPlanner
         private bool _EmptyScrips;
 		[Setting]
 
-		[DisplayName("Empty Gatherer Scrips")]
-		[Description("Buy Cordials when White Gatherer Scrips are close to cap.")]
-		[Category("Ocean")]
+		[DisplayName("Purchase Hi-Cordials")]
+		[Description("Buy Cordials when White Gatherer Scrips are close to cap. Purchasing will stop when scrips are at 1500 or less.")]
+		[Category("Idle Stuff")]
 
 		[DefaultValueAttribute(true)]
 		public bool EmptyScrips
