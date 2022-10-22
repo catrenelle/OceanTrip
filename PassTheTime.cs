@@ -88,9 +88,7 @@ namespace OceanTripPlanner
 
                     foreach (var crystal in crystalList)
                     {
-                        int count = ConditionParser.ItemCount((uint)crystal);
-
-                        while (freeToCraft && count < 9000)
+                        while (freeToCraft && ConditionParser.ItemCount((uint)crystal) < 9000)
                             await IdleLisbeth(crystal, 500, "Gather", "false", 0);
                     }
 
@@ -106,12 +104,8 @@ namespace OceanTripPlanner
 
 					foreach (var currency in currencyList)
 					{
-						int count = (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency);
-
-                        while (freeToCraft && count <= 3000)
-						{
+                        while (freeToCraft && (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency) <= 3000)
 							await IdleLisbeth(currency, 500, "CraftMasterpiece", "false", 0);
-						}
 					}
                 }
 
@@ -127,15 +121,8 @@ namespace OceanTripPlanner
 
 					foreach (var food in foodList)
 					{
-						// How many do you have? Accounting for split stacks.
-						int count = 0;
-						foreach (var item in InventoryManager.FilledSlots.Where(x => x.RawItemId == food))
-							count += (int)item.Count;
-
-						while (freeToCraft && count < 150)
-						{
+						while (freeToCraft && DataManager.GetItem((uint)food).ItemCount() < 150)
 							await IdleLisbeth(food, 400, "Culinarian", "false", lisFood);
-						}
 					}
 
 					foodList.Clear();
@@ -163,7 +150,7 @@ namespace OceanTripPlanner
 
 					foreach (var potion in potionList)
 					{
-						while (freeToCraft && (DataManager.GetItem((uint)potion).ItemCount() <= 200))
+						while (freeToCraft && DataManager.GetItem((uint)potion).ItemCount() <= 200)
 							await IdleLisbeth(potion, 200, "Alchemist", "false", lisFood);
 					}
 
@@ -178,12 +165,8 @@ namespace OceanTripPlanner
 
 					foreach (var item in itemList)
 					{
-						int count = (int)DataManager.GetItem((uint)item).ItemCount();
-
-                        while (freeToCraft && count <= 300)
-						{
+                        while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
 							await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
-						}
 					}
 				}
 
@@ -200,9 +183,7 @@ namespace OceanTripPlanner
 
 					foreach(var materia in materiaList)
 					{
-						int count = (int)DataManager.GetItem((uint)Materia.CrafterCompetenceIX).ItemCount();
-
-						while(freeToCraft && count <= 200)
+						while(freeToCraft && DataManager.GetItem((uint)materia).ItemCount() <= 200)
                             await IdleLisbeth(materia, 20, "Exchange", "false", 0);
                     }
 				}
