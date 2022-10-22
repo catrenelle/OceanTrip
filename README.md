@@ -25,16 +25,17 @@ When Idling:
 
 | Idle Stuff | Values | Description|
 | :--- | :--- | :--- |
-| Craft Food | True/False | Should the bot craft lvl 90 food while passing the time? Currently crafts Tsai Tou Vounou, Pumpkin Ratatouille, Archon Burger, Pumpkin Potage, and Thavnairian Chai. |
 | Craft Mats | True/False | Should the bot craft lvl 80 stuff while waiting? Right now, this only exchanges scripts for Immutable Solution.
-| Craft Potions | None, Grade7, Grade6 | Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6/7 Tinctures of Strength, Dexterity, and Intelligence. Grade 7 requires Palaka Mistletoe, which can only be obtained using battle scrips (Astronomy). Ocean Trip will NOT gather Astronomy scrips for you. | 
-| Custom Order | True/False | Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
+| Craft Raid Food | True/False | Should the bot craft lvl 90 food while passing the time? Currently crafts Carrot Pudding, Sunset C arrot Nibbles, Garlean Pizza, and Melon Pie. |
+| Craft Raid Potions | None, Grade7, Grade6 | Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6/7 Tinctures of Strength, Dexterity, and Intelligence. Grade 7 requires Palaka Mistletoe, which can only be obtained using battle scrips (Astronomy). Ocean Trip will NOT gather Astronomy scrips for you. | 
+| Custom Lisbeth Order | True/False | Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
 | Gather Shards | True/False | Should the bot gather shards and crystals while passing the time? |
-| Get Materia | True/False | Should the bot purchase IX and X materia using scripts while waiting for the boat? |
-| Lisbeth Food | None, Stone Soup, Seafood Stew (Normal/HQ), Chili Crab (HQ), Tasi tou Vounou (HQ), Calamari Ripieni (Normal/HQ) | What food should be used while crafting? |
-| Refill Scrips | True/False | Should the bot refill your white/purple crafter scrips while passing the time? Currently refills up to 3000 scrips. |
-| Resume Order | True/False | If something was left mid-progress in Lisbeth, should it continue where it left off? |
-| Retaining | None, Any city with a summoning bell | Should the bot automatically complete and reassign ventures? |
+| Purchase Hi-Cordials | True/False | Should the bot spend excess scrips to purchase hi-cordials? The bot will purchase until you are at 1500 scrips or less. |
+| Purchase Materia | True/False | Should the bot purchase IX and X materia using scripts while waiting for the boat? |
+| Refill Crafter Scrips | True/False | Should the bot refill your white/purple crafter scrips while passing the time? Currently refills up to 3000 scrips. |
+| Refresh Retainers| None, Any city with a summoning bell | Should the bot automatically complete and reassign ventures? |
+| Resume Lisbeth Order | True/False | If something was left mid-progress in Lisbeth, should it continue where it left off? |
+| Use Crafting Food | None, Stone Soup, Seafood Stew (Normal/HQ), Chili Crab (HQ), Tasi tou Vounou (HQ), Calamari Ripieni (Normal/HQ) | What food should be used while crafting? |
 
 When Ocean Fishing:
 
@@ -43,10 +44,10 @@ When Ocean Fishing:
 | Bait Restock Amount | 0 or higher | How much bait should the bot keep in inventory? Set to 0 to disable restocking of bait (not advised). |
 | Bait Restock Threshold | 0 or higher | How low on bait should the bot be before it purchases more? Set to 0 to disable restocking of bait (not advised). |
 | Exchange Fish | Sell, Desynth, None | What should the bot do with the fish after finishing an Ocean Trip? No blues will be sold or desynthesized. |
-| Fish Priority | FishLog, Points, Auto | What should the focus be when fishing on the boat? FishLog may give a really low score as it focuses entirely on missing fish entries. No doublehooking will occur during spectral events while this is set to FishLog. Points will focus on point values, regardless of intuition or missing fish. Double Hooking will occur during spectral events based on Zeke's rules. Auto is a blend of FishLog and Points mode, where it will focus on completing the Fishing Log if possible. If no fish are available at the location/time, then Auto will operate in Points mode. |
+| Fishing Priority | FishLog, Points, Auto | What should the focus be when fishing on the boat? FishLog may give a really low score as it focuses entirely on missing fish entries. No doublehooking will occur during spectral events while this is set to FishLog. Points will focus on point values, regardless of intuition or missing fish. Double Hooking will occur during spectral events based on Zeke's rules. Auto is a blend of FishLog and Points mode, where it will focus on completing the Fishing Log if possible. If no fish are available at the location/time, then Auto will operate in Points mode. |
 | Full GP Action | None, Chum, DoubleHook | What should the bot do when you have full GP? Chum is a good choice while going for your Fishing Log. Double Hook is useless unless it's a spectral event or you're trying to trigger intuition for certain fish. The bot handles that already. | 
 | Late Queue | True, False | Should the bot queue up as soon as the boat becomes available or 13 minutes after? If set to true, the bot will wait until the 13 minute mark before attempting to queue. Late queues may contribute to better points, as it is easier to get higher scores and multipliers when less people are on the boat. |
-| Ocean Food | None, Peppered Popotoes, Crab Cakes | What food should be used for Ocean Trips? These items give +GP and +Perception. The more GP you have, the better.  If you have less than 10 of the selected food in stock, Lisbeth will attempt to craft 40 more. |
+| Use Fishing Food | None, Peppered Popotoes, Crab Cakes | What food should be used for Ocean Trips? These items give +GP and +Perception. The more GP you have, the better.  If you have less than 10 of the selected food in stock, Lisbeth will attempt to craft 40 more. |
 
 When out in the open world trying to complete your fish log, you can settle down at a fishing hole and allow the bot to assist you in fishing:
 
@@ -63,3 +64,7 @@ In the bottom of the window, you'll see 3 text boxes. Enter the following and cl
 Repo Name: OceanTrip
 Dropdown:  BotBase
 Repo URL:  https://github.com/catrenelle/OceanTrip.git/trunk
+
+## Special Thanks
+
+This BotBase would not be possible without the work of Antony256, the original author of Ocean Trip. I also want to thank anyone who contributes suggestions, ideas, bug fixes, etc.

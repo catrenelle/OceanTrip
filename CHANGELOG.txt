@@ -1,3 +1,17 @@
+10/22/2022
+----------
+
+* Refactored Lisbeth calls in "PassTheTime.cs" to reduce all the while statements.
+
+* Changed Raid Food to ilvl 610 based on suggestions from Manta
+	* Pumpkin Poutage replaced with Carrot Pudding
+	* Pumpkin Ratatouille replaced with Sunset Carrot Nibbles
+	* Thavnairian Chai replaced with Garlean Pizza
+	* Archon Burger replaced with Melon Pie
+
+* Bugfix from KaiserBh for Lisbeth calls. This fixes Lisbeth infitely looping and placing excess materials into retainers.
+
+
 10/16/2022
 ----------
 
