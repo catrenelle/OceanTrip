@@ -201,7 +201,7 @@ namespace OceanTripPlanner
 		private OceanFood _OceanFood;
 		[Setting]
 
-		[DisplayName("Use Ocean Fishing Food")]
+		[DisplayName("Use Fishing Food")]
 		[Description("What food item do you want to use for fishing? HQ food will be used first if you have it.")]
 		[Category("Ocean Fishing")]
 
