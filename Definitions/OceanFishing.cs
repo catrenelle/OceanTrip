@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +9,8 @@ namespace OceanTripPlanner.Definitions
 {
     public static class OceanFish
     {
+        public const int KoromoOctopus = 20105;
+        public const int EasternSeaPickle = 20165;
         public const int GaladionGoby = 28937;
         public const int GaladionChovy = 28938;
         public const int RosyBream = 28939;
