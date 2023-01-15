@@ -64,7 +64,6 @@
     <Compile Include="OceanTrip.cs" />
     <Compile Include="OceanTripSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteWindows\FishGuide.cs" />
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +79,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Quest Behaviors\__LlamaLibrary\LlamaLibrary.csproj">
+      <Project>{196ee308-0205-4cc4-b449-51064f7e9960}</Project>
+      <Name>LlamaLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

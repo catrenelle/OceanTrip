@@ -270,7 +270,7 @@ namespace OceanTripPlanner
 
 					while (item.Count > 0)
 					{
-						await CommonTasks.Desynthesize(item);
+						await LlamaLibrary.Utilities.Inventory.Desynth(item);
 						await Coroutine.Wait(20000, () => (!item.IsFilled || !item.EnglishName.Equals(name) || item.Count != currentStackSize));
 					}
 					await Coroutine.Sleep(500);
