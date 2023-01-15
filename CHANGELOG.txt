@@ -1,3 +1,15 @@
+01/14/2023
+---------
+
+* Patch 6.3 Support!
+	* Huge thank you to nt153133!
+	* Now relies on LlamaLibrary for Desynth and FishGuide.
+	* If offsets break in the future for getting fish, the bot will now default to POINTS mode. This should allow the bot to continue to function unless the patch changes too much data.
+
+Known Issue:
+* Whe completing the boat, you might see a "We're occupied" and "skipping smalltalk" message. This will be refined in a future update, as some of the timings of things have changed and it may require additional/longer sleeps to counter.
+
+
 10/22/2022
 ----------
 

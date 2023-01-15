@@ -19,11 +19,12 @@ using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using GreyMagic;
-using OceanTripPlanner.RemoteWindows;
 using OceanTripPlanner.Helpers;
 using OceanTripPlanner.Definitions;
 using TreeSharp;
 using OceanTrip;
+using LlamaLibrary;
+using LlamaLibrary.RemoteAgents;
 
 namespace OceanTripPlanner
 {
@@ -567,9 +568,27 @@ namespace OceanTripPlanner
 		{
 			if (!missingFishRefreshed)
 			{
-				Log("Obtaining current list of missing ocean fish.");
-				missingFish = await GetFishLog();
-				Log($"Total missing ocean fish: {missingFish.Count()}");
+				try
+				{
+					Log("Obtaining current list of missing ocean fish.");
+					missingFish = await GetFishLog();
+					Log($"Total missing ocean fish: {missingFish.Count()}");
+				}
+				catch (Exception e)
+				{
+					if (OceanTripSettings.Instance.FishPriority != FishPriority.IgnoreBoat)
+					{
+						OceanTripSettings.Instance.FishPriority = FishPriority.Points;
+						Logging.Write(Colors.Red, "[OceanTrip] Cannot obtain list of Missing Fish! Defaulting OceanTrip to points mode.");
+					}
+					else
+                        Logging.Write(Colors.Red, "[OceanTrip] Cannot obtain list of Missing Fish! Not a huge deal due to being set to Ignore Boat.");
+
+                    Logging.Write(Colors.Red, "[OceanTrip] Exception Message: " + e.Message);
+					Logging.Write(Colors.Red, "[OceanTrip] Stack Trace: " + e.StackTrace);
+
+				}
+
 				missingFishRefreshed = true;
 			}
         }
@@ -842,7 +861,7 @@ namespace OceanTripPlanner
                 PassTheTime.freeToCraft = true;
             }
 
-			await Coroutine.Sleep(1000);
+			await Coroutine.Sleep(2000);
 		}
 
 		private string GetBoatTimeOfDay(Tuple<string, string>[] schedule, string area)
@@ -1939,35 +1958,15 @@ namespace OceanTripPlanner
 
 		private async Task<List<uint>> GetFishLog()
 		{
-			List<int> recordedFish = new List<int>();
-			if (!FishGuide.IsOpen)
-			{
-				FishGuide.Toggle();
-				await Coroutine.Wait(5000, () => FishGuide.IsOpen);
-			}
 
-			if (FishGuide.IsOpen)
-			{
-				for (int i = 33; i <= FishGuide.TabCount; i++)
-				{
-					FishGuide.ClickTab(i);
-					await Coroutine.Sleep(10);
-					var list = FishGuide.GetTabList();
-					foreach (var fishy in list.Select(x => x.FishItem))
-					{
-						if (fishy != 0 && fishy != uint.MaxValue)
-						{
-							recordedFish.Add((int)fishy);
-						}
-					}
-				}
+            var fishList = await AgentFishGuide2.Instance.GetFishList();
+			var recordedFish = fishList.Where(x => x.HasCaught).Select(x => (int)x.FishItem).ToList();
 
-				FishGuide.Toggle();
-				await Coroutine.Wait(5000, () => !FishGuide.IsOpen);
-			}
+			fishList = null;
 
-			// Convert the list to uint
-			List<uint> newOceanFishList = oceanFish.Except(recordedFish).ToList().ConvertAll(x => (uint)x);
+
+            // Convert the list to uint
+            List<uint> newOceanFishList = oceanFish.Except(recordedFish).ToList().ConvertAll(x => (uint)x);
 			return newOceanFishList;
 		}
 
