@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -1060,37 +1060,72 @@ namespace OceanTripPlanner
 							{
 								await ChangeBait(spectralbaitId);
 							}
-							else if ((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis) && FocusFishLog)
-							{
-								if (caughtFish.Where(x => x == OceanFish.Heavenskey).Count() < 2) // Needs 2 Heavenskey. Use Ragworm to catch.
-									await ChangeBait(FishBait.Ragworm);
-								else if (!caughtFish.Contains(OceanFish.NavigatorsPrint)) // Requires 1 Navigators Print.
-									await ChangeBait(FishBait.Krill);
+                            else if ((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis) && FocusFishLog)
+                            {
+                                // This will help increase the chances of catching Sothis.
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+
+
+                                if (caughtFish.Where(x => x == OceanFish.Heavenskey).Count() < 2) // Needs 2 Heavenskey. Use Ragworm to catch.
+                                    await ChangeBait(FishBait.Ragworm);
+                                else if (!caughtFish.Contains(OceanFish.NavigatorsPrint)) // Requires 1 Navigators Print.
+                                    await ChangeBait(FishBait.Krill);
                             }
-							else if ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta) && FocusFishLog)
-							{
-								if (caughtFish.Where(x => x == OceanFish.GreatGrandmarlin).Count() < 2) // Needs 2 Great Grandmarlin. Mooch from Hi-Aetherlouse.
-									await ChangeBait(FishBait.PlumpWorm);
-							}
-							else if ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus) && FocusFishLog)
-							{
-								if (caughtFish.Where(x => x == OceanFish.Gugrusaurus).Count() < 3) // Needs 3 Gugrusaurus
-									await ChangeBait(FishBait.PlumpWorm);
-							}
-							else if ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale) && FocusFishLog)
-							{
-								if (caughtFish.Where(x => x == OceanFish.CrimsonMonkfish).Count() < 2) // Needs 2 Crimson Monkfish
-									await ChangeBait(FishBait.PlumpWorm);
-							}
-							else if ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa) && FocusFishLog)
-							{
-								if (caughtFish.Where(x => x == OceanFish.JetborneManta).Count() < 2) // Needs 2 Jetborne Manta
-									await ChangeBait(FishBait.PlumpWorm);
-								else if (!caughtFish.Contains(OceanFish.MistbeardsCup)) // Needs 1 Mistbeard's Cup
-									await ChangeBait(FishBait.Krill);
-							}
-							else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && FocusFishLog)
-							{
+                            else if ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta) && FocusFishLog)
+                            {
+                                // This will help increase the chances of catching Coral Manta.
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+
+
+                                if (caughtFish.Where(x => x == OceanFish.GreatGrandmarlin).Count() < 2) // Needs 2 Great Grandmarlin. Mooch from Hi-Aetherlouse.
+                                    await ChangeBait(FishBait.PlumpWorm);
+                            }
+                            else if ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus) && FocusFishLog)
+                            {
+                                // This will help increase the chances of catching Elasmosaurus.
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+
+
+                                if (caughtFish.Where(x => x == OceanFish.Gugrusaurus).Count() < 3) // Needs 3 Gugrusaurus
+                                    await ChangeBait(FishBait.PlumpWorm);
+                            }
+                            else if ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale) && FocusFishLog)
+                            {
+                                // This will help increase the chances of catching Stonescale.
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+
+
+                                if (caughtFish.Where(x => x == OceanFish.CrimsonMonkfish).Count() < 2) // Needs 2 Crimson Monkfish
+                                    await ChangeBait(FishBait.PlumpWorm);
+                            }
+                            else if ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa) && FocusFishLog)
+                            {
+                                // This will help increase the chances of catching Hafgufa.
+                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
+                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+
+
+                                if (caughtFish.Where(x => x == OceanFish.JetborneManta).Count() < 2) // Needs 2 Jetborne Manta
+                                    await ChangeBait(FishBait.PlumpWorm);
+                                else if (!caughtFish.Contains(OceanFish.MistbeardsCup)) // Needs 1 Mistbeard's Cup
+                                    await ChangeBait(FishBait.Krill);
+                            }
+                            else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && FocusFishLog)
+                            {
                                 // This will help increase the chances of catching Seafaring Toad.
                                 if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.PatienceII, Core.Me);
@@ -1099,11 +1134,11 @@ namespace OceanTripPlanner
 
 
                                 if (caughtFish.Where(x => x == OceanFish.BeatificVision).Count() < 3) // Requires 3 Beatific Vision
-									await ChangeBait(FishBait.Krill);
-							}
-							else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && FocusFishLog)
-							{
-								// This will help increase the chances of catching Placodus.
+                                    await ChangeBait(FishBait.Krill);
+                            }
+                            else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && FocusFishLog)
+                            {
+                                // This will help increase the chances of catching Placodus.
                                 if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
                                     ActionManager.DoAction(Actions.PatienceII, Core.Me);
                                 else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
@@ -1111,10 +1146,10 @@ namespace OceanTripPlanner
 
 
                                 if (!caughtFish.Contains(OceanFish.Trollfish)) // Needs a Trollfish. Mooch from Rothlyt Mussel.
-									await ChangeBait(FishBait.Ragworm);
-								else if (lastCaughtFish != OceanFish.RothlytMussel)
-									await ChangeBait(FishBait.Ragworm);
-							}
+                                    await ChangeBait(FishBait.Ragworm);
+                                else if (lastCaughtFish != OceanFish.RothlytMussel)
+                                    await ChangeBait(FishBait.Ragworm);
+                            }
                             else if (
                                     FocusFishLog &&
                                     (((location == "galadion") && (timeOfDay == "Sunset") && (missingFish.Contains((uint)OceanFish.QuicksilverBlade) || missingFish.Contains((uint)OceanFish.FunnelShark)))
