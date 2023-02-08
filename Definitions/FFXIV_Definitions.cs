@@ -70,6 +70,7 @@ namespace OceanTripPlanner.Definitions
     {
         public static int PepperedPopotoes = 27870;
         public static int CrabCakes = 30481;
+        public static int YakowMoussaka = 36054;
         public static int TsaiTouVounou = 36060;
         public static int PumpkinRatatouille = 36069;
         public static int ArchonBurger = 36067;
