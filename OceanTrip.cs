@@ -25,6 +25,8 @@ using TreeSharp;
 using OceanTrip;
 using LlamaLibrary;
 using LlamaLibrary.RemoteAgents;
+using System.IO;
+using System.Windows;
 
 namespace OceanTripPlanner
 {
@@ -438,6 +440,7 @@ namespace OceanTripPlanner
 		System.Timers.Timer execute = new System.Timers.Timer();
 
 		public override string Name => "Ocean Trip";
+
 		public override PulseFlags PulseFlags => PulseFlags.All;
 
 		public override bool IsAutonomous => true;
@@ -447,14 +450,18 @@ namespace OceanTripPlanner
 
 		public override bool WantButton { get; } = true;
 
-		private SettingsForm settings;
+		private static SettingsForm settings;
 		public override void OnButtonPress()
 		{
 			if (settings == null || settings.IsDisposed)
 				settings = new SettingsForm();
+
 			try
 			{
-				settings.Show();
+				// Temporary. Future item to come. Currently not working and is a proof of concept. :)
+				settings.tempHideRouteInformationTab();
+
+                settings.Show();
 				settings.Activate();
 			}
 			catch
@@ -466,14 +473,19 @@ namespace OceanTripPlanner
 		{
 			TreeHooks.Instance.ClearAll();
 
-			caughtFish = new List<uint>();
+            Log("Initializing OceanTrip Settings.");
+            if (settings == null || settings.IsDisposed)
+                settings = new SettingsForm();
+
+			Log("OceanTrip Settings Loaded.");
+
+            caughtFish = new List<uint>();
 			lastCaughtFish = 0;
 			caughtFishLogged = false;
-            missingFishRefreshed = false;
 
             RouteShown = false;
-            
-			TimeSpan timeLeftUntilFirstRun = TimeUntilNextBoat();
+
+            TimeSpan timeLeftUntilFirstRun = TimeUntilNextBoat();
 			if (timeLeftUntilFirstRun.TotalMilliseconds < 0)
 				execute.Interval = 100;
 			else
@@ -481,7 +493,6 @@ namespace OceanTripPlanner
 
 			execute.Elapsed += new ElapsedEventHandler(KillLisbeth);
 			execute.Start();
-
 
             Log("BotBase is initialized, beginning execution.");
 
@@ -518,7 +529,7 @@ namespace OceanTripPlanner
 			if (!ignoreBoat)
 			{
 				if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog)
-						|| (FocusFishLog && missingFish.Count() > 0 && missingFishRefreshed))
+						|| (FocusFishLog && missingFish.Count() > 0))
 				{
 					//Log("Stopping Lisbeth!");
 					Lisbeth.StopGently();
@@ -556,8 +567,15 @@ namespace OceanTripPlanner
 			missingFishRefreshed = false;
 			caughtFish.Clear();
 
-			if (missingFish.Count == 0 && OceanTripSettings.Instance.FishPriority == FishPriority.FishLog)
-				await RefreshMissingFish();
+			if (missingFish.Count == 0)
+				if (File.Exists(Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt")))
+				{
+					FishingLog.LoadMissingFishLog(out missingFish);
+                    Log($"[Ocean Trip] Missing Fish Loaded! Cache shows a total of {missingFish.Count()} missing fish.");
+                    missingFishRefreshed = true;
+				}
+				else
+					await RefreshMissingFish();
             
 			await OceanFishing();
 
@@ -571,8 +589,18 @@ namespace OceanTripPlanner
 				try
 				{
 					Log("Obtaining current list of missing ocean fish.");
-					missingFish = await GetFishLog();
+					missingFish = await FishingLog.GetFishLog(oceanFish);
+
+					List<string> missingFishNames = new List<string>();
+					foreach (var fish in missingFish)
+						missingFishNames.Add(DataManager.GetItem(fish).EnglishName);
+
+					settings.updateMissingFish(missingFishNames);
+					missingFishNames.Clear();
+
 					Log($"Total missing ocean fish: {missingFish.Count()}");
+
+                    FishingLog.SaveMissingFishLog(missingFish);
 				}
 				catch (Exception e)
 				{
@@ -586,7 +614,7 @@ namespace OceanTripPlanner
 
                     Logging.Write(Colors.Red, "[OceanTrip] Exception Message: " + e.Message);
 					Logging.Write(Colors.Red, "[OceanTrip] Stack Trace: " + e.StackTrace);
-
+					settings.updateMissingFish(null);
 				}
 
 				missingFishRefreshed = true;
@@ -631,8 +659,12 @@ namespace OceanTripPlanner
 				}
 
 
-				await RefreshMissingFish();
-
+                if (!File.Exists(Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt")))
+                {
+                    await RefreshMissingFish();
+                    missingFishRefreshed = true;
+                }
+ 
 				if (!ignoreBoat)
 				{
 					TimeSpan timeLeftUntilNextSpawn = TimeUntilNextBoat();
@@ -1006,6 +1038,12 @@ namespace OceanTripPlanner
                         lastCaughtFish = FishingLog.LastFishCaught;
                         caughtFish.Add(FishingLog.LastFishCaught);
 						caughtFishLogged = true;
+
+						if (missingFish.Contains(FishingLog.LastFishCaught))
+						{
+							missingFish.Remove(FishingLog.LastFishCaught);
+							FishingLog.SaveMissingFishLog(missingFish);
+						}
                     }
 
                     //Identical Cast for Blue fish
@@ -1091,29 +1129,18 @@ namespace OceanTripPlanner
 							}
 							else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && FocusFishLog)
 							{
-                                // This will help increase the chances of catching Seafaring Toad.
-                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
-                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
-                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
-                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+								// This will help increase the chances of catching Seafaring Toad.
+								UsePatience();
 
-
-                                if (caughtFish.Where(x => x == OceanFish.BeatificVision).Count() < 3) // Requires 3 Beatific Vision
-									await ChangeBait(FishBait.Krill);
+								// Catch 3 Beatific Vision to trigger intuition
+								await ChangeBait(FishBait.Krill);
 							}
 							else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && FocusFishLog)
 							{
-								// This will help increase the chances of catching Placodus.
-                                if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
-                                    ActionManager.DoAction(Actions.PatienceII, Core.Me);
-                                else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
-                                    ActionManager.DoAction(Actions.Patience, Core.Me);
+								UsePatience();
 
-
-                                if (!caughtFish.Contains(OceanFish.Trollfish)) // Needs a Trollfish. Mooch from Rothlyt Mussel.
-									await ChangeBait(FishBait.Ragworm);
-								else if (lastCaughtFish != OceanFish.RothlytMussel)
-									await ChangeBait(FishBait.Ragworm);
+                                // Use Ragworm to catch Rothlyt Mussel, then Mooch to Trollfish to trigger intuition.
+                                await ChangeBait(FishBait.Ragworm);
 							}
                             else if (
                                     FocusFishLog &&
@@ -1956,19 +1983,7 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private async Task<List<uint>> GetFishLog()
-		{
 
-            var fishList = await AgentFishGuide2.Instance.GetFishList();
-			var recordedFish = fishList.Where(x => x.HasCaught).Select(x => (int)x.FishItem).ToList();
-
-			fishList = null;
-
-
-            // Convert the list to uint
-            List<uint> newOceanFishList = oceanFish.Except(recordedFish).ToList().ConvertAll(x => (uint)x);
-			return newOceanFishList;
-		}
 
 		private bool ChatCheck(string chattype, string chatmessage)
 		{
@@ -1993,10 +2008,24 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private Tuple<string, string>[] GetSchedule()
-		{		
-			int epoch = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-			int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
+		private void UsePatience()
+		{
+            if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+                ActionManager.DoAction(Actions.PatienceII, Core.Me);
+            else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+                ActionManager.DoAction(Actions.Patience, Core.Me);
+        }
+
+        public static Tuple<string, string>[] GetSchedule(DateTime? time = null)
+		{
+			int epoch;
+			
+			if (!time.HasValue)
+				epoch = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+			else
+				epoch = (int)(time.Value.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+            int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
 
 			switch (fullPattern[twoHourChunk])
 			{
@@ -2025,6 +2054,7 @@ namespace OceanTripPlanner
 				case "TD":
 					return TD;
 			}
+
 			return null;
 		}
 
@@ -2035,7 +2065,7 @@ namespace OceanTripPlanner
 
         private void Log(string text, params object[] args)
 		{
-			var msg = string.Format("[" + Name + "] " + text, args);
+			var msg = string.Format("[Ocean Trip] " + text, args);
 			Logging.Write(Colors.Aqua, msg);
 		}
 	}

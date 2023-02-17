@@ -17,6 +17,7 @@ using System.IO;
 using System.Windows.Documents;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 namespace OceanTripPlanner
 {
@@ -162,24 +163,107 @@ namespace OceanTripPlanner
 				{
 					var itemList = new List<int>();
 					itemList.Add(Material.ImmutableSolution);
+                    itemList.Add(Material.DinosaurLeather);
+                    itemList.Add(Material.Sphalerite);
+                    itemList.Add(Material.RoyalMistletoe);
+                    itemList.Add(Material.CloudCottonBoll);
+                    itemList.Add(Material.CloudMythrilOre);
+                    itemList.Add(Material.StormcloudCottonBoll);
 
-					foreach (var item in itemList)
+
+                    foreach (var item in itemList)
 					{
                         while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
 							await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
 					}
 				}
 
-				//Materia
-				if (freeToCraft && OceanTripSettings.Instance.GetMateria)
+				//Aethersand
+				if (freeToCraft && OceanTripSettings.Instance.Aethersand)
+				{
+                    var itemList = new List<int>();
+                    itemList.Add(Material.DusklightAethersand);
+                    itemList.Add(Material.DawnlightAethersand);
+                    itemList.Add(Material.EverbrightAethersand);
+                    itemList.Add(Material.EverbornAethersand);
+                    itemList.Add(Material.EverdeepAethersand);
+                    itemList.Add(Material.EndstoneAethersand);
+                    itemList.Add(Material.EndwoodAethersand);
+                    itemList.Add(Material.EndtideAethersand);
+                    itemList.Add(Material.EarthbreakAethersand);
+
+                    foreach (var item in itemList)
+                    {
+                        while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                            await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
+                    }
+                }
+
+                //Materia
+                if (freeToCraft && OceanTripSettings.Instance.GetMateria != LisbethMateriaGathering.None)
 				{
 					var materiaList = new List<int>();
-                    materiaList.Add(Materia.CrafterCompetenceIX);
-                    materiaList.Add(Materia.CrafterCunningIX);
-                    materiaList.Add(Materia.CrafterCommandIX);
-                    materiaList.Add(Materia.CrafterCompetenceX);
-                    materiaList.Add(Materia.CrafterCunningX);
-                    materiaList.Add(Materia.CrafterCommandX);
+					switch(OceanTripSettings.Instance.GetMateria)
+					{
+                        case LisbethMateriaGathering.Grade_X:
+                            materiaList.Add(Materia.CrafterCompetenceX);
+                            materiaList.Add(Materia.CrafterCunningX);
+                            materiaList.Add(Materia.CrafterCommandX);
+                            materiaList.Add(Materia.GatherGuerdonX);
+                            materiaList.Add(Materia.GatherGuileX);
+                            materiaList.Add(Materia.GatherGraspX);
+                            break;
+                        case LisbethMateriaGathering.Grade_IX:
+                            materiaList.Add(Materia.CrafterCompetenceIX);
+                            materiaList.Add(Materia.CrafterCunningIX);
+                            materiaList.Add(Materia.CrafterCommandIX);
+                            materiaList.Add(Materia.GatherGuerdonIX);
+                            materiaList.Add(Materia.GatherGuileIX);
+                            materiaList.Add(Materia.GatherGraspIX);
+                            break;
+                        case LisbethMateriaGathering.Grade_VIII:
+                            materiaList.Add(Materia.CrafterCompetenceVIII);
+                            materiaList.Add(Materia.CrafterCunningVIII);
+                            materiaList.Add(Materia.CrafterCommandVIII);
+                            materiaList.Add(Materia.GatherGuerdonVIII);
+                            materiaList.Add(Materia.GatherGuileVIII);
+                            materiaList.Add(Materia.GatherGraspVIII);
+                            break;
+                        case LisbethMateriaGathering.Grade_VII:
+                            materiaList.Add(Materia.CrafterCompetenceVII);
+                            materiaList.Add(Materia.CrafterCunningVII);
+                            materiaList.Add(Materia.CrafterCommandVII);
+                            materiaList.Add(Materia.GatherGuerdonVII);
+                            materiaList.Add(Materia.GatherGuileVII);
+                            materiaList.Add(Materia.GatherGraspVII);
+                            break;
+                        case LisbethMateriaGathering.Grade_VI:
+                            materiaList.Add(Materia.CrafterCompetenceVI);
+                            materiaList.Add(Materia.CrafterCunningVI);
+                            materiaList.Add(Materia.CrafterCommandVI);
+                            materiaList.Add(Materia.GatherGuerdonVI);
+                            materiaList.Add(Materia.GatherGuileVI);
+                            materiaList.Add(Materia.GatherGraspVI);
+                            break;
+                        case LisbethMateriaGathering.Grade_V:
+                            materiaList.Add(Materia.CrafterCompetenceV);
+                            materiaList.Add(Materia.CrafterCunningV);
+                            materiaList.Add(Materia.CrafterCommandV);
+                            materiaList.Add(Materia.GatherGuerdonV);
+                            materiaList.Add(Materia.GatherGuileV);
+                            materiaList.Add(Materia.GatherGraspV);
+                            break;
+                        case LisbethMateriaGathering.Grade_IV:
+                            materiaList.Add(Materia.CrafterCompetenceIV);
+                            materiaList.Add(Materia.CrafterCunningIV);
+                            materiaList.Add(Materia.CrafterCommandIV);
+                            materiaList.Add(Materia.GatherGuerdonIV);
+                            materiaList.Add(Materia.GatherGuileIV);
+                            materiaList.Add(Materia.GatherGraspIV);
+                            break;
+						default:
+                            break;
+                    }
 
 					foreach(var materia in materiaList)
 					{
