@@ -1,3 +1,23 @@
+02/16/2023
+----------
+
+* Settings pane will now initialize at botbase start. This may cause a brief pause/delay on the very first load.
+
+* Settings pane has seen updates! Tabs have been added!
+	* Tab "Settings" is the original settings pane.
+	* Tab "Tools" will allow you to open Lisbeth or reset your cache. More options to come in the future.
+
+* New missing fish cache file! The bot will generate a cache file upon first load so that it doesn't need to constantly open the fishing log and check for missing fish. This will greatly help us be less reliant on reading the memory all the time. This cache can be cleared/reset in the "Tools" tab of settings. Fish that you catch will auto-remove from the missing fish list and save to the file. 
+
+* Added the option to gather Aethersand for crafting. Will attempt to gather 300 of Dusklight, Dawnlight, Everbright, Everborn, Everdeep, Endstone, Endwood, Endtide, and Earthbreak Aethersand [ripsnort]
+
+* Added additional material gathering for "Craft Mats" instead of just Immutable Solution. Will now also collect Dinosaur Leather, Sphalerite, Royal Mistletoe, Cloud Cotton Boll, Cloud Mythril Ore, Stormcloud Cotton Boll [ripsnort]
+
+* Changed the "Gather Materia" option to allow the user to select between Materia IV-X using Lisbeth. [ripsnort, Cat]
+
+* Fixed an issue when trying to catch Placodus, where the botbase wouldn't change to the correct bait.
+
+
 01/14/2023
 ---------
 

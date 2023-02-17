@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +31,7 @@ namespace OceanTripPlanner.Definitions
         public static uint AnglersArt = 2778;
     }
 
-    public static class Crystals
+    public static class Crystals 
     {
         public static int FireShard = 2;
         public static int IceShard = 3;
@@ -72,43 +72,76 @@ namespace OceanTripPlanner.Definitions
         public static int CrabCakes = 30481;
         public static int YakowMoussaka = 36054;
         public static int TsaiTouVounou = 36060;
+
         public static int PumpkinRatatouille = 36069;
         public static int ArchonBurger = 36067;
         public static int PumpkinPotage = 36070;
         public static int ThavnairianChai = 36074;
+
         public static int CalamariRipieni = 37282;
-        public static int MelonPie = 38261;
+
         public static int SunsetCarrotNibbles = 38263;
         public static int CarrotPudding = 38264;
         public static int GarleanPizza = 38268;
-        public static int JhingaBiryani = 38929;
-        public static int JhingaCurry = 38930;
-
+        public static int MelonPie = 38261;
     }
 
     public static class Materia
     {
+
+        public static int GatherGuerdonIV = 5687;
+        public static int GatherGuileIV = 5692;
+        public static int GatherGraspIV = 5697;
+
+        public static int CrafterCompetenceIV = 5702;
+        public static int CrafterCunningIV = 5707;
+        public static int CrafterCommandIV = 5712;
+
+        public static int GatherGuerdonV = 5688;
+        public static int GatherGuileV = 5693;
+        public static int GatherGraspV = 5698;
+
+        public static int CrafterCompetenceV = 5703;
+        public static int CrafterCunningV = 5708;
+        public static int CrafterCommandV = 5713;
+
         public static int GatherGuerdonVI = 18022;
         public static int GatherGuileVI = 18023;
         public static int GatherGraspVI = 18024;
-        public static int GatherGuerdonVIII = 26732;
-        public static int GatherGuileVIII = 26733;
-        public static int GatherGraspVIII = 26734;
-        public static int CrafterCompetenceVIII = 26735;
-        public static int CrafterCunningVIII = 26736;
-        public static int CrafterCommandVIII = 26737;
+
+        public static int CrafterCompetenceVI = 18025;
+        public static int CrafterCunningVI = 18026;
+        public static int CrafterCommandVI = 18027;
+
+
+        public static int GatherGuerdonVII = 25191;
+        public static int GatherGuileVII = 25192;
+        public static int GatherGraspVII = 25193;
+
         public static int CrafterCompetenceVII = 25194;
         public static int CrafterCunningVII = 25195;
         public static int CrafterCommandVII = 25196;
+        
+        public static int GatherGuerdonVIII = 26732;
+        public static int GatherGuileVIII = 26733;
+        public static int GatherGraspVIII = 26734;
+        
+        public static int CrafterCompetenceVIII = 26735;
+        public static int CrafterCunningVIII = 26736;
+        public static int CrafterCommandVIII = 26737;
+        
         public static int GatherGuerdonIX = 33922;
         public static int GatherGuileIX = 33923;
         public static int GatherGraspIX = 33924;
+        
         public static int CrafterCompetenceIX = 33925;
         public static int CrafterCunningIX = 33926;
         public static int CrafterCommandIX = 33927;
+        
         public static int GatherGuerdonX = 33935;
         public static int GatherGuileX = 33936;
         public static int GatherGraspX = 33937;
+        
         public static int CrafterCompetenceX = 33938;
         public static int CrafterCunningX = 33939;
         public static int CrafterCommandX = 33940;

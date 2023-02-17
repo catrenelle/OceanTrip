@@ -73,6 +73,18 @@ namespace OceanTripPlanner
 		None = 0
 	}
 
+	public enum LisbethMateriaGathering : int
+	{
+		Grade_X = 1,
+		Grade_IX = 2,
+		Grade_VIII = 3,
+		Grade_VII = 4,
+		Grade_VI = 5,
+		Grade_V = 6,
+		Grade_IV = 7,
+		None = 0
+	}
+
 	internal class OceanTripSettings : JsonSettings
 	{
 		private static OceanTripSettings _settings;
@@ -366,15 +378,15 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private bool _GetMateria;
+		private LisbethMateriaGathering _GetMateria;
 		[Setting]
 
 		[DisplayName("Purchase Materia")]
-		[Description("Use Lisbeth to buy IX and X materia while waiting for the boat.")]
+		[Description("Use Lisbeth to obtain the selected grade of materia while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
-		[DefaultValueAttribute(true)]
-		public bool GetMateria
+		[DefaultValueAttribute(LisbethMateriaGathering.Grade_X)]
+		public LisbethMateriaGathering GetMateria
 		{
 			get { return _GetMateria; }
 			set
@@ -386,6 +398,7 @@ namespace OceanTripPlanner
 				}
 			}
 		}
+
 
 		private bool _RefillScrips;
 		[Setting]
@@ -433,7 +446,7 @@ namespace OceanTripPlanner
 		[Setting]
 
 		[DisplayName("Craft Mats")]
-		[Description("Use Lisbeth to craft various (lvl80) stuff while waiting for the boat.")]
+		[Description("Use Lisbeth to gather crafting material while waiting for the boat.")]
 		[Category("Idle Stuff")]
 
 		[DefaultValueAttribute(true)]
@@ -450,6 +463,28 @@ namespace OceanTripPlanner
 			}
 		}
 
+
+        private bool _CraftAethersand;
+        [Setting]
+
+        [DisplayName("Get Aethersand")]
+        [Description("Use Lisbeth to obtain various Aethersand while waiting for the boat.")]
+        [Category("Idle Stuff")]
+
+        [DefaultValueAttribute(true)]
+        public bool Aethersand
+        {
+            get { return _CraftAethersand; }
+            set
+            {
+                if (_CraftAethersand != value)
+                {
+                    _CraftAethersand = value;
+                    Save();
+                }
+            }
+        }
+        
 		private bool _GatherShards;
 		[Setting]
 

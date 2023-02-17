@@ -25,13 +25,14 @@ When Idling:
 
 | Idle Stuff | Values | Description|
 | :--- | :--- | :--- |
-| Craft Mats | True/False | Should the bot craft lvl 80 stuff while waiting? Right now, this only exchanges scripts for Immutable Solution.
+| Craft Mats | True/False | Should the bot gather crafting stuff while waiting? This includes Immutable Solution, Dinosaur Leather, Sphalerite, Royal Mistletoe, Cloud Cotton Boll, Cloud Mythril Ore, Stormcloud Cotton Boll |
 | Craft Raid Food | True/False | Should the bot craft lvl 90 food while passing the time? Currently crafts Carrot Pudding, Sunset C arrot Nibbles, Garlean Pizza, and Melon Pie. |
 | Craft Raid Potions | None, Grade7, Grade6 | Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6/7 Tinctures of Strength, Dexterity, and Intelligence. Grade 7 requires Palaka Mistletoe, which can only be obtained using battle scrips (Astronomy). Ocean Trip will NOT gather Astronomy scrips for you. | 
 | Custom Lisbeth Order | True/False | Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
 | Gather Shards | True/False | Should the bot gather shards and crystals while passing the time? |
+| Get Aethersand | |True/False | Should the bot gather aethersand? Currently gathers Dusklight, Dawnlight, Everbright, Everborn, Everdeep, Endstone, Endwood, Endtide, and Earthbreak Aethersand |
 | Purchase Hi-Cordials | True/False | Should the bot spend excess scrips to purchase hi-cordials? The bot will purchase until you are at 1500 scrips or less. |
-| Purchase Materia | True/False | Should the bot purchase IX and X materia using scripts while waiting for the boat? |
+| Purchase Materia | IV-X | Should the bot purchase materia (from IV through X) using scripts while waiting for the boat? Can only select one level at a time. |
 | Refill Crafter Scrips | True/False | Should the bot refill your white/purple crafter scrips while passing the time? Currently refills up to 3000 scrips. |
 | Refresh Retainers| None, Any city with a summoning bell | Should the bot automatically complete and reassign ventures? |
 | Resume Lisbeth Order | True/False | If something was left mid-progress in Lisbeth, should it continue where it left off? |
