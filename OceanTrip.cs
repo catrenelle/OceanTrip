@@ -1096,6 +1096,8 @@ namespace OceanTripPlanner
 									|| ((location == "sound") && (timeOfDay == "Sunset")))
 							)
 							{
+								caughtFish.Clear();
+								
 								await ChangeBait(spectralbaitId);
 							}
 							else if ((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis) && FocusFishLog)

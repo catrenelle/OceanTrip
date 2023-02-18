@@ -55,12 +55,16 @@ namespace OceanTripPlanner
             int posOnSchedule = 0;
 
             routeTimeValueLabel.Text = time.ToString("hh:mm tt");
+			
+			
+			/*
 			routeArea1Label.Text = areaName(schedule[posOnSchedule].Item1) + ", " + schedule[posOnSchedule].Item2;
 			pictureBox1.Image = getFishImage(10, 2);
             routeArea2Label.Text = areaName(schedule[posOnSchedule + 1].Item1) + ", " + schedule[posOnSchedule + 1].Item2;
             pictureBox3.Image = getFishImage(10, 4);
             routeArea3Label.Text = areaName(schedule[posOnSchedule + 2].Item1) + ", " + schedule[posOnSchedule + 2].Item2;
             pictureBox5.Image = getFishImage(10, 6);
+			*/
         }
 
 
@@ -101,17 +105,6 @@ namespace OceanTripPlanner
 
 		private Image getFishImage(int x, int y)
 		{
-//			int x = 1, y = 1, z = 1;
-
-			//if (position == 1)
-			//{
-
-			//}
-			//else if (position == 2)
-			//{
-
-			//}
-
             Image imgsrc = Image.FromFile("BotBases/OceanTrip/Resources/Fish.png");
 			Image imgdst = new Bitmap(40, 40);
             using (Graphics gr = Graphics.FromImage(imgdst))
@@ -123,34 +116,6 @@ namespace OceanTripPlanner
 
 			return imgdst;
 
-            //        switch (shortname)
-            //        {
-            //case "south":
-            //	switch 
-            //                name = "Southern Strait of Merlthor";
-            //                break;
-            //            case "galadion":
-            //                name = "Galadion Bay";
-            //                break;
-            //            case "north":
-            //                name = "Northern Strait of Merlthor";
-            //                break;
-            //            case "rhotano":
-            //                name = "Rhotano Sea";
-            //                break;
-            //            case "ciel":
-            //                name = "Cieldalaes";
-            //                break;
-            //            case "blood":
-            //                name = "Bloodbrine Sea";
-            //                break;
-            //            case "sound":
-            //                name = "Rothlyt Sound";
-            //                break;
-            //default:
-            //                name = "???";
-            //                break;
-            //        }
         }
 
 		private void SettingsForm_Shown(object sender, EventArgs e)
