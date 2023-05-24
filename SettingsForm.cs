@@ -45,7 +45,7 @@ namespace OceanTripPlanner
 		public void refreshRouteInformation(object sender=null, EventArgs e=null)
 		{
 			var nextBoat = OceanTrip.TimeUntilNextBoat();
-			DateTime time = DateTime.Now.AddMinutes(nextBoat.TotalMinutes);
+			DateTime time = DateTime.Now.AddMinutes(nextBoat.TotalMinutes + (Convert.ToInt32(tempOffset.Text) * 120));
 
 			// Sometimes a mismatch can happen between when the timespan was captured and when the datetime is generated
 			if (time.Minute == 59)
@@ -57,14 +57,14 @@ namespace OceanTripPlanner
             routeTimeValueLabel.Text = time.ToString("hh:mm tt");
 			
 			
-			/*
-			routeArea1Label.Text = areaName(schedule[posOnSchedule].Item1) + ", " + schedule[posOnSchedule].Item2;
-			pictureBox1.Image = getFishImage(10, 2);
-            routeArea2Label.Text = areaName(schedule[posOnSchedule + 1].Item1) + ", " + schedule[posOnSchedule + 1].Item2;
-            pictureBox3.Image = getFishImage(10, 4);
-            routeArea3Label.Text = areaName(schedule[posOnSchedule + 2].Item1) + ", " + schedule[posOnSchedule + 2].Item2;
-            pictureBox5.Image = getFishImage(10, 6);
-			*/
+			
+			//routeArea1Label.Text = areaName(schedule[posOnSchedule].Item1) + ", " + schedule[posOnSchedule].Item2;
+			//pictureBox1.Image = getFishImage(10, 2);
+            //routeArea2Label.Text = areaName(schedule[posOnSchedule + 1].Item1) + ", " + schedule[posOnSchedule + 1].Item2;
+            //pictureBox3.Image = getFishImage(10, 4);
+            //routeArea3Label.Text = areaName(schedule[posOnSchedule + 2].Item1) + ", " + schedule[posOnSchedule + 2].Item2;
+            //pictureBox5.Image = getFishImage(10, 6);
+			
         }
 
 
@@ -96,7 +96,7 @@ namespace OceanTripPlanner
 					name = "Rothlyt Sound";
 					break;
                 default:
-					name = "???";
+					name = shortname;
 					break;
 			}
 

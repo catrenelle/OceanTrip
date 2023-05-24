@@ -85,6 +85,12 @@ namespace OceanTripPlanner
 		None = 0
 	}
 
+	public enum FishingRoute : int
+	{
+		Indigo = 0,
+		Ruby = 1
+	}
+
 	internal class OceanTripSettings : JsonSettings
 	{
 		private static OceanTripSettings _settings;
@@ -294,7 +300,28 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private int _BaitRestockThreshold;
+		private FishingRoute _FishingRoute;
+		[Setting]
+
+        [DisplayName("Fishing Route")]
+        [Description("Which route to take when fishing after speaking to Dryskthota")]
+        [Category("Ocean Fishing")]
+
+        [DefaultValueAttribute(FishingRoute.Indigo)]
+        public FishingRoute FishingRoute
+        {
+            get { return _FishingRoute; }
+            set
+            {
+                if (_FishingRoute != value)
+                {
+                    _FishingRoute = value;
+                    Save();
+                }
+            }
+        }
+
+        private int _BaitRestockThreshold;
 		[Setting]
 
 		[DisplayName("Bait Restock Threshold")]
