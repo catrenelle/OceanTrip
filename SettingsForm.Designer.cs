@@ -51,6 +51,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.refreshMissingFishButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.tempOffset = new System.Windows.Forms.TextBox();
             this.tabControl.SuspendLayout();
             this.Settings.SuspendLayout();
             this.routeInformationTab.SuspendLayout();
@@ -96,6 +97,7 @@
             // 
             // routeInformationTab
             // 
+            this.routeInformationTab.Controls.Add(this.tempOffset);
             this.routeInformationTab.Controls.Add(this.pictureBox6);
             this.routeInformationTab.Controls.Add(this.pictureBox5);
             this.routeInformationTab.Controls.Add(this.pictureBox4);
@@ -291,6 +293,14 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Lisbeth_Button);
             // 
+            // tempOffset
+            // 
+            this.tempOffset.Location = new System.Drawing.Point(237, 37);
+            this.tempOffset.Name = "tempOffset";
+            this.tempOffset.Size = new System.Drawing.Size(100, 20);
+            this.tempOffset.TabIndex = 14;
+            this.tempOffset.Text = "0";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -342,5 +352,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox tempOffset;
     }
 }

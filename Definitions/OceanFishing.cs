@@ -149,6 +149,102 @@ namespace OceanTripPlanner.Definitions
         public const int CrepeSole = 32112;
         public const int Knifejaw = 32113;
         public const int Placodus = 32114;
+
+        // Open Sirensong Sea
+        public const int DeepshadeSardine = 40524;
+        public const int SirensongMussel = 40522;
+        public const int Arrowhead = 40523;
+        public const int PinkShrimp = 40521;
+        public const int SirensongMullet = 40525;
+        public const int SelkiePuffer = 40526;
+        public const int PoetsPipe = 40527;
+        public const int MarineMatanga = 40528;
+        public const int SpectralCoelacanth = 40529;
+        public const int DuskShark = 40530;
+
+        //Open Sirensong Sea (Spectral)
+        public const int MermaidScale = 40531;
+        public const int Broadhead = 40532;
+        public const int VividPinkShrimp = 40533;
+        public const int SunkenCoelacanth = 40534;
+        public const int SirensSigh = 40535;
+        public const int BlackjawedHelicoprion = 40536;
+        public const int Impostopus = 40537;
+        public const int JadeShrimp = 40538;
+        public const int NymeiasWheel = 40539;
+        public const int Taniwha = 40540;
+
+        // Kugane Coast
+        public const int RubyHerring = 40541;
+        public const int WhirlpoolTurban = 40542;
+        public const int LeopardPrawn = 40543;
+        public const int SpearSquid = 40544;
+        public const int FloatingLantern = 40545;
+        public const int RubescentTatsunoko = 40546;
+        public const int Hatatate = 40547;
+        public const int SilentShark = 40548;
+        public const int SpectralWrasse = 40549;
+        public const int Mizuhiki = 40550;
+
+        // Kugane Coase (Spectral)
+        public const int SnappingKoban = 40551;
+        public const int SilkweftPrawn = 40552;
+        public const int StingfinTrevally = 40553;
+        public const int SwordtipSquid = 40554;
+        public const int Mailfish = 40555;
+        public const int IdatensBolt = 40556;
+        public const int MaelstromTurban = 40557;
+        public const int Shoshitsuki = 40558;
+        public const int Spadefish = 40559;
+        public const int GlassDragon = 40560;
+
+        // Open Ruby Sea
+        public const int CrimsonKelp = 40561;
+        public const int ReefSquid = 40562;
+        public const int PinebarkFlounder = 40563;
+        public const int MantleMoray = 40564;
+        public const int BardedLobster = 40565;
+        public const int ShisuiGoby = 40566;
+        public const int Sanbaso = 40567;
+        public const int ViolentSentry = 40568;
+        public const int SpectralSnakeEel = 40569;
+        public const int HeavensentShark = 40570;
+
+        // Open Ruby Sea (Spectral)
+        public const int FleetingSquid = 40571;
+        public const int BowbarbLobster = 40572;
+        public const int PitchPickle = 40573;
+        public const int SenbeiOctopus = 40574;
+        public const int TentacaleThresher = 40575;
+        public const int BekkoRockhugger = 40576;
+        public const int YellowIris = 40577;
+        public const int CrimsonSentry = 40578;
+        public const int FlyingSquid = 40579;
+        public const int HellsClaw = 40580;
+
+        // Lower One River
+        public const int CatchingCarp = 40581;
+        public const int GarleanBluegill = 40582;
+        public const int YanxianSoftshell = 40583;
+        public const int PrincessSalmon = 40584;
+        public const int Calligraph = 40585;
+        public const int SingularShrimp = 40586;
+        public const int BrocadeCarp = 40587;
+        public const int YanxianSturgeon = 40588;
+        public const int SpectralKotsuZetsu = 40589;
+        public const int FishyShark = 40590;
+
+        // Lower One River (Spectral) 
+        public const int GensuiShrimp = 40591;
+        public const int YatonoKami = 40592;
+        public const int HeronsEel = 40593;
+        public const int CrowshadowMussel = 40594;
+        public const int YanxianGoby = 40595;
+        public const int IridescentTrout = 40596;
+        public const int UnNamazu = 40597;
+        public const int Gakugyo = 40598;
+        public const int GinrinGoshiki = 40599;
+        public const int JewelofPlumSpring = 40600;
     }
 
     public static class FishBait
@@ -161,6 +257,7 @@ namespace OceanTripPlanner.Definitions
         public static uint Ragworm = 29714;
         public static uint Krill = 29715;
         public static uint PlumpWorm = 29716;
-        public static uint SquidStrips = 27590; 
+        public static uint SquidStrip = 27590;
+        public static uint MackerelStrip = 36593;
     }
 }

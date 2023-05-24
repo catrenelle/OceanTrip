@@ -203,5 +203,7 @@ namespace OceanTripPlanner.Definitions
         public const uint Crystarium = 819;
         public const uint Eulmore = 820;
         public const uint TheEndeavor = 900;
+
+        public const uint TheEndeaver_Ruby = 1163;
     }
 }

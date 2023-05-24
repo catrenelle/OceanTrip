@@ -195,7 +195,87 @@ namespace OceanTripPlanner
             OceanFish.Panoptes,
             OceanFish.CrepeSole,
             OceanFish.Knifejaw,
-            OceanFish.Placodus
+            OceanFish.Placodus,
+            OceanFish.DeepshadeSardine,
+            OceanFish.SirensongMussel,
+            OceanFish.Arrowhead,
+            OceanFish.PinkShrimp,
+            OceanFish.SirensongMullet,
+            OceanFish.SelkiePuffer,
+            OceanFish.PoetsPipe,
+            OceanFish.MarineMatanga,
+            OceanFish.SpectralCoelacanth,
+            OceanFish.DuskShark,
+            OceanFish.MermaidScale,
+            OceanFish.Broadhead,
+            OceanFish.VividPinkShrimp,
+            OceanFish.SunkenCoelacanth,
+            OceanFish.SirensSigh,
+            OceanFish.BlackjawedHelicoprion,
+            OceanFish.Impostopus,
+            OceanFish.JadeShrimp,
+            OceanFish.NymeiasWheel,
+            OceanFish.Taniwha,
+            OceanFish.RubyHerring,
+            OceanFish.WhirlpoolTurban,
+            OceanFish.LeopardPrawn,
+            OceanFish.SpearSquid,
+            OceanFish.FloatingLantern,
+            OceanFish.RubescentTatsunoko,
+            OceanFish.Hatatate,
+            OceanFish.SilentShark,
+            OceanFish.SpectralWrasse,
+            OceanFish.Mizuhiki,
+            OceanFish.SnappingKoban,
+            OceanFish.SilkweftPrawn,
+            OceanFish.StingfinTrevally,
+            OceanFish.SwordtipSquid,
+            OceanFish.Mailfish,
+            OceanFish.IdatensBolt,
+            OceanFish.MaelstromTurban,
+            OceanFish.Shoshitsuki,
+            OceanFish.Spadefish,
+            OceanFish.GlassDragon,
+            OceanFish.CrimsonKelp,
+            OceanFish.ReefSquid,
+            OceanFish.PinebarkFlounder,
+            OceanFish.MantleMoray,
+            OceanFish.BardedLobster,
+            OceanFish.ShisuiGoby,
+            OceanFish.Sanbaso,
+            OceanFish.ViolentSentry,
+            OceanFish.SpectralSnakeEel,
+            OceanFish.HeavensentShark,
+            OceanFish.FleetingSquid,
+            OceanFish.BowbarbLobster,
+            OceanFish.PitchPickle,
+            OceanFish.SenbeiOctopus,
+            OceanFish.TentacaleThresher,
+            OceanFish.BekkoRockhugger,
+            OceanFish.YellowIris,
+            OceanFish.CrimsonSentry,
+            OceanFish.FlyingSquid,
+            OceanFish.HellsClaw,
+            OceanFish.CatchingCarp,
+            OceanFish.GarleanBluegill,
+            OceanFish.YanxianSoftshell,
+            OceanFish.PrincessSalmon,
+            OceanFish.Calligraph,
+            OceanFish.SingularShrimp,
+            OceanFish.BrocadeCarp,
+            OceanFish.YanxianSturgeon,
+            OceanFish.SpectralKotsuZetsu,
+            OceanFish.FishyShark,
+            OceanFish.GensuiShrimp,
+            OceanFish.YatonoKami,
+            OceanFish.HeronsEel,
+            OceanFish.CrowshadowMussel,
+            OceanFish.YanxianGoby,
+            OceanFish.IridescentTrout,
+            OceanFish.UnNamazu,
+            OceanFish.Gakugyo,
+            OceanFish.GinrinGoshiki,
+            OceanFish.JewelofPlumSpring
         };
 
 		private static readonly int[] fishForSale = new int[]
@@ -331,11 +411,97 @@ namespace OceanTripPlanner
             OceanFish.Trollfish,
             OceanFish.Panoptes,
             OceanFish.CrepeSole,
-            OceanFish.Knifejaw
+            OceanFish.Knifejaw,
+			OceanFish.DeepshadeSardine,
+			OceanFish.SirensongMussel,
+			OceanFish.Arrowhead,
+			OceanFish.PinkShrimp,
+			OceanFish.SirensongMullet,
+			OceanFish.SelkiePuffer,
+			OceanFish.PoetsPipe,
+			OceanFish.MarineMatanga,
+			OceanFish.SpectralCoelacanth,
+			OceanFish.DuskShark,
+            OceanFish.MermaidScale,
+            OceanFish.Broadhead,
+            OceanFish.VividPinkShrimp,
+            OceanFish.SunkenCoelacanth,
+            OceanFish.SirensSigh,
+            OceanFish.BlackjawedHelicoprion,
+            OceanFish.Impostopus,
+            OceanFish.JadeShrimp,
+            OceanFish.NymeiasWheel,
+            OceanFish.RubyHerring,
+			OceanFish.WhirlpoolTurban,
+			OceanFish.LeopardPrawn,
+			OceanFish.SpearSquid,
+			OceanFish.FloatingLantern,
+			OceanFish.RubescentTatsunoko,
+			OceanFish.Hatatate,
+			OceanFish.SilentShark,
+			OceanFish.SpectralWrasse,
+			OceanFish.Mizuhiki,
+            OceanFish.SnappingKoban,
+            OceanFish.SilkweftPrawn,
+            OceanFish.StingfinTrevally,
+            OceanFish.SwordtipSquid,
+            OceanFish.Mailfish,
+            OceanFish.IdatensBolt,
+            OceanFish.MaelstromTurban,
+            OceanFish.Shoshitsuki,
+            OceanFish.Spadefish,
+            OceanFish.CrimsonKelp,
+            OceanFish.ReefSquid,
+			OceanFish.PinebarkFlounder,
+			OceanFish.MantleMoray,
+			OceanFish.BardedLobster,
+			OceanFish.ShisuiGoby,
+			OceanFish.Sanbaso,
+			OceanFish.ViolentSentry,
+			OceanFish.SpectralSnakeEel,
+			OceanFish.HeavensentShark,
+			OceanFish.FleetingSquid,
+			OceanFish.BowbarbLobster,
+			OceanFish.PitchPickle,
+			OceanFish.SenbeiOctopus,
+			OceanFish.TentacaleThresher,
+			OceanFish.BekkoRockhugger,
+			OceanFish.YellowIris,
+			OceanFish.CrimsonSentry,
+			OceanFish.FlyingSquid,
+            OceanFish.CatchingCarp,
+			OceanFish.GarleanBluegill,
+			OceanFish.YanxianSoftshell,
+			OceanFish.PrincessSalmon,
+			OceanFish.Calligraph,
+			OceanFish.SingularShrimp,
+			OceanFish.BrocadeCarp,
+			OceanFish.YanxianSturgeon,
+			OceanFish.SpectralKotsuZetsu,
+			OceanFish.FishyShark,
+			OceanFish.GensuiShrimp,
+			OceanFish.YatonoKami,
+			OceanFish.HeronsEel,
+			OceanFish.CrowshadowMussel,
+			OceanFish.YanxianGoby,
+			OceanFish.IridescentTrout,
+			OceanFish.UnNamazu,
+			OceanFish.Gakugyo,
+			OceanFish.GinrinGoshiki
         };
 
+		// Indigo
 		private static readonly string[] fullPattern = new[]{"BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN"};
 		
+		// Ruby
+		private static readonly string[] ruby_fullPattern = new[] {
+			"OD", "RD", "OS", "RS", "ON", "RN", "OD", "RD", "OS", "RS", "RN", // Rotation 1
+			"OD", "RD", "OS", "RS", "ON", "RN", "OD", "RD", "OS", "RS", "ON" // Rotation 2
+		};
+
+
+
+		// Indigo
 		private static readonly Tuple<string, string>[] NS = new Tuple<string, string>[3]
 		{
 			new Tuple<string, string>("south", "Night"),
@@ -409,7 +575,51 @@ namespace OceanTripPlanner
 			new Tuple<string, string>("sound", "Day")
 		};
 
-		private static readonly Tuple<uint, Vector3>[] SummoningBells = new Tuple<uint, Vector3>[]
+        // Ruby
+        private static readonly Tuple<string, string>[] Ruby_RS = new Tuple<string, string>[3]
+        {
+            new Tuple<string, string>("sirensong", "Night"),
+            new Tuple<string, string>("kugane", "Day"),
+            new Tuple<string, string>("rubysea", "Sunset")
+        };
+
+        private static readonly Tuple<string, string>[] Ruby_RN = new Tuple<string, string>[3]
+        {
+            new Tuple<string, string>("sirensong", "Day"),
+            new Tuple<string, string>("kugane", "Sunset"),
+            new Tuple<string, string>("rubysea", "Night")
+        };
+
+        private static readonly Tuple<string, string>[] Ruby_RD = new Tuple<string, string>[3]
+        {
+            new Tuple<string, string>("sirensong", "Sunset"),
+            new Tuple<string, string>("kugane", "Night"),
+            new Tuple<string, string>("rubysea", "Day")
+        };
+
+        private static readonly Tuple<string, string>[] Ruby_OS = new Tuple<string, string>[3]
+        {
+            new Tuple<string, string>("sirensong", "Night"),
+            new Tuple<string, string>("kugane", "Day"),
+            new Tuple<string, string>("oneriver", "Sunset")
+        };
+
+        private static readonly Tuple<string, string>[] Ruby_ON = new Tuple<string, string>[3]
+        {
+            new Tuple<string, string>("sirensong", "Day"),
+            new Tuple<string, string>("kugane", "Sunset"),
+            new Tuple<string, string>("oneriver", "Night")
+        };
+
+        private static readonly Tuple<string, string>[] Ruby_OD = new Tuple<string, string>[3]
+        {
+            new Tuple<string, string>("sirensong", "Sunset"),
+            new Tuple<string, string>("kugane", "Night"),
+            new Tuple<string, string>("oneriver", "Day")
+        };
+
+
+        private static readonly Tuple<uint, Vector3>[] SummoningBells = new Tuple<uint, Vector3>[]
 		{
 			new Tuple<uint, Vector3>(Zones.LimsaLominsaLowerDecks, new Vector3(-123.888062f, 17.990356f, 21.469421f)),	// Limsa
 			new Tuple<uint, Vector3>(Zones.Uldah,			new Vector3(148.91272f, 3.982544f, -44.205383f)),		// Ul'dah
@@ -624,7 +834,7 @@ namespace OceanTripPlanner
         private async Task OceanFishing()
 		{
 			//GetSchedule();
-			if (WorldManager.RawZoneId != Zones.TheEndeavor)
+			if (WorldManager.RawZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
 			{
 				//missingFish = await GetFishLog();
 				if (Core.Me.CurrentJob == ClassJobType.Fisher)
@@ -789,7 +999,7 @@ namespace OceanTripPlanner
 				RouteShown = true;
 			}
 			
-			while ((WorldManager.ZoneId == Zones.TheEndeavor) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+			while ((WorldManager.ZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
 				if (!String.IsNullOrEmpty(FishingLog.AreaName))
 				{ 
@@ -843,7 +1053,7 @@ namespace OceanTripPlanner
 				{
                     TimeOfDay = GetBoatTimeOfDay(schedule, "ciel");
                     Log($"Cieldalaes, {TimeOfDay}");
-					await GoFish(FishBait.Ragworm, FishBait.SquidStrips, "ciel", TimeOfDay, spot);
+					await GoFish(FishBait.Ragworm, FishBait.SquidStrip, "ciel", TimeOfDay, spot);
 				}
                 else if (FishingLog.AreaName.Contains("Bloodbrine") || FishingLog.AreaName.Contains("Schwerblütiges")
 					|| FishingLog.AreaName.Contains("Mer Pourpre") || FishingLog.AreaName.Contains("緋汐海")
@@ -861,8 +1071,32 @@ namespace OceanTripPlanner
                     Log($"Rothlyt Sound, {TimeOfDay}");
 					await GoFish(FishBait.PlumpWorm, FishBait.Ragworm, "sound", TimeOfDay, spot);
 				}
-				else
-				{
+                else if (FishingLog.AreaName.Contains("Sirensong"))
+                {
+                    TimeOfDay = GetBoatTimeOfDay(schedule, "sirensong");
+                    Log($"Sirensong Sea, {TimeOfDay}");
+                    await GoFish(FishBait.Ragworm, FishBait.PlumpWorm, "sirensong", TimeOfDay, spot);
+                }
+                else if (FishingLog.AreaName.Contains("Kugane"))
+                {
+                    TimeOfDay = GetBoatTimeOfDay(schedule, "kugane");
+                    Log($"Kugane, {TimeOfDay}");
+                    await GoFish(FishBait.Ragworm, FishBait.Ragworm, "kugane", TimeOfDay, spot);
+                }
+                else if (FishingLog.AreaName.Contains("Ruby Sea"))
+                {
+                    TimeOfDay = GetBoatTimeOfDay(schedule, "rubysea");
+                    Log($"The Ruby Sea, {TimeOfDay}");
+                    await GoFish(FishBait.Ragworm, FishBait.PlumpWorm, "rubysea", TimeOfDay, spot);
+                }
+                else if (FishingLog.AreaName.Contains("One River"))
+                {
+                    TimeOfDay = GetBoatTimeOfDay(schedule, "oneriver");
+                    Log($"The One River, {TimeOfDay}");
+                    await GoFish(FishBait.PlumpWorm, FishBait.Krill, "oneriver", TimeOfDay, spot);
+                }
+                else
+                {
 					if (!String.IsNullOrEmpty(FishingLog.AreaName))
 						Log($"Cannot determine location: {FishingLog.AreaName}");
 				}
@@ -991,7 +1225,7 @@ namespace OceanTripPlanner
 			await Coroutine.Sleep(1000);
 
 
-			while ((WorldManager.ZoneId == Zones.TheEndeavor) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+			while ((WorldManager.ZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby) && !ChatCheck("[NPCAnnouncements]","Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
 				if (WorldManager.CurrentWeatherId != Weather.Spectral) 
 				{
@@ -1656,11 +1890,18 @@ namespace OceanTripPlanner
 
 					await Coroutine.Wait(5000, () => SelectString.IsOpen);
 
-					if (SelectString.IsOpen)
-					{
+                    // Click ready to board
+                    if (SelectString.IsOpen)
+					{ 
 						SelectString.ClickSlot(0);
-						await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
-						SelectYesno.Yes();
+
+                        await Coroutine.Sleep(1000); // Sleep for a second
+
+                        // Select route (0 = Indigo, 1 = Ruby)
+                        SelectString.ClickSlot((uint)OceanTripSettings.Instance.FishingRoute);
+
+                        await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+                        SelectYesno.Yes();
 					}
 				}
 			}
@@ -1678,7 +1919,7 @@ namespace OceanTripPlanner
                     await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
                 }
             }
-            while (WorldManager.ZoneId != Zones.TheEndeavor)
+            while (WorldManager.ZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
             {
                 await Coroutine.Sleep(1000);
             }
@@ -1766,9 +2007,10 @@ namespace OceanTripPlanner
 			baitList.Add(FishBait.HeavySteelJig);
 			baitList.Add(FishBait.ShrimpCageFeeder);
 			baitList.Add(FishBait.PillBug);
-			baitList.Add(FishBait.SquidStrips);
+            baitList.Add(FishBait.SquidStrip);
+			baitList.Add(FishBait.MackerelStrip);
 
-			foreach (var bait in baitList)
+            foreach (var bait in baitList)
 			{
 				var baitFound = InventoryManager.FilledSlots.FirstOrDefault(x => x.RawItemId == bait);
 
@@ -1837,11 +2079,17 @@ namespace OceanTripPlanner
 					await PassTheTime.IdleLisbeth((int)FishBait.HeavySteelJig, 10, "Goldsmith", "true", 0);
 				}
 
-				if (itemsToBuy.Contains(FishBait.SquidStrips))
+				if (itemsToBuy.Contains(FishBait.SquidStrip))
 				{
-					await PassTheTime.IdleLisbeth((int)FishBait.SquidStrips, 300, "Exchange", "true", 0);
+					await PassTheTime.IdleLisbeth((int)FishBait.SquidStrip, 300, "Exchange", "true", 0);
 				}
-				Log("Restocking bait complete");
+
+				if (itemsToBuy.Contains(FishBait.MackerelStrip))
+				{
+                    await PassTheTime.IdleLisbeth((int)FishBait.MackerelStrip, 300, "Exchange", "true", 0);
+                }
+
+                Log("Restocking bait complete");
 			}
 		}
 
@@ -2027,34 +2275,59 @@ namespace OceanTripPlanner
 			else
 				epoch = (int)(time.Value.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
-            int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
-
-			switch (fullPattern[twoHourChunk])
+			if (OceanTripSettings.Instance.FishingRoute == FishingRoute.Ruby)
 			{
-				case "NS":
-					return NS;
-				case "NN":
-					return NN;
-				case "ND":
-					return ND;
-				case "RS":
-					return RS;
-				case "RN":
-					return RN;
-				case "RD":
-					return RD;
-				case "BS":
-					return BS;
-				case "BN":
-					return BN;
-				case "BD":
-					return BD;
-				case "TS":
-					return TS;
-				case "TN":
-					return TN;
-				case "TD":
-					return TD;
+				int twoHourChunk = ((epoch / 7200) + 4) % (ruby_fullPattern.Length);
+
+				//Logging.Write($"(debug) Ruby Time Chunk: {twoHourChunk}, {ruby_fullPattern[twoHourChunk]}");
+
+				switch (ruby_fullPattern[twoHourChunk])
+				{
+					case "RS":
+						return Ruby_RS;
+					case "RN":
+						return Ruby_RN;
+					case "RD":
+						return Ruby_RD;
+					case "OS":
+						return Ruby_OS;
+					case "ON":
+						return Ruby_ON;
+					case "OD":
+						return Ruby_OD;
+				}
+			}
+			else
+			{
+				int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
+
+				switch (fullPattern[twoHourChunk])
+				{
+					case "NS": //Northern Strait
+						return NS;
+					case "NN":
+						return NN;
+					case "ND":
+						return ND;
+					case "RS": //Rhotano
+						return RS;
+					case "RN":
+						return RN;
+					case "RD":
+						return RD;
+					case "BS": //Bloodbrine
+						return BS;
+					case "BN":
+						return BN;
+					case "BD":
+						return BD;
+					case "TS": //Rothlyte
+						return TS;
+					case "TN":
+						return TN;
+					case "TD":
+						return TD;
+				}
 			}
 
 			return null;

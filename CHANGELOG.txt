@@ -1,3 +1,33 @@
+05/23/2023
+----------
+
+* Patch 6.4 Support (Work in Progress)
+
+* New Setting:
+	* Fishing Route
+		* Indigo - This is the classic pre-6.4 route
+		* Ruby - This is the new 6.4 route
+
+* New Fishing Zones:
+	* The Sirensong Sea - Uses Ragworm for primary bait, Plumpworm for spectral bait
+	* Kugane - Uses Ragworm for primary bait, Ragworm for spectral bait
+	* The Ruby Sea - Uses Ragworm for primary bait, Plumpworm for spectral bait
+	* The One River - Uses Plumpworm for primary bait, Krill for spectral bait
+
+* Known Issues:
+	* Baits are subject to change. Data is still being collected/assembled.
+	* Missing fish and Spectral 5 star fish are NOT mapped/supported, this means the profile is very basic right now.
+	* Because this is a new patch, any Lisbeth functionality may crash the game until it's updated. Disable all Lisbeth crafting/gathering/exchange functionality to fix this until this is corrected.
+
+* Potential Issues:
+	* Total missing fish may be incorrect when you refresh the list.
+	* Route information may not be correct. While I've mapped this out and feel that I have the timer down, I cannot guarantee its accuracy without additional testing. The bot should still fish for you, but it might choose the incorrect baits if the route info is incorrect.
+
+
+This botbase is free for anyone to use and contribute too. Want to help support development? You can buy me a coffee/tea/drink here, but it's not required or expected: https://bmc.link/cathousegames
+
+
+
 02/16/2023
 ----------
 

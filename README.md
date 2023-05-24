@@ -46,6 +46,7 @@ When Ocean Fishing:
 | Bait Restock Threshold | 0 or higher | How low on bait should the bot be before it purchases more? Set to 0 to disable restocking of bait (not advised). |
 | Exchange Fish | Sell, Desynth, None | What should the bot do with the fish after finishing an Ocean Trip? No blues will be sold or desynthesized. |
 | Fishing Priority | FishLog, Points, Auto | What should the focus be when fishing on the boat? FishLog may give a really low score as it focuses entirely on missing fish entries. No doublehooking will occur during spectral events while this is set to FishLog. Points will focus on point values, regardless of intuition or missing fish. Double Hooking will occur during spectral events based on Zeke's rules. Auto is a blend of FishLog and Points mode, where it will focus on completing the Fishing Log if possible. If no fish are available at the location/time, then Auto will operate in Points mode. |
+| Fishing Route | Indigo, Ruby | Which route to take when fishing after speaking to Dryskthota. Default value is Indigo.
 | Full GP Action | None, Chum, DoubleHook | What should the bot do when you have full GP? Chum is a good choice while going for your Fishing Log. Double Hook is useless unless it's a spectral event or you're trying to trigger intuition for certain fish. The bot handles that already. | 
 | Late Queue | True, False | Should the bot queue up as soon as the boat becomes available or 13 minutes after? If set to true, the bot will wait until the 13 minute mark before attempting to queue. Late queues may contribute to better points, as it is easier to get higher scores and multipliers when less people are on the boat. |
 | Use Fishing Food | None, Peppered Popotoes, Crab Cakes | What food should be used for Ocean Trips? These items give +GP and +Perception. The more GP you have, the better.  If you have less than 10 of the selected food in stock, Lisbeth will attempt to craft 40 more. |
@@ -65,6 +66,12 @@ In the bottom of the window, you'll see 3 text boxes. Enter the following and cl
 Repo Name: OceanTrip
 Dropdown:  BotBase
 Repo URL:  https://github.com/catrenelle/OceanTrip.git/trunk
+
+## Support Development
+
+A lot of work goes into maintaining this and adding support for new patches. The botbase is free to all but if you want to help support me, why not buy me a coffee/tea/drink? 
+https://bmc.link/cathousegames
+
 
 ## Special Thanks
 
