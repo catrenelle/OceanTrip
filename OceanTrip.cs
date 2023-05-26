@@ -492,12 +492,21 @@ namespace OceanTripPlanner
 
 		// Indigo
 		private static readonly string[] fullPattern = new[]{"BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN"};
-		
+
 		// Ruby
-		private static readonly string[] ruby_fullPattern = new[] {
+		/*private static readonly string[] ruby_fullPattern = new[] {
 			"OD", "RD", "OS", "RS", "ON", "RN", "OD", "RD", "OS", "RS", "RN", // Rotation 1
 			"OD", "RD", "OS", "RS", "ON", "RN", "OD", "RD", "OS", "RS", "ON" // Rotation 2
-		};
+		};*/
+		private static readonly int[] ruby_fullPattern = new[]
+		{
+            1,2,3,4,5,6,1,2,3,4,5,6,
+			2,3,4,5,6,1,2,3,4,5,6,1,
+			3,4,5,6,1,2,3,4,5,6,1,2,
+			4,5,6,1,2,3,4,5,6,1,2,3,
+			5,6,1,2,3,4,5,6,1,2,3,4,
+			6,1,2,3,4,5,6,1,2,3,4,5
+        };
 
 
 
@@ -2269,37 +2278,39 @@ namespace OceanTripPlanner
         public static Tuple<string, string>[] GetSchedule(DateTime? time = null)
 		{
 			int epoch;
-			
-			if (!time.HasValue)
-				epoch = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-			else
-				epoch = (int)(time.Value.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
-			if (OceanTripSettings.Instance.FishingRoute == FishingRoute.Ruby)
+            if (!time.HasValue)
+                epoch = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            else
+                epoch = (int)(time.Value.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+            if (OceanTripSettings.Instance.FishingRoute == FishingRoute.Ruby)
 			{
-				int twoHourChunk = ((epoch / 7200) + 4) % (ruby_fullPattern.Length);
+                // Thanks to https://millhio.re/oceancalculator2.html which was more accurate than what I was using. Translated the JS over to C#.
+                int twoHourChunk = ((epoch / 7200) + 40) % ruby_fullPattern.Length;
 
-				//Logging.Write($"(debug) Ruby Time Chunk: {twoHourChunk}, {ruby_fullPattern[twoHourChunk]}");
+				if (twoHourChunk >= ruby_fullPattern.Length)
+					twoHourChunk = twoHourChunk - ruby_fullPattern.Length + 4;
 
 				switch (ruby_fullPattern[twoHourChunk])
 				{
-					case "RS":
-						return Ruby_RS;
-					case "RN":
-						return Ruby_RN;
-					case "RD":
+                    case 1:
+                        return Ruby_OD;
+                    case 2:
 						return Ruby_RD;
-					case "OS":
+					case 3:
 						return Ruby_OS;
-					case "ON":
+                    case 4:
+                        return Ruby_RS;
+                    case 5:
 						return Ruby_ON;
-					case "OD":
-						return Ruby_OD;
-				}
-			}
+                    case 6:
+                        return Ruby_RN;
+                }
+            }
 			else
 			{
-				int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
+                int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
 
 				switch (fullPattern[twoHourChunk])
 				{
