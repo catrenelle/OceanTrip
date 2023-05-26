@@ -58,11 +58,11 @@ namespace OceanTripPlanner
 			
 			
 			
-			//routeArea1Label.Text = areaName(schedule[posOnSchedule].Item1) + ", " + schedule[posOnSchedule].Item2;
+			routeArea1Label.Text = areaName(schedule[posOnSchedule].Item1) + ", " + schedule[posOnSchedule].Item2;
 			//pictureBox1.Image = getFishImage(10, 2);
-            //routeArea2Label.Text = areaName(schedule[posOnSchedule + 1].Item1) + ", " + schedule[posOnSchedule + 1].Item2;
+            routeArea2Label.Text = areaName(schedule[posOnSchedule + 1].Item1) + ", " + schedule[posOnSchedule + 1].Item2;
             //pictureBox3.Image = getFishImage(10, 4);
-            //routeArea3Label.Text = areaName(schedule[posOnSchedule + 2].Item1) + ", " + schedule[posOnSchedule + 2].Item2;
+            routeArea3Label.Text = areaName(schedule[posOnSchedule + 2].Item1) + ", " + schedule[posOnSchedule + 2].Item2;
             //pictureBox5.Image = getFishImage(10, 6);
 			
         }
