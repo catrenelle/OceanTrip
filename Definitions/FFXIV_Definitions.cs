@@ -172,6 +172,7 @@ namespace OceanTripPlanner.Definitions
         public const uint Syneyhil = 1003254;
         public const uint Dryskthota = 1005421;
         public const uint LimsaFishingMerchantMender = 1005422;
+        public const uint Vernarth = 1027241;
     }
 
     public static class Potions

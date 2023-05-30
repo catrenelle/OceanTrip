@@ -2278,6 +2278,7 @@ namespace OceanTripPlanner
 			baitList.Add(FishBait.PillBug);
             baitList.Add(FishBait.SquidStrip);
 			baitList.Add(FishBait.MackerelStrip);
+			baitList.Add(FishBait.StoneflyNymph);
 
             foreach (var bait in baitList)
 			{
@@ -2317,6 +2318,7 @@ namespace OceanTripPlanner
 					Shop.Close();
 					await Coroutine.Wait(5000, () => !Shop.Open);
 				}
+
 				if (itemsToBuy.Contains(FishBait.RatTail) || itemsToBuy.Contains(FishBait.GlowWorm) || itemsToBuy.Contains(FishBait.ShrimpCageFeeder) || itemsToBuy.Contains(FishBait.PillBug))
 				{
 					await Navigation.GetTo(Zones.LimsaLominsaLowerDecks, new Vector3(-247.6223f, 16.2f, 39.87407f));
@@ -2338,6 +2340,34 @@ namespace OceanTripPlanner
 							await Coroutine.Sleep(1000);
 						}
 					}
+					await Coroutine.Sleep(1000);
+					Shop.Close();
+					await Coroutine.Wait(5000, () => !Shop.Open);
+				}
+
+				if (itemsToBuy.Contains(FishBait.StoneflyNymph))
+				{
+					await Navigation.GetTo(Zones.Crystarium, new Vector3(-93.29133f, -4.200001f, 159.8842f));
+                    await Coroutine.Sleep(1000);
+					GameObjectManager.GetObjectByNPCId(NPC.Vernarth).Interact();
+					await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
+					if (SelectIconString.IsOpen)
+					{
+						SelectIconString.ClickSlot(3);
+						await Coroutine.Wait(5000, () => Shop.Open);
+						foreach (uint item in itemsToBuy)
+						{
+							if (item == FishBait.StoneflyNymph)
+							{
+								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
+								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
+								SelectYesno.ClickYes();
+							}
+
+							await Coroutine.Sleep(1000);
+                        }
+					}
+
 					await Coroutine.Sleep(1000);
 					Shop.Close();
 					await Coroutine.Wait(5000, () => !Shop.Open);
