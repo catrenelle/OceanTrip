@@ -206,7 +206,7 @@ namespace OceanTripPlanner.Definitions
         public const int BardedLobster = 40565;
         public const int ShisuiGoby = 40566;
         public const int Sanbaso = 40567;
-        public const int ViolentSentry = 40568;
+        public const int VioletSentry = 40568;
         public const int SpectralSnakeEel = 40569;
         public const int HeavensentShark = 40570;
 
@@ -254,6 +254,7 @@ namespace OceanTripPlanner.Definitions
         public static uint GlowWorm = 2603;
         public static uint ShrimpCageFeeder = 2613;
         public static uint HeavySteelJig = 2619;
+        public static uint StoneflyNymph = 12704;
         public static uint Ragworm = 29714;
         public static uint Krill = 29715;
         public static uint PlumpWorm = 29716;

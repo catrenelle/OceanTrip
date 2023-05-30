@@ -1,3 +1,13 @@
+05/30/2023
+----------
+
+* Added new required baits: Squid Strip, Mackerel Strip
+
+* Mapped the fish for the new Ruby Route introduced in Patch 6.4. This mapping should be functionally complete based on the community assembled information. It's possible this may not be complete/correct and require additional changes! Be aware and please report issues that you have with catching the new fish! 
+
+* Fish mapping taken from: https://docs.google.com/spreadsheets/d/1R0Nt8Ye7EAQtU8CXF1XRRj67iaFpUk1BXeDgt6abxsQ/htmlview#
+
+
 05/26/2023
 ----------
 
