@@ -59,11 +59,17 @@ namespace OceanTrip
             var fishList = await AgentFishGuide2.Instance.GetFishList();
             var recordedFish = fishList.Where(x => x.HasCaught).Select(x => (int)x.FishItem).ToList();
 
+            Logging.Write($" Total Fish: {fishList.Count()}");
+            Logging.Write($" Ocean Fish: {oceanFish.Count()}");
+            Logging.Write($"Caught Fish: {recordedFish.Count()}");
+            //Logging.Write($"Less Ocean Fish: {fishList.Select(x => (int)x.FishItem).ToList().Except(oceanFish.ToList()).Count()}");
+
             fishList = null;
 
 
             // Convert the list to uint
             List<uint> newOceanFishList = oceanFish.Except(recordedFish).ToList().ConvertAll(x => (uint)x);
+            Logging.Write($"Missing Fish: {newOceanFishList.Count()}");
             return newOceanFishList;
         }
 

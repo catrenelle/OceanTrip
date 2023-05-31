@@ -36,72 +36,34 @@ namespace OceanTripPlanner
 
 		public void updateMissingFish(List<string> missingFish)
 		{
-			missingFishList.Items.Clear();
+			//missingFishList.Items.Clear();
 
-			foreach (var fish in missingFish.OrderBy(x => x))
-				missingFishList.Items.Add(fish);
+			//foreach (var fish in missingFish.OrderBy(x => x))
+			//	missingFishList.Items.Add(fish);
 		}
 
 		public void refreshRouteInformation(object sender=null, EventArgs e=null)
 		{
-			var nextBoat = OceanTrip.TimeUntilNextBoat();
-			DateTime time = DateTime.Now.AddMinutes(nextBoat.TotalMinutes + (Convert.ToInt32(tempOffset.Text) * 120));
 
-			// Sometimes a mismatch can happen between when the timespan was captured and when the datetime is generated
-			if (time.Minute == 59)
-				time = time.AddMinutes(1);
+			if (OceanTripSettings.Instance.FishingRoute == FishingRoute.Indigo)
+				routeNameValue.Text = "Indigo";
+			else
+				routeNameValue.Text = "Ruby";
 
-            var schedule = OceanTrip.GetSchedule(time);
-            int posOnSchedule = 0;
+			var schedules = Schedule.GetSchedules(18);
 
-            routeTimeValueLabel.Text = time.ToString("hh:mm tt");
+			scheduleGrid.Rows.Clear();
 			
-			
-			
-			routeArea1Label.Text = areaName(schedule[posOnSchedule].Item1) + ", " + schedule[posOnSchedule].Item2;
+			foreach(var schedule in schedules)
+				scheduleGrid.Rows.Add(schedule.day, schedule.time, schedule.routeName, schedule.routeTime, schedule.objectives);
+
+			//routeArea1Label.Text = Schedule.areaName(schedule[posOnSchedule].Item1) + ", " + schedule[posOnSchedule].Item2;
 			//pictureBox1.Image = getFishImage(10, 2);
-            routeArea2Label.Text = areaName(schedule[posOnSchedule + 1].Item1) + ", " + schedule[posOnSchedule + 1].Item2;
+            //routeArea2Label.Text = Schedule.areaName(schedule[posOnSchedule + 1].Item1) + ", " + schedule[posOnSchedule + 1].Item2;
             //pictureBox3.Image = getFishImage(10, 4);
-            routeArea3Label.Text = areaName(schedule[posOnSchedule + 2].Item1) + ", " + schedule[posOnSchedule + 2].Item2;
+            //routeArea3Label.Text = Schedule.areaName(schedule[posOnSchedule + 2].Item1) + ", " + schedule[posOnSchedule + 2].Item2;
             //pictureBox5.Image = getFishImage(10, 6);
-			
         }
-
-
-        private string areaName(string shortname)
-		{
-			string name;
-
-			switch (shortname)
-			{
-				case "south":
-					name = "Southern Strait of Merlthor";
-					break;
-				case "galadion":
-					name = "Galadion Bay";
-					break;
-				case "north":
-					name = "Northern Strait of Merlthor";
-					break;
-				case "rhotano":
-					name = "Rhotano Sea";
-					break;
-				case "ciel":
-					name = "Cieldalaes";
-					break;
-				case "blood":
-					name = "Bloodbrine Sea";
-					break;
-				case "sound":
-					name = "Rothlyt Sound";
-					break;
-                default:
-					name = shortname;
-					break;
-			}
-
-			return name;
-		}
 
 		private Image getFishImage(int x, int y)
 		{
@@ -143,8 +105,12 @@ namespace OceanTripPlanner
 
 		public void tempHideRouteInformationTab()
 		{
-			if (tabControl.TabPages.Contains(routeInformationTab))
-				tabControl.TabPages.Remove(routeInformationTab);
-		}
-	}
+            if (tabControl.TabPages.Contains(route1))
+                tabControl.TabPages.Remove(route1);
+            if (tabControl.TabPages.Contains(route2))
+                tabControl.TabPages.Remove(route2);
+            if (tabControl.TabPages.Contains(route3))
+                tabControl.TabPages.Remove(route3);
+        }
+    }
 }

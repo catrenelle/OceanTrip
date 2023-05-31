@@ -61,6 +61,7 @@
     <Compile Include="Definitions\OceanFishing.cs" />
     <Compile Include="Helpers\FishingLog.cs" />
     <Compile Include="Helpers\LlamaElements.cs" />
+    <Compile Include="Models\Schedule.cs" />
     <Compile Include="PassTheTime.cs" />
     <Compile Include="Helpers\Lisbeth.cs" />
     <Compile Include="Helpers\Navigation.cs" />
