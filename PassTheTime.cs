@@ -115,12 +115,12 @@ namespace OceanTripPlanner
 				if (freeToCraft && OceanTripSettings.Instance.CraftFood)
 				{
 					var foodList = new List<int>();
-					foodList.Add(FoodList.CarrotPudding);
-					foodList.Add(FoodList.SunsetCarrotNibbles);
-					foodList.Add(FoodList.GarleanPizza);
-                    foodList.Add(FoodList.MelonPie);
+					foodList.Add(FoodList.HoneyedDragonfruit);
+					foodList.Add(FoodList.BabaGhanoush);
+					foodList.Add(FoodList.BakedEggplant);
+                    foodList.Add(FoodList.CaviarCanapes);
 
-					foreach (var food in foodList)
+                    foreach (var food in foodList)
 					{
 						while (freeToCraft && DataManager.GetItem((uint)food).ItemCount() < 150)
 							await IdleLisbeth(food, 400, "Culinarian", "false", lisFood);
@@ -136,17 +136,26 @@ namespace OceanTripPlanner
 
 					switch(OceanTripSettings.Instance.CraftPotions)
 					{
-						case LisbethPotionCrafting.Grade7:
+						case LisbethPotionCrafting.Grade8:
+                            potionList.Add(Potions.Grade8TinctureStrength);
+                            potionList.Add(Potions.Grade8TinctureDexterity);
+                            potionList.Add(Potions.Grade8TinctureIntelligence);
+                            potionList.Add(Potions.Grade8TinctureMind);
+                            break;
+
+                        case LisbethPotionCrafting.Grade7:
 							potionList.Add(Potions.Grade7TinctureStrength);
 							potionList.Add(Potions.Grade7TinctureDexterity);
 							potionList.Add(Potions.Grade7TinctureIntelligence);
-							break;
+                            potionList.Add(Potions.Grade7TinctureMind);
+                            break;
 
 						default:
 							potionList.Add(Potions.Grade6TinctureStrength);
 							potionList.Add(Potions.Grade6TinctureDexterity);
 							potionList.Add(Potions.Grade6TinctureIntelligence);
-							break;
+                            potionList.Add(Potions.Grade6TinctureMind);
+                            break;
 					}
 
 					foreach (var potion in potionList)
