@@ -68,8 +68,9 @@ namespace OceanTripPlanner
 
 	public enum LisbethPotionCrafting : int
 	{
-		Grade7 = 1,
-		Grade6 = 2,
+		Grade8 = 1,
+		Grade7 = 2,
+		Grade6 = 3,
 		None = 0
 	}
 

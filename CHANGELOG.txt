@@ -3,6 +3,10 @@
 
 * Added new "Schedule" tab to the settings pane. This is basically "Lulu's Fishing Tools" built right into the botbase with the exception of achievement objectives. The focus right now is entirely on points/fishing log, and time will be allocated to achievements once all of that is complete. You can use this schedule tab to determine if you want to go ocean fishing or not, and can potentially be used to "schedule" boat visits in the future (no guarantee here). The schedule is based on the Fishing Route selected in your settings.
 
+* Added Grade 8 Potions for auto-crafting. This requires Alche-mist to craft. Lisbeth will not farm this for you as it requires Tomestones of Causality.
+ 
+* Changed the Raid Food crafting to Caviar Canapes, Honeyed Dragonfruit, Baked Eggplant, and Baba Ghanoush. 
+
 
 05/30/2023
 ----------

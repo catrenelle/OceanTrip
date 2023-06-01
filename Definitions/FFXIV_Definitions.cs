@@ -84,6 +84,11 @@ namespace OceanTripPlanner.Definitions
         public static int CarrotPudding = 38264;
         public static int GarleanPizza = 38268;
         public static int MelonPie = 38261;
+
+        public static int HoneyedDragonfruit = 39869;
+        public static int BabaGhanoush = 39871;
+        public static int BakedEggplant = 39872;
+        public static int CaviarCanapes = 39876;
     }
 
     public static class Materia
@@ -180,10 +185,17 @@ namespace OceanTripPlanner.Definitions
         public static int Grade6TinctureStrength = 36109;
         public static int Grade6TinctureDexterity = 36110;
         public static int Grade6TinctureIntelligence = 36112;
+        public static int Grade6TinctureMind = 36113;
 
         public static int Grade7TinctureStrength = 37840;
         public static int Grade7TinctureDexterity = 37841;
         public static int Grade7TinctureIntelligence = 37843;
+        public static int Grade7TinctureMind = 37844;
+
+        public static int Grade8TinctureStrength = 39727;
+        public static int Grade8TinctureDexterity = 39728;
+        public static int Grade8TinctureIntelligence = 39730;
+        public static int Grade8TinctureMind = 39731;
     }
 
     public static class Weather
