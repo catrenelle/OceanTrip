@@ -1,3 +1,13 @@
+06/01/2023
+----------
+
+* Changed "Stonefly Nymph" purchase location to Coerthas Western Highlands instead of Crystarium.
+
+* Fixed an issue in the Schedule tab where it was showing Mizuhiki instead of Glass Dragon. This was due to me entering the wrong text for that condition check. Any time Mizuhiki was listed, it meant Glass Dragon was possible to catch.
+
+* New Setting! "Use Patience Skill" with a default value of "OnlyForSpecificFish". The default value is the current logic where certain spectral fish require Patience to be used in order to have a chance at capturing them. "AlwaysUsePatience" will attempt to keep Patience 1 or 2 up at all times. "SpectralOnly" will try to keep Patience 1 or 2 up only during Spectral events. Be careful with this setting as it can be a huge GP drain. The botbase will automatically use the correct hooking procedures to ensure a successful hook.
+
+
 05/31/2023
 ----------
 

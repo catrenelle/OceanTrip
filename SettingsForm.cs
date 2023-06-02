@@ -67,7 +67,7 @@ namespace OceanTripPlanner
 
 		private Image getFishImage(int x, int y)
 		{
-            Image imgsrc = Image.FromFile("BotBases/OceanTrip/Resources/Fish.png");
+            Image imgsrc = Image.FromFile("BotBases/OceanTrip/Resources/Indigo.png");
 			Image imgdst = new Bitmap(40, 40);
             using (Graphics gr = Graphics.FromImage(imgdst))
             {

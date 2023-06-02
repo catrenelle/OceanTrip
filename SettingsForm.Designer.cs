@@ -116,6 +116,7 @@
             // 
             // toolsTab
             // 
+            this.toolsTab.BackColor = System.Drawing.Color.WhiteSmoke;
             this.toolsTab.Controls.Add(this.label2);
             this.toolsTab.Controls.Add(this.label1);
             this.toolsTab.Controls.Add(this.refreshMissingFishButton);
@@ -125,7 +126,6 @@
             this.toolsTab.Size = new System.Drawing.Size(378, 450);
             this.toolsTab.TabIndex = 2;
             this.toolsTab.Text = "Tools";
-            this.toolsTab.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -171,7 +171,7 @@
             // 
             this.route1.Location = new System.Drawing.Point(4, 22);
             this.route1.Name = "route1";
-            this.route1.Size = new System.Drawing.Size(350, 450);
+            this.route1.Size = new System.Drawing.Size(378, 450);
             this.route1.TabIndex = 3;
             this.route1.Text = "Route1";
             this.route1.UseVisualStyleBackColor = true;
@@ -180,7 +180,7 @@
             // 
             this.route2.Location = new System.Drawing.Point(4, 22);
             this.route2.Name = "route2";
-            this.route2.Size = new System.Drawing.Size(350, 450);
+            this.route2.Size = new System.Drawing.Size(378, 450);
             this.route2.TabIndex = 4;
             this.route2.Text = "Route 2";
             this.route2.UseVisualStyleBackColor = true;
@@ -189,7 +189,7 @@
             // 
             this.route3.Location = new System.Drawing.Point(4, 22);
             this.route3.Name = "route3";
-            this.route3.Size = new System.Drawing.Size(350, 450);
+            this.route3.Size = new System.Drawing.Size(378, 450);
             this.route3.TabIndex = 5;
             this.route3.Text = "Route 3";
             this.route3.UseVisualStyleBackColor = true;

@@ -92,6 +92,13 @@ namespace OceanTripPlanner
 		Ruby = 1
 	}
 
+	public enum ShouldUsePatience : int
+	{
+		OnlyForSpecificFish = 0,
+		AlwaysUsePatience = 1,
+		SpectralOnly = 2
+	}
+
 	internal class OceanTripSettings : JsonSettings
 	{
 		private static OceanTripSettings _settings;
@@ -363,6 +370,27 @@ namespace OceanTripPlanner
                 }
             }
         }
+
+		private ShouldUsePatience _Patience;
+		[Setting]
+
+		[DisplayName("Use Patience Skill")]
+		[Description("When do you want to enable Patience? Only works if you have the skills. OnlyForSpecificFish will use the default rules where it is required for specific spectral fish.")]
+		[Category("Ocean Fishing")]
+
+		[DefaultValueAttribute(0)]
+		public ShouldUsePatience Patience
+		{
+			get { return _Patience; }
+			set
+			{
+				if (_Patience != value)
+				{
+					_Patience = value;
+					Save();
+				}
+			}
+		}
 
         private LisbethPotionCrafting _CraftPotions;
 		[Setting]

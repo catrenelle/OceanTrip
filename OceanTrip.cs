@@ -1338,6 +1338,9 @@ namespace OceanTripPlanner
                     {
 						if (spectraled)
 						{
+							if (OceanTripSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience || OceanTripSettings.Instance.Patience == ShouldUsePatience.SpectralOnly)
+								UsePatience();
+
 							//Bait for Blue fish
 							if (
 									Core.Player.HasAura(CharacterAuras.FishersIntuition) &&
@@ -1583,8 +1586,11 @@ namespace OceanTripPlanner
 						}
 						else
 						{
-							// Deal with Intuition fish first... if we have the intution buff
-							if (Core.Player.HasAura(CharacterAuras.FishersIntuition) && (location == "galadion" || location == "rhotano" || location == "ciel" || location == "blood" || location == "rubysea"))
+                            if (OceanTripSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience)
+                                UsePatience();
+
+                            // Deal with Intuition fish first... if we have the intution buff
+                            if (Core.Player.HasAura(CharacterAuras.FishersIntuition) && (location == "galadion" || location == "rhotano" || location == "ciel" || location == "blood" || location == "rubysea"))
 								await ChangeBait(FishBait.Krill);
 							else if (Core.Player.HasAura(CharacterAuras.FishersIntuition) && ((location == "south" && ((WorldManager.CurrentWeather != "Wind" && WorldManager.CurrentWeather != "Gales"))) || location == "sirensong" || location == "oneriver"))
 								await ChangeBait(FishBait.PlumpWorm);
@@ -2347,13 +2353,13 @@ namespace OceanTripPlanner
 
 				if (itemsToBuy.Contains(FishBait.StoneflyNymph))
 				{
-					await Navigation.GetTo(Zones.Crystarium, new Vector3(-93.29133f, -4.200001f, 159.8842f));
+					await Navigation.GetTo(Zones.CoerthasWesternHighlands, new Vector3(502.2982f, 212.7327f, 718.6489f));
                     await Coroutine.Sleep(1000);
-					GameObjectManager.GetObjectByNPCId(NPC.Vernarth).Interact();
+                    GameObjectManager.GetObjectByNPCId(NPC.IndependentMerchantCoerthasWesternHighlands).Interact();
 					await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
 					if (SelectIconString.IsOpen)
 					{
-						SelectIconString.ClickSlot(3);
+						SelectIconString.ClickSlot(4);
 						await Coroutine.Wait(5000, () => Shop.Open);
 						foreach (uint item in itemsToBuy)
 						{
