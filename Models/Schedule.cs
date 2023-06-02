@@ -162,7 +162,7 @@ namespace OceanTripPlanner
                         break;
                     case "kugane":
                         if (tod == "Night")
-                            objectives.Add("Mizuhiki");
+                            objectives.Add("Glass Dragon");
                         break;
                     case "rubysea":
                         if (tod == "Sunset")

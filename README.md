@@ -26,8 +26,8 @@ When Idling:
 | Idle Stuff | Values | Description|
 | :--- | :--- | :--- |
 | Craft Mats | True/False | Should the bot gather crafting stuff while waiting? This includes Immutable Solution, Dinosaur Leather, Sphalerite, Royal Mistletoe, Cloud Cotton Boll, Cloud Mythril Ore, Stormcloud Cotton Boll |
-| Craft Raid Food | True/False | Should the bot craft lvl 90 food while passing the time? Currently crafts Carrot Pudding, Sunset C arrot Nibbles, Garlean Pizza, and Melon Pie. |
-| Craft Raid Potions | None, Grade7, Grade6 | Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6/7 Tinctures of Strength, Dexterity, and Intelligence. Grade 7 requires Palaka Mistletoe, which can only be obtained using battle scrips (Astronomy). Ocean Trip will NOT gather Astronomy scrips for you. | 
+| Craft Raid Food | True/False | Should the bot craft lvl 90 food while passing the time? Currently crafts Caviar Canapes, Honeyed Dragonfruit, Baked Eggplant, and Baba Ghanoush. |
+| Craft Raid Potions | None, Grade8, Grade7, Grade6 | Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6/7 Tinctures of Strength, Dexterity, and Intelligence. Grade 8 requires Alche-mist. Grade 7 requires Palaka Mistletoe. These can only be obtained using battle scrips. Ocean Trip will NOT gather Astronomy scrips for you. | 
 | Custom Lisbeth Order | True/False | Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
 | Gather Shards | True/False | Should the bot gather shards and crystals while passing the time? |
 | Get Aethersand | |True/False | Should the bot gather aethersand? Currently gathers Dusklight, Dawnlight, Everbright, Everborn, Everdeep, Endstone, Endwood, Endtide, and Earthbreak Aethersand |
@@ -50,6 +50,7 @@ When Ocean Fishing:
 | Full GP Action | None, Chum, DoubleHook | What should the bot do when you have full GP? Chum is a good choice while going for your Fishing Log. Double Hook is useless unless it's a spectral event or you're trying to trigger intuition for certain fish. The bot handles that already. | 
 | Late Queue | True, False | Should the bot queue up as soon as the boat becomes available or 13 minutes after? If set to true, the bot will wait until the 13 minute mark before attempting to queue. Late queues may contribute to better points, as it is easier to get higher scores and multipliers when less people are on the boat. |
 | Use Fishing Food | None, Peppered Popotoes, Crab Cakes | What food should be used for Ocean Trips? These items give +GP and +Perception. The more GP you have, the better.  If you have less than 10 of the selected food in stock, Lisbeth will attempt to craft 40 more. |
+| Use Patience Skill | OnlyForSpecificFish, AlwaysUsePatience, SpectralOnly | When do you want to enable Patience? Only works if you have the skills. OnlyForSpecificFish will use the default rules where it is required for specific spectral fish. |
 
 When out in the open world trying to complete your fish log, you can settle down at a fishing hole and allow the bot to assist you in fishing:
 

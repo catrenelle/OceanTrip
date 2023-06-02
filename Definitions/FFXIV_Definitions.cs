@@ -174,6 +174,7 @@ namespace OceanTripPlanner.Definitions
 
     public static class NPC
     {
+        public const uint IndependentMerchantCoerthasWesternHighlands = 1011228;
         public const uint Syneyhil = 1003254;
         public const uint Dryskthota = 1005421;
         public const uint LimsaFishingMerchantMender = 1005422;
@@ -209,6 +210,7 @@ namespace OceanTripPlanner.Definitions
         public const uint Uldah = 131;
         public const uint OldGridania = 133;
         public const uint MorDhona = 156;
+        public const uint CoerthasWesternHighlands = 397;
         public const uint Ishgard = 419;
         public const uint Idyllshire = 478;
         public const uint Kugane = 628;
