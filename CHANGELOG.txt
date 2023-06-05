@@ -1,3 +1,15 @@
+06/05/2023
+----------
+
+* Added additional DoubleHook rules for the Ruby Route Spectrals.
+
+* Reworked the Bite Timer after speaking with Antony256. It now captures the DateTime of when the Cast starts (based on log message detection), and compares it to the current DateTime of when the bite happens. Previously, this was done using a StopWatch control. This means the Bite Timer should be far more accurate, although it's possible to see a deviation to what GatherBuddy shows at times. This should make DoubleHook timers far more accurate.
+
+* Changed Mooching order. The BotBase previously used Mooch II even if Mooch was available. The effects are the same between the ability, except Mooch II uses GP and works on Normal Quality fish. It will now check if it can use Mooch first before attempting Mooch II.
+
+* Fixed a bug in the Openworld Fishing routine. It was not using Mooch / Mooch II properly and has been adjusted. It should now Mooch if its available.
+
+
 06/01/2023
 ----------
 
