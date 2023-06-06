@@ -1969,6 +1969,9 @@ namespace OceanTripPlanner
 						// Ruby Route
 						if (location == "sirensong" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
 						{
+							// Reg: Rag
+							// Spec: Krill
+
 							if (timeOfDay == "Day")
 							{
 								if (spectraled)
@@ -1982,22 +1985,14 @@ namespace OceanTripPlanner
                                     // Day - !! tug at 3-4 seconds
                                     if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
                                         doubleHook = true;
-
-                                    // Day - ! tug at 6-8 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 6.0f && biteElapsed <= 8.0f)
-                                        doubleHook = true;
                                 }
                                 else
 								{
-									// Day - ! tug at 13-20 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 13.0f && biteElapsed <= 20.0f)
-										doubleHook = true;
-
-									// Day - ! tug at 10+ seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Day - ! tug at 11-20 seconds
+                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 11.0f && biteElapsed <= 20.0f)
+                                        doubleHook = true;
+                                }
+                            }
 
 							if (timeOfDay == "Sunset")
 							{
@@ -2013,25 +2008,17 @@ namespace OceanTripPlanner
                                     if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
 										doubleHook = true;
 
-                                    // Sunset - ! tug at 6-8 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 6.0f && biteElapsed <= 8.0f)
-										doubleHook = true;
-
                                     // Sunset - !! tug at 7-8 seconds
                                     if (FishingManager.TugType == TugType.Medium && biteElapsed >= 7.0f && biteElapsed <= 8.0f)
                                         doubleHook = true;
                                 }
                                 else
 								{
-                                    // Sunset - ! tug at 13-20 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 13.0f && biteElapsed <= 20.0f)
-										doubleHook = true;
-
-									// Sunset - ! tug at 10+ seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Sunset - ! tug at 11-20 seconds
+                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 11.0f && biteElapsed <= 20.0f)
+                                        doubleHook = true;
+                                }
+                            }
 
 							if (timeOfDay == "Night")
 							{
@@ -2049,12 +2036,8 @@ namespace OceanTripPlanner
                                 }
                                 else
 								{
-									// Day - ! tug at 13-20 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 13.0f && biteElapsed <= 20.0f)
-										doubleHook = true;
-
-									// Night - ! tug at 10+ seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f)
+									// Night - ! tug at 11-20 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 11.0f && biteElapsed <= 20.0f)
 										doubleHook = true;
 								}
 							}
@@ -2062,6 +2045,9 @@ namespace OceanTripPlanner
 
 						if (location == "kugane" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
 						{
+							// Reg: Rag
+							// Spec: Krill
+
 							if (timeOfDay == "Day")
 							{
 								if (spectraled)
@@ -2070,21 +2056,21 @@ namespace OceanTripPlanner
                                     if (FishingManager.TugType == TugType.Light && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
                                         doubleHook = true;
 
-                                    // Day - ! tug at 5-8 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
+                                    // Day - ! tug at 5-7 seconds
+                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
                                         doubleHook = true;
 
-                                    // Day - !! tug at 9-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 9.0f && biteElapsed <= 12.0f)
+                                    // Day - !! tug at 8-12 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed <= 12.0f)
                                         doubleHook = true;
                                 }
                                 else
 								{
-									// Day - ! tug at 9-13 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 9.0f && biteElapsed <= 13.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Day - !! tug at 18-29 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
+                                        doubleHook = true;
+                                }
+                            }
 
 							if (timeOfDay == "Sunset")
 							{
@@ -2094,21 +2080,21 @@ namespace OceanTripPlanner
 									if (FishingManager.TugType == TugType.Light && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
 										doubleHook = true;
 
-                                    // Sunset - ! tug at 5-8 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
+                                    // Sunset - ! tug at 5-7 seconds
+                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
                                         doubleHook = true;
 
-                                    // Sunset - !! tug at 9-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 9.0f && biteElapsed <= 12.0f)
+                                    // Sunset - !! tug at 8-12 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed <= 12.0f)
                                         doubleHook = true;
                                 }
                                 else
 								{
-									// Sunset - ! tug at 9-13 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 9.0f && biteElapsed <= 13.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Sunset - !! tug at 18-29 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
+                                        doubleHook = true;
+                                }
+                            }
 
 							if (timeOfDay == "Night")
 							{
@@ -2118,21 +2104,24 @@ namespace OceanTripPlanner
 									if (FishingManager.TugType == TugType.Light && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
 										doubleHook = true;
 
-                                    // Night - !! tug at 9-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 9.0f && biteElapsed <= 12.0f)
+                                    // Night - !! tug at 8-12 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed <= 12.0f)
                                         doubleHook = true;
                                 }
                                 else
 								{
-									// Night - ! tug at 9-13 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 9.0f && biteElapsed < 14.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Night - !! tug at 18-29 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
+                                        doubleHook = true;
+                                }
+                            }
 						}
 
 						if (location == "rubysea" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
 						{
+							// Reg: Ragworm
+							// Spec: Plump
+
 							if (timeOfDay == "Day")
 							{
 								if (spectraled)
@@ -2145,8 +2134,8 @@ namespace OceanTripPlanner
                                     if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
                                         doubleHook = true;
 
-                                    // Day - !! tug at 9-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 9.0f && biteElapsed <= 12.0f)
+                                    // Day - !! tug at 5-8 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
                                         doubleHook = true;
                                 }
                                 else
@@ -2155,11 +2144,11 @@ namespace OceanTripPlanner
 									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
 										doubleHook = true;
 
-									// Day - ! tug at 20-30 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 20.0f && biteElapsed <= 30.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Day - !! tug at 10-18 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
+                                        doubleHook = true;
+                                }
+                            }
 
 							if (timeOfDay == "Sunset")
 							{
@@ -2173,8 +2162,8 @@ namespace OceanTripPlanner
 									if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
 										doubleHook = true;
 
-                                    // Day - !! tug at 9-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 9.0f && biteElapsed <= 12.0f)
+                                    // Sunset - !! tug at 5-8 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
                                         doubleHook = true;
                                 }
                                 else
@@ -2183,11 +2172,11 @@ namespace OceanTripPlanner
 									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
 										doubleHook = true;
 
-									// Sunset - ! tug at 20-30 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 20.0f && biteElapsed <= 30.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Sunset - !! tug at 10-18 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
+                                        doubleHook = true;
+                                }
+                            }
 
 							if (timeOfDay == "Night")
 							{
@@ -2201,8 +2190,8 @@ namespace OceanTripPlanner
 									if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
 										doubleHook = true;
 
-                                    // Day - !! tug at 9-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 9.0f && biteElapsed <= 12.0f)
+                                    // Night - !! tug at 5-8 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
                                         doubleHook = true;
                                 }
                                 else
@@ -2211,46 +2200,84 @@ namespace OceanTripPlanner
 									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
 										doubleHook = true;
 
-									// Night - ! tug at 20-30 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 20.0f && biteElapsed <= 30.0f)
-										doubleHook = true;
-								}
-							}
+                                    // Night - !! tug at 10-18 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
+                                        doubleHook = true;
+                                }
+                            }
 						}
 
 						if (location == "oneriver" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
 						{
+							// Reg: Plump
+							// Spec: Krill
+
 							if (timeOfDay == "Day")
 							{
-								// Day - ! tug at 19-28 seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 19.0f && biteElapsed <= 28.0f)
-									doubleHook = true;
+								if (spectraled)
+								{
+                                    // Day - ! tug at 3-4 seconds
+                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
+                                        doubleHook = true;
 
-								// Day - !! tug at 16-17 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 16.0f && biteElapsed <= 17.0f)
-									doubleHook = true;
+                                    // Day - ! tug at 5-7 seconds
+                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
+                                        doubleHook = true;
+                                }
+                                else
+								{
+									// Day - ! tug at 18-29 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
+										doubleHook = true;
+								}
 							}
 
 							if (timeOfDay == "Sunset")
 							{
-								// Sunset - ! tug at 19-28 seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 19.0f && biteElapsed <= 28.0f)
-									doubleHook = true;
+								if (spectraled)
+								{
+									// Sunset - ! tug at 3-4 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
+										doubleHook = true;
 
-								// Sunset - !! tug at 16-17 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 16.0f && biteElapsed <= 17.0f)
-									doubleHook = true;
+									// Sunset - ! tug at 5-7 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
+										doubleHook = true;
+
+                                    // Sunset - !! tug at 5-6 seconds
+                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 6.0f)
+                                        doubleHook = true;
+                                }
+                                else
+								{
+									// Sunset - ! tug at 18-29 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
+										doubleHook = true;
+								}
 							}
 
 							if (timeOfDay == "Night")
 							{
-								// Night - ! tug at 19-28 seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 19.0f && biteElapsed <= 28.0f)
-									doubleHook = true;
+								if (spectraled)
+								{
+									// Night - ! tug at 3-4 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
+										doubleHook = true;
 
-								// Night - !! tug at 16-17 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 16.0f && biteElapsed <= 17.0f)
-									doubleHook = true;
+									// Night - ! tug at 5-7 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
+										doubleHook = true;
+                                    
+									// Night - !!! tug at 5-6 seconds
+                                    if (FishingManager.TugType == TugType.Heavy && biteElapsed >= 5.0f && biteElapsed <= 6.0f)
+                                        doubleHook = true;
+                                }
+                                else
+								{
+									// Night - ! tug at 18-29 seconds
+									if (FishingManager.TugType == TugType.Light && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
+										doubleHook = true;
+								}
 							}
 						}
 

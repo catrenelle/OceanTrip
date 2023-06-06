@@ -9,6 +9,8 @@
 
 * Fixed a bug in the Openworld Fishing routine. It was not using Mooch / Mooch II properly and has been adjusted. It should now Mooch if its available.
 
+* Reworked existing DoubleHook rules based on latest spreadsheet changes. Expect frequent changes to these rules over the coming days as they are still being ironed out. Spreadhseet: https://docs.google.com/spreadsheets/d/1R0Nt8Ye7EAQtU8CXF1XRRj67iaFpUk1BXeDgt6abxsQ
+
 
 06/01/2023
 ----------
