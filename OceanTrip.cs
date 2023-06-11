@@ -2322,7 +2322,7 @@ namespace OceanTripPlanner
 			}
 
 			spectraled = false;
-			await Coroutine.Sleep(200);
+			await Coroutine.Sleep(2000); // DO NOT CHANGE
 
 			//Log("Waiting for next stop...");
 			if (FishingManager.State != FishingState.None)
