@@ -1289,6 +1289,8 @@ namespace OceanTripPlanner
 
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
+					await Coroutine.Sleep(200);
+
 					// Did we catch a fish? Let's log it.
 					if (ChatCheck("You land", "measuring") && !caughtFishLogged)
 					{
@@ -1725,12 +1727,12 @@ namespace OceanTripPlanner
 
 					}
 
-					await Coroutine.Sleep(50);
+					await Coroutine.Sleep(200);
 				}
 
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 				{
-                    await Coroutine.Sleep(50);
+                    await Coroutine.Sleep(200); // Do not remove or game will stutter.
                    
 					//Spectral popped, don't wait for normal fish
                     if (WorldManager.CurrentWeatherId == Weather.Spectral && !spectraled)
@@ -1744,7 +1746,7 @@ namespace OceanTripPlanner
 
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
-                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds;
+                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 0.2f; // Offset against the Coroutine.Sleep(200) above.
                         bool doubleHook = false;
 
                         Log($"Bite Time: {biteElapsed:F1}s");
@@ -2320,7 +2322,8 @@ namespace OceanTripPlanner
 			}
 
 			spectraled = false;
-			await Coroutine.Sleep(50);
+			await Coroutine.Sleep(200);
+
 			//Log("Waiting for next stop...");
 			if (FishingManager.State != FishingState.None)
 			{

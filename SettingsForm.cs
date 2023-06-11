@@ -112,5 +112,10 @@ namespace OceanTripPlanner
             if (tabControl.TabPages.Contains(route3))
                 tabControl.TabPages.Remove(route3);
         }
-    }
+
+		private void LlamaMarket_Button(object sender, EventArgs e)
+		{
+			LlamaMarket.OpenWindow();
+		}
+	}
 }

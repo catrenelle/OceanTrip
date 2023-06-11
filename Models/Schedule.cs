@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -52,7 +54,7 @@ namespace OceanTripPlanner
                 // Build the schedule!
                 var entry = new Schedule();
                 
-                if (i == 0 || time.ToString("hh:mm tt") == "12:00 AM")
+                if (i == 0 || (time.ToString("hh:mm tt") == "12:00 AM" || time.ToString("hh:mm tt") == "01:00 AM"))
                     entry.day = time.ToString("MM/dd");
                 else
                     entry.day = "";
@@ -120,6 +122,34 @@ namespace OceanTripPlanner
         {
             List<string> objectives = new List<string>();
 
+            //// Check for Shellfish
+            //if ((schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Night"
+            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Day"
+            //            && schedule[2].Item1 == "oneriver" && schedule[2].Item2 == "Sunset")
+            //        || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Day"
+            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Sunset"
+            //            && schedule[2].Item1 == "oneriver" && schedule[2].Item2 == "Night"))
+            //{
+            //    objectives.Add("Shellfish");
+            //}
+
+            //// Check for Squid
+            //if ((schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Day"
+            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Sunset"
+            //            && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Night")
+            //        || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Sunset"
+            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Night"
+            //            && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Day")
+            //        || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Night"
+            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Day"
+            //            && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Sunset"))
+            //{
+            //    objectives.Add("Squid");
+            //}
+
+            //if (schedule[0].Item1 == "sirensong" || schedule[0].Item1 == "kugane" || schedule[0].Item1 == "rubysea" || schedule[0].Item1 == "oneriver")
+            //    objectives.Add("Shrimp");
+
 
             for (int i = 0; i <= 2; i++)
             {
@@ -176,6 +206,9 @@ namespace OceanTripPlanner
                         break;
                 }
             }
+
+            //if (objectives.Count > 2 && objectives.Contains("Shrimp"))
+            //    objectives.Remove("Shrimp");
 
             if (objectives.Count == 0)
                 return "";
