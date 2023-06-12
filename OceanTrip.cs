@@ -1727,7 +1727,7 @@ namespace OceanTripPlanner
 
 					}
 
-					await Coroutine.Sleep(200);
+					await Coroutine.Sleep(2000);
 				}
 
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
