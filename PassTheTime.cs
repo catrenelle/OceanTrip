@@ -18,6 +18,7 @@ using System.Windows.Documents;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace OceanTripPlanner
 {
@@ -59,6 +60,10 @@ namespace OceanTripPlanner
                 {
                     if (freeToCraft && DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood).ItemCount() < 10)
                     {
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                            Log($"Farming 100 of {DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood).CurrentLocaleName}.");
+
+
                         await IdleLisbeth((int)OceanTripSettings.Instance.OceanFood, 100, "Culinarian", "false", lisFood);
                     }
                 }
@@ -89,6 +94,9 @@ namespace OceanTripPlanner
 
                     foreach (var crystal in crystalList)
                     {
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && ConditionParser.ItemCount((uint)crystal) < 9000)
+                            Log($"Farming {(9000 - ConditionParser.ItemCount((uint)crystal))} of {DataManager.GetItem((uint)crystal).CurrentLocaleName} in bundles of 500.");
+
                         while (freeToCraft && ConditionParser.ItemCount((uint)crystal) < 9000)
                             await IdleLisbeth(crystal, 500, "Gather", "false", 0);
                     }
@@ -105,6 +113,9 @@ namespace OceanTripPlanner
 
 					foreach (var currency in currencyList)
 					{
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency) <= 3000)
+                            Log($"Farming {(3000 - (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency))} of {SpecialCurrencyManager.SpecialCurrencies.Where(x => x.Item.Id == (uint)currency).FirstOrDefault().Item.CurrentLocaleName}.");
+
                         while (freeToCraft && (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency) <= 3000)
 							await IdleLisbeth(currency, 500, "CraftMasterpiece", "false", 0);
 					}
@@ -122,7 +133,10 @@ namespace OceanTripPlanner
 
                     foreach (var food in foodList)
 					{
-						while (freeToCraft && DataManager.GetItem((uint)food).ItemCount() < 150)
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)food).ItemCount() < 150)
+                            Log($"Farming {(150 - DataManager.GetItem((uint)food).ItemCount())} of {DataManager.GetItem((uint)food).CurrentLocaleName}.");
+
+                        while (freeToCraft && DataManager.GetItem((uint)food).ItemCount() < 150)
 							await IdleLisbeth(food, 400, "Culinarian", "false", lisFood);
 					}
 
@@ -160,7 +174,10 @@ namespace OceanTripPlanner
 
 					foreach (var potion in potionList)
 					{
-						while (freeToCraft && DataManager.GetItem((uint)potion).ItemCount() <= 200)
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)potion).ItemCount() <= 200)
+                            Log($"Farming {(200 - DataManager.GetItem((uint)potion).ItemCount())} of {DataManager.GetItem((uint)potion).CurrentLocaleName}.");
+
+                        while (freeToCraft && DataManager.GetItem((uint)potion).ItemCount() <= 200)
 							await IdleLisbeth(potion, 200, "Alchemist", "false", lisFood);
 					}
 
@@ -182,6 +199,9 @@ namespace OceanTripPlanner
 
                     foreach (var item in itemList)
 					{
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                            Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
+
                         while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
 							await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
 					}
@@ -203,6 +223,9 @@ namespace OceanTripPlanner
 
                     foreach (var item in itemList)
                     {
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                            Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
+
                         while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
                             await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
                     }
@@ -276,6 +299,9 @@ namespace OceanTripPlanner
 
 					foreach(var materia in materiaList)
 					{
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)materia).ItemCount() <= 200)
+                            Log($"Farming {(200-DataManager.GetItem((uint)materia).ItemCount())} of {DataManager.GetItem((uint)materia).CurrentLocaleName}.");
+
 						while(freeToCraft && DataManager.GetItem((uint)materia).ItemCount() <= 200)
                             await IdleLisbeth(materia, 20, "Exchange", "false", 0);
                     }
@@ -354,18 +380,23 @@ namespace OceanTripPlanner
 
 			if (itemsToDesynth.Count() != 0)
 			{
-				Log("Desynthing...");
+				Log($"Desynthing {itemsToDesynth.Count()} valid inventory slots...");
 				foreach (var item in itemsToDesynth)
 				{
 					await Coroutine.Sleep(500);
+
 					var name = item.EnglishName;
 					var currentStackSize = item.Item.StackSize;
+
+                    if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                        Log($"Desynthing {name}, stack size of {item.Count}.");
 
 					while (item.Count > 0)
 					{
 						await LlamaLibrary.Utilities.Inventory.Desynth(item);
 						await Coroutine.Wait(20000, () => (!item.IsFilled || !item.EnglishName.Equals(name) || item.Count != currentStackSize));
 					}
+
 					await Coroutine.Sleep(500);
 				}
 				Log("Desynth complete");
