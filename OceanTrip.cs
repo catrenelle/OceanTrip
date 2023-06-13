@@ -849,6 +849,8 @@ namespace OceanTripPlanner
 
 		private async Task OceanFishing()
 		{
+			await Coroutine.Sleep(1000);
+
 			//GetSchedule();
 			if (WorldManager.RawZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
 			{
@@ -857,11 +859,13 @@ namespace OceanTripPlanner
 				{
 					if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Sell)
 					{
-						await LandSell(fishForSale);
+                        await Coroutine.Sleep(3000);
+                        await LandSell(fishForSale);
 					}
 					else if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Desynth)
 					{
-						await PassTheTime.DesynthOcean(fishForSale);
+                        await Coroutine.Sleep(3000);
+                        await PassTheTime.DesynthOcean(fishForSale);
 					}
 
 					await Lisbeth.SelfRepairWithMenderFallback();
@@ -1005,15 +1009,6 @@ namespace OceanTripPlanner
 			schedule = GetSchedule();
 			int posOnSchedule = 0;
 			string TimeOfDay = "";
-
-/*			if (!RouteShown)
-			{
-				Log("Route:");
-				Log(schedule[posOnSchedule].Item1 + ", " + schedule[posOnSchedule].Item2);
-				Log(schedule[posOnSchedule + 1].Item1 + ", " + schedule[posOnSchedule + 1].Item2);
-				Log(schedule[posOnSchedule + 2].Item1 + ", " + schedule[posOnSchedule + 2].Item2);
-				RouteShown = true;
-			}*/
 
 			while ((WorldManager.ZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
@@ -1160,21 +1155,28 @@ namespace OceanTripPlanner
 		{
 			if ((baitId != FishingManager.SelectedBaitItemId) && (DataManager.GetItem((uint)baitId).RequiredLevel <= Core.Me.ClassLevel))
 			{
-				AtkAddonControl baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
+                AtkAddonControl baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				if (baitWindow == null)
 				{
-					ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
+					if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+						Log($"Opening Bait Window.");
+
+                    ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
 					await Coroutine.Sleep(400);
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}
+
 				if (baitWindow != null)
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					Log($"Applied {DataManager.GetItem((uint)baitId).CurrentLocaleName}");
 					await Coroutine.Sleep(400);
 					ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
-				}
-			}
+                    
+					if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                        Log($"Closed Bait Window.");
+                }
+            }
 		}
 
 		private async Task GoOpenWorldFishing()
@@ -1238,10 +1240,10 @@ namespace OceanTripPlanner
 				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
 				{
 					Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
-					await Coroutine.Sleep(100);
+					await Coroutine.Sleep(1000);
 				}
 				Navigator.PlayerMover.MoveStop();
-				await Coroutine.Sleep(500);
+				await Coroutine.Sleep(1000);
 				Core.Me.SetFacing(headings[spot]);
 			}
 
@@ -1289,7 +1291,7 @@ namespace OceanTripPlanner
 
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
-					await Coroutine.Sleep(200);
+					await Coroutine.Sleep(1000);
 
 					// Did we catch a fish? Let's log it.
 					if (ChatCheck("You land", "measuring") && !caughtFishLogged)
@@ -1297,6 +1299,9 @@ namespace OceanTripPlanner
 						lastCaughtFish = FishingLog.LastFishCaught;
 						caughtFish.Add(FishingLog.LastFishCaught);
 						caughtFishLogged = true;
+
+						if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+							Log($"Caught {DataManager.GetItem(FishingLog.LastFishCaught).CurrentLocaleName}.");
 
 						if (missingFish.Contains(FishingLog.LastFishCaught))
 						{
@@ -1603,7 +1608,7 @@ namespace OceanTripPlanner
 						else
 						{
 							if (OceanTripSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience)
-								UsePatience();
+                                UsePatience();
 
 							// Deal with Intuition fish first... if we have the intution buff
 							if (Core.Player.HasAura(CharacterAuras.FishersIntuition) && (location == "galadion" || location == "rhotano" || location == "ciel" || location == "blood" || location == "rubysea"))
@@ -1716,6 +1721,7 @@ namespace OceanTripPlanner
 								{
 									Log("Triggering Full GP Action to keep regen going - Chum!");
 									ActionManager.DoAction(Actions.Chum, Core.Me);
+									await Coroutine.Sleep(200);
 								}
 							}
 						}
@@ -1724,15 +1730,14 @@ namespace OceanTripPlanner
                         WaitForCastLog();
                         startedCast = DateTime.Now;
 						lastCastMooch = false;
-
 					}
 
-					await Coroutine.Sleep(2000);
+					//await Coroutine.Sleep(1000);
 				}
 
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 				{
-                    await Coroutine.Sleep(200); // Do not remove or game will stutter.
+                    await Coroutine.Sleep(1000); // Do not remove or game will stutter.
                    
 					//Spectral popped, don't wait for normal fish
                     if (WorldManager.CurrentWeatherId == Weather.Spectral && !spectraled)
@@ -1746,7 +1751,7 @@ namespace OceanTripPlanner
 
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
-                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 0.2f; // Offset against the Coroutine.Sleep(200) above.
+                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 1.0f; // Offset against the Coroutine.Sleep(200) above.
                         bool doubleHook = false;
 
                         Log($"Bite Time: {biteElapsed:F1}s");
@@ -2293,12 +2298,18 @@ namespace OceanTripPlanner
 						{
 							if (FishingManager.TugType == TugType.Light)
 							{
-								ActionManager.DoAction(Actions.PrecisionHookset, Core.Me);
+                                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                                    Log($"Using Precision Hookset!");
+
+                                ActionManager.DoAction(Actions.PrecisionHookset, Core.Me);
 								lastCastMooch = false;
 							}
 							else
 							{
-								ActionManager.DoAction(Actions.PowerfulHookset, Core.Me);
+                                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                                    Log($"Using Powerful Hookset!");
+
+                                ActionManager.DoAction(Actions.PowerfulHookset, Core.Me);
 								lastCastMooch = false;
 							}
 						}
@@ -2310,7 +2321,12 @@ namespace OceanTripPlanner
 								ActionManager.DoAction(Actions.DoubleHook, Core.Me);
 							}
 							else
-								FishingManager.Hook();
+							{
+                                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                                    Log($"Hooking Fish!");
+
+                                FishingManager.Hook();
+							}
 
 							lastCastMooch = false;
 						}
@@ -2342,7 +2358,10 @@ namespace OceanTripPlanner
 
 				if (Dryskthota != null && Dryskthota.IsWithinInteractRange)
 				{
-					Dryskthota.Interact();
+                    if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                        Logging.Write(Colors.Aqua, $"[Ocean Trip] Interacting with Dryskthota.");
+
+                    Dryskthota.Interact();
 					if (await Coroutine.Wait(5000, () => Talk.DialogOpen))
 					{
 						Talk.Next();
@@ -2357,34 +2376,62 @@ namespace OceanTripPlanner
 
 						await Coroutine.Sleep(1000); // Sleep for a second
 
-						// Select route (0 = Indigo, 1 = Ruby)
-						SelectString.ClickSlot((uint)OceanTripSettings.Instance.FishingRoute);
 
-						await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && OceanTripSettings.Instance.FishingRoute == FishingRoute.Indigo)
+                            Logging.Write(Colors.Aqua, $"[Ocean Trip] Selecting Indigo Route.");
+
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && OceanTripSettings.Instance.FishingRoute == FishingRoute.Ruby)
+                            Logging.Write(Colors.Aqua, $"[Ocean Trip] Selecting Ruby Route.");
+
+                        // Select route (0 = Indigo, 1 = Ruby)
+                        SelectString.ClickSlot((uint)OceanTripSettings.Instance.FishingRoute);
+
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                            Logging.Write(Colors.Aqua, $"[Ocean Trip] Waiting for Yes/No dialog to appear for boarding confirmation.");
+
+                        await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 						SelectYesno.Yes();
-					}
-				}
+
+                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                            Logging.Write(Colors.Aqua, $"[Ocean Trip] Boat confirmed. We're now in the duty finder.");
+
+                    }
+                }
 			}
 
-			await Coroutine.Wait(1000000, () => ContentsFinderConfirm.IsOpen);
+
+            if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                Logging.Write(Colors.Aqua, $"[Ocean Trip] Waiting for Duty Finder.");
+
+            await Coroutine.Wait(1000000, () => ContentsFinderConfirm.IsOpen);
 
 			await Coroutine.Yield();
 			while (ContentsFinderConfirm.IsOpen)
 			{
-				DutyManager.Commence();
+                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                    Logging.Write(Colors.Aqua, $"[Ocean Trip] Commencing Duty.");
+
+                DutyManager.Commence();
 				await Coroutine.Yield();
-				if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+
+                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                    Logging.Write(Colors.Aqua, $"[Ocean Trip] Waiting for loading screen.");
+
+                if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
 				{
 					await Coroutine.Yield();
 					await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
 				}
-			}
-			while (WorldManager.ZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
+
+                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                    Logging.Write(Colors.Aqua, $"[Ocean Trip] Loading screen found.");
+            }
+            while (WorldManager.ZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
 			{
 				await Coroutine.Sleep(1000);
 			}
 			await Coroutine.Sleep(2500);
-			Logging.Write(Colors.Aqua, "We're on the boat!");
+			Logging.Write(Colors.Aqua, "[Ocean Trip] We're on the boat!");
 		}
 
 		private static async Task SwitchToJob(ClassJobType job)
@@ -2421,7 +2468,7 @@ namespace OceanTripPlanner
 				if (slot.UseItem())
 					Logging.Write(Colors.Aqua, $"[Ocean Trip] Used a {DataManager.GetItem(cordial).CurrentLocaleName}!");
 
-				await Coroutine.Sleep(100);
+				await Coroutine.Sleep(200);
 			}
 		}
 
@@ -2619,9 +2666,12 @@ namespace OceanTripPlanner
 			//TODO: Buy other stuff with scrip
 			if (SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) > scripThreshold)
 			{
-				await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) / 20, "Exchange", "false", 0);
+				Logging.Write(Colors.Aqua, $"[Ocean Trip] Purchasing {(int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) / 20} Hi-Cordials!");
+
+                await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) / 20, "Exchange", "false", 0);
 			}
-		}
+
+        }
 
 		private async Task Retaining()
 		{
@@ -2737,7 +2787,10 @@ namespace OceanTripPlanner
 					|| ChatCheck("recast your line", "recast your line")
 					|| whileTimer.Elapsed.TotalSeconds > 6)
 				{
-					whileTimer.Stop();
+					if (whileTimer.Elapsed.TotalSeconds > 6 && OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+						Log("Could not detect the cast/recast your line log message. Continuing.");
+
+                    whileTimer.Stop();
 					endLoop = true;
 				}
 					
@@ -2768,12 +2821,24 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private void UsePatience()
+		private async void UsePatience()
 		{
-            if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
-                ActionManager.DoAction(Actions.PatienceII, Core.Me);
-            else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+			if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
+			{
+				if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+					Log($"Applying Patience II!");
+
+				ActionManager.DoAction(Actions.PatienceII, Core.Me);
+			}
+			else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
+			{
+                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                    Log($"Applying Patience!");
+
                 ActionManager.DoAction(Actions.Patience, Core.Me);
+			}
+
+			await Coroutine.Sleep(200);
         }
 
         public static Tuple<string, string>[] GetSchedule(DateTime? time = null)

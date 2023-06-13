@@ -99,6 +99,12 @@ namespace OceanTripPlanner
 		SpectralOnly = 2
 	}
 
+	public enum LoggingMode : int
+	{
+		Normal = 0,
+		Verbose = 1
+	}
+
 	internal class OceanTripSettings : JsonSettings
 	{
 		private static OceanTripSettings _settings;
@@ -113,7 +119,29 @@ namespace OceanTripPlanner
 		{
 		}
 
-		private Venturing _Venturing;
+        private LoggingMode _LoggingMode;
+        [Setting]
+
+        [DisplayName("Logging Level")]
+        [Description("What verbosity to use? This will greatly inflate RebornBuddy's Logs")]
+        [Category("BotBase Settings")]
+
+        [DefaultValueAttribute(LoggingMode.Normal)]
+        public LoggingMode LoggingMode
+        {
+            get { return _LoggingMode; }
+            set
+            {
+                if (_LoggingMode != value)
+                {
+                    _LoggingMode = value;
+                    Save();
+                }
+            }
+        }
+
+
+        private Venturing _Venturing;
 		[Setting]
 
 		[DisplayName("Refresh Retainers")]
