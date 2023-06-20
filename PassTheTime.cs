@@ -31,12 +31,20 @@ namespace OceanTripPlanner
 		{
             if (freeToCraft)
 			{
-				int lisFood = (int)OceanTripSettings.Instance.LisbethFood;
+				int lisFood = 0;
+
+                if (OceanTripNewSettings.Instance.useCraftingFood)
+                {
+                    if (DataManager.GetItem((uint)FoodList.CalamariRipieni).ItemCount() > 0)
+                        lisFood = FoodList.CalamariRipieni; // Reg
+                    else
+                        lisFood = FoodList.CalamariRipieni + 1000000; // HQ
+                }
 
                 //Resume last order
                 try
                 {
-                    if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripSettings.Instance.ResumeOrder)
+                    if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripNewSettings.Instance.resumeLisbeth)
 					{
 							if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") != "[]")
 							{
@@ -50,51 +58,76 @@ namespace OceanTripPlanner
                 //Custom Order
                 try
                 {
-                    if (freeToCraft && File.Exists("BoatOrder.json") && OceanTripSettings.Instance.CustomOrder)
+                    if (freeToCraft && File.Exists("BoatOrder.json") && OceanTripNewSettings.Instance.customBoatOrders)
 							await Lisbeth.ExecuteOrders(File.ReadAllText("BoatOrder.json"));
                 }
                 catch { Log("Encountered error reading BoatOrder.json, ignoring the file."); }
 
                 //Ocean Food
-                if (OceanTripSettings.Instance.OceanFood != OceanFood.None)
+                if (lisFood > 0)
                 {
-                    if (freeToCraft && DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood).ItemCount() < 10)
+                    int foodCount = (int)DataManager.GetItem((uint)lisFood).ItemCount();
+                    if (freeToCraft && foodCount < 10)
                     {
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
-                            Log($"Farming 100 of {DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood).CurrentLocaleName}.");
+                        if (OceanTripNewSettings.Instance.LoggingMode)
+                            Log($"Farming 100 of {DataManager.GetItem((uint)lisFood).CurrentLocaleName}.");
 
 
-                        await IdleLisbeth((int)OceanTripSettings.Instance.OceanFood, 100, "Culinarian", "false", lisFood);
+                        await IdleLisbeth(lisFood, 100, "Culinarian", "false", (foodCount > 0 ? lisFood : 0));
                     }
                 }
 
                 //Shards
-                if (freeToCraft && OceanTripSettings.Instance.GatherShards)
+                if (freeToCraft)
                 {
                     var crystalList = new List<int>();
-                    crystalList.Add(Crystals.WindShard);
-                    crystalList.Add(Crystals.WindCluster);
-                    crystalList.Add(Crystals.WindCrystal);
-                    crystalList.Add(Crystals.FireShard);
-                    crystalList.Add(Crystals.FireCluster);
-                    crystalList.Add(Crystals.FireCrystal);
-                    crystalList.Add(Crystals.IceShard);
-                    crystalList.Add(Crystals.IceCluster);
-                    crystalList.Add(Crystals.IceCrystal);
-                    crystalList.Add(Crystals.EarthShard);
-                    crystalList.Add(Crystals.EarthCluster);
-                    crystalList.Add(Crystals.EarthCrystal);
-                    crystalList.Add(Crystals.LightningShard);
-                    crystalList.Add(Crystals.LightningCluster);
-                    crystalList.Add(Crystals.LightningCrystal);
-                    crystalList.Add(Crystals.WaterShard);
-                    crystalList.Add(Crystals.WaterCluster);
-                    crystalList.Add(Crystals.WaterCrystal);
+                    
+                    if (OceanTripNewSettings.Instance.firecrystal)
+                    {
+                        crystalList.Add(Crystals.FireShard);
+                        crystalList.Add(Crystals.FireCluster);
+                        crystalList.Add(Crystals.FireCrystal);
+                    }
+
+                    if (OceanTripNewSettings.Instance.icecrystal)
+                    {
+                        crystalList.Add(Crystals.IceShard);
+                        crystalList.Add(Crystals.IceCluster);
+                        crystalList.Add(Crystals.IceCrystal);
+                    }
+
+                    if (OceanTripNewSettings.Instance.windcrystal)
+                    {
+                        crystalList.Add(Crystals.WindShard);
+                        crystalList.Add(Crystals.WindCluster);
+                        crystalList.Add(Crystals.WindCrystal);
+                    }
+
+                    if (OceanTripNewSettings.Instance.earthcrystal)
+                    {
+                        crystalList.Add(Crystals.EarthShard);
+                        crystalList.Add(Crystals.EarthCluster);
+                        crystalList.Add(Crystals.EarthCrystal);
+                    }
+
+                    if (OceanTripNewSettings.Instance.lightningcrystal)
+                    {
+                        crystalList.Add(Crystals.LightningShard);
+                        crystalList.Add(Crystals.LightningCluster);
+                        crystalList.Add(Crystals.LightningCrystal);
+                    }
+
+                    if (OceanTripNewSettings.Instance.watercrystal)
+                    {
+                        crystalList.Add(Crystals.WaterShard);
+                        crystalList.Add(Crystals.WaterCluster);
+                        crystalList.Add(Crystals.WaterCrystal);
+                    }
 
 
                     foreach (var crystal in crystalList)
                     {
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && ConditionParser.ItemCount((uint)crystal) < 9000)
+                        if (OceanTripNewSettings.Instance.LoggingMode && ConditionParser.ItemCount((uint)crystal) < 9000)
                             Log($"Farming {(9000 - ConditionParser.ItemCount((uint)crystal))} of {DataManager.GetItem((uint)crystal).CurrentLocaleName} in bundles of 500.");
 
                         while (freeToCraft && ConditionParser.ItemCount((uint)crystal) < 9000)
@@ -105,15 +138,18 @@ namespace OceanTripPlanner
                 }
 
                 //Scrip
-                if (freeToCraft && OceanTripSettings.Instance.RefillScrips)
+                if (freeToCraft)
                 {
 					var currencyList = new List<int>();
-                    currencyList.Add((int)Currency.WhiteCraftersScrips);
-                    currencyList.Add((int)Currency.PurpleCraftersScrips);
+                    if (OceanTripNewSettings.Instance.refillScrips)
+                    {
+                        currencyList.Add((int)Currency.WhiteCraftersScrips);
+                        currencyList.Add((int)Currency.PurpleCraftersScrips);
+                    }
 
 					foreach (var currency in currencyList)
 					{
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency) <= 3000)
+                        if (OceanTripNewSettings.Instance.LoggingMode && (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency) <= 3000)
                             Log($"Farming {(3000 - (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency))} of {SpecialCurrencyManager.SpecialCurrencies.Where(x => x.Item.Id == (uint)currency).FirstOrDefault().Item.CurrentLocaleName}.");
 
                         while (freeToCraft && (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)currency) <= 3000)
@@ -123,17 +159,21 @@ namespace OceanTripPlanner
 
 
 				//Food
-				if (freeToCraft && OceanTripSettings.Instance.CraftFood)
+				if (freeToCraft)
 				{
 					var foodList = new List<int>();
-					foodList.Add(FoodList.HoneyedDragonfruit);
-					foodList.Add(FoodList.BabaGhanoush);
-					foodList.Add(FoodList.BakedEggplant);
-                    foodList.Add(FoodList.CaviarCanapes);
+                    if (OceanTripNewSettings.Instance.food1)
+                        foodList.Add(OceanTripPlanner.Definitions.Defaults.raidfood[0]);
+                    if (OceanTripNewSettings.Instance.food2)
+                        foodList.Add(OceanTripPlanner.Definitions.Defaults.raidfood[1]);
+                    if (OceanTripNewSettings.Instance.food3)
+                        foodList.Add(OceanTripPlanner.Definitions.Defaults.raidfood[2]);
+                    if (OceanTripNewSettings.Instance.food4)
+                        foodList.Add(OceanTripPlanner.Definitions.Defaults.raidfood[3]);
 
                     foreach (var food in foodList)
 					{
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)food).ItemCount() < 150)
+                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)food).ItemCount() < 150)
                             Log($"Farming {(150 - DataManager.GetItem((uint)food).ItemCount())} of {DataManager.GetItem((uint)food).CurrentLocaleName}.");
 
                         while (freeToCraft && DataManager.GetItem((uint)food).ItemCount() < 150)
@@ -144,37 +184,22 @@ namespace OceanTripPlanner
                 }
 
                 //Potions
-                if (freeToCraft && OceanTripSettings.Instance.CraftPotions != 0)
+                if (freeToCraft)
                 {
 					var potionList = new List<int>();
 
-					switch(OceanTripSettings.Instance.CraftPotions)
+                    if (OceanTripNewSettings.Instance.potion1)
+                        potionList.Add(OceanTripPlanner.Definitions.Defaults.raidpotions[0]);
+                    if (OceanTripNewSettings.Instance.potion2)
+                        potionList.Add(OceanTripPlanner.Definitions.Defaults.raidpotions[1]);
+                    if (OceanTripNewSettings.Instance.potion3)
+                        potionList.Add(OceanTripPlanner.Definitions.Defaults.raidpotions[2]);
+                    if (OceanTripNewSettings.Instance.potion4)
+                        potionList.Add(OceanTripPlanner.Definitions.Defaults.raidpotions[3]);
+
+                    foreach (var potion in potionList)
 					{
-						case LisbethPotionCrafting.Grade8:
-                            potionList.Add(Potions.Grade8TinctureStrength);
-                            potionList.Add(Potions.Grade8TinctureDexterity);
-                            potionList.Add(Potions.Grade8TinctureIntelligence);
-                            potionList.Add(Potions.Grade8TinctureMind);
-                            break;
-
-                        case LisbethPotionCrafting.Grade7:
-							potionList.Add(Potions.Grade7TinctureStrength);
-							potionList.Add(Potions.Grade7TinctureDexterity);
-							potionList.Add(Potions.Grade7TinctureIntelligence);
-                            potionList.Add(Potions.Grade7TinctureMind);
-                            break;
-
-						default:
-							potionList.Add(Potions.Grade6TinctureStrength);
-							potionList.Add(Potions.Grade6TinctureDexterity);
-							potionList.Add(Potions.Grade6TinctureIntelligence);
-                            potionList.Add(Potions.Grade6TinctureMind);
-                            break;
-					}
-
-					foreach (var potion in potionList)
-					{
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)potion).ItemCount() <= 200)
+                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)potion).ItemCount() <= 200)
                             Log($"Farming {(200 - DataManager.GetItem((uint)potion).ItemCount())} of {DataManager.GetItem((uint)potion).CurrentLocaleName}.");
 
                         while (freeToCraft && DataManager.GetItem((uint)potion).ItemCount() <= 200)
@@ -185,21 +210,27 @@ namespace OceanTripPlanner
                 }
 
                 //Mats
-                if (freeToCraft && OceanTripSettings.Instance.CraftMats)
+                if (freeToCraft)
 				{
 					var itemList = new List<int>();
-					itemList.Add(Material.ImmutableSolution);
-                    itemList.Add(Material.DinosaurLeather);
-                    itemList.Add(Material.Sphalerite);
-                    itemList.Add(Material.RoyalMistletoe);
-                    itemList.Add(Material.CloudCottonBoll);
-                    itemList.Add(Material.CloudMythrilOre);
-                    itemList.Add(Material.StormcloudCottonBoll);
-
+                    if (OceanTripNewSettings.Instance.material1)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.materials[0]);
+                    if (OceanTripNewSettings.Instance.material2)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.materials[1]);
+                    if (OceanTripNewSettings.Instance.material3)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.materials[2]);
+                    if (OceanTripNewSettings.Instance.material4)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.materials[3]);
+                    if (OceanTripNewSettings.Instance.material5)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.materials[4]);
+                    if (OceanTripNewSettings.Instance.material6)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.materials[5]);
+                    if (OceanTripNewSettings.Instance.material7)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.materials[6]);
 
                     foreach (var item in itemList)
 					{
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)item).ItemCount() <= 300)
                             Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
 
                         while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
@@ -208,22 +239,31 @@ namespace OceanTripPlanner
 				}
 
 				//Aethersand
-				if (freeToCraft && OceanTripSettings.Instance.Aethersand)
+				if (freeToCraft)
 				{
                     var itemList = new List<int>();
-                    itemList.Add(Material.DusklightAethersand);
-                    itemList.Add(Material.DawnlightAethersand);
-                    itemList.Add(Material.EverbrightAethersand);
-                    itemList.Add(Material.EverbornAethersand);
-                    itemList.Add(Material.EverdeepAethersand);
-                    itemList.Add(Material.EndstoneAethersand);
-                    itemList.Add(Material.EndwoodAethersand);
-                    itemList.Add(Material.EndtideAethersand);
-                    itemList.Add(Material.EarthbreakAethersand);
+                    if (OceanTripNewSettings.Instance.aethersand1)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[0]);
+                    if (OceanTripNewSettings.Instance.aethersand2)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[1]);
+                    if (OceanTripNewSettings.Instance.aethersand3)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[2]);
+                    if (OceanTripNewSettings.Instance.aethersand4)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[3]);
+                    if (OceanTripNewSettings.Instance.aethersand5)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[4]);
+                    if (OceanTripNewSettings.Instance.aethersand6)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[5]);
+                    if (OceanTripNewSettings.Instance.aethersand7)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[6]);
+                    if (OceanTripNewSettings.Instance.aethersand8)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[7]);
+                    if (OceanTripNewSettings.Instance.aethersand9)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[8]);
 
                     foreach (var item in itemList)
                     {
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)item).ItemCount() <= 300)
                             Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
 
                         while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
@@ -232,74 +272,104 @@ namespace OceanTripPlanner
                 }
 
                 //Materia
-                if (freeToCraft && OceanTripSettings.Instance.GetMateria != LisbethMateriaGathering.None)
+                if (freeToCraft)
 				{
 					var materiaList = new List<int>();
-					switch(OceanTripSettings.Instance.GetMateria)
-					{
-                        case LisbethMateriaGathering.Grade_X:
-                            materiaList.Add(Materia.CrafterCompetenceX);
-                            materiaList.Add(Materia.CrafterCunningX);
-                            materiaList.Add(Materia.CrafterCommandX);
-                            materiaList.Add(Materia.GatherGuerdonX);
-                            materiaList.Add(Materia.GatherGuileX);
-                            materiaList.Add(Materia.GatherGraspX);
-                            break;
-                        case LisbethMateriaGathering.Grade_IX:
-                            materiaList.Add(Materia.CrafterCompetenceIX);
-                            materiaList.Add(Materia.CrafterCunningIX);
-                            materiaList.Add(Materia.CrafterCommandIX);
-                            materiaList.Add(Materia.GatherGuerdonIX);
-                            materiaList.Add(Materia.GatherGuileIX);
-                            materiaList.Add(Materia.GatherGraspIX);
-                            break;
-                        case LisbethMateriaGathering.Grade_VIII:
-                            materiaList.Add(Materia.CrafterCompetenceVIII);
-                            materiaList.Add(Materia.CrafterCunningVIII);
-                            materiaList.Add(Materia.CrafterCommandVIII);
-                            materiaList.Add(Materia.GatherGuerdonVIII);
-                            materiaList.Add(Materia.GatherGuileVIII);
-                            materiaList.Add(Materia.GatherGraspVIII);
-                            break;
-                        case LisbethMateriaGathering.Grade_VII:
-                            materiaList.Add(Materia.CrafterCompetenceVII);
-                            materiaList.Add(Materia.CrafterCunningVII);
-                            materiaList.Add(Materia.CrafterCommandVII);
-                            materiaList.Add(Materia.GatherGuerdonVII);
-                            materiaList.Add(Materia.GatherGuileVII);
-                            materiaList.Add(Materia.GatherGraspVII);
-                            break;
-                        case LisbethMateriaGathering.Grade_VI:
-                            materiaList.Add(Materia.CrafterCompetenceVI);
-                            materiaList.Add(Materia.CrafterCunningVI);
-                            materiaList.Add(Materia.CrafterCommandVI);
-                            materiaList.Add(Materia.GatherGuerdonVI);
-                            materiaList.Add(Materia.GatherGuileVI);
-                            materiaList.Add(Materia.GatherGraspVI);
-                            break;
-                        case LisbethMateriaGathering.Grade_V:
-                            materiaList.Add(Materia.CrafterCompetenceV);
-                            materiaList.Add(Materia.CrafterCunningV);
-                            materiaList.Add(Materia.CrafterCommandV);
-                            materiaList.Add(Materia.GatherGuerdonV);
-                            materiaList.Add(Materia.GatherGuileV);
-                            materiaList.Add(Materia.GatherGraspV);
-                            break;
-                        case LisbethMateriaGathering.Grade_IV:
-                            materiaList.Add(Materia.CrafterCompetenceIV);
-                            materiaList.Add(Materia.CrafterCunningIV);
-                            materiaList.Add(Materia.CrafterCommandIV);
-                            materiaList.Add(Materia.GatherGuerdonIV);
-                            materiaList.Add(Materia.GatherGuileIV);
-                            materiaList.Add(Materia.GatherGraspIV);
-                            break;
-						default:
-                            break;
-                    }
+                    // Grade X
+                    if (OceanTripNewSettings.Instance.materiax1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[0]);
+                    if (OceanTripNewSettings.Instance.materiax2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[1]);
+                    if (OceanTripNewSettings.Instance.materiax3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[2]);
+                    if (OceanTripNewSettings.Instance.materiax4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[3]);
+                    if (OceanTripNewSettings.Instance.materiax5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[4]);
+                    if (OceanTripNewSettings.Instance.materiax6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[5]);
+                    // Grade IX
+                    if (OceanTripNewSettings.Instance.materiaix1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaix[0]);
+                    if (OceanTripNewSettings.Instance.materiaix2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaix[1]);
+                    if (OceanTripNewSettings.Instance.materiaix3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaix[2]);
+                    if (OceanTripNewSettings.Instance.materiaix4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaix[3]);
+                    if (OceanTripNewSettings.Instance.materiaix5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaix[4]);
+                    if (OceanTripNewSettings.Instance.materiaix6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaix[5]);
+                    // Grade VIII
+                    if (OceanTripNewSettings.Instance.materiaviii1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaviii[0]);
+                    if (OceanTripNewSettings.Instance.materiaviii2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaviii[1]);
+                    if (OceanTripNewSettings.Instance.materiaviii3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaviii[2]);
+                    if (OceanTripNewSettings.Instance.materiaviii4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaviii[3]);
+                    if (OceanTripNewSettings.Instance.materiaviii5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaviii[4]);
+                    if (OceanTripNewSettings.Instance.materiaviii6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaviii[5]);
+                    // Grade VII
+                    if (OceanTripNewSettings.Instance.materiavii1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavii[0]);
+                    if (OceanTripNewSettings.Instance.materiavii2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavii[1]);
+                    if (OceanTripNewSettings.Instance.materiavii3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavii[2]);
+                    if (OceanTripNewSettings.Instance.materiavii4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavii[3]);
+                    if (OceanTripNewSettings.Instance.materiavii5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavii[4]);
+                    if (OceanTripNewSettings.Instance.materiavii6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavii[5]);
+                    // Grade VI
+                    if (OceanTripNewSettings.Instance.materiavi1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavi[0]);
+                    if (OceanTripNewSettings.Instance.materiavi2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavi[1]);
+                    if (OceanTripNewSettings.Instance.materiavi3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavi[2]);
+                    if (OceanTripNewSettings.Instance.materiavi4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavi[3]);
+                    if (OceanTripNewSettings.Instance.materiavi5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavi[4]);
+                    if (OceanTripNewSettings.Instance.materiavi6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiavi[5]);
+                    // Grade V
+                    if (OceanTripNewSettings.Instance.materiav1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiav[0]);
+                    if (OceanTripNewSettings.Instance.materiav2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiav[1]);
+                    if (OceanTripNewSettings.Instance.materiav3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiav[2]);
+                    if (OceanTripNewSettings.Instance.materiav4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiav[3]);
+                    if (OceanTripNewSettings.Instance.materiav5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiav[4]);
+                    if (OceanTripNewSettings.Instance.materiav6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiav[5]);
+                    // Grade IV
+                    if (OceanTripNewSettings.Instance.materiaiv1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaiv[0]);
+                    if (OceanTripNewSettings.Instance.materiaiv2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaiv[1]);
+                    if (OceanTripNewSettings.Instance.materiaiv3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaiv[2]);
+                    if (OceanTripNewSettings.Instance.materiaiv4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaiv[3]);
+                    if (OceanTripNewSettings.Instance.materiaiv5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaiv[4]);
+                    if (OceanTripNewSettings.Instance.materiaiv6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaiv[5]);
 
-					foreach(var materia in materiaList)
+                    foreach (var materia in materiaList)
 					{
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && DataManager.GetItem((uint)materia).ItemCount() <= 200)
+                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)materia).ItemCount() <= 200)
                             Log($"Farming {(200-DataManager.GetItem((uint)materia).ItemCount())} of {DataManager.GetItem((uint)materia).CurrentLocaleName}.");
 
 						while(freeToCraft && DataManager.GetItem((uint)materia).ItemCount() <= 200)
@@ -388,7 +458,7 @@ namespace OceanTripPlanner
 					var name = item.EnglishName;
 					var currentStackSize = item.Item.StackSize;
 
-                    if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                    if (OceanTripNewSettings.Instance.LoggingMode)
                         Log($"Desynthing {name}, stack size of {item.Count}.");
 
 					while (item.Count > 0)

@@ -51,6 +51,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.refreshMissingFishButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.newExperience = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.Settings.SuspendLayout();
             this.routeInformationTab.SuspendLayout();
@@ -236,6 +237,7 @@
             // toolsTab
             // 
             this.toolsTab.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.toolsTab.Controls.Add(this.newExperience);
             this.toolsTab.Controls.Add(this.label4);
             this.toolsTab.Controls.Add(this.button2);
             this.toolsTab.Controls.Add(this.label2);
@@ -308,14 +310,26 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Lisbeth_Button);
             // 
+            // newExperience
+            // 
+            this.newExperience.Location = new System.Drawing.Point(27, 387);
+            this.newExperience.Name = "newExperience";
+            this.newExperience.Size = new System.Drawing.Size(98, 23);
+            this.newExperience.TabIndex = 9;
+            this.newExperience.Text = "New Experience";
+            this.newExperience.UseVisualStyleBackColor = true;
+            this.newExperience.Click += new System.EventHandler(this.button3_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(386, 476);
             this.Controls.Add(this.tabControl);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SettingsForm";
-            this.Text = "Ocean Trip Settings";
+            this.Text = "Ocean Trip";
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.Shown += new System.EventHandler(this.SettingsForm_Shown);
             this.tabControl.ResumeLayout(false);
@@ -354,5 +368,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Objectives;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button newExperience;
     }
 }

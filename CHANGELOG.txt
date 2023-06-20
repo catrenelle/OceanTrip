@@ -1,3 +1,15 @@
+06/19/2023
+----------
+
+* All new settings UI! This is still a work in progress and changes are going to occur both to the look, feel, and style. All functionality except for the Schedules tab has been ported over right now. Hitting Escape will close the window. Help me test, and let me know your thoughts!
+
+* Ventures were removed from the settings section as it was broken and did not work properly. It may return at a future time.
+
+* Ability to craft Grade 7 and Grade 6 Raid Pots have been removed because they are no longer useful.
+
+* You can now launch the Llama Market settings menu from within Ocean Trip's settings. If you do not have Llama Market, it will open the webpage to it.
+
+
 06/05/2023
 ----------
 
