@@ -9,11 +9,13 @@ using System.Drawing;
 using System.Xml.Linq;
 using ff14bot.Helpers;
 using System.IO;
+using Ocean_Trip;
 
 namespace OceanTripPlanner
 {
 	public partial class SettingsForm : Form
 	{
+		FormSettings form;
 		public bool refreshMissingFish = false;
 
 		public SettingsForm()
@@ -31,21 +33,13 @@ namespace OceanTripPlanner
 
 		private void SettingsForm_Load(object sender, EventArgs e)
 		{
-			propertyGrid1.SelectedObject = OceanTripSettings.Instance;
-		}
-
-		public void updateMissingFish(List<string> missingFish)
-		{
-			//missingFishList.Items.Clear();
-
-			//foreach (var fish in missingFish.OrderBy(x => x))
-			//	missingFishList.Items.Add(fish);
+			//propertyGrid1.SelectedObject = OceanTripSettings.Instance;
 		}
 
 		public void refreshRouteInformation(object sender=null, EventArgs e=null)
 		{
 
-			if (OceanTripSettings.Instance.FishingRoute == FishingRoute.Indigo)
+			if (OceanTripNewSettings.Instance.FishingRoute == FishingRoute.Indigo)
 				routeNameValue.Text = "Indigo";
 			else
 				routeNameValue.Text = "Ruby";
@@ -115,7 +109,15 @@ namespace OceanTripPlanner
 
 		private void LlamaMarket_Button(object sender, EventArgs e)
 		{
-			LlamaMarket.OpenWindow();
+			LlamaMarket.OpenMarketSettings();
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			if (form == null)
+				form = new FormSettings();
+
+			form.Show();
 		}
 	}
 }

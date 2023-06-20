@@ -59,7 +59,7 @@ namespace OceanTripPlanner
 		private uint lastCaughtFish = 0;
 		private bool caughtFishLogged = false;
 
-		private bool ignoreBoat { get { if (OceanTripSettings.Instance.FishPriority == FishPriority.IgnoreBoat) { return true; } else { return false; } } }
+		private bool ignoreBoat { get { if (OceanTripNewSettings.Instance.FishPriority == FishPriority.IgnoreBoat) { return true; } else { return false; } } }
 
 		private readonly int[] oceanFish = new[] {
 			OceanFish.GaladionGoby,
@@ -498,10 +498,6 @@ namespace OceanTripPlanner
 		private static readonly string[] fullPattern = new[] { "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN" };
 
 		// Ruby
-		/*private static readonly string[] ruby_fullPattern = new[] {
-			"OD", "RD", "OS", "RS", "ON", "RN", "OD", "RD", "OS", "RS", "RN", // Rotation 1
-			"OD", "RD", "OS", "RS", "ON", "RN", "OD", "RD", "OS", "RS", "ON" // Rotation 2
-		};*/
 		private static readonly int[] ruby_fullPattern = new[]
 		{
 			1,2,3,4,5,6,1,2,3,4,5,6,
@@ -511,8 +507,6 @@ namespace OceanTripPlanner
 			5,6,1,2,3,4,5,6,1,2,3,4,
 			6,1,2,3,4,5,6,1,2,3,4,5
 		};
-
-
 
 		// Indigo
 		private static readonly Tuple<string, string>[] NS = new Tuple<string, string>[3]
@@ -676,16 +670,16 @@ namespace OceanTripPlanner
 
 		public override bool WantButton { get; } = true;
 
-		private static SettingsForm settings;
+		private static Ocean_Trip.FormSettings settings;
 		public override void OnButtonPress()
 		{
 			if (settings == null || settings.IsDisposed)
-				settings = new SettingsForm();
+				settings = new Ocean_Trip.FormSettings();
 
 			try
 			{
 				// Temporary. Future item to come. Currently not working and is a proof of concept. :)
-				settings.tempHideRouteInformationTab();
+				//settings.tempHideRouteInformationTab();
 
 				settings.Show();
 				settings.Activate();
@@ -701,7 +695,7 @@ namespace OceanTripPlanner
 
 			Log("Initializing OceanTrip Settings.");
 			if (settings == null || settings.IsDisposed)
-				settings = new SettingsForm();
+				settings = new Ocean_Trip.FormSettings();
 
 			Log("OceanTrip Settings Loaded.");
 
@@ -728,11 +722,11 @@ namespace OceanTripPlanner
 		public static TimeSpan TimeUntilNextBoat()
 		{
 			TimeSpan stop = new TimeSpan();
-			int min = (OceanTripSettings.Instance.LateBoatQueue ? 13 : 0);
+			int min = (OceanTripNewSettings.Instance.LateBoatQueue ? 13 : 0);
 
 
 			if ((DateTime.UtcNow.Hour % 2 == 0)
-					&& ((DateTime.UtcNow.Minute > 12 && !OceanTripSettings.Instance.LateBoatQueue) || (DateTime.UtcNow.Minute > 14 && OceanTripSettings.Instance.LateBoatQueue)))
+					&& ((DateTime.UtcNow.Minute > 12 && !OceanTripNewSettings.Instance.LateBoatQueue) || (DateTime.UtcNow.Minute > 14 && OceanTripNewSettings.Instance.LateBoatQueue)))
 			{
 				stop = new TimeSpan(DateTime.UtcNow.Hour + 2, min, 0);
 			}
@@ -747,14 +741,14 @@ namespace OceanTripPlanner
 
 		private async void KillLisbeth(object sender, ElapsedEventArgs e)
 		{
-			TimeSpan stop = new TimeSpan((DateTime.UtcNow.Hour % 2 == 0 ? DateTime.UtcNow.Hour + 2 : DateTime.UtcNow.Hour), (OceanTripSettings.Instance.LateBoatQueue ? 13 : 0), 0); //TimeUntilNextBoat();
+			TimeSpan stop = new TimeSpan((DateTime.UtcNow.Hour % 2 == 0 ? DateTime.UtcNow.Hour + 2 : DateTime.UtcNow.Hour), (OceanTripNewSettings.Instance.LateBoatQueue ? 13 : 0), 0); //TimeUntilNextBoat();
 
 
 			schedule = GetSchedule();
 
 			if (!ignoreBoat)
 			{
-				if ((OceanTripSettings.Instance.FishPriority != FishPriority.FishLog)
+				if ((OceanTripNewSettings.Instance.FishPriority != FishPriority.FishLog)
 						|| (FocusFishLog && missingFish.Count() > 0))
 				{
 					//Log("Stopping Lisbeth!");
@@ -817,22 +811,14 @@ namespace OceanTripPlanner
 					Log("Obtaining current list of missing ocean fish.");
 					missingFish = await FishingLog.GetFishLog(oceanFish);
 
-					List<string> missingFishNames = new List<string>();
-					foreach (var fish in missingFish)
-						missingFishNames.Add(DataManager.GetItem(fish).EnglishName);
-
-					settings.updateMissingFish(missingFishNames);
-					missingFishNames.Clear();
-
 					Log($"Total missing ocean fish: {missingFish.Count()}");
-
 					FishingLog.SaveMissingFishLog(missingFish);
 				}
 				catch (Exception e)
 				{
-					if (OceanTripSettings.Instance.FishPriority != FishPriority.IgnoreBoat)
+					if (OceanTripNewSettings.Instance.FishPriority != FishPriority.IgnoreBoat)
 					{
-						OceanTripSettings.Instance.FishPriority = FishPriority.Points;
+                        OceanTripNewSettings.Instance.FishPriority = FishPriority.Points;
 						Logging.Write(Colors.Red, "[OceanTrip] Cannot obtain list of Missing Fish! Defaulting OceanTrip to points mode.");
 					}
 					else
@@ -840,7 +826,6 @@ namespace OceanTripPlanner
 
 					Logging.Write(Colors.Red, "[OceanTrip] Exception Message: " + e.Message);
 					Logging.Write(Colors.Red, "[OceanTrip] Stack Trace: " + e.StackTrace);
-					settings.updateMissingFish(null);
 				}
 
 				missingFishRefreshed = true;
@@ -857,12 +842,12 @@ namespace OceanTripPlanner
 				//missingFish = await GetFishLog();
 				if (Core.Me.CurrentJob == ClassJobType.Fisher)
 				{
-					if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Sell)
+					if (OceanTripNewSettings.Instance.ExchangeFish == ExchangeFish.Sell)
 					{
                         await Coroutine.Sleep(3000);
                         await LandSell(fishForSale);
 					}
-					else if (OceanTripSettings.Instance.ExchangeFish == ExchangeFish.Desynth)
+					else if (OceanTripNewSettings.Instance.ExchangeFish == ExchangeFish.Desynth)
 					{
                         await Coroutine.Sleep(3000);
                         await PassTheTime.DesynthOcean(fishForSale);
@@ -872,22 +857,16 @@ namespace OceanTripPlanner
 					await LandRepair(50);
 				}
 
-				if (OceanTripSettings.Instance.BaitRestockThreshold > 10 && OceanTripSettings.Instance.BaitRestockAmount > 30)
-					await RestockBait(OceanTripSettings.Instance.BaitRestockThreshold, (uint)OceanTripSettings.Instance.BaitRestockAmount);
+				if (OceanTripNewSettings.Instance.BaitRestockThreshold > 10 && OceanTripNewSettings.Instance.BaitRestockAmount > 30)
+					await RestockBait(OceanTripNewSettings.Instance.BaitRestockThreshold, (uint)OceanTripNewSettings.Instance.BaitRestockAmount);
 				else
 					Log("Bait Restock Threshold or Restock Amount is set too low. Skipping bait restock. If you are missing the required baits for ocean fishing, the bot may not operate properly.");
 
 
-				if (OceanTripSettings.Instance.EmptyScrips)
+				if (OceanTripNewSettings.Instance.purchaseHiCordials)
 				{
 					await EmptyScrips((int)Cordials.HiCordial, 1500);
 				}
-
-				if (OceanTripSettings.Instance.Venturing != Venturing.None)
-				{
-					await Retaining();
-				}
-
 
 				if (!File.Exists(Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt")))
 				{
@@ -928,17 +907,13 @@ namespace OceanTripPlanner
 				// LongBoatQueue = true = 13-15 Minutes
 				// LongBoatQueue = false = 10-13 minutes
 				while (!((DateTime.UtcNow.Hour % 2 == 0) &&
-						((DateTime.UtcNow.Minute < 13 && !OceanTripSettings.Instance.LateBoatQueue)
-						|| (DateTime.UtcNow.Minute >= 13 && DateTime.UtcNow.Minute < 15 && OceanTripSettings.Instance.LateBoatQueue)))
+						((DateTime.UtcNow.Minute < 13 && !OceanTripNewSettings.Instance.LateBoatQueue)
+						|| (DateTime.UtcNow.Minute >= 13 && DateTime.UtcNow.Minute < 15 && OceanTripNewSettings.Instance.LateBoatQueue)))
 						|| ignoreBoat)
 				{
 					await Coroutine.Sleep(1000);
-					if (OceanTripSettings.Instance.Venturing != Venturing.None)
-					{
-						await Retaining();
-					}
 
-					if (OceanTripSettings.Instance.OpenWorldFishing && FishingManager.State != FishingState.None && Core.Me.CurrentJob == ClassJobType.Fisher)
+					if (OceanTripNewSettings.Instance.OpenWorldFishing && FishingManager.State != FishingState.None && Core.Me.CurrentJob == ClassJobType.Fisher)
 					{
 						await GoOpenWorldFishing();
 					}
@@ -960,16 +935,16 @@ namespace OceanTripPlanner
 				uint edibleFood = 0;
 				bool edibleFoodHQ = false;
 
-				if (OceanTripSettings.Instance.OceanFood != OceanFood.None)
+				if (OceanTripNewSettings.Instance.OceanFood)
 				{
-					if (DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood, true).ItemCount() >= 1)
+					if (DataManager.GetItem((uint)OceanFood.CrabCakes, true).ItemCount() >= 1)
 					{
-						edibleFood = (uint)OceanTripSettings.Instance.OceanFood;
+						edibleFood = (uint)OceanFood.CrabCakes;
 						edibleFoodHQ = true;
 					}
-					else if (DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood, false).ItemCount() >= 1)
+					else if (DataManager.GetItem((uint)OceanFood.CrabCakes, false).ItemCount() >= 1)
 					{
-						edibleFood = (uint)OceanTripSettings.Instance.OceanFood;
+						edibleFood = (uint)OceanFood.CrabCakes;
 						edibleFoodHQ = false;
 					}
 					else
@@ -998,7 +973,7 @@ namespace OceanTripPlanner
 					}
 					else
 					{
-						Log($"Out of {DataManager.GetItem((uint)OceanTripSettings.Instance.OceanFood, false).CurrentLocaleName} to eat!");
+						Log($"Out of {DataManager.GetItem((uint)OceanFood.CrabCakes, false).CurrentLocaleName} to eat!");
 					}
 				}
 
@@ -1119,6 +1094,9 @@ namespace OceanTripPlanner
 			AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
 			if (windowByName != null)
 			{
+				if (OceanTripNewSettings.Instance.LoggingMode)
+					Log($"Found results window. Waiting for calculation to end.");
+
 				// This is super sloppy as we have to rely on a bunch of sleeps right now.
 				await Coroutine.Sleep(12000);
 
@@ -1126,14 +1104,21 @@ namespace OceanTripPlanner
 				windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
 				if (windowByName != null)
 					windowByName.SendAction(1, 3, 0);
+                
+				if (OceanTripNewSettings.Instance.LoggingMode)
+                    Log($"Sent confirmation to close results window. Now waiting for loading screen.");
 
-				if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+
+                if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
 				{
 					await Coroutine.Yield();
 					await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
 				}
 
-				RouteShown = false;
+                if (OceanTripNewSettings.Instance.LoggingMode)
+                    Log($"Done loading! This voyage is OVER! Time to wait for the next boat.");
+
+                RouteShown = false;
 				missingFishRefreshed = false;
 				PassTheTime.freeToCraft = true;
 			}
@@ -1158,11 +1143,11 @@ namespace OceanTripPlanner
                 AtkAddonControl baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				if (baitWindow == null)
 				{
-					if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+					if (OceanTripNewSettings.Instance.LoggingMode)
 						Log($"Opening Bait Window.");
 
                     ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
-					await Coroutine.Sleep(400);
+					await Coroutine.Sleep(200);
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}
 
@@ -1170,10 +1155,10 @@ namespace OceanTripPlanner
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					Log($"Applied {DataManager.GetItem((uint)baitId).CurrentLocaleName}");
-					await Coroutine.Sleep(400);
+					await Coroutine.Sleep(200);
 					ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
                     
-					if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+					if (OceanTripNewSettings.Instance.LoggingMode)
                         Log($"Closed Bait Window.");
                 }
             }
@@ -1247,7 +1232,7 @@ namespace OceanTripPlanner
 				Core.Me.SetFacing(headings[spot]);
 			}
 
-			await Coroutine.Sleep(1000);
+			await Coroutine.Sleep(500);
 
 
 			while ((WorldManager.ZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
@@ -1291,7 +1276,7 @@ namespace OceanTripPlanner
 
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
-					await Coroutine.Sleep(1000);
+					await Coroutine.Sleep(500);
 
 					// Did we catch a fish? Let's log it.
 					if (ChatCheck("You land", "measuring") && !caughtFishLogged)
@@ -1300,7 +1285,7 @@ namespace OceanTripPlanner
 						caughtFish.Add(FishingLog.LastFishCaught);
 						caughtFishLogged = true;
 
-						if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+						if (OceanTripNewSettings.Instance.LoggingMode)
 							Log($"Caught {DataManager.GetItem(FishingLog.LastFishCaught).CurrentLocaleName}.");
 
 						if (missingFish.Contains(FishingLog.LastFishCaught))
@@ -1359,7 +1344,7 @@ namespace OceanTripPlanner
 					{
 						if (spectraled)
 						{
-							if (OceanTripSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience || OceanTripSettings.Instance.Patience == ShouldUsePatience.SpectralOnly)
+							if (OceanTripNewSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience || OceanTripNewSettings.Instance.Patience == ShouldUsePatience.SpectralOnly)
 								UsePatience();
 
 							//Bait for Blue fish
@@ -1607,7 +1592,7 @@ namespace OceanTripPlanner
 						}
 						else
 						{
-							if (OceanTripSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience)
+							if (OceanTripNewSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience)
                                 UsePatience();
 
 							// Deal with Intuition fish first... if we have the intution buff
@@ -1715,7 +1700,7 @@ namespace OceanTripPlanner
 
 
 							// Should we use Chum?
-							if (Core.Me.MaxGP >= 100 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && OceanTripSettings.Instance.FullGPAction == FullGPAction.Chum)
+							if (Core.Me.MaxGP >= 100 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && OceanTripNewSettings.Instance.FullGPAction == FullGPAction.Chum)
 							{
 								if (ActionManager.CanCast(Actions.Chum, Core.Me))
 								{
@@ -1737,7 +1722,7 @@ namespace OceanTripPlanner
 
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 				{
-                    await Coroutine.Sleep(1000); // Do not remove or game will stutter.
+                    await Coroutine.Sleep(800); // Do not remove or game will stutter.
                    
 					//Spectral popped, don't wait for normal fish
                     if (WorldManager.CurrentWeatherId == Weather.Spectral && !spectraled)
@@ -1751,13 +1736,13 @@ namespace OceanTripPlanner
 
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
-                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 1.0f; // Offset against the Coroutine.Sleep(200) above.
+						double biteElapsed = (DateTime.Now - startedCast).TotalSeconds;// - 0.8f; // Offset against the Coroutine.Sleep(800) above.
                         bool doubleHook = false;
 
                         Log($"Bite Time: {biteElapsed:F1}s");
 
 						// Made this more readable.
-						if (location == "galadion" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto)) //Galadion Bay					
+						if (location == "galadion" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)) //Galadion Bay					
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1789,7 +1774,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "south" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto)) //Southern Merlthor
+						if (location == "south" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)) //Southern Merlthor
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1817,7 +1802,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "north" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "north" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1849,7 +1834,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "rhotano" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "rhotano" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1881,7 +1866,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "ciel" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "ciel" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1913,7 +1898,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "blood" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "blood" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1945,7 +1930,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "sound" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "sound" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							if (timeOfDay == "Day")
 							{
@@ -1974,7 +1959,7 @@ namespace OceanTripPlanner
 						}
 
 						// Ruby Route
-						if (location == "sirensong" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "sirensong" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							// Reg: Rag
 							// Spec: Krill
@@ -2050,7 +2035,7 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (location == "kugane" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "kugane" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							// Reg: Rag
 							// Spec: Krill
@@ -2124,7 +2109,7 @@ namespace OceanTripPlanner
                             }
 						}
 
-						if (location == "rubysea" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "rubysea" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							// Reg: Ragworm
 							// Spec: Plump
@@ -2214,7 +2199,7 @@ namespace OceanTripPlanner
                             }
 						}
 
-						if (location == "oneriver" && (OceanTripSettings.Instance.FishPriority == FishPriority.Points || OceanTripSettings.Instance.FishPriority == FishPriority.Auto))
+						if (location == "oneriver" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
 						{
 							// Reg: Plump
 							// Spec: Krill
@@ -2298,7 +2283,7 @@ namespace OceanTripPlanner
 						{
 							if (FishingManager.TugType == TugType.Light)
 							{
-                                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                                if (OceanTripNewSettings.Instance.LoggingMode)
                                     Log($"Using Precision Hookset!");
 
                                 ActionManager.DoAction(Actions.PrecisionHookset, Core.Me);
@@ -2306,7 +2291,7 @@ namespace OceanTripPlanner
 							}
 							else
 							{
-                                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                                if (OceanTripNewSettings.Instance.LoggingMode)
                                     Log($"Using Powerful Hookset!");
 
                                 ActionManager.DoAction(Actions.PowerfulHookset, Core.Me);
@@ -2315,14 +2300,14 @@ namespace OceanTripPlanner
 						}
 						else
 						{
-							if (!spectraled && Core.Me.MaxGP >= 500 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && OceanTripSettings.Instance.FullGPAction == FullGPAction.DoubleHook)
+							if (!spectraled && Core.Me.MaxGP >= 500 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && OceanTripNewSettings.Instance.FullGPAction == FullGPAction.DoubleHook)
 							{
 								Log("Triggering Full GP Action to keep regen going - Double Hook!");
 								ActionManager.DoAction(Actions.DoubleHook, Core.Me);
 							}
 							else
 							{
-                                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                                if (OceanTripNewSettings.Instance.LoggingMode)
                                     Log($"Hooking Fish!");
 
                                 FishingManager.Hook();
@@ -2358,7 +2343,7 @@ namespace OceanTripPlanner
 
 				if (Dryskthota != null && Dryskthota.IsWithinInteractRange)
 				{
-                    if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                    if (OceanTripNewSettings.Instance.LoggingMode)
                         Logging.Write(Colors.Aqua, $"[Ocean Trip] Interacting with Dryskthota.");
 
                     Dryskthota.Interact();
@@ -2377,22 +2362,22 @@ namespace OceanTripPlanner
 						await Coroutine.Sleep(1000); // Sleep for a second
 
 
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && OceanTripSettings.Instance.FishingRoute == FishingRoute.Indigo)
+                        if (OceanTripNewSettings.Instance.LoggingMode && OceanTripNewSettings.Instance.FishingRoute == FishingRoute.Indigo)
                             Logging.Write(Colors.Aqua, $"[Ocean Trip] Selecting Indigo Route.");
 
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose && OceanTripSettings.Instance.FishingRoute == FishingRoute.Ruby)
+                        if (OceanTripNewSettings.Instance.LoggingMode && OceanTripNewSettings.Instance.FishingRoute == FishingRoute.Ruby)
                             Logging.Write(Colors.Aqua, $"[Ocean Trip] Selecting Ruby Route.");
 
                         // Select route (0 = Indigo, 1 = Ruby)
-                        SelectString.ClickSlot((uint)OceanTripSettings.Instance.FishingRoute);
+                        SelectString.ClickSlot((uint)OceanTripNewSettings.Instance.FishingRoute);
 
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                        if (OceanTripNewSettings.Instance.LoggingMode)
                             Logging.Write(Colors.Aqua, $"[Ocean Trip] Waiting for Yes/No dialog to appear for boarding confirmation.");
 
                         await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 						SelectYesno.Yes();
 
-                        if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                        if (OceanTripNewSettings.Instance.LoggingMode)
                             Logging.Write(Colors.Aqua, $"[Ocean Trip] Boat confirmed. We're now in the duty finder.");
 
                     }
@@ -2400,7 +2385,7 @@ namespace OceanTripPlanner
 			}
 
 
-            if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+            if (OceanTripNewSettings.Instance.LoggingMode)
                 Logging.Write(Colors.Aqua, $"[Ocean Trip] Waiting for Duty Finder.");
 
             await Coroutine.Wait(1000000, () => ContentsFinderConfirm.IsOpen);
@@ -2408,13 +2393,13 @@ namespace OceanTripPlanner
 			await Coroutine.Yield();
 			while (ContentsFinderConfirm.IsOpen)
 			{
-                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                if (OceanTripNewSettings.Instance.LoggingMode)
                     Logging.Write(Colors.Aqua, $"[Ocean Trip] Commencing Duty.");
 
                 DutyManager.Commence();
 				await Coroutine.Yield();
 
-                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                if (OceanTripNewSettings.Instance.LoggingMode)
                     Logging.Write(Colors.Aqua, $"[Ocean Trip] Waiting for loading screen.");
 
                 if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
@@ -2423,7 +2408,7 @@ namespace OceanTripPlanner
 					await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
 				}
 
-                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                if (OceanTripNewSettings.Instance.LoggingMode)
                     Logging.Write(Colors.Aqua, $"[Ocean Trip] Loading screen found.");
             }
             while (WorldManager.ZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
@@ -2673,106 +2658,6 @@ namespace OceanTripPlanner
 
         }
 
-		private async Task Retaining()
-		{
-			if (OceanTripSettings.Instance.VentureTime < DateTime.Now)
-			{
-				await Navigation.GetTo(SummoningBells[(int)OceanTripSettings.Instance.Venturing].Item1, SummoningBells[(int)OceanTripSettings.Instance.Venturing].Item2);
-
-				foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
-				{
-					if (unit.NpcId == 2000401 || unit.NpcId == 2000441)
-					{
-						unit.Interact();
-						break;
-					}
-				}
-				await Coroutine.Sleep(2000);
-				string bell = Lua.GetReturnVal<string>(string.Format("local values = '' for key,value in pairs(_G) do if string.match(key, '{0}:') then return key;   end end return values;", "CmnDefRetainerBell")).Trim();
-				int numOfRetainers = 0;
-
-				if (bell.Length > 0)
-				{
-					numOfRetainers = Lua.GetReturnVal<int>(string.Format("return _G['{0}']:GetRetainerEmployedCount();", bell));
-				}
-
-				AtkAddonControl retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
-				while (retainerWindow == null)
-				{
-					await Coroutine.Sleep(1000);
-					retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
-				}
-
-				int count = 0;
-				while (count < numOfRetainers)
-				{
-					retainerWindow = null;
-					while (retainerWindow == null)
-					{
-						await Coroutine.Sleep(1000);
-						retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
-					}
-					retainerWindow.SendAction(2, 3UL, 2UL, 3UL, (ulong)count);
-					if (await Coroutine.Wait(15000, () => Talk.DialogOpen))
-					{
-						Talk.Next();
-					}
-					if (await Coroutine.Wait(20000, () => SelectString.IsOpen))
-					{
-						if (SelectString.Lines().Contains("View venture report. (Complete)"))
-						{
-							SelectString.ClickLineEquals("View venture report. (Complete)");
-							if (await Coroutine.Wait(20000, () => RetainerTaskResult.IsOpen))
-							{
-								RetainerTaskResult.Reassign();
-								if (await Coroutine.Wait(10000, () => RetainerTaskAsk.IsOpen))
-								{
-									RetainerTaskAsk.Confirm();
-									if (await Coroutine.Wait(10000, () => Talk.DialogOpen))
-									{
-										Talk.Next();
-									}
-								}
-							}
-						}
-						await Coroutine.Wait(20000, () => SelectString.IsOpen);
-						if (SelectString.Lines().Any(x => x.Contains("View venture report. (Complete on")))
-						{
-							Regex r = new Regex(@"(\d+[-.\/]\d+ \d+:\d+)");
-							Match m = r.Match(SelectString.Lines().FirstOrDefault(x => x.Contains("View venture report. (Complete on")).ToString());
-							if (m.Success)
-							{
-								DateTime ventureTime = DateTime.ParseExact(m.Value, "d/M H:mm", null);
-								if ((ventureTime < OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime > DateTime.Now)
-									|| (ventureTime > OceanTripSettings.Instance.VentureTime && OceanTripSettings.Instance.VentureTime < DateTime.Now))
-								{
-									OceanTripSettings.Instance.VentureTime = ventureTime;
-								}
-
-							}
-						}
-						if (await Coroutine.Wait(20000, () => SelectString.IsOpen))
-						{
-							SelectString.ClickLineEquals("Quit.");
-						}
-						if (await Coroutine.Wait(10000, () => Talk.DialogOpen))
-						{
-							Talk.Next();
-						}
-					}
-					count++;
-				}
-				retainerWindow = null;
-				while (retainerWindow == null)
-				{
-					await Coroutine.Sleep(1000);
-					retainerWindow = RaptureAtkUnitManager.GetWindowByName("RetainerList");
-				}
-				retainerWindow.SendAction(1, 3UL, (ulong)uint.MaxValue);
-				await Coroutine.Sleep(3000);
-			}
-		}
-
 		private void WaitForCastLog()
 		{
 			Stopwatch whileTimer = new Stopwatch();
@@ -2787,7 +2672,7 @@ namespace OceanTripPlanner
 					|| ChatCheck("recast your line", "recast your line")
 					|| whileTimer.Elapsed.TotalSeconds > 6)
 				{
-					if (whileTimer.Elapsed.TotalSeconds > 6 && OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+					if (whileTimer.Elapsed.TotalSeconds > 6 && OceanTripNewSettings.Instance.LoggingMode)
 						Log("Could not detect the cast/recast your line log message. Continuing.");
 
                     whileTimer.Stop();
@@ -2814,7 +2699,7 @@ namespace OceanTripPlanner
 		{
 			get
 			{
-				if (OceanTripSettings.Instance.FishPriority == FishPriority.FishLog || OceanTripSettings.Instance.FishPriority == FishPriority.Auto)
+				if (OceanTripNewSettings.Instance.FishPriority == FishPriority.FishLog || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
 					return true;
 
 				return false;
@@ -2825,14 +2710,14 @@ namespace OceanTripPlanner
 		{
 			if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
 			{
-				if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+				if (OceanTripNewSettings.Instance.LoggingMode)
 					Log($"Applying Patience II!");
 
 				ActionManager.DoAction(Actions.PatienceII, Core.Me);
 			}
 			else if (ActionManager.CanCast(Actions.Patience, Core.Me) && !FishingManager.HasPatience)
 			{
-                if (OceanTripSettings.Instance.LoggingMode == LoggingMode.Verbose)
+                if (OceanTripNewSettings.Instance.LoggingMode)
                     Log($"Applying Patience!");
 
                 ActionManager.DoAction(Actions.Patience, Core.Me);
@@ -2850,7 +2735,7 @@ namespace OceanTripPlanner
             else
                 epoch = (int)(time.Value.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
-            if (OceanTripSettings.Instance.FishingRoute == FishingRoute.Ruby)
+            if (OceanTripNewSettings.Instance.FishingRoute == FishingRoute.Ruby)
 			{
                 // Thanks to https://millhio.re/oceancalculator2.html which was more accurate than what I was using. Translated the JS over to C#.
                 int twoHourChunk = ((epoch / 7200) + 40) % ruby_fullPattern.Length;

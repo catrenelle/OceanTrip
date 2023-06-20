@@ -1,11 +1,126 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OceanTripPlanner.Definitions
 {
+    public static class Defaults
+    {
+        public static readonly int[] materials = new int[] 
+        { 
+            Material.ImmutableSolution,
+            Material.DinosaurLeather,
+            Material.Sphalerite,
+            Material.RoyalMistletoe,
+            Material.CloudCottonBoll,
+            Material.CloudMythrilOre,
+            Material.StormcloudCottonBoll
+        };
+
+        public static readonly int[] aethersands = new int[]
+        {
+            Material.DusklightAethersand,
+            Material.DawnlightAethersand,
+            Material.EverbrightAethersand,
+            Material.EverbornAethersand,
+            Material.EverdeepAethersand,
+            Material.EndstoneAethersand,
+            Material.EndwoodAethersand,
+            Material.EndtideAethersand,
+            Material.EarthbreakAethersand
+        };
+
+        public static readonly int[] raidfood = new int[]
+        {
+            FoodList.HoneyedDragonfruit,
+            FoodList.BabaGhanoush,
+            FoodList.BakedEggplant,
+            FoodList.CaviarCanapes
+        };
+
+        public static readonly int[] raidpotions = new int[]
+        {
+            Potions.Grade8TinctureStrength,
+            Potions.Grade8TinctureDexterity,
+            Potions.Grade8TinctureIntelligence,
+            Potions.Grade8TinctureMind
+        };
+
+        public static readonly int[] materiax = new int[]
+        {
+            Materia.CrafterCompetenceX,
+            Materia.CrafterCunningX,
+            Materia.CrafterCommandX,
+            Materia.GatherGuerdonX,
+            Materia.GatherGuileX,
+            Materia.GatherGraspX
+        };
+
+        public static readonly int[] materiaix = new int[]
+        {
+            Materia.CrafterCompetenceIX,
+            Materia.CrafterCunningIX,
+            Materia.CrafterCommandIX,
+            Materia.GatherGuerdonIX,
+            Materia.GatherGuileIX,
+            Materia.GatherGraspIX
+        };
+
+        public static readonly int[] materiaviii = new int[]
+        {
+            Materia.CrafterCompetenceVIII,
+            Materia.CrafterCunningVIII,
+            Materia.CrafterCommandVIII,
+            Materia.GatherGuerdonVIII,
+            Materia.GatherGuileVIII,
+            Materia.GatherGraspVIII
+        };
+
+        public static readonly int[] materiavii = new int[]
+        {
+            Materia.CrafterCompetenceVII,
+            Materia.CrafterCunningVII,
+            Materia.CrafterCommandVII,
+            Materia.GatherGuerdonVII,
+            Materia.GatherGuileVII,
+            Materia.GatherGraspVII
+        };
+
+        public static readonly int[] materiavi = new int[]
+        {
+            Materia.CrafterCompetenceVI,
+            Materia.CrafterCunningVI,
+            Materia.CrafterCommandVI,
+            Materia.GatherGuerdonVI,
+            Materia.GatherGuileVI,
+            Materia.GatherGraspVI
+        };
+
+
+        public static readonly int[] materiav = new int[]
+        {
+            Materia.CrafterCompetenceV,
+            Materia.CrafterCunningV,
+            Materia.CrafterCommandV,
+            Materia.GatherGuerdonV,
+            Materia.GatherGuileV,
+            Materia.GatherGraspV
+        };
+
+        public static readonly int[] materiaiv = new int[]
+        {
+            Materia.CrafterCompetenceIV,
+            Materia.CrafterCunningIV,
+            Materia.CrafterCommandIV,
+            Materia.GatherGuerdonIV,
+            Materia.GatherGuileIV,
+            Materia.GatherGraspIV
+        };
+    }
+
     public static class Actions
     {
         public const uint MoochII = 268;

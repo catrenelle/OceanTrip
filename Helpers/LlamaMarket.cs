@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ff14bot.Helpers;
 using ff14bot.Managers;
@@ -9,76 +11,34 @@ namespace OceanTripPlanner.Helpers
 {
 	public static class LlamaMarket
     {
-        private static Func<Task> _stopGently, _selfRepairWithMenderFallback;
-        private static Func<int> _getEmptyInventorySlotCount;
-        private static Action _openWindow;
 
-        private static object _llamamarket;
-        private static MethodInfo _orderMethod;
 
-        static LlamaMarket()
+        public static void OpenMarketSettings()
         {
-            FindLlamaMarket();
-        }
-
-        public static async Task<bool> ExecuteOrders(string json)
-        {
-            if (_orderMethod == null) { return false; }
-
-            return await (Task<bool>)_orderMethod.Invoke(_llamamarket, new object[] { json, false });
-        }
-
-        private static object GetLlamaMarketBotObject()
-        {
-            var loader = BotManager.Bots
-                .FirstOrDefault(c => c.Name == "Llama Market");
-
-            if (loader == null) { return null; }
-
-            var lisbethObjectProperty = loader.GetType().GetProperty("LlamaMarket");
-            var lisbeth = lisbethObjectProperty?.GetValue(loader);
-
-            return lisbeth;
-        }
-
-        private static void FindLlamaMarket()
-        {
-            try
+            var loader = BotManager.Bots.FirstOrDefault(x => x.EnglishName == "Llama Market");
+            if (loader == null) 
             {
-                var llamamarket = GetLlamaMarketBotObject();
-                if (llamamarket == null) { return; }
-
-                var orderMethod = llamamarket.GetType().GetMethod("ExecuteOrders");
-                if (orderMethod == null) { return; }
-
-                _orderMethod = orderMethod;
-                _llamamarket = llamamarket;
-
-                var apiObject = llamamarket.GetType().GetProperty("Api")?.GetValue(llamamarket);
-
-                if (apiObject != null)
+                string llamaURL = "https://llamamagic.net/botbases/llamamarket/";
+                try
                 {
-                    _stopGently = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
-                    _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
+                    Process.Start(llamaURL);
+                }
+                catch
+                {
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        Process.Start(new ProcessStartInfo(llamaURL.Replace("&", "^&")) { UseShellExecute = true });
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        Process.Start("xdg-open", llamaURL);
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                        Process.Start("open", llamaURL);
                 }
 
-                Logging.Write("LlamaMarket found.");
+                return; 
             }
-            catch (Exception)
-            {
-                Logging.Write("LlamaMarket could not be found/hooked. LlamaMarket functionality will be disabled.");
-            }
+
+            var checkVentureTask = loader.GetType().GetMethod("OnButtonPress");
+            checkVentureTask.Invoke(loader, null);
         }
 
-        public static async Task StopGently()
-        {
-            if (_stopGently == null) { return; }
-            await _stopGently();
-        }
-
-        public static void OpenWindow()
-        {
-            _openWindow();
-        }
     }
 }
