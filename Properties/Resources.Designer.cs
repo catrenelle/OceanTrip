@@ -113,9 +113,9 @@ namespace Ocean_Trip.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap OceanTripLogo {
+        internal static System.Drawing.Bitmap OceanTripNewLogo {
             get {
-                object obj = ResourceManager.GetObject("OceanTripLogo", resourceCulture);
+                object obj = ResourceManager.GetObject("OceanTripNewLogo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

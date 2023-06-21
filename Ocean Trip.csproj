@@ -60,6 +60,12 @@
     <Compile Include="Definitions\OceanFishing.cs" />
     <Compile Include="OceanTripNewSettings.cs" />
     <Compile Include="UI\Colors.cs" />
+    <Compile Include="UI\Controls\RadioButtonFlat.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\RadioButtonFlat.Designer.cs">
+      <DependentUpon>RadioButtonFlat.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -161,13 +167,13 @@
     <None Include="Resources\CurrentRoute.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\OceanTripLogo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Lisbeth.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\LlamaMarket Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OceanTripNewLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
