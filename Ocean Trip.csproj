@@ -119,6 +119,7 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\GrayScale.cs" />
     <Compile Include="UI\UIElements.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -106,6 +106,12 @@ namespace Ocean_Trip
                     fishExchangeSell.Select();
                     break;
             }
+
+
+            // PictureBox Tooltips
+            new ToolTip().SetToolTip(pictureBoxRagworm, "Ragworm");
+            new ToolTip().SetToolTip(pictureBoxKrill, "Krill");
+
         }
 
 
@@ -219,5 +225,6 @@ namespace Ocean_Trip
         {
             _parent.MoveWindow(sender, e); //UIElements.MoveWindow(Handle, sender, e);
         }
+
     }
 }
