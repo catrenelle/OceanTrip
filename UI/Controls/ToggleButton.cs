@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 namespace Ocean_Trip.UI.Controls
 {
+
+    // Thanks RJ!
     public class ToggleButton : CheckBox
     {
         private Color onBackColor = Colors.buttonActiveBackgroundColor;
