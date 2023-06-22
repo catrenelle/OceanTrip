@@ -45,14 +45,22 @@ namespace OceanTripPlanner
 
 		private static readonly Vector3[] fishSpots =
 		{
-			new Vector3(-7.541584f, 6.74677f, -7.7191f),
-			new Vector3(-7.419403f, 6.73973f, -2.7815f),
-			new Vector3(7.538965f, 6.745806f, -10.44607f),
-			new Vector3(7.178741f, 6.749996f, -4.165483f),
-			new Vector3(7.313677f, 6.711103f, -8.10146f),
-			new Vector3(7.53893f, 6.745699f, 1.881091f)
-		};
-		private static readonly float[] headings = new[] { 4.622331f, 4.684318f, 1.569952f, 1.509215f, 1.553197f, 1.576235f };
+			new Vector3(6.586183f,6.711105f,-8.507326f),
+			new Vector3(6.675766f,6.711122f,-0.9861764f),
+			new Vector3(6.422115f,6.750113f,-3.852403f),
+			new Vector3(-6.820814f,6.711096f,-2.002344f),
+			new Vector3(-6.267945f,6.711092f,-6.166515f),
+			new Vector3(-6.330618f,6.711117f,-8.965463f)
+        };
+		private static readonly float[] headings = new[] 
+		{
+             1.510726f,
+			 1.542142f,
+			 1.619635f,
+			 4.746567f,
+			 4.698396f,
+			 4.683735f
+        };
 
 
 		private List<uint> caughtFish;
@@ -1222,7 +1230,7 @@ namespace OceanTripPlanner
 			if (!ActionManager.CanCast(Actions.Cast, Core.Me) && FishingManager.State == FishingState.None)
 			{
 				Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
-				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
+				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2 && !ActionManager.CanCast(Actions.Cast, Core.Me))
 				{
 					Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
 					await Coroutine.Sleep(1000);
@@ -1232,7 +1240,7 @@ namespace OceanTripPlanner
 				Core.Me.SetFacing(headings[spot]);
 			}
 
-			await Coroutine.Sleep(500);
+			await Coroutine.Sleep(1000);
 
 
 			while ((WorldManager.ZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))

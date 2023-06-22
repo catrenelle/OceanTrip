@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using Ocean_Trip.Properties;
 
 namespace Ocean_Trip
 {
@@ -43,6 +44,21 @@ namespace Ocean_Trip
         {
             ReleaseCapture();
             SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+        }
+
+        // Parse Tile Sheet, 10x32 Tiles (320), 40x40 pixels each (400x1280)
+        public static Image getIconImage(int x, int y)
+        {
+            Image imgsrc = Resources.icons;
+            Image imgdst = new Bitmap(40, 40);
+            using (Graphics gr = Graphics.FromImage(imgdst))
+            {
+                gr.DrawImage(imgsrc,
+                    new RectangleF(0, 0, imgdst.Width, imgdst.Height),
+                    new RectangleF(((imgsrc.Width / 10) * (x - 1)), ((imgsrc.Height / 34) * (y - 1)), (imgsrc.Width / 10), (imgsrc.Height / 34)), GraphicsUnit.Pixel);
+            }
+
+            return imgdst;
         }
     }
 }
