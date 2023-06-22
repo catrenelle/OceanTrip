@@ -112,6 +112,10 @@ namespace Ocean_Trip
             new ToolTip().SetToolTip(pictureBoxRagworm, "Ragworm");
             new ToolTip().SetToolTip(pictureBoxKrill, "Krill");
 
+
+            // PictureBox Images
+            pictureBoxRagworm.Image = UIElements.getIconImage(8, 23);
+            pictureBoxKrill.Image = UIElements.getIconImage(9, 23);
         }
 
 
