@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Definitions\FFXIV_Definitions.cs" />
     <Compile Include="Definitions\OceanFishing.cs" />
+    <Compile Include="Helpers\FFXIV_Databinds.cs" />
     <Compile Include="OceanTripNewSettings.cs" />
     <Compile Include="UI\Colors.cs" />
     <Compile Include="UI\Controls\RadioButtonFlat.cs">
@@ -178,6 +179,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icons.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

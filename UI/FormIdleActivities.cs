@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ff14bot.Managers;
+using LlamaLibrary.Properties;
 using OceanTripPlanner;
 using OceanTripPlanner.Definitions;
 
@@ -22,6 +23,9 @@ namespace Ocean_Trip
             InitializeComponent();
 
             parentForm = parent;
+
+            pictureBox1.Image = ImageExtensions.ToGrayScale(Ocean_Trip.Properties.Resources.exit);
+
 
             // Bind Materials
             material1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "material1", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -255,6 +259,21 @@ namespace Ocean_Trip
         private void FormIdleActivities_KeyUp(object sender, KeyEventArgs e)
         {
             parentForm.FormSettings_KeyUp(sender, e);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            parentForm.Close();
+        }
+
+        private void pictureBox1_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox1.Image = ImageExtensions.ToGrayScale(Ocean_Trip.Properties.Resources.exit);
+        }
+
+        private void pictureBox1_MouseEnter(object sender, EventArgs e)
+        {
+            pictureBox1.Image = Ocean_Trip.Properties.Resources.exit;
         }
     }
 }

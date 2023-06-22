@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormIdleActivities));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -119,12 +120,14 @@
             this.useCraftingFoodToggle = new Ocean_Trip.UI.Controls.ToggleButton();
             this.customBoatOrdersToggle = new Ocean_Trip.UI.Controls.ToggleButton();
             this.resumeLisbethToggle = new Ocean_Trip.UI.Controls.ToggleButton();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -1340,12 +1343,25 @@
             this.resumeLisbethToggle.TabIndex = 39;
             this.resumeLisbethToggle.UseVisualStyleBackColor = true;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(698, 12);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(20, 20);
+            this.pictureBox1.TabIndex = 921;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
+            this.pictureBox1.MouseLeave += new System.EventHandler(this.pictureBox1_MouseLeave);
+            // 
             // FormIdleActivities
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(44)))));
             this.ClientSize = new System.Drawing.Size(730, 600);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label32);
             this.Controls.Add(this.purchaseHiCordialsToggle);
             this.Controls.Add(this.label31);
@@ -1382,6 +1398,7 @@
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1480,5 +1497,6 @@
         private UI.Controls.ToggleButton purchaseHiCordialsToggle;
         private System.Windows.Forms.Label label32;
         private System.Windows.Forms.ComboBox selectedMateria;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

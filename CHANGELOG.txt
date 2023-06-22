@@ -1,3 +1,15 @@
+06/22/2023
+----------
+
+* Issues came out with the 6/20 patch, which required new boat vectors. This caused users to constantly run around at the start of the boat and take a while before they would be able to start fishing. The vectors have been updated!
+
+* Added an "X" button to the currently developed UI's to close the form. Escape is no longer the only option!
+
+* New "Tacklebox" in the Ocean Settings form. This is refreshed when you start the boat, when you board the boat, between each boat route, as well as after each cast. It is not a real-time number. This should let you keep track of your bait and determine what thresholds you want to set before you have to restock (or if you want to top off before going fishing). Hovering over each bait image will display its name based on your current in-game language.
+
+* Aethersand will now be gathered instead of exchanged with the exception of Everdeep Aethersand and Endtide Aethersand. Thanks for the suggestion, Nickname!
+
+
 06/19/2023
 ----------
 

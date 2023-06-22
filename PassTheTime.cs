@@ -238,7 +238,7 @@ namespace OceanTripPlanner
 					}
 				}
 
-				//Aethersand
+				//Gatherable Aethersand
 				if (freeToCraft)
 				{
                     var itemList = new List<int>();
@@ -250,16 +250,31 @@ namespace OceanTripPlanner
                         itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[2]);
                     if (OceanTripNewSettings.Instance.aethersand4)
                         itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[3]);
-                    if (OceanTripNewSettings.Instance.aethersand5)
-                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[4]);
                     if (OceanTripNewSettings.Instance.aethersand6)
                         itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[5]);
                     if (OceanTripNewSettings.Instance.aethersand7)
                         itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[6]);
-                    if (OceanTripNewSettings.Instance.aethersand8)
-                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[7]);
                     if (OceanTripNewSettings.Instance.aethersand9)
                         itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[8]);
+
+                    foreach (var item in itemList)
+                    {
+                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                            Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
+
+                        while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                            await IdleLisbeth(item, 50, "Gather", "false", lisFood);
+                    }
+                }
+
+                // Exchangable Aethersand
+                if (freeToCraft)
+                {
+                    var itemList = new List<int>();
+                    if (OceanTripNewSettings.Instance.aethersand5)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[4]);
+                    if (OceanTripNewSettings.Instance.aethersand8)
+                        itemList.Add(OceanTripPlanner.Definitions.Defaults.aethersands[7]);
 
                     foreach (var item in itemList)
                     {
@@ -270,6 +285,7 @@ namespace OceanTripPlanner
                             await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
                     }
                 }
+
 
                 //Materia
                 if (freeToCraft)
