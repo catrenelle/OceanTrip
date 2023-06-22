@@ -1,4 +1,7 @@
-﻿using OceanTripPlanner;
+﻿using ff14bot.Managers;
+using Ocean_Trip.Properties;
+using OceanTripPlanner;
+using OceanTripPlanner.Definitions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +24,8 @@ namespace Ocean_Trip
         {
             InitializeComponent();
             _parent = parent;
+
+            pictureBox10.Image = ImageExtensions.ToGrayScale(Resources.exit);
 
             // Data Binding
             lateQueueToggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "lateBoatQueue", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -109,13 +114,45 @@ namespace Ocean_Trip
 
 
             // PictureBox Tooltips
-            new ToolTip().SetToolTip(pictureBoxRagworm, "Ragworm");
-            new ToolTip().SetToolTip(pictureBoxKrill, "Krill");
+            new ToolTip().SetToolTip(pictureBoxRagworm, $"{DataManager.ItemCache[FishBait.Ragworm].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxKrill, $"{DataManager.ItemCache[FishBait.Krill].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxPlumpWorm, $"{DataManager.ItemCache[FishBait.PlumpWorm].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxRatTail, $"{DataManager.ItemCache[FishBait.RatTail].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxGlowWorm, $"{DataManager.ItemCache[FishBait.GlowWorm].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxHeavySteelJig, $"{DataManager.ItemCache[FishBait.HeavySteelJig].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxShrimpCageFeeder, $"{DataManager.ItemCache[FishBait.ShrimpCageFeeder].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxPillBug, $"{DataManager.ItemCache[FishBait.PillBug].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxSquidStrip, $"{DataManager.ItemCache[FishBait.SquidStrip].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxMackerelStrip, $"{DataManager.ItemCache[FishBait.MackerelStrip].CurrentLocaleName}");
+            new ToolTip().SetToolTip(pictureBoxStoneflyNymph, $"{DataManager.ItemCache[FishBait.StoneflyNymph].CurrentLocaleName}");
 
 
             // PictureBox Images
             pictureBoxRagworm.Image = UIElements.getIconImage(8, 23);
             pictureBoxKrill.Image = UIElements.getIconImage(9, 23);
+            pictureBoxPlumpWorm.Image = UIElements.getIconImage(10, 23);
+            pictureBoxRatTail.Image = UIElements.getIconImage(2, 23);
+            pictureBoxGlowWorm.Image = UIElements.getIconImage(3, 23);
+            pictureBoxHeavySteelJig.Image = UIElements.getIconImage(5, 23);
+            pictureBoxShrimpCageFeeder.Image = UIElements.getIconImage(4, 23);
+            pictureBoxPillBug.Image = UIElements.getIconImage(1, 23);
+            pictureBoxSquidStrip.Image = UIElements.getIconImage(9, 23);
+            pictureBoxMackerelStrip.Image = UIElements.getIconImage(2, 24);
+            pictureBoxStoneflyNymph.Image = UIElements.getIconImage(6, 23);
+
+
+
+            ragwormLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "ragwormCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            krillLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "krillCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            plumpwormLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "plumpwormCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            rattailLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "rattailCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            glowwormLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "glowwormCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            heavysteeljigLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "heavysteeljigCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            shrimpcagefeederLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "shrimpcagefeederCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            pillbugLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "pillbugCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            squidstripLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "squidstripCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            mackerelstripLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "mackerelstripCount", false, DataSourceUpdateMode.OnPropertyChanged);
+            stoneflynymphLabel.DataBindings.Add("Text", OceanTripPlanner.FFXIV_Databinds.Instance, "stoneflynymphCount", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
 
@@ -230,5 +267,19 @@ namespace Ocean_Trip
             _parent.MoveWindow(sender, e); //UIElements.MoveWindow(Handle, sender, e);
         }
 
+        private void pictureBox10_Click(object sender, EventArgs e)
+        {
+            _parent.Close();
+        }
+
+        private void pictureBox10_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox10.Image = ImageExtensions.ToGrayScale(Resources.exit);
+        }
+
+        private void pictureBox10_MouseEnter(object sender, EventArgs e)
+        {
+            pictureBox10.Image = Resources.exit;
+        }
     }
 }

@@ -667,7 +667,7 @@ namespace OceanTripPlanner
 
 		System.Timers.Timer execute = new System.Timers.Timer();
 
-		public override string Name => "Ocean Trip";
+        public override string Name => "Ocean Trip";
 
 		public override PulseFlags PulseFlags => PulseFlags.All;
 
@@ -695,6 +695,8 @@ namespace OceanTripPlanner
 			catch
 			{
 			}
+
+            FFXIV_Databinds.Instance.RefreshBait();
 		}
 
 		public override void Start()
@@ -707,7 +709,9 @@ namespace OceanTripPlanner
 
 			Log("OceanTrip Settings Loaded.");
 
-			caughtFish = new List<uint>();
+            FFXIV_Databinds.Instance.RefreshBait();
+
+            caughtFish = new List<uint>();
 			lastCaughtFish = 0;
 			caughtFishLogged = false;
 
@@ -805,6 +809,7 @@ namespace OceanTripPlanner
 				else
 					await RefreshMissingFish();
 
+			FFXIV_Databinds.Instance.RefreshBait();
 			await OceanFishing();
 
 			return true;
@@ -865,7 +870,8 @@ namespace OceanTripPlanner
 					await LandRepair(50);
 				}
 
-				if (OceanTripNewSettings.Instance.BaitRestockThreshold > 10 && OceanTripNewSettings.Instance.BaitRestockAmount > 30)
+                FFXIV_Databinds.Instance.RefreshBait();
+                if (OceanTripNewSettings.Instance.BaitRestockThreshold > 10 && OceanTripNewSettings.Instance.BaitRestockAmount > 30)
 					await RestockBait(OceanTripNewSettings.Instance.BaitRestockThreshold, (uint)OceanTripNewSettings.Instance.BaitRestockAmount);
 				else
 					Log("Bait Restock Threshold or Restock Amount is set too low. Skipping bait restock. If you are missing the required baits for ocean fishing, the bot may not operate properly.");
@@ -1003,13 +1009,15 @@ namespace OceanTripPlanner
 					caughtFishLogged = false;
 				}
 
-				// English
-				// Deutsch
-				// Francais
-				// 日本語
-				// 中文
-				// 한국어
-				if (FishingLog.AreaName.Contains("Southern Strait") || FishingLog.AreaName.Contains("Merlthorstraße (Süd)")
+                FFXIV_Databinds.Instance.RefreshBait();
+
+                // English
+                // Deutsch
+                // Francais
+                // 日本語
+                // 中文
+                // 한국어
+                if (FishingLog.AreaName.Contains("Southern Strait") || FishingLog.AreaName.Contains("Merlthorstraße (Süd)")
 					|| FishingLog.AreaName.Contains("Détroit sud de Merlthor") || FishingLog.AreaName.Contains("メルトール海峡南")
 					|| FishingLog.AreaName.Contains("梅尔托尔海峡南") || FishingLog.AreaName.Contains("멜토르 해협 남쪽"))
 				{
@@ -1176,7 +1184,9 @@ namespace OceanTripPlanner
 		{
 			if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 			{
-				if ((Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
+                FFXIV_Databinds.Instance.RefreshBait();
+
+                if ((Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
 				{
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
 				}
@@ -1218,7 +1228,8 @@ namespace OceanTripPlanner
 					FishingManager.Hook();
 				}
 
-				await Coroutine.Sleep(100);
+                FFXIV_Databinds.Instance.RefreshBait();
+                await Coroutine.Sleep(100);
 			}
 		}
 
@@ -1229,7 +1240,9 @@ namespace OceanTripPlanner
 			// Just in case you're already standing in a fishing spot. IE: Restarting botbase/rebornbuddy			
 			if (!ActionManager.CanCast(Actions.Cast, Core.Me) && FishingManager.State == FishingState.None)
 			{
-				Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
+                FFXIV_Databinds.Instance.RefreshBait();
+
+                Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
 				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2 && !ActionManager.CanCast(Actions.Cast, Core.Me))
 				{
 					Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
@@ -1262,8 +1275,10 @@ namespace OceanTripPlanner
 					}
 				}
 
-				// Should we Cordial?
-				if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && spectraled)
+                FFXIV_Databinds.Instance.RefreshBait();
+
+                // Should we Cordial?
+                if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && spectraled)
 					await UseCordial();
 				else if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && Core.Me.CurrentGPPercent < 25.00)
 					await UseCordial();
@@ -1731,8 +1746,8 @@ namespace OceanTripPlanner
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 				{
                     await Coroutine.Sleep(800); // Do not remove or game will stutter.
-                   
-					//Spectral popped, don't wait for normal fish
+
+                    //Spectral popped, don't wait for normal fish
                     if (WorldManager.CurrentWeatherId == Weather.Spectral && !spectraled)
 					{
 						Log("Spectral popped!");
@@ -2325,9 +2340,9 @@ namespace OceanTripPlanner
 						}
 
 						caughtFishLogged = false;
-
-					}
-				}
+                        FFXIV_Databinds.Instance.RefreshBait();
+                    }
+                }
 			}
 
 			spectraled = false;
