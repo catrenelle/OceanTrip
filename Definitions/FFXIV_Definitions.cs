@@ -121,6 +121,33 @@ namespace OceanTripPlanner.Definitions
         };
     }
 
+    public static class Achievement
+    {
+        public const int Mantas = 2756;
+        public const int Octopods = 2563;
+        public const int Sharks = 2564;
+        public const int Jellyfish = 2565;
+        public const int Seadragons = 2566;
+        public const int Balloons = 2754;
+        public const int Crabs = 2755;
+        public const int Indigo5kPoints = 2560;
+        public const int Indigo10kPoints = 2561;
+        public const int Indigo16kPoints = 2562;
+        public const int Indigo20kPoints = 2759;
+
+        public const int Shrimp = 3269;
+        public const int Shellfish = 3267;
+        public const int Squid = 3268;
+        public const int Ruby5kPoints = 3264;
+        public const int Ruby10kPoints = 3265;
+        public const int Ruby16kPoints = 3266;
+
+        public const int Overall100kPoints = 2558;
+        public const int Overall500kPoints = 2559;
+        public const int Overall1mPoints = 2757;
+        public const int Overall3mPoints = 2758;
+    }
+
     public static class Actions
     {
         public const uint MoochII = 268;

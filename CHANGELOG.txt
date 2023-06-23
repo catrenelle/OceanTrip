@@ -1,3 +1,9 @@
+06/23/2023
+----------
+
+* Added achievements to the Ocean Setting screen. This is a high-level view to let you know if you've hit the different point goals, or completed the solo/group achievements. I've also added the 100k-3M point achievement (World Class Troller) progress. If new achievements are added to Ruby in the future, the overall point achievements will be the first thing to be removed as that is less about the individual routes. Denizens of X achievements will be accounted for in the "Current Route" tab later, so they are excluded from this as well.
+
+
 06/22/2023
 ----------
 

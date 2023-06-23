@@ -14,6 +14,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Runtime.CompilerServices;
 using OceanTripPlanner.Definitions;
+using ff14bot;
+using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.Helpers;
+using LlamaLibrary.RemoteWindows;
 
 namespace OceanTripPlanner
 {
@@ -66,6 +70,59 @@ namespace OceanTripPlanner
         private string _stoneflynymphCount;
         public string stoneflynymphCount { get => _stoneflynymphCount; set { _stoneflynymphCount = value; NotifyPropertyChanged("stoneflynymphCount"); } }
 
+        // Indigo
+        private bool _achievementMantas;
+        public bool achievementMantas { get => _achievementMantas; set { _achievementMantas = value; NotifyPropertyChanged("achievementMantas"); } }
+        private bool _achievementOctopods;
+        public bool achievementOctopods { get => _achievementOctopods; set { _achievementOctopods = value; NotifyPropertyChanged("achievementOctopods"); } }
+        private bool _achievementSharks;
+        public bool achievementSharks { get => _achievementSharks; set { _achievementSharks = value; NotifyPropertyChanged("achievementSharks"); } }
+        private bool _achievementJellyfish;
+        public bool achievementJellyfish { get => _achievementJellyfish; set { _achievementJellyfish = value; NotifyPropertyChanged("achievementJellyfish"); } }
+        private bool _achievementSeadragons;
+        public bool achievementSeadragons { get => _achievementSeadragons; set { _achievementSeadragons = value; NotifyPropertyChanged("achievementSeadragons"); } }
+        private bool _achievementBalloons;
+        public bool achievementBalloons { get => _achievementBalloons; set { _achievementBalloons = value; NotifyPropertyChanged("achievementBalloons"); } }
+        private bool _achievementCrabs;
+        public bool achievementCrabs { get => _achievementCrabs; set { _achievementCrabs = value; NotifyPropertyChanged("achievementCrabs"); } }
+
+
+        private bool _achievement5kindigo;
+        public bool achievement5kindigo { get => _achievement5kindigo; set { _achievement5kindigo = value; NotifyPropertyChanged("achievement5kindigo"); } }
+        private bool _achievement10kindigo;
+        public bool achievement10kindigo { get => _achievement10kindigo; set { _achievement10kindigo = value; NotifyPropertyChanged("achievement10kindigo"); } }
+        private bool _achievement16kindigo;
+        public bool achievement16kindigo { get => _achievement16kindigo; set { _achievement16kindigo = value; NotifyPropertyChanged("achievement16kindigo"); } }
+        private bool _achievement20kindigo;
+        public bool achievement20kindigo { get => _achievement20kindigo; set { _achievement20kindigo = value; NotifyPropertyChanged("achievement20kindigo"); } }
+
+
+        // Ruby
+        private bool _achievementShrimp;
+        public bool achievementShrimp { get => _achievementShrimp; set { _achievementShrimp = value; NotifyPropertyChanged("achievementShrimp"); } }
+        private bool _achievementShellfish;
+        public bool achievementShellfish { get => _achievementShellfish; set { _achievementShellfish = value; NotifyPropertyChanged("achievementShellfish"); } }
+        private bool _achievementSquid;
+        public bool achievementSquid { get => _achievementSquid; set { _achievementSquid = value; NotifyPropertyChanged("achievementSquid"); } }
+
+
+        private bool _achievement5kruby;
+        public bool achievement5kruby { get => _achievement5kruby; set { _achievement5kruby = value; NotifyPropertyChanged("achievement5kruby"); } }
+        private bool _achievement10kruby;
+        public bool achievement10kruby { get => _achievement10kruby; set { _achievement10kruby = value; NotifyPropertyChanged("achievement10kruby"); } }
+        private bool _achievement16kruby;
+        public bool achievement16kruby { get => _achievement16kruby; set { _achievement16kruby = value; NotifyPropertyChanged("achievement16kruby"); } }
+
+        // Overall
+        private bool _achievement100koverall;
+        public bool achievement100koverall { get => _achievement100koverall; set { _achievement100koverall = value; NotifyPropertyChanged("achievement100koverall"); } }
+        private bool _achievement500koverall;
+        public bool achievement500koverall { get => _achievement500koverall; set { _achievement500koverall = value; NotifyPropertyChanged("achievement500koverall"); } }
+        private bool _achievement1moverall;
+        public bool achievement1moverall { get => _achievement1moverall; set { _achievement1moverall = value; NotifyPropertyChanged("achievement1moverall"); } }
+        private bool _achievement3moverall;
+        public bool achievement3moverall { get => _achievement3moverall; set { _achievement3moverall = value; NotifyPropertyChanged("achievement3moverall"); } }
+
 
         public void RefreshBait()
         {
@@ -80,6 +137,35 @@ namespace OceanTripPlanner
             squidstripCount = DataManager.GetItem((uint)FishBait.SquidStrip, false).ItemCount().ToString();
             mackerelstripCount = DataManager.GetItem((uint)FishBait.MackerelStrip, false).ItemCount().ToString();
             stoneflynymphCount = DataManager.GetItem((uint)FishBait.StoneflyNymph, false).ItemCount().ToString();
+
+            return;
+        }
+
+        public void RefreshAchievements()
+        {
+            achievementMantas = Achievements.HasAchievement(Definitions.Achievement.Mantas);
+            achievementOctopods = Achievements.HasAchievement(Definitions.Achievement.Octopods);
+            achievementSharks = Achievements.HasAchievement(Definitions.Achievement.Sharks);
+            achievementJellyfish = Achievements.HasAchievement(Definitions.Achievement.Jellyfish);
+            achievementSeadragons = Achievements.HasAchievement(Definitions.Achievement.Seadragons);
+            achievementBalloons = Achievements.HasAchievement(Definitions.Achievement.Balloons);
+            achievementCrabs = Achievements.HasAchievement(Definitions.Achievement.Crabs);
+            achievement5kindigo = Achievements.HasAchievement(Definitions.Achievement.Indigo5kPoints);
+            achievement10kindigo = Achievements.HasAchievement(Definitions.Achievement.Indigo10kPoints);
+            achievement16kindigo = Achievements.HasAchievement(Definitions.Achievement.Indigo16kPoints);
+            achievement20kindigo = Achievements.HasAchievement(Definitions.Achievement.Indigo20kPoints);
+
+            achievementShrimp = Achievements.HasAchievement(Definitions.Achievement.Shrimp);
+            achievementShellfish = Achievements.HasAchievement(Definitions.Achievement.Shellfish);
+            achievementSquid = Achievements.HasAchievement(Definitions.Achievement.Squid);
+            achievement5kruby = Achievements.HasAchievement(Definitions.Achievement.Ruby5kPoints);
+            achievement10kruby = Achievements.HasAchievement(Definitions.Achievement.Ruby10kPoints);
+            achievement16kruby = Achievements.HasAchievement(Definitions.Achievement.Ruby16kPoints);
+
+            achievement100koverall = Achievements.HasAchievement(Definitions.Achievement.Overall100kPoints);
+            achievement500koverall = Achievements.HasAchievement(Definitions.Achievement.Overall500kPoints);
+            achievement1moverall = Achievements.HasAchievement(Definitions.Achievement.Overall1mPoints);
+            achievement3moverall = Achievements.HasAchievement(Definitions.Achievement.Overall3mPoints);
 
             return;
         }

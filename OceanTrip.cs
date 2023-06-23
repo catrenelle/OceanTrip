@@ -697,7 +697,8 @@ namespace OceanTripPlanner
 			}
 
             FFXIV_Databinds.Instance.RefreshBait();
-		}
+            FFXIV_Databinds.Instance.RefreshAchievements();
+        }
 
 		public override void Start()
 		{
@@ -710,6 +711,7 @@ namespace OceanTripPlanner
 			Log("OceanTrip Settings Loaded.");
 
             FFXIV_Databinds.Instance.RefreshBait();
+            FFXIV_Databinds.Instance.RefreshAchievements();
 
             caughtFish = new List<uint>();
 			lastCaughtFish = 0;
@@ -871,6 +873,8 @@ namespace OceanTripPlanner
 				}
 
                 FFXIV_Databinds.Instance.RefreshBait();
+                FFXIV_Databinds.Instance.RefreshAchievements();
+
                 if (OceanTripNewSettings.Instance.BaitRestockThreshold > 10 && OceanTripNewSettings.Instance.BaitRestockAmount > 30)
 					await RestockBait(OceanTripNewSettings.Instance.BaitRestockThreshold, (uint)OceanTripNewSettings.Instance.BaitRestockAmount);
 				else
@@ -1241,6 +1245,7 @@ namespace OceanTripPlanner
 			if (!ActionManager.CanCast(Actions.Cast, Core.Me) && FishingManager.State == FishingState.None)
 			{
                 FFXIV_Databinds.Instance.RefreshBait();
+				FFXIV_Databinds.Instance.RefreshAchievements();
 
                 Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
 				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2 && !ActionManager.CanCast(Actions.Cast, Core.Me))
@@ -2341,6 +2346,7 @@ namespace OceanTripPlanner
 
 						caughtFishLogged = false;
                         FFXIV_Databinds.Instance.RefreshBait();
+                        FFXIV_Databinds.Instance.RefreshAchievements();
                     }
                 }
 			}
