@@ -70,34 +70,34 @@
     <Compile Include="UI\Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\FormCurrentRoute.cs">
+    <Compile Include="UI\Forms\FormCurrentRoute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\FormCurrentRoute.Designer.cs">
+    <Compile Include="UI\Forms\FormCurrentRoute.Designer.cs">
       <DependentUpon>FormCurrentRoute.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\FormSchedule.cs">
+    <Compile Include="UI\Forms\FormSchedule.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\FormSchedule.Designer.cs">
+    <Compile Include="UI\Forms\FormSchedule.Designer.cs">
       <DependentUpon>FormSchedule.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\FormOceanSettings.cs">
+    <Compile Include="UI\Forms\FormOceanSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\FormOceanSettings.Designer.cs">
+    <Compile Include="UI\Forms\FormOceanSettings.Designer.cs">
       <DependentUpon>FormOceanSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\FormIdleActivities.cs">
+    <Compile Include="UI\Forms\FormIdleActivities.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\FormIdleActivities.Designer.cs">
+    <Compile Include="UI\Forms\FormIdleActivities.Designer.cs">
       <DependentUpon>FormIdleActivities.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\FormSettings.cs">
+    <Compile Include="UI\Forms\FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\FormSettings.Designer.cs">
+    <Compile Include="UI\Forms\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\FishingLog.cs" />
@@ -124,19 +124,19 @@
     <Compile Include="UI\UIElements.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\FormCurrentRoute.resx">
+    <EmbeddedResource Include="UI\Forms\FormCurrentRoute.resx">
       <DependentUpon>FormCurrentRoute.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\FormSchedule.resx">
+    <EmbeddedResource Include="UI\Forms\FormSchedule.resx">
       <DependentUpon>FormSchedule.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\FormOceanSettings.resx">
+    <EmbeddedResource Include="UI\Forms\FormOceanSettings.resx">
       <DependentUpon>FormOceanSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\FormIdleActivities.resx">
+    <EmbeddedResource Include="UI\Forms\FormIdleActivities.resx">
       <DependentUpon>FormIdleActivities.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\FormSettings.resx">
+    <EmbeddedResource Include="UI\Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
