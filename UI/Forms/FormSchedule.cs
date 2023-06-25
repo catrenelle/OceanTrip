@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ocean_Trip.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,29 @@ namespace Ocean_Trip
 {
     public partial class FormSchedule : Form
     {
-        public FormSchedule()
+        FormSettings _parent;
+
+        public FormSchedule(FormSettings parent)
         {
             InitializeComponent();
+            _parent = parent;
+
+            exitIcon.Image = ImageExtensions.ToGrayScale(Resources.exit);
+        }
+
+        private void exitIcon_Click(object sender, EventArgs e)
+        {
+            _parent.Close();
+        }
+
+        private void exitIcon_MouseEnter(object sender, EventArgs e)
+        {
+            exitIcon.Image = Resources.exit;
+        }
+
+        private void exitIcon_MouseLeave(object sender, EventArgs e)
+        {
+            exitIcon.Image = ImageExtensions.ToGrayScale(Resources.exit);
         }
     }
 }

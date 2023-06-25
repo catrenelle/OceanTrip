@@ -25,7 +25,7 @@ namespace Ocean_Trip
             InitializeComponent();
             _parent = parent;
 
-            pictureBox10.Image = ImageExtensions.ToGrayScale(Resources.exit);
+            exitIcon.Image = ImageExtensions.ToGrayScale(Resources.exit);
 
             // Data Binding
             lateQueueToggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "lateBoatQueue", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -136,7 +136,7 @@ namespace Ocean_Trip
             pictureBoxHeavySteelJig.Image = UIElements.getIconImage(5, 23);
             pictureBoxShrimpCageFeeder.Image = UIElements.getIconImage(4, 23);
             pictureBoxPillBug.Image = UIElements.getIconImage(1, 23);
-            pictureBoxSquidStrip.Image = UIElements.getIconImage(9, 23);
+            pictureBoxSquidStrip.Image = UIElements.getIconImage(7, 23);
             pictureBoxMackerelStrip.Image = UIElements.getIconImage(2, 24);
             pictureBoxStoneflyNymph.Image = UIElements.getIconImage(6, 23);
 
@@ -325,12 +325,12 @@ namespace Ocean_Trip
 
         private void pictureBox10_MouseLeave(object sender, EventArgs e)
         {
-            pictureBox10.Image = ImageExtensions.ToGrayScale(Resources.exit);
+            exitIcon.Image = ImageExtensions.ToGrayScale(Resources.exit);
         }
 
         private void pictureBox10_MouseEnter(object sender, EventArgs e)
         {
-            pictureBox10.Image = Resources.exit;
+            exitIcon.Image = Resources.exit;
         }
 
         private void mantasPicture_CheckedChanged(object sender, EventArgs e)
