@@ -31,6 +31,8 @@ using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Ocean_Trip.Helpers;
+using LlamaLibrary.Structs;
 
 namespace OceanTripPlanner
 {
@@ -45,21 +47,21 @@ namespace OceanTripPlanner
 
 		private static readonly Vector3[] fishSpots =
 		{
-			new Vector3(6.586183f,6.711105f,-8.507326f),
-			new Vector3(6.675766f,6.711122f,-0.9861764f),
-			new Vector3(6.422115f,6.750113f,-3.852403f),
-			new Vector3(-6.820814f,6.711096f,-2.002344f),
-			new Vector3(-6.267945f,6.711092f,-6.166515f),
-			new Vector3(-6.330618f,6.711117f,-8.965463f)
-        };
+            new Vector3(-7.541584f, 6.74677f, -7.7191f),
+            new Vector3(-7.419403f, 6.73973f, -2.7815f),
+            new Vector3(7.538965f, 6.745806f, -10.44607f),
+            new Vector3(7.178741f, 6.749996f, -4.165483f),
+            new Vector3(7.313677f, 6.711103f, -8.10146f),
+            new Vector3(7.53893f, 6.745699f, 1.881091f)
+		};
 		private static readonly float[] headings = new[] 
 		{
-             1.510726f,
-			 1.542142f,
-			 1.619635f,
-			 4.746567f,
-			 4.698396f,
-			 4.683735f
+			4.622331f, 
+			4.684318f, 
+			1.569952f, 
+			1.509215f, 
+			1.553197f, 
+			1.576235f
         };
 
 
@@ -679,7 +681,7 @@ namespace OceanTripPlanner
 		public override bool WantButton { get; } = true;
 
 		private static Ocean_Trip.FormSettings settings;
-		public override void OnButtonPress()
+		public override async void OnButtonPress()
 		{
 			if (settings == null || settings.IsDisposed)
 				settings = new Ocean_Trip.FormSettings();
@@ -688,6 +690,7 @@ namespace OceanTripPlanner
 			{
 				// Temporary. Future item to come. Currently not working and is a proof of concept. :)
 				//settings.tempHideRouteInformationTab();
+
 
 				settings.Show();
 				settings.Activate();
@@ -704,11 +707,12 @@ namespace OceanTripPlanner
 		{
 			TreeHooks.Instance.ClearAll();
 
-			Log("Initializing OceanTrip Settings.");
+            Log("Initializing OceanTrip Settings.");
 			if (settings == null || settings.IsDisposed)
 				settings = new Ocean_Trip.FormSettings();
 
 			Log("OceanTrip Settings Loaded.");
+
 
             FFXIV_Databinds.Instance.RefreshBait();
             FFXIV_Databinds.Instance.RefreshAchievements();
@@ -801,7 +805,11 @@ namespace OceanTripPlanner
 			missingFishRefreshed = false;
 			caughtFish.Clear();
 
-			if (missingFish.Count == 0)
+            Log("Initializing achievements for tracking progress.");
+            await Achievements.OpenWindow();
+			Log("Achievements loaded.");
+
+            if (missingFish.Count == 0)
 				if (File.Exists(Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt")))
 				{
 					FishingLog.LoadMissingFishLog(out missingFish);
@@ -1167,7 +1175,7 @@ namespace OceanTripPlanner
 						Log($"Opening Bait Window.");
 
                     ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
-					await Coroutine.Sleep(200);
+					await Coroutine.Sleep(500);
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}
 
@@ -1175,7 +1183,7 @@ namespace OceanTripPlanner
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					Log($"Applied {DataManager.GetItem((uint)baitId).CurrentLocaleName}");
-					await Coroutine.Sleep(200);
+					await Coroutine.Sleep(500);
 					ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
                     
 					if (OceanTripNewSettings.Instance.LoggingMode)
@@ -1293,18 +1301,18 @@ namespace OceanTripPlanner
 				{
 					Log("Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-					await Coroutine.Sleep(200);
+					await Coroutine.Sleep(500);
 				}
 				else if (!spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me) && Core.Player.Auras.Any(x => x.Id == CharacterAuras.AnglersArt && x.Value >= 7))
 				{
 					Log("Currently at >7 Angler's Art Stacks - Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-					await Coroutine.Sleep(200);
+					await Coroutine.Sleep(500);
 				}
 
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
-					await Coroutine.Sleep(500);
+					await Coroutine.Sleep(1000);
 
 					// Did we catch a fish? Let's log it.
 					if (ChatCheck("You land", "measuring") && !caughtFishLogged)

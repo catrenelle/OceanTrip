@@ -28,17 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCurrentRoute));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.exitIcon = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.exitIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold);
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.Size = new System.Drawing.Size(159, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "Current Route";
             // 
@@ -53,17 +57,31 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "This is a work in progress.";
             // 
+            // exitIcon
+            // 
+            this.exitIcon.Image = ((System.Drawing.Image)(resources.GetObject("exitIcon.Image")));
+            this.exitIcon.Location = new System.Drawing.Point(698, 12);
+            this.exitIcon.Name = "exitIcon";
+            this.exitIcon.Size = new System.Drawing.Size(20, 20);
+            this.exitIcon.TabIndex = 19;
+            this.exitIcon.TabStop = false;
+            this.exitIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.exitIcon_Click);
+            this.exitIcon.MouseEnter += new System.EventHandler(this.exitIcon_MouseEnter);
+            this.exitIcon.MouseLeave += new System.EventHandler(this.exitIcon_MouseLeave);
+            // 
             // FormCurrentRoute
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(44)))));
-            this.ClientSize = new System.Drawing.Size(730, 600);
+            this.ClientSize = new System.Drawing.Size(730, 572);
+            this.Controls.Add(this.exitIcon);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormCurrentRoute";
             this.Text = "FormIdleActivities";
+            ((System.ComponentModel.ISupportInitialize)(this.exitIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -73,5 +91,6 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.PictureBox exitIcon;
     }
 }

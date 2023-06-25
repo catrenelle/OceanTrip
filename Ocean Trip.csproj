@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Definitions\FFXIV_Definitions.cs" />
     <Compile Include="Definitions\OceanFishing.cs" />
+    <Compile Include="Helpers\Achievements.cs" />
     <Compile Include="Helpers\FFXIV_Databinds.cs" />
     <Compile Include="OceanTripNewSettings.cs" />
     <Compile Include="UI\Colors.cs" />

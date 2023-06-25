@@ -77,12 +77,12 @@ namespace Ocean_Trip
 
         private void buttonSchedule_Click(object sender, EventArgs e)
         {
-            loadForm(new FormSchedule(), sender);
+            loadForm(new FormSchedule(this), sender);
         }
 
         private void buttonCurrentRoute_Click(object sender, EventArgs e)
         {
-            loadForm(new FormCurrentRoute(), sender);
+            loadForm(new FormCurrentRoute(this), sender);
         }
 
         private void loadForm(Form childForm, object sender)

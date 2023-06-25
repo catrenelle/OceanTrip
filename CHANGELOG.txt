@@ -1,3 +1,14 @@
+06/25/2023
+
+* Squid Strip was showing Krill's icon in the Ocean Settings screen. Oops!
+
+* Reverted new vectors for the boat. The old ones are now working again after latest RebornBuddy update.
+
+* Adjusted sleep timings to potentially help with freezing in the latest RB update.
+
+* Achievements don't load into memory when you first open the game. Thanks to nt153133, we are now loading the achievements at start of the botbase for tracking. It's a bit of an annoyance, but it's the only way to get the achievement data.
+
+
 06/23/2023
 ----------
 
