@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting;
 using System.Security.AccessControl;
 using System.Text;
@@ -29,7 +30,7 @@ namespace OceanTripPlanner
             this.objectives = objectives;
         }
 
-        public static List<Schedule> GetSchedules(int amount)
+        public static List<Schedule> GetSchedules(int amount, string route=null)
         {
             // Error Checks
             if (amount <= 0 || amount >= 50)
@@ -48,7 +49,7 @@ namespace OceanTripPlanner
                 if (time.Minute == 59)
                     time = time.AddMinutes(1);
 
-                var schedule = OceanTrip.GetSchedule(time);
+                var schedule = OceanTrip.GetSchedule(time, route);
                 int posOnSchedule = 0;
 
                 // Build the schedule!
@@ -121,34 +122,45 @@ namespace OceanTripPlanner
         public static string scheduleObjectives(Tuple<string, string>[] schedule)
         {
             List<string> objectives = new List<string>();
+            List<string> blueFish = new List<string>();
 
-            //// Check for Shellfish
-            //if ((schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Night"
-            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Day"
-            //            && schedule[2].Item1 == "oneriver" && schedule[2].Item2 == "Sunset")
-            //        || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Day"
-            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Sunset"
-            //            && schedule[2].Item1 == "oneriver" && schedule[2].Item2 == "Night"))
-            //{
-            //    objectives.Add("Shellfish");
-            //}
+            // Checking for Indigo achievements
+            int mantas = 0;
+            int octopods = 0;
+            int sharks = 0;
+            int jellyfish = 0;
+            int seadragons = 0;
+            int balloons = 0;
+            int crabs = 0;
 
-            //// Check for Squid
-            //if ((schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Day"
-            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Sunset"
-            //            && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Night")
-            //        || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Sunset"
-            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Night"
-            //            && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Day")
-            //        || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Night"
-            //            && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Day"
-            //            && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Sunset"))
-            //{
-            //    objectives.Add("Squid");
-            //}
 
-            //if (schedule[0].Item1 == "sirensong" || schedule[0].Item1 == "kugane" || schedule[0].Item1 == "rubysea" || schedule[0].Item1 == "oneriver")
-            //    objectives.Add("Shrimp");
+            // Check for Shellfish
+            if ((schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Night"
+                        && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Day"
+                        && schedule[2].Item1 == "oneriver" && schedule[2].Item2 == "Sunset")
+                    || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Day"
+                        && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Sunset"
+                        && schedule[2].Item1 == "oneriver" && schedule[2].Item2 == "Night"))
+            {
+                objectives.Add("Shellfish");
+            }
+
+            // Check for Squid
+            if ((schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Day"
+                        && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Sunset"
+                        && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Night")
+                    || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Sunset"
+                        && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Night"
+                        && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Day")
+                    || (schedule[0].Item1 == "sirensong" && schedule[0].Item2 == "Night"
+                        && schedule[1].Item1 == "kugane" && schedule[1].Item2 == "Day"
+                        && schedule[2].Item1 == "rubysea" && schedule[2].Item2 == "Sunset"))
+            {
+                objectives.Add("Squid");
+            }
+
+            if (schedule[0].Item1 == "sirensong" || schedule[0].Item1 == "kugane" || schedule[0].Item1 == "rubysea" || schedule[0].Item1 == "oneriver")
+                objectives.Add("Shrimp");
 
 
             for (int i = 0; i <= 2; i++)
@@ -159,56 +171,126 @@ namespace OceanTripPlanner
                 switch (area)
                 {
                     case "south":
+                        if (tod == "Sunset")
+                            jellyfish++;
                         if (tod == "Night")
-                            objectives.Add("Coral Manta");
+                        {
+                            blueFish.Add("Coral Manta");
+                            seadragons++;
+                        }
                         break;
                     case "galadion":
+                        if (tod == "Sunset")
+                        {
+                            octopods++;
+                            sharks++;
+                        }
                         if (tod == "Night")
-                            objectives.Add("Sothis");
+                            blueFish.Add("Sothis");
                         break;
                     case "north":
                         if (tod == "Day")
-                            objectives.Add("Elasmosaurus");
+                            blueFish.Add("Elasmosaurus");
+                        if (tod == "Sunset")
+                            seadragons++;
+                        if (tod == "Night")
+                        {
+                            crabs++;
+                            octopods++;
+                        }
                         break;
                     case "rhotano":
+                        if (tod == "Day")
+                            sharks++;
                         if (tod == "Sunset")
-                            objectives.Add("Stonescale");
+                        {
+                            blueFish.Add("Stonescale");
+                            balloons++;
+                        }
+                        if (tod == "Night")
+                        {
+                            jellyfish++;
+                            balloons++;
+                        }
                         break;
                     case "ciel":
+                        if (tod == "Day")
+                        {
+                            mantas++;
+                            balloons++;
+                         }
+                        if (tod == "Sunset")
+                        {
+                            balloons++;
+                            crabs++;
+                            mantas++;
+                        }
                         if (tod == "Night")
-                            objectives.Add("Hafgufa");
+                            blueFish.Add("Hafgufa");
                         break;
                     case "blood":
                         if (tod == "Day")
-                            objectives.Add("Seafaring Toad");
+                        {
+                            blueFish.Add("Seafaring Toad");
+                            crabs++;
+                        }
+                        if (tod == "Night")
+                            mantas++;
                         break;
                     case "sound":
+                        if (tod == "Day")
+                        {
+                            balloons++;
+                            mantas++;
+                        }
                         if (tod == "Sunset")
-                            objectives.Add("Placodus");
+                            blueFish.Add("Placodus");
+                        if (tod == "Night")
+                            balloons++;
                         break;
                     case "sirensong":
                         if (tod == "Day")
-                            objectives.Add("Taniwha");
+                            blueFish.Add("Taniwha");
                         break;
                     case "kugane":
                         if (tod == "Night")
-                            objectives.Add("Glass Dragon");
+                            blueFish.Add("Glass Dragon");
                         break;
                     case "rubysea":
                         if (tod == "Sunset")
-                            objectives.Add("Hells' Claw");
+                            blueFish.Add("Hells' Claw");
                         break;
                     case "oneriver":
                         if (tod == "Day")
-                            objectives.Add("Jewel of Plum Spring");
+                            blueFish.Add("Jewel of Plum Spring");
                         break;
                     default:
                         break;
                 }
             }
 
-            //if (objectives.Count > 2 && objectives.Contains("Shrimp"))
-            //    objectives.Remove("Shrimp");
+            if (blueFish.Count < 2)
+            {
+                if (mantas >= 2)
+                    objectives.Add("Mantas");
+                if (octopods >= 2)
+                    objectives.Add("Octopods");
+                if (sharks >= 2)
+                    objectives.Add("Sharks");
+                if (jellyfish >= 2)
+                    objectives.Add("Jellyfish");
+                if (seadragons >= 2)
+                    objectives.Add("Seadragons");
+                if (balloons >= 2)
+                    objectives.Add("Balloons");
+                if (crabs >= 2)
+                    objectives.Add("Crabs");
+            }
+
+            objectives.AddRange(blueFish);
+
+            if (objectives.Count > 2 && objectives.Contains("Shrimp"))
+                objectives.Remove("Shrimp");
 
             if (objectives.Count == 0)
                 return "";
