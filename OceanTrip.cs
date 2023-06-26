@@ -2763,7 +2763,7 @@ namespace OceanTripPlanner
 			await Coroutine.Sleep(200);
         }
 
-        public static Tuple<string, string>[] GetSchedule(DateTime? time = null)
+        public static Tuple<string, string>[] GetSchedule(DateTime? time = null, string route = null)
 		{
 			int epoch;
 
@@ -2772,7 +2772,10 @@ namespace OceanTripPlanner
             else
                 epoch = (int)(time.Value.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
-            if (OceanTripNewSettings.Instance.FishingRoute == FishingRoute.Ruby)
+
+			
+
+            if ((route is null && OceanTripNewSettings.Instance.FishingRoute == FishingRoute.Ruby) || (route == "Ruby"))
 			{
                 // Thanks to https://millhio.re/oceancalculator2.html which was more accurate than what I was using. Translated the JS over to C#.
                 int twoHourChunk = ((epoch / 7200) + 40) % ruby_fullPattern.Length;

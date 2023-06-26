@@ -8,6 +8,8 @@
 
 * Achievements don't load into memory when you first open the game. Thanks to nt153133, we are now loading the achievements at start of the botbase for tracking. It's a bit of an annoyance, but it's the only way to get the achievement data.
 
+* Added basic "Schedule" tab for the new UI to show both the Indigo and Ruby routes with achievements and blue fish.
+
 
 06/23/2023
 ----------
