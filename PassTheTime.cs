@@ -32,13 +32,18 @@ namespace OceanTripPlanner
             if (freeToCraft)
 			{
 				int lisFood = 0;
+                int hqOffset = 1000000;
+                bool hqFood = false;
 
                 if (OceanTripNewSettings.Instance.useCraftingFood)
                 {
-                    if (DataManager.GetItem((uint)FoodList.CalamariRipieni).ItemCount() > 0)
-                        lisFood = FoodList.CalamariRipieni; // Reg
+                    if (DataManager.GetItem((uint)FoodList.CalamariRipieni, true).ItemCount() > 0)
+                    {
+                        lisFood = FoodList.CalamariRipieni + hqOffset; // HQ
+                        hqFood = true;
+                    }
                     else
-                        lisFood = FoodList.CalamariRipieni + 1000000; // HQ
+                        lisFood = FoodList.CalamariRipieni; // Reg
                 }
 
                 //Resume last order
@@ -66,14 +71,14 @@ namespace OceanTripPlanner
                 //Ocean Food
                 if (lisFood > 0)
                 {
-                    int foodCount = (int)DataManager.GetItem((uint)lisFood).ItemCount();
+                    int foodCount = foodCount = (int)DataManager.GetItem((uint)(hqFood ? lisFood-hqOffset : lisFood), hqFood).ItemCount();
                     if (freeToCraft && foodCount < 10)
                     {
                         if (OceanTripNewSettings.Instance.LoggingMode)
-                            Log($"Farming 100 of {DataManager.GetItem((uint)lisFood).CurrentLocaleName}.");
+                            Log($"Farming 100 of {DataManager.GetItem((uint)(hqFood ? lisFood-hqOffset : lisFood), hqFood).CurrentLocaleName}.");
 
 
-                        await IdleLisbeth(lisFood, 100, "Culinarian", "false", (foodCount > 0 ? lisFood : 0));
+                        await IdleLisbeth((hqFood ? lisFood-hqOffset : lisFood), 100, "Culinarian", "false", (foodCount > 0 ? lisFood : 0));
                     }
                 }
 
