@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Ocean_Trip.Helpers;
 using LlamaLibrary.Structs;
+using System.Runtime.CompilerServices;
 
 namespace OceanTripPlanner
 {
@@ -860,7 +861,7 @@ namespace OceanTripPlanner
 			await Coroutine.Sleep(1000);
 
 			//GetSchedule();
-			if (WorldManager.RawZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
+			if (!OnBoat)
 			{
 				//missingFish = await GetFishLog();
 				if (Core.Me.CurrentJob == ClassJobType.Fisher)
@@ -1011,7 +1012,7 @@ namespace OceanTripPlanner
 			int posOnSchedule = 0;
 			string TimeOfDay = "";
 
-			while ((WorldManager.ZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby) && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+			while (OnBoat && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
 				if (!String.IsNullOrEmpty(FishingLog.AreaName))
 				{
@@ -1206,19 +1207,19 @@ namespace OceanTripPlanner
                 if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch || FishingManager.CanMoochAny == FishingManager.AvailableMooch.Both)
                 {
                     FishingManager.Mooch();
-					WaitForCastLog();
+					await WaitForCastLog();
                     startedCast = DateTime.Now;
 				}
 				else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
 				{
 					FishingManager.MoochTwo();
-                    WaitForCastLog();
+                    await WaitForCastLog();
                     startedCast = DateTime.Now;
 				}
 				else
 				{
 					FishingManager.Cast();
-                    WaitForCastLog();
+                    await WaitForCastLog();
                     startedCast = DateTime.Now;
 				}
             }
@@ -1269,7 +1270,7 @@ namespace OceanTripPlanner
 			await Coroutine.Sleep(1000);
 
 
-			while ((WorldManager.ZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+			while (OnBoat && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
 				if (WorldManager.CurrentWeatherId != Weather.Spectral)
 				{
@@ -1288,12 +1289,10 @@ namespace OceanTripPlanner
 					}
 				}
 
-                FFXIV_Databinds.Instance.RefreshBait();
-
                 // Should we Cordial?
                 if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && spectraled)
 					await UseCordial();
-				else if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && Core.Me.CurrentGPPercent < 25.00)
+				else if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && Core.Me.CurrentGPPercent < 25.00f)
 					await UseCordial();
 
 				// Should we use Thaliak's Favor?
@@ -1301,13 +1300,13 @@ namespace OceanTripPlanner
 				{
 					Log("Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-					await Coroutine.Sleep(500);
+					await Coroutine.Sleep(800);
 				}
 				else if (!spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me) && Core.Player.Auras.Any(x => x.Id == CharacterAuras.AnglersArt && x.Value >= 7))
 				{
 					Log("Currently at >7 Angler's Art Stacks - Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-					await Coroutine.Sleep(500);
+					await Coroutine.Sleep(800);
 				}
 
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
@@ -1354,7 +1353,7 @@ namespace OceanTripPlanner
 							Log("Identical Cast!");
 							lastCastMooch = false;
 							ActionManager.DoAction(Actions.IdenticalCast, Core.Me);
-                            WaitForCastLog();
+                            await WaitForCastLog();
                             startedCast = DateTime.Now;
 						}
 					}
@@ -1365,7 +1364,7 @@ namespace OceanTripPlanner
 						Log("Using Mooch!");
 						FishingManager.Mooch();
 						lastCastMooch = true;
-                        WaitForCastLog();
+                        await WaitForCastLog();
                         startedCast = DateTime.Now;
 					}
 					else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
@@ -1373,7 +1372,7 @@ namespace OceanTripPlanner
 						Log("Using Mooch II!");
 						FishingManager.MoochTwo();
 						lastCastMooch = true;
-                        WaitForCastLog();
+                        await WaitForCastLog();
                         startedCast = DateTime.Now;
 					}
 					else
@@ -1381,7 +1380,7 @@ namespace OceanTripPlanner
 						if (spectraled)
 						{
 							if (OceanTripNewSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience || OceanTripNewSettings.Instance.Patience == ShouldUsePatience.SpectralOnly)
-								UsePatience();
+								await UsePatience();
 
 							//Bait for Blue fish
 							if (
@@ -1437,14 +1436,14 @@ namespace OceanTripPlanner
 							else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && FocusFishLog)
 							{
 								// This will help increase the chances of catching Seafaring Toad.
-								UsePatience();
+								await UsePatience();
 
 								// Catch 3 Beatific Vision to trigger intuition
 								await ChangeBait(FishBait.Krill);
 							}
 							else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && FocusFishLog)
 							{
-								UsePatience();
+								await UsePatience();
 
 								// Use Ragworm to catch Rothlyt Mussel, then Mooch to Trollfish to trigger intuition.
 								await ChangeBait(FishBait.Ragworm);
@@ -1629,7 +1628,7 @@ namespace OceanTripPlanner
 						else
 						{
 							if (OceanTripNewSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience)
-                                UsePatience();
+                                await UsePatience();
 
 							// Deal with Intuition fish first... if we have the intution buff
 							if (Core.Player.HasAura(CharacterAuras.FishersIntuition) && (location == "galadion" || location == "rhotano" || location == "ciel" || location == "blood" || location == "rubysea"))
@@ -1742,18 +1741,18 @@ namespace OceanTripPlanner
 								{
 									Log("Triggering Full GP Action to keep regen going - Chum!");
 									ActionManager.DoAction(Actions.Chum, Core.Me);
-									await Coroutine.Sleep(200);
+									await Coroutine.Sleep(800);
 								}
 							}
 						}
 
 						FishingManager.Cast();
-                        WaitForCastLog();
+                        await WaitForCastLog();
                         startedCast = DateTime.Now;
 						lastCastMooch = false;
 					}
 
-					//await Coroutine.Sleep(1000);
+					await Coroutine.Sleep(800);
 				}
 
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
@@ -2448,7 +2447,7 @@ namespace OceanTripPlanner
                 if (OceanTripNewSettings.Instance.LoggingMode)
                     Logging.Write(Colors.Aqua, $"[Ocean Trip] Loading screen found.");
             }
-            while (WorldManager.ZoneId != Zones.TheEndeavor && WorldManager.RawZoneId != Zones.TheEndeaver_Ruby)
+            while (!OnBoat)
 			{
 				await Coroutine.Sleep(1000);
 			}
@@ -2485,12 +2484,12 @@ namespace OceanTripPlanner
 			if (cordial > 0 && InventoryManager.FilledSlots.Any(x => x.RawItemId == cordial))
 			{
 				var slot = InventoryManager.FilledSlots.First(x => x.RawItemId == cordial);
-				await Coroutine.Sleep(2000);
+				await Coroutine.Sleep(600);
 
 				if (slot.UseItem())
 					Logging.Write(Colors.Aqua, $"[Ocean Trip] Used a {DataManager.GetItem(cordial).CurrentLocaleName}!");
 
-				await Coroutine.Sleep(200);
+				await Coroutine.Sleep(600);
 			}
 		}
 
@@ -2695,28 +2694,30 @@ namespace OceanTripPlanner
 
         }
 
-		private void WaitForCastLog()
+		private async Task WaitForCastLog()
 		{
-			Stopwatch whileTimer = new Stopwatch();
-			bool endLoop = false;
+			await Coroutine.Wait(5000, () => (ChatCheck("cast your line", "cast your line") || ChatCheck("recast your line", "recast your line")));
+			
+				//Stopwatch whileTimer = new Stopwatch();
+				//bool endLoop = false;
 
-			// You cast your line
-			// You recast your line
-			whileTimer.Start();
-			while (!endLoop)
-			{
-				if (ChatCheck("cast your line", "cast your line")
-					|| ChatCheck("recast your line", "recast your line")
-					|| whileTimer.Elapsed.TotalSeconds > 6)
-				{
-					if (whileTimer.Elapsed.TotalSeconds > 6 && OceanTripNewSettings.Instance.LoggingMode)
-						Log("Could not detect the cast/recast your line log message. Continuing.");
+				//// You cast your line
+				//// You recast your line
+				//whileTimer.Start();
+				//while (!endLoop)
+				//{
+				//	if (ChatCheck("cast your line", "cast your line")
+				//		|| ChatCheck("recast your line", "recast your line")
+				//		|| whileTimer.Elapsed.TotalSeconds > 6)
+				//	{
+				//		if (whileTimer.Elapsed.TotalSeconds > 6 && OceanTripNewSettings.Instance.LoggingMode)
+				//			Log("Could not detect the cast/recast your line log message. Continuing.");
 
-                    whileTimer.Stop();
-					endLoop = true;
-				}
-					
-			}
+				//		whileTimer.Stop();
+				//		endLoop = true;
+				//	}
+
+				//}
 		}
 
 
@@ -2742,8 +2743,19 @@ namespace OceanTripPlanner
 				return false;
 			}
 		}
+		
+		public static bool OnBoat
+		{
+			get 
+			{
+				if (WorldManager.RawZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby)
+					return true;
 
-		private async void UsePatience()
+				return false;
+			}
+		}
+
+		private async Task UsePatience()
 		{
 			if (ActionManager.CanCast(Actions.PatienceII, Core.Me) && !FishingManager.HasPatience)
 			{
@@ -2760,7 +2772,7 @@ namespace OceanTripPlanner
                 ActionManager.DoAction(Actions.Patience, Core.Me);
 			}
 
-			await Coroutine.Sleep(200);
+			await Coroutine.Sleep(500);
         }
 
         public static Tuple<string, string>[] GetSchedule(DateTime? time = null, string route = null)

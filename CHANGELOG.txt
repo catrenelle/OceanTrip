@@ -1,3 +1,11 @@
+06/28/2023
+----------
+
+* Fixed issue where HQ crafting food was not being used properly.
+
+* The lock-up issues when fishing should now be fixed! Just need to adjust the timings as the first cast takes longer than I'd like.
+
+
 06/25/2023
 
 * Squid Strip was showing Krill's icon in the Ocean Settings screen. Oops!
