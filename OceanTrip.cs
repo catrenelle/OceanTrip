@@ -1176,7 +1176,7 @@ namespace OceanTripPlanner
 						Log($"Opening Bait Window.");
 
                     ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
-					await Coroutine.Sleep(500);
+					await Coroutine.Sleep(300);
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}
 
@@ -1184,7 +1184,7 @@ namespace OceanTripPlanner
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					Log($"Applied {DataManager.GetItem((uint)baitId).CurrentLocaleName}");
-					await Coroutine.Sleep(500);
+					await Coroutine.Sleep(300);
 					ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
                     
 					if (OceanTripNewSettings.Instance.LoggingMode)
@@ -1300,18 +1300,18 @@ namespace OceanTripPlanner
 				{
 					Log("Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-					await Coroutine.Sleep(800);
+					await Coroutine.Sleep(400);
 				}
 				else if (!spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me) && Core.Player.Auras.Any(x => x.Id == CharacterAuras.AnglersArt && x.Value >= 7))
 				{
 					Log("Currently at >7 Angler's Art Stacks - Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-					await Coroutine.Sleep(800);
+					await Coroutine.Sleep(400);
 				}
 
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
-					await Coroutine.Sleep(1000);
+					await Coroutine.Sleep(300);
 
 					// Did we catch a fish? Let's log it.
 					if (ChatCheck("You land", "measuring") && !caughtFishLogged)
@@ -1752,12 +1752,12 @@ namespace OceanTripPlanner
 						lastCastMooch = false;
 					}
 
-					await Coroutine.Sleep(800);
+					await Coroutine.Sleep(300);
 				}
 
 				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 				{
-                    await Coroutine.Sleep(800); // Do not remove or game will stutter.
+                    await Coroutine.Sleep(300); // Do not remove or game will stutter.
 
                     //Spectral popped, don't wait for normal fish
                     if (WorldManager.CurrentWeatherId == Weather.Spectral && !spectraled)
@@ -1771,7 +1771,7 @@ namespace OceanTripPlanner
 
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
-						double biteElapsed = (DateTime.Now - startedCast).TotalSeconds;// - 0.8f; // Offset against the Coroutine.Sleep(800) above.
+						double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 0.3f; // Offset against the Coroutine.Sleep(800) above.
                         bool doubleHook = false;
 
                         Log($"Bite Time: {biteElapsed:F1}s");
@@ -2696,28 +2696,7 @@ namespace OceanTripPlanner
 
 		private async Task WaitForCastLog()
 		{
-			await Coroutine.Wait(5000, () => (ChatCheck("cast your line", "cast your line") || ChatCheck("recast your line", "recast your line")));
-			
-				//Stopwatch whileTimer = new Stopwatch();
-				//bool endLoop = false;
-
-				//// You cast your line
-				//// You recast your line
-				//whileTimer.Start();
-				//while (!endLoop)
-				//{
-				//	if (ChatCheck("cast your line", "cast your line")
-				//		|| ChatCheck("recast your line", "recast your line")
-				//		|| whileTimer.Elapsed.TotalSeconds > 6)
-				//	{
-				//		if (whileTimer.Elapsed.TotalSeconds > 6 && OceanTripNewSettings.Instance.LoggingMode)
-				//			Log("Could not detect the cast/recast your line log message. Continuing.");
-
-				//		whileTimer.Stop();
-				//		endLoop = true;
-				//	}
-
-				//}
+			await Coroutine.Wait(3000, () => (ChatCheck("cast your line", "cast your line") || ChatCheck("recast your line", "recast your line")));
 		}
 
 
@@ -2772,7 +2751,7 @@ namespace OceanTripPlanner
                 ActionManager.DoAction(Actions.Patience, Core.Me);
 			}
 
-			await Coroutine.Sleep(500);
+			await Coroutine.Sleep(200);
         }
 
         public static Tuple<string, string>[] GetSchedule(DateTime? time = null, string route = null)
