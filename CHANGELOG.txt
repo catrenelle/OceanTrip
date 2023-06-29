@@ -5,6 +5,12 @@
 
 * The lock-up issues when fishing should now be fixed! Just need to adjust the timings as the first cast takes longer than I'd like.
 
+* Revisited sleep timers to optimize point runs.
+
+* Player should run "side to side" much less now, and go straight to the fishing spot at the start of the round. Player should now stand still between routes (unless bot is stopped and restarted).
+
+* Fixed issue with the Achievements window triggering multiple times (oops!)
+
 
 06/25/2023
 
