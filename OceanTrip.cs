@@ -657,7 +657,7 @@ namespace OceanTripPlanner
         private double bite;
 
 
-        private bool RouteShown = false;
+        private bool InitializationComplete = false;
 
 		private List<uint> missingFish = new List<uint>();
 		private bool missingFishRefreshed = false;
@@ -721,8 +721,6 @@ namespace OceanTripPlanner
             caughtFish = new List<uint>();
 			lastCaughtFish = 0;
 			caughtFishLogged = false;
-
-			RouteShown = false;
 
 			TimeSpan timeLeftUntilFirstRun = TimeUntilNextBoat();
 			if (timeLeftUntilFirstRun.TotalMilliseconds < 0)
@@ -795,6 +793,8 @@ namespace OceanTripPlanner
 			execute.Elapsed -= new ElapsedEventHandler(KillLisbeth);
 			_root = null;
 
+			InitializationComplete = false;
+
 			Navigator.NavigationProvider = new NullProvider();
 			Navigator.Clear();
 		}
@@ -806,19 +806,24 @@ namespace OceanTripPlanner
 			missingFishRefreshed = false;
 			caughtFish.Clear();
 
-            Log("Initializing achievements for tracking progress.");
-            await Achievements.OpenWindow();
-			Log("Achievements loaded.");
+			if (!InitializationComplete)
+			{
+				Log("Initializing achievements for tracking progress.");
+				await Achievements.OpenWindow();
+				Log("Achievements loaded.");
 
-            if (missingFish.Count == 0)
-				if (File.Exists(Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt")))
-				{
-					FishingLog.LoadMissingFishLog(out missingFish);
-					Log($"[Ocean Trip] Missing Fish Loaded! Cache shows a total of {missingFish.Count()} missing fish.");
-					missingFishRefreshed = true;
-				}
-				else
-					await RefreshMissingFish();
+				if (missingFish.Count == 0)
+					if (File.Exists(Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt")))
+					{
+						FishingLog.LoadMissingFishLog(out missingFish);
+						Log($"[Ocean Trip] Missing Fish Loaded! Cache shows a total of {missingFish.Count()} missing fish.");
+						missingFishRefreshed = true;
+					}
+					else
+						await RefreshMissingFish();
+
+				InitializationComplete = true;
+			}
 
 			FFXIV_Databinds.Instance.RefreshBait();
 			await OceanFishing();
@@ -1147,7 +1152,6 @@ namespace OceanTripPlanner
                 if (OceanTripNewSettings.Instance.LoggingMode)
                     Log($"Done loading! This voyage is OVER! Time to wait for the next boat.");
 
-                RouteShown = false;
 				missingFishRefreshed = false;
 				PassTheTime.freeToCraft = true;
 			}
@@ -1256,19 +1260,18 @@ namespace OceanTripPlanner
                 FFXIV_Databinds.Instance.RefreshBait();
 				FFXIV_Databinds.Instance.RefreshAchievements();
 
-                Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
-				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2 && !ActionManager.CanCast(Actions.Cast, Core.Me))
+                //Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
+				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
 				{
 					Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
-					await Coroutine.Sleep(1000);
+					await Coroutine.Sleep(100);
 				}
 				Navigator.PlayerMover.MoveStop();
-				await Coroutine.Sleep(1000);
+				await Coroutine.Sleep(500);
 				Core.Me.SetFacing(headings[spot]);
 			}
 
 			await Coroutine.Sleep(1000);
-
 
 			while (OnBoat && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
 			{
