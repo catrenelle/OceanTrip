@@ -1416,8 +1416,8 @@ namespace OceanTripPlanner
                                 Log("Done checking for Patience.");
 
 
-                            //Bait for Blue fish
-                            if (
+							//Bait for Blue fish
+							if (
 									Core.Player.HasAura(CharacterAuras.FishersIntuition) &&
 									(
 										((location == "galadion") && (timeOfDay == "Night"))
@@ -1436,77 +1436,139 @@ namespace OceanTripPlanner
 							{
 								caughtFish.Clear();
 
+                                if (OceanTripNewSettings.Instance.LoggingMode)
+                                    Log($"Switching bait to {DataManager.GetItem((uint)spectralbaitId).CurrentLocaleName} to catch a blue fish now that we have intuition.");
 								await ChangeBait(spectralbaitId);
 							}
 							else if ((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.Heavenskey).Count() < 2) // Needs 2 Heavenskey. Use Ragworm to catch.
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Ragworm).CurrentLocaleName} in order to catch 2x {DataManager.GetItem((uint)OceanFish.Heavenskey).CurrentLocaleName}");
 									await ChangeBait(FishBait.Ragworm);
+								}
 								else if (!caughtFish.Contains(OceanFish.NavigatorsPrint)) // Requires 1 Navigators Print.
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Krill).CurrentLocaleName} in order to catch 1x {DataManager.GetItem((uint)OceanFish.NavigatorsPrint).CurrentLocaleName}");
 									await ChangeBait(FishBait.Krill);
+								}
 							}
 							else if ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.GreatGrandmarlin).Count() < 2) // Needs 2 Great Grandmarlin. Mooch from Hi-Aetherlouse.
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 2x {DataManager.GetItem((uint)OceanFish.GreatGrandmarlin).CurrentLocaleName} via mooching {DataManager.GetItem((uint)OceanFish.HiAetherlouse).CurrentLocaleName}.");
 									await ChangeBait(FishBait.PlumpWorm);
+								}
 							}
 							else if ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.Gugrusaurus).Count() < 3) // Needs 3 Gugrusaurus
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 3x {DataManager.GetItem((uint)OceanFish.Gugrusaurus).CurrentLocaleName}");
 									await ChangeBait(FishBait.PlumpWorm);
+								}
 							}
 							else if ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.CrimsonMonkfish).Count() < 2) // Needs 2 Crimson Monkfish
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 2x {DataManager.GetItem((uint)OceanFish.CrimsonMonkfish).CurrentLocaleName}");
 									await ChangeBait(FishBait.PlumpWorm);
+								}
 							}
 							else if ((location == "ciel") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Hafgufa) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.JetborneManta).Count() < 2) // Needs 2 Jetborne Manta
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 2x {DataManager.GetItem((uint)OceanFish.JetborneManta).CurrentLocaleName}");
 									await ChangeBait(FishBait.PlumpWorm);
+								}
 								else if (!caughtFish.Contains(OceanFish.MistbeardsCup)) // Needs 1 Mistbeard's Cup
-									await ChangeBait(FishBait.Krill);
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Krill).CurrentLocaleName} in order to catch 1x {DataManager.GetItem((uint)OceanFish.MistbeardsCup).CurrentLocaleName}");
+                                    await ChangeBait(FishBait.Krill);
+								}
 							}
 							else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && FocusFishLog)
 							{
 								// This will help increase the chances of catching Seafaring Toad.
 								await UsePatience();
 
-								// Catch 3 Beatific Vision to trigger intuition
-								await ChangeBait(FishBait.Krill);
+                                // Catch 3 Beatific Vision to trigger intuition
+                                if (OceanTripNewSettings.Instance.LoggingMode)
+                                    Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Krill).CurrentLocaleName} in order to catch 3x {DataManager.GetItem((uint)OceanFish.BeatificVision).CurrentLocaleName}");
+                                await ChangeBait(FishBait.Krill);
 							}
 							else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && FocusFishLog)
 							{
 								await UsePatience();
 
-								// Use Ragworm to catch Rothlyt Mussel, then Mooch to Trollfish to trigger intuition.
-								await ChangeBait(FishBait.Ragworm);
+                                // Use Ragworm to catch Rothlyt Mussel, then Mooch to Trollfish to trigger intuition.
+                                if (OceanTripNewSettings.Instance.LoggingMode)
+                                    Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Ragworm).CurrentLocaleName} in order to catch 1x {DataManager.GetItem((uint)OceanFish.RothlytMussel).CurrentLocaleName} to mooch into {DataManager.GetItem((uint)OceanFish.Trollfish).CurrentLocaleName}");
+                                await ChangeBait(FishBait.Ragworm);
 							}
 							else if ((location == "sirensong") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Taniwha) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.SunkenCoelacanth).Count() < 3) // Needs 3 Sunken Coelacanth
-									await ChangeBait(FishBait.PlumpWorm);
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 3x {DataManager.GetItem((uint)OceanFish.SunkenCoelacanth).CurrentLocaleName}");
+                                    await ChangeBait(FishBait.PlumpWorm);
+								}
 							}
 							else if ((location == "kugane") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.GlassDragon) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.Shoshitsuki).Count() < 2) // Needs Shoshitsuki
-									await ChangeBait(FishBait.PlumpWorm);
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 2x {DataManager.GetItem((uint)OceanFish.Shoshitsuki).CurrentLocaleName}");
+                                    await ChangeBait(FishBait.PlumpWorm);
+								}
 								else
-									await ChangeBait(FishBait.Krill); // Try to get Snapping Koban to mooch Glass Dragon
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Krill).CurrentLocaleName} in order to catch 1x {DataManager.GetItem((uint)OceanFish.SnappingKoban).CurrentLocaleName} to mooch into {DataManager.GetItem((uint)OceanFish.GlassDragon).CurrentLocaleName}");
+                                    await ChangeBait(FishBait.Krill); // Try to get Snapping Koban to mooch Glass Dragon
+								}
 							}
 							else if ((location == "rubysea") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.HellsClaw) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.FlyingSquid).Count() < 1) // Needs 1x Flying Squid
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 1x {DataManager.GetItem((uint)OceanFish.FlyingSquid).CurrentLocaleName}");
 									await ChangeBait(FishBait.PlumpWorm);
+								}
 								else if (caughtFish.Where(x => x == OceanFish.FleetingSquid).Count() < 2) // Needs 2x Fleeting Squid
-									await ChangeBait(FishBait.PlumpWorm);
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.PlumpWorm).CurrentLocaleName} in order to catch 2x {DataManager.GetItem((uint)OceanFish.FleetingSquid).CurrentLocaleName}");
+                                    await ChangeBait(FishBait.PlumpWorm);
+								}
 							}
 							else if ((location == "oneriver") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.JewelofPlumSpring) && FocusFishLog)
 							{
 								if (caughtFish.Where(x => x == OceanFish.YanxianGoby).Count() < 2) // Needs 2x Yanxian Goby
+								{
+                                    if (OceanTripNewSettings.Instance.LoggingMode)
+                                        Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Ragworm).CurrentLocaleName} in order to catch 2x {DataManager.GetItem((uint)OceanFish.YanxianGoby).CurrentLocaleName}");
 									await ChangeBait(FishBait.Ragworm);
+								}
 								else if (caughtFish.Where(x => x == OceanFish.GensuiShrimp).Count() < 1) // Needs 1x Gensui Shrimp
-									await ChangeBait(FishBait.Ragworm);
+								{
+									if (OceanTripNewSettings.Instance.LoggingMode)
+										Log($"Switching bait to {DataManager.GetItem((uint)FishBait.Ragworm).CurrentLocaleName} in order to catch 1x {DataManager.GetItem((uint)OceanFish.GensuiShrimp).CurrentLocaleName}");
+                                    await ChangeBait(FishBait.Ragworm);
+								}
 							}
 							else if (
 									FocusFishLog &&
