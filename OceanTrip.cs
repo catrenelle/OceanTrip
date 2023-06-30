@@ -1294,14 +1294,21 @@ namespace OceanTripPlanner
 					}
 				}
 
-                // Should we Cordial?
+				// Should we Cordial?
+				if (OceanTripNewSettings.Instance.LoggingMode)
+					Log("Checking for Hi-Cordial Use.");
                 if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && spectraled)
 					await UseCordial();
 				else if ((Core.Me.MaxGP - Core.Me.CurrentGP) >= 400 && Core.Me.CurrentGPPercent < 25.00f)
 					await UseCordial();
+                if (OceanTripNewSettings.Instance.LoggingMode)
+                    Log("Done with Cordials.");
 
-				// Should we use Thaliak's Favor?
-				if (spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
+                // Should we use Thaliak's Favor?
+                if (OceanTripNewSettings.Instance.LoggingMode)
+                    Log("Checking if we need to use Thaliak's Favor");
+
+                if (spectraled && (Core.Me.MaxGP - Core.Me.CurrentGP) > 200 && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
 				{
 					Log("Using Thaliak's Favor!");
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
@@ -1313,13 +1320,18 @@ namespace OceanTripPlanner
 					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
 					await Coroutine.Sleep(400);
 				}
+                if (OceanTripNewSettings.Instance.LoggingMode)
+                    Log("Done with Thaliak's Favor.");
 
-				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
+                if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
 					await Coroutine.Sleep(300);
 
-					// Did we catch a fish? Let's log it.
-					if (ChatCheck("You land", "measuring") && !caughtFishLogged)
+                    if (OceanTripNewSettings.Instance.LoggingMode)
+                        Log("Checking for a recently caught fish.");
+
+                    // Did we catch a fish? Let's log it.
+                    if (ChatCheck("You land", "measuring") && !caughtFishLogged)
 					{
 						lastCaughtFish = FishingLog.LastFishCaught;
 						caughtFish.Add(FishingLog.LastFishCaught);
@@ -1334,9 +1346,15 @@ namespace OceanTripPlanner
 							FishingLog.SaveMissingFishLog(missingFish);
 						}
 					}
+                    if (OceanTripNewSettings.Instance.LoggingMode)
+                        Log("Done checking for a recently caught fish.");
 
-					//Identical Cast for Blue fish
-					if (((lastCaughtFish == OceanFish.Gugrusaurus && caughtFish.Where(x => x == OceanFish.Gugrusaurus).Count() < 3)
+
+                    //Identical Cast for Blue fish
+                    if (OceanTripNewSettings.Instance.LoggingMode)
+                        Log("Checking if we need to use Identical Cast.");
+
+                    if (((lastCaughtFish == OceanFish.Gugrusaurus && caughtFish.Where(x => x == OceanFish.Gugrusaurus).Count() < 3)
 							|| (lastCaughtFish == OceanFish.Heavenskey && caughtFish.Where(x => x == OceanFish.Heavenskey).Count() < 2)
 							|| (lastCaughtFish == OceanFish.GreatGrandmarlin && caughtFish.Where(x => x == OceanFish.GreatGrandmarlin).Count() < 2)
 							|| (lastCaughtFish == OceanFish.CrimsonMonkfish && caughtFish.Where(x => x == OceanFish.CrimsonMonkfish).Count() < 2)
@@ -1362,9 +1380,14 @@ namespace OceanTripPlanner
                             startedCast = DateTime.Now;
 						}
 					}
+                    if (OceanTripNewSettings.Instance.LoggingMode)
+                        Log("Done checking for Identical Cast.");
 
-					// Check for Mooch before using Mooch II
-					if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch || FishingManager.CanMoochAny == FishingManager.AvailableMooch.Both)
+
+                    // Check for Mooch before using Mooch II
+                    if (OceanTripNewSettings.Instance.LoggingMode)
+                        Log("Checking for Mooch before moving into bait checks.");
+                    if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch || FishingManager.CanMoochAny == FishingManager.AvailableMooch.Both)
 					{
 						Log("Using Mooch!");
 						FishingManager.Mooch();
@@ -1384,11 +1407,17 @@ namespace OceanTripPlanner
 					{
 						if (spectraled)
 						{
-							if (OceanTripNewSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience || OceanTripNewSettings.Instance.Patience == ShouldUsePatience.SpectralOnly)
-								await UsePatience();
+                            if (OceanTripNewSettings.Instance.LoggingMode)
+                                Log("Spectral: Checking if we need to use Patience.");
 
-							//Bait for Blue fish
-							if (
+                            if (OceanTripNewSettings.Instance.Patience == ShouldUsePatience.AlwaysUsePatience || OceanTripNewSettings.Instance.Patience == ShouldUsePatience.SpectralOnly)
+								await UsePatience();
+                            if (OceanTripNewSettings.Instance.LoggingMode)
+                                Log("Done checking for Patience.");
+
+
+                            //Bait for Blue fish
+                            if (
 									Core.Player.HasAura(CharacterAuras.FishersIntuition) &&
 									(
 										((location == "galadion") && (timeOfDay == "Night"))
@@ -1739,8 +1768,15 @@ namespace OceanTripPlanner
 								await ChangeBait(baitId);
 
 
-							// Should we use Chum?
-							if (Core.Me.MaxGP >= 100 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && OceanTripNewSettings.Instance.FullGPAction == FullGPAction.Chum)
+                            if (OceanTripNewSettings.Instance.LoggingMode)
+                                Log("Done Bait checks.");
+
+
+                            if (OceanTripNewSettings.Instance.LoggingMode)
+                                Log("Checking if we should use Chum.");
+
+                            // Should we use Chum?
+                            if (Core.Me.MaxGP >= 100 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && OceanTripNewSettings.Instance.FullGPAction == FullGPAction.Chum)
 							{
 								if (ActionManager.CanCast(Actions.Chum, Core.Me))
 								{
@@ -1749,9 +1785,16 @@ namespace OceanTripPlanner
 									await Coroutine.Sleep(800);
 								}
 							}
-						}
 
-						FishingManager.Cast();
+                            if (OceanTripNewSettings.Instance.LoggingMode)
+                                Log("Done checking for Chum.");
+
+                        }
+
+                        if (OceanTripNewSettings.Instance.LoggingMode)
+                            Log("Casting and then waiting for chat message about cast!");
+
+                        FishingManager.Cast();
                         await WaitForCastLog();
                         startedCast = DateTime.Now;
 						lastCastMooch = false;
@@ -1776,13 +1819,19 @@ namespace OceanTripPlanner
 
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
-						double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 0.3f; // Offset against the Coroutine.Sleep(800) above.
+                        if (OceanTripNewSettings.Instance.LoggingMode)
+                            Log("Checking bite timer.");
+
+                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 0.3f; // Offset against the Coroutine.Sleep(800) above.
                         bool doubleHook = false;
 
                         Log($"Bite Time: {biteElapsed:F1}s");
 
-						// Made this more readable.
-						if (location == "galadion" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)) //Galadion Bay					
+                        if (OceanTripNewSettings.Instance.LoggingMode)
+                            Log("Checking if we should double hook based on bite timer and current fishing conditions!");
+
+                        // Made this more readable.
+                        if (location == "galadion" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)) //Galadion Bay					
 						{
 							if (timeOfDay == "Day")
 							{
@@ -2313,7 +2362,10 @@ namespace OceanTripPlanner
 							}
 						}
 
-						if (doubleHook && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && spectraled)
+                        if (OceanTripNewSettings.Instance.LoggingMode)
+                            Log("Done checking for double hook conditions.");
+
+                        if (doubleHook && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && spectraled)
 						{
 							Log("Using Double Hook!");
 							ActionManager.DoAction(Actions.DoubleHook, Core.Me);
@@ -2321,7 +2373,10 @@ namespace OceanTripPlanner
 						}
 						else if (FishingManager.HasPatience)
 						{
-							if (FishingManager.TugType == TugType.Light)
+                            if (OceanTripNewSettings.Instance.LoggingMode)
+                                Log("Player has patience on them. Need to use special hooking.");
+
+                            if (FishingManager.TugType == TugType.Light)
 							{
                                 if (OceanTripNewSettings.Instance.LoggingMode)
                                     Log($"Using Precision Hookset!");
@@ -2340,7 +2395,10 @@ namespace OceanTripPlanner
 						}
 						else
 						{
-							if (!spectraled && Core.Me.MaxGP >= 500 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && OceanTripNewSettings.Instance.FullGPAction == FullGPAction.DoubleHook)
+                            if (OceanTripNewSettings.Instance.LoggingMode)
+                                Log("Checking if Full GP action is Double Hook.");
+
+                            if (!spectraled && Core.Me.MaxGP >= 500 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && OceanTripNewSettings.Instance.FullGPAction == FullGPAction.DoubleHook)
 							{
 								Log("Triggering Full GP Action to keep regen going - Double Hook!");
 								ActionManager.DoAction(Actions.DoubleHook, Core.Me);
@@ -2356,14 +2414,20 @@ namespace OceanTripPlanner
 							lastCastMooch = false;
 						}
 
-						caughtFishLogged = false;
+                        if (OceanTripNewSettings.Instance.LoggingMode)
+                            Log("Refreshing UI for Bait and Achievements in case something changed.");
+
+                        caughtFishLogged = false;
                         FFXIV_Databinds.Instance.RefreshBait();
                         FFXIV_Databinds.Instance.RefreshAchievements();
                     }
                 }
 			}
 
-			spectraled = false;
+            if (OceanTripNewSettings.Instance.LoggingMode)
+                Log("Mandatory 2 second wait (to prevent hangs)");
+
+            spectraled = false;
 			await Coroutine.Sleep(2000); // DO NOT CHANGE
 
 			//Log("Waiting for next stop...");
