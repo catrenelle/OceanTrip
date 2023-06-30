@@ -178,11 +178,11 @@ namespace OceanTripPlanner
 
                     foreach (var food in foodList)
 					{
-                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)food).ItemCount() < 150)
-                            Log($"Farming {(150 - DataManager.GetItem((uint)food).ItemCount())} of {DataManager.GetItem((uint)food).CurrentLocaleName}.");
+                        if (OceanTripNewSettings.Instance.LoggingMode && inventoryCount(food) < 150)
+                            Log($"Farming {(150 - inventoryCount(food))} of {DataManager.GetItem((uint)food).CurrentLocaleName} in increments of 50.");
 
-                        while (freeToCraft && DataManager.GetItem((uint)food).ItemCount() < 150)
-							await IdleLisbeth(food, 400, "Culinarian", "false", lisFood);
+                        while (freeToCraft && inventoryCount(food) < 150)
+							await IdleLisbeth(food, 50, "Culinarian", "false", lisFood);
 					}
 
 					foodList.Clear();
@@ -204,10 +204,10 @@ namespace OceanTripPlanner
 
                     foreach (var potion in potionList)
 					{
-                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)potion).ItemCount() <= 200)
-                            Log($"Farming {(200 - DataManager.GetItem((uint)potion).ItemCount())} of {DataManager.GetItem((uint)potion).CurrentLocaleName}.");
+                        if (OceanTripNewSettings.Instance.LoggingMode && inventoryCount(potion) <= 200)
+                            Log($"Farming 200 of {DataManager.GetItem((uint)potion).CurrentLocaleName}.");
 
-                        while (freeToCraft && DataManager.GetItem((uint)potion).ItemCount() <= 200)
+                        while (freeToCraft && inventoryCount(potion) <= 200)
 							await IdleLisbeth(potion, 200, "Alchemist", "false", lisFood);
 					}
 
@@ -235,10 +235,10 @@ namespace OceanTripPlanner
 
                     foreach (var item in itemList)
 					{
-                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)item).ItemCount() <= 300)
-                            Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
+                        if (OceanTripNewSettings.Instance.LoggingMode && inventoryCount(item) <= 300)
+                            Log($"Farming {(300 - inventoryCount(item))} of {DataManager.GetItem((uint)item).CurrentLocaleName} in increments of 50.");
 
-                        while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                        while (freeToCraft && inventoryCount(item) <= 300)
 							await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
 					}
 				}
@@ -264,10 +264,10 @@ namespace OceanTripPlanner
 
                     foreach (var item in itemList)
                     {
-                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)item).ItemCount() <= 300)
-                            Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
+                        if (OceanTripNewSettings.Instance.LoggingMode && inventoryCount(item) <= 300)
+                            Log($"Farming {(300 - inventoryCount(item))} of {DataManager.GetItem((uint)item).CurrentLocaleName} in increments of 50.");
 
-                        while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                        while (freeToCraft && inventoryCount(item) <= 300)
                             await IdleLisbeth(item, 50, "Gather", "false", lisFood);
                     }
                 }
@@ -283,10 +283,10 @@ namespace OceanTripPlanner
 
                     foreach (var item in itemList)
                     {
-                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)item).ItemCount() <= 300)
-                            Log($"Farming {(300 - DataManager.GetItem((uint)item).ItemCount())} of {DataManager.GetItem((uint)item).CurrentLocaleName}.");
+                        if (OceanTripNewSettings.Instance.LoggingMode && inventoryCount(item) <= 300)
+                            Log($"Farming {(300 - inventoryCount(item))} of {DataManager.GetItem((uint)item).CurrentLocaleName} in increments of 50.");
 
-                        while (freeToCraft && DataManager.GetItem((uint)item).ItemCount() <= 300)
+                        while (freeToCraft && inventoryCount(item) <= 300)
                             await IdleLisbeth(item, 50, "Exchange", "false", lisFood);
                     }
                 }
@@ -390,10 +390,10 @@ namespace OceanTripPlanner
 
                     foreach (var materia in materiaList)
 					{
-                        if (OceanTripNewSettings.Instance.LoggingMode && DataManager.GetItem((uint)materia).ItemCount() <= 200)
-                            Log($"Farming {(200-DataManager.GetItem((uint)materia).ItemCount())} of {DataManager.GetItem((uint)materia).CurrentLocaleName}.");
+                        if (OceanTripNewSettings.Instance.LoggingMode && inventoryCount(materia) <= 200)
+                            Log($"Farming {(200-inventoryCount(materia))} of {DataManager.GetItem((uint)materia).CurrentLocaleName} in increments of 20.");
 
-						while(freeToCraft && DataManager.GetItem((uint)materia).ItemCount() <= 200)
+						while(freeToCraft && inventoryCount(materia) <= 200)
                             await IdleLisbeth(materia, 20, "Exchange", "false", 0);
                     }
 				}
@@ -401,13 +401,13 @@ namespace OceanTripPlanner
 		}
 
 
-		public static async Task IdleLisbeth(int itemId, int amount, string type, string quicksynth, int food)
+		public static async Task IdleLisbeth(int itemId, int amount, string type, string quicksynth, int food, bool defaultmode = false)
 		{
 			Log($"{type}ing {amount} {DataManager.GetItem((uint)itemId).CurrentLocaleName}");
 
 			if (BotManager.Bots.FirstOrDefault(c => c.Name == "Lisbeth") != null)
 			{
-				await Lisbeth.ExecuteOrders("[{'Item':" + itemId + ",'Amount':" + amount + ",'Type':'" + type + "','QuickSynth':" + quicksynth + ",'Food':" + food + ",'Enabled': true, 'IsPrimary': true, 'AmountMode':'Absolute'}]");
+				await Lisbeth.ExecuteOrders("[{'Item':" + itemId + ",'Amount':" + amount + ",'Type':'" + type + "','QuickSynth':" + quicksynth + ",'Food':" + food + ",'Enabled': true, 'IsPrimary': true, 'AmountMode':'" + (defaultmode ? "Default" : "Absolute") + "'}]");
 
 				AtkAddonControl masterWindow = RaptureAtkUnitManager.GetWindowByName("MasterPieceSupply");
 				if (masterWindow != null)
@@ -493,6 +493,14 @@ namespace OceanTripPlanner
 				Log("Desynth complete");
 			}
 		}
+
+        public static int inventoryCount(int id)
+        {
+            int normal = (int)DataManager.GetItem((uint)id, false).ItemCount();
+            int hq = (int)DataManager.GetItem((uint)id, true).ItemCount();
+
+            return (normal + hq);
+        }
 
 		private static void Log(string text)
 		{

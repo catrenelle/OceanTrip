@@ -1,3 +1,11 @@
+06/29/2023
+----------
+
+* Fixed issue with crafting where it was crafting TOO MUCH! Apparently, users loved crafted food so much they would make over 999 of them! No more!
+
+* Previously, Ocean Trip would handle purchasing bait from various vendors. This has been removed from Ocean Trip and passed over to Lisbeth to handle.
+
+
 06/28/2023
 ----------
 

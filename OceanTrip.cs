@@ -2546,108 +2546,49 @@ namespace OceanTripPlanner
 			{
 				var baitFound = InventoryManager.FilledSlots.FirstOrDefault(x => x.RawItemId == bait);
 
-				if ((baitFound != null && ((bait == FishBait.HeavySteelJig && baitFound.Count < 5) || (bait != FishBait.HeavySteelJig && baitFound.Count < baitThreshold)))
-					|| baitFound is null)
+				if (bait == FishBait.HeavySteelJig && PassTheTime.inventoryCount((int)bait) < 5)
+				{
 					itemsToBuy.Add(bait);
-			}
+				}
+				else if (bait != FishBait.HeavySteelJig && PassTheTime.inventoryCount((int)bait) < baitThreshold)
+				{
+                    itemsToBuy.Add(bait);
+                }
+            }
 
 
 			if (itemsToBuy.Any())
 			{
-				Log("Restocking bait...");
-				if (itemsToBuy.Contains(FishBait.Ragworm) || itemsToBuy.Contains(FishBait.Krill) || itemsToBuy.Contains(FishBait.PlumpWorm))
+				Log("Restocking bait with Lisbeth...");
+
+				foreach (var bait in itemsToBuy)
 				{
-					await Navigation.GetTo(Zones.LimsaLominsaLowerDecks, new Vector3(-398.5143f, 3.099996f, 81.47765f));
-					await Coroutine.Sleep(1000);
-					GameObjectManager.GetObjectByNPCId(NPC.LimsaFishingMerchantMender).Interact();
-					await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
-					if (SelectIconString.IsOpen)
+					if (bait == FishBait.StoneflyNymph
+						|| bait == FishBait.RatTail 
+						|| bait == FishBait.GlowWorm
+						|| bait == FishBait.ShrimpCageFeeder
+						|| bait == FishBait.PillBug
+                        || bait == FishBait.Ragworm 
+						|| bait == FishBait.Krill
+						|| bait == FishBait.PlumpWorm)
 					{
-						SelectIconString.ClickSlot(0);
-						await Coroutine.Wait(5000, () => Shop.Open);
-						foreach (uint item in itemsToBuy)
-						{
-							if ((item == FishBait.Ragworm) || (item == FishBait.Krill) || (item == FishBait.PlumpWorm))
-							{
-								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
-								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
-								SelectYesno.ClickYes();
-							}
-							await Coroutine.Sleep(1000);
-						}
+						await PassTheTime.IdleLisbeth((int)bait, OceanTripNewSettings.Instance.BaitRestockAmount, "Purchase", "true", 0, true);
 					}
-					await Coroutine.Sleep(1000);
-					Shop.Close();
-					await Coroutine.Wait(5000, () => !Shop.Open);
-				}
-
-				if (itemsToBuy.Contains(FishBait.RatTail) || itemsToBuy.Contains(FishBait.GlowWorm) || itemsToBuy.Contains(FishBait.ShrimpCageFeeder) || itemsToBuy.Contains(FishBait.PillBug))
-				{
-					await Navigation.GetTo(Zones.LimsaLominsaLowerDecks, new Vector3(-247.6223f, 16.2f, 39.87407f));
-					await Coroutine.Sleep(1000);
-					GameObjectManager.GetObjectByNPCId(NPC.Syneyhil).Interact();
-					await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
-					if (SelectIconString.IsOpen)
-					{
-						SelectIconString.ClickSlot(2);
-						await Coroutine.Wait(5000, () => Shop.Open);
-						foreach (uint item in itemsToBuy)
-						{
-							if ((item == FishBait.RatTail) || (item == FishBait.GlowWorm) || (item == FishBait.ShrimpCageFeeder) || (item == FishBait.PillBug))
-							{
-								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
-								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
-								SelectYesno.ClickYes();
-							}
-							await Coroutine.Sleep(1000);
-						}
-					}
-					await Coroutine.Sleep(1000);
-					Shop.Close();
-					await Coroutine.Wait(5000, () => !Shop.Open);
-				}
-
-				if (itemsToBuy.Contains(FishBait.StoneflyNymph))
-				{
-					await Navigation.GetTo(Zones.CoerthasWesternHighlands, new Vector3(502.2982f, 212.7327f, 718.6489f));
-					await Coroutine.Sleep(1000);
-					GameObjectManager.GetObjectByNPCId(NPC.IndependentMerchantCoerthasWesternHighlands).Interact();
-					await Coroutine.Wait(3000, () => SelectIconString.IsOpen);
-					if (SelectIconString.IsOpen)
-					{
-						SelectIconString.ClickSlot(4);
-						await Coroutine.Wait(5000, () => Shop.Open);
-						foreach (uint item in itemsToBuy)
-						{
-							if (item == FishBait.StoneflyNymph)
-							{
-								Shop.Purchase(item, (baitCap - DataManager.GetItem(item).ItemCount()));
-								await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
-								SelectYesno.ClickYes();
-							}
-
-							await Coroutine.Sleep(1000);
-						}
-					}
-
-					await Coroutine.Sleep(1000);
-					Shop.Close();
-					await Coroutine.Wait(5000, () => !Shop.Open);
 				}
 
 				if (itemsToBuy.Contains(FishBait.HeavySteelJig) && Core.Me.Levels[ClassJobType.Goldsmith] >= 36)
 				{
-					await PassTheTime.IdleLisbeth((int)FishBait.HeavySteelJig, 10, "Goldsmith", "true", 0);
+					await PassTheTime.IdleLisbeth((int)FishBait.HeavySteelJig, 10, "Goldsmith", "true", 0, true);
 				}
 
 				if (itemsToBuy.Contains(FishBait.SquidStrip))
 				{
-					await PassTheTime.IdleLisbeth((int)FishBait.SquidStrip, 300, "Exchange", "true", 0);
+					await PassTheTime.IdleLisbeth((int)FishBait.SquidStrip, OceanTripNewSettings.Instance.BaitRestockAmount, "Exchange", "true", 0, true);
 				}
 
 				if (itemsToBuy.Contains(FishBait.MackerelStrip))
 				{
-					await PassTheTime.IdleLisbeth((int)FishBait.MackerelStrip, 300, "Exchange", "true", 0);
+					await PassTheTime.IdleLisbeth((int)FishBait.MackerelStrip, OceanTripNewSettings.Instance.BaitRestockAmount, "Exchange", "true", 0, true);
 				}
 
 				Log("Restocking bait complete");
