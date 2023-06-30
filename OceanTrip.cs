@@ -1184,6 +1184,8 @@ namespace OceanTripPlanner
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}
 
+				await Coroutine.Wait(5000, () => (baitWindow != null));
+
 				if (baitWindow != null)
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
