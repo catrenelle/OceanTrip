@@ -2546,8 +2546,6 @@ namespace OceanTripPlanner
 
 			foreach (var bait in baitList)
 			{
-				var baitFound = InventoryManager.FilledSlots.FirstOrDefault(x => x.RawItemId == bait);
-
 				if (bait == FishBait.HeavySteelJig && PassTheTime.inventoryCount((int)bait) < 5)
 				{
 					itemsToBuy.Add(bait);
