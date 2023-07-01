@@ -963,52 +963,6 @@ namespace OceanTripPlanner
 				Log("Time to queue up for the boat!");
 				await Navigation.GetTo(Zones.LimsaLominsaLowerDecks, new Vector3(-410.1068f, 3.999944f, 74.89863f));
 
-
-				uint edibleFood = 0;
-				bool edibleFoodHQ = false;
-
-				if (OceanTripNewSettings.Instance.OceanFood)
-				{
-					if (DataManager.GetItem((uint)OceanFood.CrabCakes, true).ItemCount() >= 1)
-					{
-						edibleFood = (uint)OceanFood.CrabCakes;
-						edibleFoodHQ = true;
-					}
-					else if (DataManager.GetItem((uint)OceanFood.CrabCakes, false).ItemCount() >= 1)
-					{
-						edibleFood = (uint)OceanFood.CrabCakes;
-						edibleFoodHQ = false;
-					}
-					else
-					{
-						edibleFood = 0;
-						edibleFoodHQ = false;
-					}
-
-					if (edibleFood > 0)
-					{
-						do
-						{
-							Log($"Eating {DataManager.GetItem(edibleFood, edibleFoodHQ).CurrentLocaleName}...");
-
-							foreach (BagSlot slot in InventoryManager.FilledSlots)
-							{
-								if (slot.RawItemId == (uint)edibleFood)
-								{
-									slot.UseItem();
-								}
-							}
-							await Coroutine.Sleep(3000);
-
-						} while (!Core.Player.Auras.Any(x => x.Id == CharacterAuras.WellFed));
-						await Coroutine.Sleep(1000);
-					}
-					else
-					{
-						Log($"Out of {DataManager.GetItem((uint)OceanFood.CrabCakes, false).CurrentLocaleName} to eat!");
-					}
-				}
-
 				await GetOnBoat();
 			}
 
@@ -1256,8 +1210,54 @@ namespace OceanTripPlanner
 		{
 			bool spectraled = false;
 
-			// Just in case you're already standing in a fishing spot. IE: Restarting botbase/rebornbuddy			
-			if (!ActionManager.CanCast(Actions.Cast, Core.Me) && FishingManager.State == FishingState.None)
+
+            uint edibleFood = 0;
+            bool edibleFoodHQ = false;
+
+            if (OceanTripNewSettings.Instance.OceanFood && !Core.Player.HasAura(CharacterAuras.WellFed))
+            {
+                if (DataManager.GetItem((uint)OceanFood.CrabCakes, true).ItemCount() >= 1)
+                {
+                    edibleFood = (uint)OceanFood.CrabCakes;
+                    edibleFoodHQ = true;
+                }
+                else if (DataManager.GetItem((uint)OceanFood.CrabCakes, false).ItemCount() >= 1)
+                {
+                    edibleFood = (uint)OceanFood.CrabCakes;
+                    edibleFoodHQ = false;
+                }
+                else
+                {
+                    edibleFood = 0;
+                    edibleFoodHQ = false;
+                }
+
+                if (edibleFood > 0)
+                {
+                    do
+                    {
+                        Log($"Eating {DataManager.GetItem(edibleFood, edibleFoodHQ).CurrentLocaleName}...");
+
+                        foreach (BagSlot slot in InventoryManager.FilledSlots)
+                        {
+                            if (slot.RawItemId == (uint)edibleFood)
+                            {
+                                slot.UseItem();
+                            }
+                        }
+                        await Coroutine.Sleep(3000);
+
+                    } while (!Core.Player.Auras.Any(x => x.Id == CharacterAuras.WellFed));
+                    await Coroutine.Sleep(1000);
+                }
+                else
+                {
+                    Log($"Out of {DataManager.GetItem((uint)OceanFood.CrabCakes, false).CurrentLocaleName} to eat!");
+                }
+            }
+
+            // Just in case you're already standing in a fishing spot. IE: Restarting botbase/rebornbuddy			
+            if (!ActionManager.CanCast(Actions.Cast, Core.Me) && FishingManager.State == FishingState.None)
 			{
                 FFXIV_Databinds.Instance.RefreshBait();
 				FFXIV_Databinds.Instance.RefreshAchievements();

@@ -1,3 +1,11 @@
+07/01/2023
+----------
+
+* Ocean Food (Crab Cakes) will only be eaten once you're on the boat so that it doesn't go to waste.
+
+* Added additional verbose logging for all spectral blue fish attempts. If verbose logging is enabled, you should now see exactly what it's doing to catch a blue fish (assuming you never caught them before).
+
+
 06/29/2023
 ----------
 
