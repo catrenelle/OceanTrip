@@ -1127,6 +1127,12 @@ namespace OceanTripPlanner
 		{
 			if ((baitId != FishingManager.SelectedBaitItemId) && (DataManager.GetItem((uint)baitId).RequiredLevel <= Core.Me.ClassLevel))
 			{
+				int sleepTimer = 300;
+
+				// Increase sleep timer for if running low fps
+				if (TreeRoot.TicksPerSecond < 17)
+					sleepTimer = 1200;
+
                 AtkAddonControl baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				if (baitWindow == null)
 				{
@@ -1134,17 +1140,15 @@ namespace OceanTripPlanner
 						Log($"Opening Bait Window.");
 
                     ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
-					await Coroutine.Sleep(300);
+					await Coroutine.Sleep(sleepTimer);
 					baitWindow = RaptureAtkUnitManager.GetWindowByName("Bait");
 				}
-
-				await Coroutine.Wait(5000, () => (baitWindow != null));
 
 				if (baitWindow != null)
 				{
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					Log($"Applied {DataManager.GetItem((uint)baitId).CurrentLocaleName}");
-					await Coroutine.Sleep(300);
+					await Coroutine.Sleep(sleepTimer-300);
 					ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
                     
 					if (OceanTripNewSettings.Instance.LoggingMode)
@@ -1820,12 +1824,12 @@ namespace OceanTripPlanner
 								))
 								await ChangeBait(FishBait.Ragworm);
 
-							else if (location == "galadion" || location == "rhotano" || location == "sound" || location == "oneriver")
-								await ChangeBait(FishBait.PlumpWorm);
+							else if (location == "galadion" || location == "rhotano" || location == "sound" || location == "oneriver" || location == "sirensong")
+                                await ChangeBait(FishBait.PlumpWorm);
 							else if (location == "south" || location == "blood")
 								await ChangeBait(FishBait.Krill);
-							else if (location == "north" || location == "ciel" || location == "sirensong" || location == "kugane" || location == "rubysea")
-								await ChangeBait(FishBait.Ragworm);
+							else if (location == "north" || location == "ciel" || location == "kugane" || location == "rubysea")
+								await ChangeBait(FishBait.Ragworm);	
 							else
 								await ChangeBait(baitId);
 
@@ -2491,9 +2495,10 @@ namespace OceanTripPlanner
 
             spectraled = false;
 			await Coroutine.Sleep(2000); // DO NOT CHANGE
+            //await Coroutine.Yield();
 
-			//Log("Waiting for next stop...");
-			if (FishingManager.State != FishingState.None)
+            //Log("Waiting for next stop...");
+            if (FishingManager.State != FishingState.None)
 			{
 				ActionManager.DoAction(Actions.Quit, Core.Me);
 			}

@@ -49,7 +49,7 @@ namespace OceanTripPlanner
                 if (time.Minute == 59)
                     time = time.AddMinutes(1);
 
-                var schedule = OceanTrip.GetSchedule(time, route);
+                var schedule = OceanTrip.GetSchedule(time.AddHours(-1), route);
                 int posOnSchedule = 0;
 
                 // Build the schedule!
