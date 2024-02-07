@@ -11,14 +11,16 @@ using ff14bot.NeoProfiles;
 using ff14bot.Helpers;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
-using OceanTripPlanner.Helpers;
 using OceanTripPlanner.Definitions;
 using System.IO;
 using System.Windows.Documents;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using LlamaLibrary.Helpers;
+using LlamaLibrary.Helpers.WorldTravel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using Lisbeth = OceanTripPlanner.Helpers.Lisbeth;
 
 namespace OceanTripPlanner
 {
@@ -49,12 +51,12 @@ namespace OceanTripPlanner
                 //Resume last order
                 try
                 {
-                    if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") && OceanTripNewSettings.Instance.resumeLisbeth)
+                    if (freeToCraft && File.Exists($"Settings\\{Core.Me.Name}_World{WorldHelper.HomeWorldId}\\lisbeth-resume.json") && OceanTripNewSettings.Instance.resumeLisbeth)
 					{
-							if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json") != "[]")
+							if (File.ReadAllText($"Settings\\{Core.Me.Name}_World{WorldHelper.HomeWorldId}\\lisbeth-resume.json") != "[]")
 							{
 								Log("Resuming last Lisbeth order.");
-								await Lisbeth.ExecuteOrders(File.ReadAllText($"Settings\\{Core.Me.Name}_World{OceanTrip.HomeWorld}\\lisbeth-resume.json"));
+								await Lisbeth.ExecuteOrders(File.ReadAllText($"Settings\\{Core.Me.Name}_World{WorldHelper.HomeWorldId}\\lisbeth-resume.json"));
 							}
 					}
                 }
