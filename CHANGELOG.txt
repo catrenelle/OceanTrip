@@ -1,3 +1,13 @@
+07/07/2024
+----------
+
+* Basic Dawntrail support is here, restoring ocean fishing.
+
+* Idle Activities may not work, and numerous other features are still in need of review/updates due to changes to Crafting Currencies and other dependencies such as Lisbeth. It's recommended to only use this for leveling fishing from 90-100 and catching those ocean fishies at this time. 
+
+* IMPORTANT: It is not recommended to run this unattended since the idle activities may not function properly.
+
+
 07/01/2023
 ----------
 

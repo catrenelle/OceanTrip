@@ -13,8 +13,13 @@ namespace OceanTrip
     // Borrowered from nt153133 - https://github.com/nt153133/LlamaPlugins
     public static class LlamaElements
     {
-        private static int offset0 = 458;
-        private static int offset2 = 352;
+#if RB_CN
+        private const int offset0 = 0x1CA;
+        private const int offset2 = 0x160;
+#else
+        private const int offset0 = 0x1DA; 
+        private const int offset2 = 0x170; 
+#endif
 
         public static TwoInt[] ___Elements(string name)
         {

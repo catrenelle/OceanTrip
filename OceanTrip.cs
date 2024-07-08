@@ -1146,7 +1146,11 @@ namespace OceanTripPlanner
 
 				if (baitWindow != null)
 				{
+					#if RB_CN
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
+					#else
+					baitWindow.SendAction(1, 1, baitId);
+					#endif
 					Log($"Applied {DataManager.GetItem((uint)baitId).CurrentLocaleName}");
 					await Coroutine.Sleep(sleepTimer-300);
 					ActionManager.DoAction(Actions.OpenCloseBaitMenu, GameObjectManager.LocalPlayer);
