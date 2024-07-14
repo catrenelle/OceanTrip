@@ -1,3 +1,27 @@
+07/13/2024
+----------
+
+* Converted project to .NET 8 to align with the rest of RebornBuddy.
+
+* Phased out the old Purple/White Scrips in favor of Purple/Orange Scrips. 
+
+* Added the ability to farm Materia XI and Materia XII. You will need to have completed the appropriate unlock quest for this to work.
+
+* Crafting food changed from Calamari Ripieni to Rroneek Steak
+
+* Ocean Fishing food changed from Crab Cakes to Nasi Goreng
+
+* Raid Foods updated to Creamy Alpaca Pasta, Broccoli and Spinach Saute, Vegetable Soup, and Mesquite Soup.
+
+* Raid Potions updated to the Grade 1 Gemdraught's
+
+* Mythloam Aethersand, Mythroot Aethersand, and Mythbrine Aethersand has been added to the Athersand list, replacing Dusklight, Dawnlight, and Everbright Aethersands.
+
+* Achievements are not currently showing as being obtained in the UI. This will get fixed at a later time as this is purely a cosmetic/aesthetic feature for tracking.
+
+* Please Note: No changes have been to the fishing logic itself, so no abilities from 91+ will be used. This is expected. Optimization will come at a later date. In addition, expect changes to these foods with upcoming patches and newer master books.
+
+
 07/07/2024
 ----------
 

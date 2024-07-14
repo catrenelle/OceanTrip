@@ -1224,14 +1224,14 @@ namespace OceanTripPlanner
 
             if (OceanTripNewSettings.Instance.OceanFood && !Core.Player.HasAura(CharacterAuras.WellFed))
             {
-                if (DataManager.GetItem((uint)OceanFood.CrabCakes, true).ItemCount() >= 1)
+                if (DataManager.GetItem((uint)OceanFood.NasiGoreng, true).ItemCount() >= 1)
                 {
-                    edibleFood = (uint)OceanFood.CrabCakes;
+                    edibleFood = (uint)OceanFood.NasiGoreng;
                     edibleFoodHQ = true;
                 }
-                else if (DataManager.GetItem((uint)OceanFood.CrabCakes, false).ItemCount() >= 1)
+                else if (DataManager.GetItem((uint)OceanFood.NasiGoreng, false).ItemCount() >= 1)
                 {
-                    edibleFood = (uint)OceanFood.CrabCakes;
+                    edibleFood = (uint)OceanFood.NasiGoreng;
                     edibleFoodHQ = false;
                 }
                 else
@@ -1260,7 +1260,7 @@ namespace OceanTripPlanner
                 }
                 else
                 {
-                    Log($"Out of {DataManager.GetItem((uint)OceanFood.CrabCakes, false).CurrentLocaleName} to eat!");
+                    Log($"Out of {DataManager.GetItem((uint)OceanFood.NasiGoreng, false).CurrentLocaleName} to eat!");
                 }
             }
 
@@ -2764,11 +2764,11 @@ namespace OceanTripPlanner
 		private async Task EmptyScrips(int itemId, int scripThreshold)
 		{
 			//TODO: Buy other stuff with scrip
-			if (SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) > scripThreshold)
+			if (SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.PurpleGatherersScrips) > scripThreshold)
 			{
-				Logging.Write(Colors.Aqua, $"[Ocean Trip] Purchasing {(int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) / 20} Hi-Cordials!");
+				Logging.Write(Colors.Aqua, $"[Ocean Trip] Purchasing {(int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.PurpleGatherersScrips) / 20} Hi-Cordials!");
 
-                await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.WhiteGatherersScrips) / 20, "Exchange", "false", 0);
+                await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.PurpleGatherersScrips) / 20, "Exchange", "false", 0);
 			}
 
         }
