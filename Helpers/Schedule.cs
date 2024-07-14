@@ -43,13 +43,13 @@ namespace OceanTripPlanner
             for (int i = 0; i < amount; i++)
             {
                 var nextBoat = OceanTrip.TimeUntilNextBoat();
-                DateTime time = DateTime.Now.AddMinutes(nextBoat.TotalMinutes + (i * 120));
+                DateTime time = DateTime.Now.AddMinutes((nextBoat.TotalMinutes - 120) + (i * 120));
 
                 // Sometimes a mismatch can happen between when the timespan was captured and when the datetime is generated
                 if (time.Minute == 59)
                     time = time.AddMinutes(1);
 
-                var schedule = OceanTrip.GetSchedule(time.AddHours(-1), route);
+                var schedule = OceanTrip.GetSchedule(time, route);
                 int posOnSchedule = 0;
 
                 // Build the schedule!

@@ -39,13 +39,13 @@ namespace OceanTripPlanner
 
                 if (OceanTripNewSettings.Instance.useCraftingFood)
                 {
-                    if (DataManager.GetItem((uint)FoodList.CalamariRipieni, true).ItemCount() > 0)
+                    if (DataManager.GetItem((uint)FoodList.RroneekSteak, true).ItemCount() > 0)
                     {
-                        lisFood = FoodList.CalamariRipieni + hqOffset; // HQ
+                        lisFood = FoodList.RroneekSteak + hqOffset; // HQ
                         hqFood = true;
                     }
                     else
-                        lisFood = FoodList.CalamariRipieni; // Reg
+                        lisFood = FoodList.RroneekSteak; // Reg
                 }
 
                 //Resume last order
@@ -150,8 +150,9 @@ namespace OceanTripPlanner
 					var currencyList = new List<int>();
                     if (OceanTripNewSettings.Instance.refillScrips)
                     {
-                        currencyList.Add((int)Currency.WhiteCraftersScrips);
+                        //currencyList.Add((int)Currency.WhiteCraftersScrips);
                         currencyList.Add((int)Currency.PurpleCraftersScrips);
+                        currencyList.Add((int)Currency.OrangeCraftersScrips);
                     }
 
 					foreach (var currency in currencyList)
@@ -298,6 +299,32 @@ namespace OceanTripPlanner
                 if (freeToCraft)
 				{
 					var materiaList = new List<int>();
+                    // Grade XII
+                    if (OceanTripNewSettings.Instance.materiaxii1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxii[0]);
+                    if (OceanTripNewSettings.Instance.materiaxii2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxii[1]);
+                    if (OceanTripNewSettings.Instance.materiaxii3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxii[2]);
+                    if (OceanTripNewSettings.Instance.materiaxii4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxii[3]);
+                    if (OceanTripNewSettings.Instance.materiaxii5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxii[4]);
+                    if (OceanTripNewSettings.Instance.materiaxii6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxii[5]);
+                    // Grade XI
+                    if (OceanTripNewSettings.Instance.materiaxi1)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[0]);
+                    if (OceanTripNewSettings.Instance.materiaxi2)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[1]);
+                    if (OceanTripNewSettings.Instance.materiaxi3)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[2]);
+                    if (OceanTripNewSettings.Instance.materiaxi4)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[3]);
+                    if (OceanTripNewSettings.Instance.materiaxi5)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[4]);
+                    if (OceanTripNewSettings.Instance.materiaxi6)
+                        materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[5]);
                     // Grade X
                     if (OceanTripNewSettings.Instance.materiax1)
                         materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[0]);

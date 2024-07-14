@@ -1,200 +1,35 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{01EB32E4-E9D9-45FB-A178-C84A37513002}</ProjectGuid>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Ocean_Trip</RootNamespace>
-    <AssemblyName>Ocean Trip</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GreyMagic">
       <HintPath>..\..\GreyMagic.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="RebornBuddy">
-      <HintPath>..\..\RebornBuddy.exe</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Definitions\FFXIV_Definitions.cs" />
-    <Compile Include="Definitions\OceanFishing.cs" />
-    <Compile Include="Helpers\Achievements.cs" />
-    <Compile Include="Helpers\FFXIV_Databinds.cs" />
-    <Compile Include="OceanTripNewSettings.cs" />
-    <Compile Include="UI\Colors.cs" />
-    <Compile Include="UI\Controls\RadioButtonFlat.cs">
+    <Compile Update="UI\Controls\RadioButtonFlat.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\Controls\RadioButtonFlat.Designer.cs">
-      <DependentUpon>RadioButtonFlat.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\ToggleButton.cs">
+    <Compile Update="UI\Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\Forms\FormCurrentRoute.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\FormCurrentRoute.Designer.cs">
-      <DependentUpon>FormCurrentRoute.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\FormSchedule.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\FormSchedule.Designer.cs">
-      <DependentUpon>FormSchedule.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\FormOceanSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\FormOceanSettings.Designer.cs">
-      <DependentUpon>FormOceanSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\FormIdleActivities.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\FormIdleActivities.Designer.cs">
-      <DependentUpon>FormIdleActivities.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\FormSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\FormSettings.Designer.cs">
-      <DependentUpon>FormSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Helpers\FishingLog.cs" />
-    <Compile Include="Helpers\LlamaMarket.cs" />
-    <Compile Include="Helpers\LlamaElements.cs" />
-    <Compile Include="Helpers\Schedule.cs" />
-    <Compile Include="PassTheTime.cs" />
-    <Compile Include="Helpers\Lisbeth.cs" />
-    <Compile Include="Helpers\Navigation.cs" />
-    <Compile Include="OceanTrip.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\GrayScale.cs" />
-    <Compile Include="UI\UIElements.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Forms\FormCurrentRoute.resx">
-      <DependentUpon>FormCurrentRoute.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\FormSchedule.resx">
-      <DependentUpon>FormSchedule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\FormOceanSettings.resx">
-      <DependentUpon>FormOceanSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\FormIdleActivities.resx">
-      <DependentUpon>FormIdleActivities.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\FormSettings.resx">
-      <DependentUpon>FormSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SettingsForm.resx">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" Version="1.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\Quest Behaviors\__LlamaLibrary\LlamaLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Quest Behaviors\__LlamaLibrary\LlamaLibrary.csproj">
-      <Project>{196ee308-0205-4cc4-b449-51064f7e9960}</Project>
-      <Name>LlamaLibrary</Name>
-    </ProjectReference>
+    <PackageReference Include="WindowsBase" Version="4.6.1055.0" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\OceanSettings.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\IdleStuff.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Schedule.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CurrentRoute.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Lisbeth.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\LlamaMarket Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\OceanTripNewLogo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\icons.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\exit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\sunset.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\day.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\night.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\blank.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

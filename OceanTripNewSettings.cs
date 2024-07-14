@@ -26,7 +26,7 @@ namespace OceanTripPlanner
 
     public enum OceanFood : int
     {
-        CrabCakes = 30481,
+        NasiGoreng = 44078,
         None = 0
     }
 
@@ -575,6 +575,212 @@ namespace OceanTripPlanner
             }
         }
 
+
+        private bool _materiaxii1;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxii1
+        {
+            get { return _materiaxii1; }
+            set
+            {
+                if (_materiaxii1 != value)
+                {
+                    _materiaxii1 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxii1");
+                }
+            }
+        }
+
+
+        private bool _materiaxii2;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxii2
+        {
+            get { return _materiaxii2; }
+            set
+            {
+                if (_materiaxii2 != value)
+                {
+                    _materiaxii2 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxii2");
+                }
+            }
+        }
+
+        private bool _materiaxii3;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxii3
+        {
+            get { return _materiaxii3; }
+            set
+            {
+                if (_materiaxii3 != value)
+                {
+                    _materiaxii3 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxii3");
+                }
+            }
+        }
+
+        private bool _materiaxii4;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxii4
+        {
+            get { return _materiaxii4; }
+            set
+            {
+                if (_materiaxii4 != value)
+                {
+                    _materiaxii4 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxii4");
+                }
+            }
+        }
+
+        private bool _materiaxii5;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxii5
+        {
+            get { return _materiaxii5; }
+            set
+            {
+                if (_materiaxii5 != value)
+                {
+                    _materiaxii5 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxii5");
+                }
+            }
+        }
+
+        private bool _materiaxii6;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxii6
+        {
+            get { return _materiaxii6; }
+            set
+            {
+                if (_materiaxii6 != value)
+                {
+                    _materiaxii6 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxii6");
+                }
+            }
+        }
+
+        private bool _materiaxi1;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxi1
+        {
+            get { return _materiaxi1; }
+            set
+            {
+                if (_materiaxi1 != value)
+                {
+                    _materiaxi1 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxi1");
+                }
+            }
+        }
+
+
+        private bool _materiaxi2;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxi2
+        {
+            get { return _materiaxi2; }
+            set
+            {
+                if (_materiaxi2 != value)
+                {
+                    _materiaxi2 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxi2");
+                }
+            }
+        }
+
+        private bool _materiaxi3;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxi3
+        {
+            get { return _materiaxi3; }
+            set
+            {
+                if (_materiaxi3 != value)
+                {
+                    _materiaxi3 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxi3");
+                }
+            }
+        }
+
+        private bool _materiaxi4;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxi4
+        {
+            get { return _materiaxi4; }
+            set
+            {
+                if (_materiaxi4 != value)
+                {
+                    _materiaxi4 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxi4");
+                }
+            }
+        }
+
+        private bool _materiaxi5;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxi5
+        {
+            get { return _materiaxi5; }
+            set
+            {
+                if (_materiaxi5 != value)
+                {
+                    _materiaxi5 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxi5");
+                }
+            }
+        }
+
+        private bool _materiaxi6;
+        [Setting]
+        [DefaultValueAttribute(false)]
+        public bool materiaxi6
+        {
+            get { return _materiaxi6; }
+            set
+            {
+                if (_materiaxi6 != value)
+                {
+                    _materiaxi6 = value;
+                    Save();
+                    NotifyPropertyChanged("materiaxi6");
+                }
+            }
+        }
 
         private bool _materiax1;
         [Setting]

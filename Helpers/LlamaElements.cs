@@ -20,7 +20,6 @@ namespace OceanTrip
         private const int offset0 = 0x1DA; 
         private const int offset2 = 0x170; 
 #endif
-
         public static TwoInt[] ___Elements(string name)
         {
 

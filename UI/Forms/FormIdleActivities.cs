@@ -141,6 +141,38 @@ namespace Ocean_Trip
             switch (selectedIndex)
             {
                 case 0:
+                    materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxii1", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxii2", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxii3", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia4Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxii4", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia5Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxii5", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia6Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxii6", false, DataSourceUpdateMode.OnPropertyChanged);
+
+                    materia1Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxii[0]].CurrentLocaleName;
+                    materia2Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxii[1]].CurrentLocaleName;
+                    materia3Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxii[2]].CurrentLocaleName;
+                    materia4Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxii[3]].CurrentLocaleName;
+                    materia5Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxii[4]].CurrentLocaleName;
+                    materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxii[5]].CurrentLocaleName;
+                    break;
+
+                case 1:
+                    materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxi1", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxi2", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxi3", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia4Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxi4", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia5Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxi5", false, DataSourceUpdateMode.OnPropertyChanged);
+                    materia6Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaxi6", false, DataSourceUpdateMode.OnPropertyChanged);
+
+                    materia1Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxi[0]].CurrentLocaleName;
+                    materia2Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxi[1]].CurrentLocaleName;
+                    materia3Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxi[2]].CurrentLocaleName;
+                    materia4Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxi[3]].CurrentLocaleName;
+                    materia5Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxi[4]].CurrentLocaleName;
+                    materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaxi[5]].CurrentLocaleName;
+                    break;
+
+                case 2:
                     materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiax1", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiax2", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiax3", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -156,7 +188,7 @@ namespace Ocean_Trip
                     materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiax[5]].CurrentLocaleName;
                     break;
 
-                case 1:
+                case 3:
                     materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaix1", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaix2", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaix3", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -172,7 +204,7 @@ namespace Ocean_Trip
                     materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaix[5]].CurrentLocaleName;
                     break;
 
-                case 2:
+                case 4:
                     materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaviii1", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaviii2", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaviii3", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -188,7 +220,7 @@ namespace Ocean_Trip
                     materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiaviii[5]].CurrentLocaleName;
                     break;
 
-                case 3:
+                case 5:
                     materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiavii1", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiavii2", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiavii3", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -204,7 +236,7 @@ namespace Ocean_Trip
                     materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiavii[5]].CurrentLocaleName;
                     break;
 
-                case 4:
+                case 6:
                     materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiavi1", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiavi2", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiavi3", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -220,7 +252,7 @@ namespace Ocean_Trip
                     materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiavi[5]].CurrentLocaleName;
                     break;
 
-                case 5:
+                case 7:
                     materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiav1", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiav2", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiav3", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -236,7 +268,7 @@ namespace Ocean_Trip
                     materia6Label.Text = DataManager.ItemCache[(uint)OceanTripPlanner.Definitions.Defaults.materiav[5]].CurrentLocaleName;
                     break;
 
-                case 6:
+                case 8:
                     materia1Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaiv1", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia2Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaiv2", false, DataSourceUpdateMode.OnPropertyChanged);
                     materia3Toggle.DataBindings.Add("Checked", OceanTripPlanner.OceanTripNewSettings.Instance, "materiaiv3", false, DataSourceUpdateMode.OnPropertyChanged);

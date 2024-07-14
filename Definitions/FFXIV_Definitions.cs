@@ -22,31 +22,51 @@ namespace OceanTripPlanner.Definitions
 
         public static readonly int[] aethersands = new int[]
         {
-            Material.DusklightAethersand,
-            Material.DawnlightAethersand,
-            Material.EverbrightAethersand,
             Material.EverbornAethersand,
             Material.EverdeepAethersand,
             Material.EndstoneAethersand,
             Material.EndwoodAethersand,
             Material.EndtideAethersand,
-            Material.EarthbreakAethersand
+            Material.EarthbreakAethersand,
+            Material.MythloamAethersand,
+            Material.MythrootAethersand,
+            Material.MythbrineAethersand
         };
 
         public static readonly int[] raidfood = new int[]
         {
-            FoodList.HoneyedDragonfruit,
-            FoodList.BabaGhanoush,
-            FoodList.BakedEggplant,
-            FoodList.CaviarCanapes
-        };
+            FoodList.CreamyAlpacaPasta,
+            FoodList.BroccoliSpinachSaute,
+            FoodList.VegetableSoup,
+            FoodList.MesquiteSoup
+    };
 
         public static readonly int[] raidpotions = new int[]
         {
-            Potions.Grade8TinctureStrength,
-            Potions.Grade8TinctureDexterity,
-            Potions.Grade8TinctureIntelligence,
-            Potions.Grade8TinctureMind
+            Potions.Grade1GemdraughtStrength,
+            Potions.Grade1GemdraughtDexterity,
+            Potions.Grade1GemdraughtIntelligence,
+            Potions.Grade1GemdraughtMind
+        };
+
+        public static readonly int[] materiaxii = new int[]
+        {
+            Materia.CrafterCompetenceXII,
+            Materia.CrafterCunningXII,
+            Materia.CrafterCommandXII,
+            Materia.GatherGuerdonXII,
+            Materia.GatherGuileXII,
+            Materia.GatherGraspXII
+        };
+
+        public static readonly int[] materiaxi = new int[]
+        {
+            Materia.CrafterCompetenceXI,
+            Materia.CrafterCunningXI,
+            Materia.CrafterCommandXI,
+            Materia.GatherGuerdonXI,
+            Materia.GatherGuileXI,
+            Materia.GatherGraspXI
         };
 
         public static readonly int[] materiax = new int[]
@@ -205,7 +225,8 @@ namespace OceanTripPlanner.Definitions
     public enum Currency : uint
     {
         WhiteCraftersScrips = 25199,
-        PurpleCraftersScrips = 33913
+        PurpleCraftersScrips = 33913,
+        OrangeCraftersScrips = 41784
     }
 
     public static class FoodList
@@ -231,6 +252,15 @@ namespace OceanTripPlanner.Definitions
         public static int BabaGhanoush = 39871;
         public static int BakedEggplant = 39872;
         public static int CaviarCanapes = 39876;
+
+
+        public static int NasiGoreng = 44078;
+        public static int RroneekSteak = 44091;
+
+        public static int CreamyAlpacaPasta = 44087;
+        public static int BroccoliSpinachSaute = 44090;
+        public static int VegetableSoup = 44096; 
+        public static int MesquiteSoup = 44098;
     }
 
     public static class Materia
@@ -292,6 +322,22 @@ namespace OceanTripPlanner.Definitions
         public static int CrafterCompetenceX = 33938;
         public static int CrafterCunningX = 33939;
         public static int CrafterCommandX = 33940;
+
+        public static int GatherGuerdonXI = 41762;
+        public static int GatherGuileXI = 41763;
+        public static int GatherGraspXI = 41764;
+
+        public static int CrafterCompetenceXI = 41765;
+        public static int CrafterCunningXI = 41766;
+        public static int CrafterCommandXI = 41767;
+
+        public static int GatherGuerdonXII = 41775;
+        public static int GatherGuileXII = 41776;
+        public static int GatherGraspXII = 41777;
+
+        public static int CrafterCompetenceXII = 41778;
+        public static int CrafterCunningXII = 41779;
+        public static int CrafterCommandXII = 41780;
     }
 
     public static class Material
@@ -312,6 +358,10 @@ namespace OceanTripPlanner.Definitions
         public static int EndtideAethersand = 36226;
         public static int ImmutableSolution = 37284;
         public static int EarthbreakAethersand = 38936;
+
+        public static int MythloamAethersand = 44036;
+        public static int MythrootAethersand = 44037;
+        public static int MythbrineAethersand = 44038;
     }
 
     public static class NPC
@@ -339,6 +389,11 @@ namespace OceanTripPlanner.Definitions
         public static int Grade8TinctureDexterity = 39728;
         public static int Grade8TinctureIntelligence = 39730;
         public static int Grade8TinctureMind = 39731;
+
+        public static int Grade1GemdraughtStrength = 44157;
+        public static int Grade1GemdraughtDexterity = 44158;
+        public static int Grade1GemdraughtIntelligence = 44160;
+        public static int Grade1GemdraughtMind = 44161;
     }
 
     public static class Weather

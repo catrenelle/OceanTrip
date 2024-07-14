@@ -29,1705 +29,1821 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormOceanSettings));
-            this.label1 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonFlat6 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.radioButtonFlat5 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.radioButtonFlat4 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.radioButtonFlat3 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.radioButtonFlat2 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.radioButtonFlat1 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.indigoMantas = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.radioButtonFlat9 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.radioButtonFlat8 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.radioButtonFlat7 = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.assistedFishingLabel = new System.Windows.Forms.Label();
-            this.assistedFishingToggle = new Ocean_Trip.UI.Controls.ToggleButton();
-            this.fishingPriorityGroupBox = new System.Windows.Forms.GroupBox();
-            this.ignoreBoat = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.achievements = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.fishingLog = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.points = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.automatic = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.fishingRoute = new System.Windows.Forms.GroupBox();
-            this.ruby = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.indigo = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.lateQueue = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.fishFoodToggle = new Ocean_Trip.UI.Controls.ToggleButton();
-            this.lateQueueToggle = new Ocean_Trip.UI.Controls.ToggleButton();
-            this.fullGPAction = new System.Windows.Forms.GroupBox();
-            this.GPActionChum = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.GPActionDoubleHook = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.GPActionNothing = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.patienceAlways = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.patienceSpectralOnly = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.patienceDefaultLogic = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.fishExchangeSell = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.fishExchangeDesynthesize = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.fishExchangeNone = new Ocean_Trip.UI.Controls.RadioButtonFlat();
-            this.tackleboxGroup = new System.Windows.Forms.GroupBox();
-            this.stoneflynymphLabel = new System.Windows.Forms.Label();
-            this.mackerelstripLabel = new System.Windows.Forms.Label();
-            this.squidstripLabel = new System.Windows.Forms.Label();
-            this.pillbugLabel = new System.Windows.Forms.Label();
-            this.shrimpcagefeederLabel = new System.Windows.Forms.Label();
-            this.heavysteeljigLabel = new System.Windows.Forms.Label();
-            this.glowwormLabel = new System.Windows.Forms.Label();
-            this.rattailLabel = new System.Windows.Forms.Label();
-            this.plumpwormLabel = new System.Windows.Forms.Label();
-            this.krillLabel = new System.Windows.Forms.Label();
-            this.ragwormLabel = new System.Windows.Forms.Label();
-            this.pictureBoxStoneflyNymph = new System.Windows.Forms.PictureBox();
-            this.pictureBoxMackerelStrip = new System.Windows.Forms.PictureBox();
-            this.pictureBoxShrimpCageFeeder = new System.Windows.Forms.PictureBox();
-            this.pictureBoxPillBug = new System.Windows.Forms.PictureBox();
-            this.pictureBoxSquidStrip = new System.Windows.Forms.PictureBox();
-            this.pictureBoxHeavySteelJig = new System.Windows.Forms.PictureBox();
-            this.pictureBoxGlowWorm = new System.Windows.Forms.PictureBox();
-            this.pictureBoxRatTail = new System.Windows.Forms.PictureBox();
-            this.pictureBoxPlumpWorm = new System.Windows.Forms.PictureBox();
-            this.pictureBoxKrill = new System.Windows.Forms.PictureBox();
-            this.pictureBoxRagworm = new System.Windows.Forms.PictureBox();
-            this.numericRestockAmount = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.numericRestockThreshold = new System.Windows.Forms.NumericUpDown();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.Overall3MLabel = new System.Windows.Forms.Label();
-            this.overall3mPicture = new System.Windows.Forms.CheckBox();
-            this.Overall1MLabel = new System.Windows.Forms.Label();
-            this.overall1mPicture = new System.Windows.Forms.CheckBox();
-            this.Overall500kLabel = new System.Windows.Forms.Label();
-            this.overall500kPicture = new System.Windows.Forms.CheckBox();
-            this.Overall100kLabel = new System.Windows.Forms.Label();
-            this.overall100kPicture = new System.Windows.Forms.CheckBox();
-            this.Ruby16kLabel = new System.Windows.Forms.Label();
-            this.ruby16kPicture = new System.Windows.Forms.CheckBox();
-            this.Ruby10kLabel = new System.Windows.Forms.Label();
-            this.ruby10kPicture = new System.Windows.Forms.CheckBox();
-            this.Ruby5kLabel = new System.Windows.Forms.Label();
-            this.ruby5kPicture = new System.Windows.Forms.CheckBox();
-            this.SquidLabel = new System.Windows.Forms.Label();
-            this.squidPicture = new System.Windows.Forms.CheckBox();
-            this.ShellfishLabel = new System.Windows.Forms.Label();
-            this.shellfishPicture = new System.Windows.Forms.CheckBox();
-            this.ShrimpLabel = new System.Windows.Forms.Label();
-            this.shrimpPicture = new System.Windows.Forms.CheckBox();
-            this.Indigo20kLabel = new System.Windows.Forms.Label();
-            this.indigo20kPicture = new System.Windows.Forms.CheckBox();
-            this.Indigo16kLabel = new System.Windows.Forms.Label();
-            this.indigo16kPicture = new System.Windows.Forms.CheckBox();
-            this.Indigo10kLabel = new System.Windows.Forms.Label();
-            this.indigo10kPicture = new System.Windows.Forms.CheckBox();
-            this.Indigo5kLabel = new System.Windows.Forms.Label();
-            this.indigo5kPicture = new System.Windows.Forms.CheckBox();
-            this.CrabsLabel = new System.Windows.Forms.Label();
-            this.crabsPicture = new System.Windows.Forms.CheckBox();
-            this.BalloonsLabel = new System.Windows.Forms.Label();
-            this.balloonsPicture = new System.Windows.Forms.CheckBox();
-            this.SeadragonLabel = new System.Windows.Forms.Label();
-            this.seadragonPicture = new System.Windows.Forms.CheckBox();
-            this.JellyfishLabel = new System.Windows.Forms.Label();
-            this.jellyfishPicture = new System.Windows.Forms.CheckBox();
-            this.SharksLabel = new System.Windows.Forms.Label();
-            this.sharksPicture = new System.Windows.Forms.CheckBox();
-            this.OctopodsLabel = new System.Windows.Forms.Label();
-            this.octopodsPicture = new System.Windows.Forms.CheckBox();
-            this.mantasLabel = new System.Windows.Forms.Label();
-            this.mantasPicture = new System.Windows.Forms.CheckBox();
-            this.exitIcon = new System.Windows.Forms.PictureBox();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.fishingPriorityGroupBox.SuspendLayout();
-            this.fishingRoute.SuspendLayout();
-            this.lateQueue.SuspendLayout();
-            this.fullGPAction.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.tackleboxGroup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStoneflyNymph)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMackerelStrip)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShrimpCageFeeder)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPillBug)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSquidStrip)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxHeavySteelJig)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGlowWorm)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRatTail)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPlumpWorm)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxKrill)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRagworm)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericRestockAmount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericRestockThreshold)).BeginInit();
-            this.groupBox7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.exitIcon)).BeginInit();
-            this.SuspendLayout();
+            label1 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            radioButtonFlat6 = new UI.Controls.RadioButtonFlat();
+            radioButtonFlat5 = new UI.Controls.RadioButtonFlat();
+            radioButtonFlat4 = new UI.Controls.RadioButtonFlat();
+            radioButtonFlat3 = new UI.Controls.RadioButtonFlat();
+            radioButtonFlat2 = new UI.Controls.RadioButtonFlat();
+            radioButtonFlat1 = new UI.Controls.RadioButtonFlat();
+            indigoMantas = new UI.Controls.RadioButtonFlat();
+            groupBox2 = new System.Windows.Forms.GroupBox();
+            radioButtonFlat9 = new UI.Controls.RadioButtonFlat();
+            radioButtonFlat8 = new UI.Controls.RadioButtonFlat();
+            radioButtonFlat7 = new UI.Controls.RadioButtonFlat();
+            groupBox3 = new System.Windows.Forms.GroupBox();
+            assistedFishingLabel = new System.Windows.Forms.Label();
+            assistedFishingToggle = new UI.Controls.ToggleButton();
+            fishingPriorityGroupBox = new System.Windows.Forms.GroupBox();
+            ignoreBoat = new UI.Controls.RadioButtonFlat();
+            achievements = new UI.Controls.RadioButtonFlat();
+            fishingLog = new UI.Controls.RadioButtonFlat();
+            points = new UI.Controls.RadioButtonFlat();
+            automatic = new UI.Controls.RadioButtonFlat();
+            fishingRoute = new System.Windows.Forms.GroupBox();
+            ruby = new UI.Controls.RadioButtonFlat();
+            indigo = new UI.Controls.RadioButtonFlat();
+            lateQueue = new System.Windows.Forms.GroupBox();
+            label5 = new System.Windows.Forms.Label();
+            label4 = new System.Windows.Forms.Label();
+            fishFoodToggle = new UI.Controls.ToggleButton();
+            lateQueueToggle = new UI.Controls.ToggleButton();
+            fullGPAction = new System.Windows.Forms.GroupBox();
+            GPActionChum = new UI.Controls.RadioButtonFlat();
+            GPActionDoubleHook = new UI.Controls.RadioButtonFlat();
+            GPActionNothing = new UI.Controls.RadioButtonFlat();
+            groupBox5 = new System.Windows.Forms.GroupBox();
+            patienceAlways = new UI.Controls.RadioButtonFlat();
+            patienceSpectralOnly = new UI.Controls.RadioButtonFlat();
+            patienceDefaultLogic = new UI.Controls.RadioButtonFlat();
+            groupBox4 = new System.Windows.Forms.GroupBox();
+            fishExchangeSell = new UI.Controls.RadioButtonFlat();
+            fishExchangeDesynthesize = new UI.Controls.RadioButtonFlat();
+            fishExchangeNone = new UI.Controls.RadioButtonFlat();
+            tackleboxGroup = new System.Windows.Forms.GroupBox();
+            stoneflynymphLabel = new System.Windows.Forms.Label();
+            mackerelstripLabel = new System.Windows.Forms.Label();
+            squidstripLabel = new System.Windows.Forms.Label();
+            pillbugLabel = new System.Windows.Forms.Label();
+            shrimpcagefeederLabel = new System.Windows.Forms.Label();
+            heavysteeljigLabel = new System.Windows.Forms.Label();
+            glowwormLabel = new System.Windows.Forms.Label();
+            rattailLabel = new System.Windows.Forms.Label();
+            plumpwormLabel = new System.Windows.Forms.Label();
+            krillLabel = new System.Windows.Forms.Label();
+            ragwormLabel = new System.Windows.Forms.Label();
+            pictureBoxStoneflyNymph = new System.Windows.Forms.PictureBox();
+            pictureBoxMackerelStrip = new System.Windows.Forms.PictureBox();
+            pictureBoxShrimpCageFeeder = new System.Windows.Forms.PictureBox();
+            pictureBoxPillBug = new System.Windows.Forms.PictureBox();
+            pictureBoxSquidStrip = new System.Windows.Forms.PictureBox();
+            pictureBoxHeavySteelJig = new System.Windows.Forms.PictureBox();
+            pictureBoxGlowWorm = new System.Windows.Forms.PictureBox();
+            pictureBoxRatTail = new System.Windows.Forms.PictureBox();
+            pictureBoxPlumpWorm = new System.Windows.Forms.PictureBox();
+            pictureBoxKrill = new System.Windows.Forms.PictureBox();
+            pictureBoxRagworm = new System.Windows.Forms.PictureBox();
+            numericRestockAmount = new System.Windows.Forms.NumericUpDown();
+            label7 = new System.Windows.Forms.Label();
+            label6 = new System.Windows.Forms.Label();
+            numericRestockThreshold = new System.Windows.Forms.NumericUpDown();
+            groupBox7 = new System.Windows.Forms.GroupBox();
+            Overall3MLabel = new System.Windows.Forms.Label();
+            overall3mPicture = new System.Windows.Forms.CheckBox();
+            Overall1MLabel = new System.Windows.Forms.Label();
+            overall1mPicture = new System.Windows.Forms.CheckBox();
+            Overall500kLabel = new System.Windows.Forms.Label();
+            overall500kPicture = new System.Windows.Forms.CheckBox();
+            Overall100kLabel = new System.Windows.Forms.Label();
+            overall100kPicture = new System.Windows.Forms.CheckBox();
+            Ruby16kLabel = new System.Windows.Forms.Label();
+            ruby16kPicture = new System.Windows.Forms.CheckBox();
+            Ruby10kLabel = new System.Windows.Forms.Label();
+            ruby10kPicture = new System.Windows.Forms.CheckBox();
+            Ruby5kLabel = new System.Windows.Forms.Label();
+            ruby5kPicture = new System.Windows.Forms.CheckBox();
+            SquidLabel = new System.Windows.Forms.Label();
+            squidPicture = new System.Windows.Forms.CheckBox();
+            ShellfishLabel = new System.Windows.Forms.Label();
+            shellfishPicture = new System.Windows.Forms.CheckBox();
+            ShrimpLabel = new System.Windows.Forms.Label();
+            shrimpPicture = new System.Windows.Forms.CheckBox();
+            Indigo20kLabel = new System.Windows.Forms.Label();
+            indigo20kPicture = new System.Windows.Forms.CheckBox();
+            Indigo16kLabel = new System.Windows.Forms.Label();
+            indigo16kPicture = new System.Windows.Forms.CheckBox();
+            Indigo10kLabel = new System.Windows.Forms.Label();
+            indigo10kPicture = new System.Windows.Forms.CheckBox();
+            Indigo5kLabel = new System.Windows.Forms.Label();
+            indigo5kPicture = new System.Windows.Forms.CheckBox();
+            CrabsLabel = new System.Windows.Forms.Label();
+            crabsPicture = new System.Windows.Forms.CheckBox();
+            BalloonsLabel = new System.Windows.Forms.Label();
+            balloonsPicture = new System.Windows.Forms.CheckBox();
+            SeadragonLabel = new System.Windows.Forms.Label();
+            seadragonPicture = new System.Windows.Forms.CheckBox();
+            JellyfishLabel = new System.Windows.Forms.Label();
+            jellyfishPicture = new System.Windows.Forms.CheckBox();
+            SharksLabel = new System.Windows.Forms.Label();
+            sharksPicture = new System.Windows.Forms.CheckBox();
+            OctopodsLabel = new System.Windows.Forms.Label();
+            octopodsPicture = new System.Windows.Forms.CheckBox();
+            mantasLabel = new System.Windows.Forms.Label();
+            mantasPicture = new System.Windows.Forms.CheckBox();
+            exitIcon = new System.Windows.Forms.PictureBox();
+            groupBox1.SuspendLayout();
+            groupBox2.SuspendLayout();
+            groupBox3.SuspendLayout();
+            fishingPriorityGroupBox.SuspendLayout();
+            fishingRoute.SuspendLayout();
+            lateQueue.SuspendLayout();
+            fullGPAction.SuspendLayout();
+            groupBox5.SuspendLayout();
+            groupBox4.SuspendLayout();
+            tackleboxGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxStoneflyNymph).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxMackerelStrip).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxShrimpCageFeeder).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPillBug).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxSquidStrip).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxHeavySteelJig).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxGlowWorm).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxRatTail).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPlumpWorm).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxKrill).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxRagworm).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericRestockAmount).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericRestockThreshold).BeginInit();
+            groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)exitIcon).BeginInit();
+            SuspendLayout();
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(173, 25);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Ocean Settings";
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold);
+            label1.ForeColor = System.Drawing.Color.White;
+            label1.Location = new System.Drawing.Point(14, 10);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(173, 25);
+            label1.TabIndex = 0;
+            label1.Text = "Ocean Settings";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.Color.Gainsboro;
-            this.label3.Location = new System.Drawing.Point(14, 44);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(299, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "What settings would you like to apply to your ocean voyages?";
+            label3.AutoSize = true;
+            label3.ForeColor = System.Drawing.Color.Gainsboro;
+            label3.Location = new System.Drawing.Point(16, 51);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(332, 15);
+            label3.TabIndex = 4;
+            label3.Text = "What settings would you like to apply to your ocean voyages?";
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButtonFlat6);
-            this.groupBox1.Controls.Add(this.radioButtonFlat5);
-            this.groupBox1.Controls.Add(this.radioButtonFlat4);
-            this.groupBox1.Controls.Add(this.radioButtonFlat3);
-            this.groupBox1.Controls.Add(this.radioButtonFlat2);
-            this.groupBox1.Controls.Add(this.radioButtonFlat1);
-            this.groupBox1.Controls.Add(this.indigoMantas);
-            this.groupBox1.ForeColor = System.Drawing.Color.Gainsboro;
-            this.groupBox1.Location = new System.Drawing.Point(17, 296);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(558, 74);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Indigo Acheivement Focus";
-            this.groupBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            groupBox1.Controls.Add(radioButtonFlat6);
+            groupBox1.Controls.Add(radioButtonFlat5);
+            groupBox1.Controls.Add(radioButtonFlat4);
+            groupBox1.Controls.Add(radioButtonFlat3);
+            groupBox1.Controls.Add(radioButtonFlat2);
+            groupBox1.Controls.Add(radioButtonFlat1);
+            groupBox1.Controls.Add(indigoMantas);
+            groupBox1.ForeColor = System.Drawing.Color.Gainsboro;
+            groupBox1.Location = new System.Drawing.Point(20, 342);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(651, 85);
+            groupBox1.TabIndex = 6;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Indigo Acheivement Focus";
+            groupBox1.MouseDown += FormOceanSettings_MouseDown;
             // 
             // radioButtonFlat6
             // 
-            this.radioButtonFlat6.AutoSize = true;
-            this.radioButtonFlat6.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat6.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat6.Enabled = false;
-            this.radioButtonFlat6.Location = new System.Drawing.Point(110, 42);
-            this.radioButtonFlat6.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat6.Name = "radioButtonFlat6";
-            this.radioButtonFlat6.Size = new System.Drawing.Size(64, 17);
-            this.radioButtonFlat6.TabIndex = 6;
-            this.radioButtonFlat6.TabStop = true;
-            this.radioButtonFlat6.Text = "Crabs";
-            this.radioButtonFlat6.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat6.UseVisualStyleBackColor = true;
+            radioButtonFlat6.AutoSize = true;
+            radioButtonFlat6.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat6.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat6.Enabled = false;
+            radioButtonFlat6.Location = new System.Drawing.Point(128, 48);
+            radioButtonFlat6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat6.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat6.Name = "radioButtonFlat6";
+            radioButtonFlat6.Size = new System.Drawing.Size(67, 19);
+            radioButtonFlat6.TabIndex = 6;
+            radioButtonFlat6.TabStop = true;
+            radioButtonFlat6.Text = "Crabs";
+            radioButtonFlat6.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat6.UseVisualStyleBackColor = true;
             // 
             // radioButtonFlat5
             // 
-            this.radioButtonFlat5.AutoSize = true;
-            this.radioButtonFlat5.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat5.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat5.Enabled = false;
-            this.radioButtonFlat5.Location = new System.Drawing.Point(7, 42);
-            this.radioButtonFlat5.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat5.Name = "radioButtonFlat5";
-            this.radioButtonFlat5.Size = new System.Drawing.Size(77, 17);
-            this.radioButtonFlat5.TabIndex = 5;
-            this.radioButtonFlat5.TabStop = true;
-            this.radioButtonFlat5.Text = "Balloons";
-            this.radioButtonFlat5.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat5.UseVisualStyleBackColor = true;
+            radioButtonFlat5.AutoSize = true;
+            radioButtonFlat5.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat5.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat5.Enabled = false;
+            radioButtonFlat5.Location = new System.Drawing.Point(8, 48);
+            radioButtonFlat5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat5.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat5.Name = "radioButtonFlat5";
+            radioButtonFlat5.Size = new System.Drawing.Size(82, 19);
+            radioButtonFlat5.TabIndex = 5;
+            radioButtonFlat5.TabStop = true;
+            radioButtonFlat5.Text = "Balloons";
+            radioButtonFlat5.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat5.UseVisualStyleBackColor = true;
             // 
             // radioButtonFlat4
             // 
-            this.radioButtonFlat4.AutoSize = true;
-            this.radioButtonFlat4.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat4.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat4.Enabled = false;
-            this.radioButtonFlat4.Location = new System.Drawing.Point(463, 20);
-            this.radioButtonFlat4.Margin = new System.Windows.Forms.Padding(0);
-            this.radioButtonFlat4.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat4.Name = "radioButtonFlat4";
-            this.radioButtonFlat4.Size = new System.Drawing.Size(94, 17);
-            this.radioButtonFlat4.TabIndex = 4;
-            this.radioButtonFlat4.TabStop = true;
-            this.radioButtonFlat4.Text = "Seadragons";
-            this.radioButtonFlat4.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat4.UseVisualStyleBackColor = true;
+            radioButtonFlat4.AutoSize = true;
+            radioButtonFlat4.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat4.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat4.Enabled = false;
+            radioButtonFlat4.Location = new System.Drawing.Point(540, 23);
+            radioButtonFlat4.Margin = new System.Windows.Forms.Padding(0);
+            radioButtonFlat4.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat4.Name = "radioButtonFlat4";
+            radioButtonFlat4.Size = new System.Drawing.Size(98, 19);
+            radioButtonFlat4.TabIndex = 4;
+            radioButtonFlat4.TabStop = true;
+            radioButtonFlat4.Text = "Seadragons";
+            radioButtonFlat4.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat4.UseVisualStyleBackColor = true;
             // 
             // radioButtonFlat3
             // 
-            this.radioButtonFlat3.AutoSize = true;
-            this.radioButtonFlat3.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat3.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat3.Enabled = false;
-            this.radioButtonFlat3.Location = new System.Drawing.Point(330, 19);
-            this.radioButtonFlat3.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat3.Name = "radioButtonFlat3";
-            this.radioButtonFlat3.Size = new System.Drawing.Size(73, 17);
-            this.radioButtonFlat3.TabIndex = 3;
-            this.radioButtonFlat3.TabStop = true;
-            this.radioButtonFlat3.Text = "Jellyfish";
-            this.radioButtonFlat3.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat3.UseVisualStyleBackColor = true;
+            radioButtonFlat3.AutoSize = true;
+            radioButtonFlat3.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat3.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat3.Enabled = false;
+            radioButtonFlat3.Location = new System.Drawing.Point(385, 22);
+            radioButtonFlat3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat3.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat3.Name = "radioButtonFlat3";
+            radioButtonFlat3.Size = new System.Drawing.Size(78, 19);
+            radioButtonFlat3.TabIndex = 3;
+            radioButtonFlat3.TabStop = true;
+            radioButtonFlat3.Text = "Jellyfish";
+            radioButtonFlat3.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat3.UseVisualStyleBackColor = true;
             // 
             // radioButtonFlat2
             // 
-            this.radioButtonFlat2.AutoSize = true;
-            this.radioButtonFlat2.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat2.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat2.Enabled = false;
-            this.radioButtonFlat2.Location = new System.Drawing.Point(225, 19);
-            this.radioButtonFlat2.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat2.Name = "radioButtonFlat2";
-            this.radioButtonFlat2.Size = new System.Drawing.Size(70, 17);
-            this.radioButtonFlat2.TabIndex = 2;
-            this.radioButtonFlat2.TabStop = true;
-            this.radioButtonFlat2.Text = "Sharks";
-            this.radioButtonFlat2.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat2.UseVisualStyleBackColor = true;
+            radioButtonFlat2.AutoSize = true;
+            radioButtonFlat2.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat2.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat2.Enabled = false;
+            radioButtonFlat2.Location = new System.Drawing.Point(262, 22);
+            radioButtonFlat2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat2.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat2.Name = "radioButtonFlat2";
+            radioButtonFlat2.Size = new System.Drawing.Size(71, 19);
+            radioButtonFlat2.TabIndex = 2;
+            radioButtonFlat2.TabStop = true;
+            radioButtonFlat2.Text = "Sharks";
+            radioButtonFlat2.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat2.UseVisualStyleBackColor = true;
             // 
             // radioButtonFlat1
             // 
-            this.radioButtonFlat1.AutoSize = true;
-            this.radioButtonFlat1.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat1.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat1.Enabled = false;
-            this.radioButtonFlat1.Location = new System.Drawing.Point(110, 19);
-            this.radioButtonFlat1.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat1.Name = "radioButtonFlat1";
-            this.radioButtonFlat1.Size = new System.Drawing.Size(83, 17);
-            this.radioButtonFlat1.TabIndex = 1;
-            this.radioButtonFlat1.TabStop = true;
-            this.radioButtonFlat1.Text = "Octopods";
-            this.radioButtonFlat1.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat1.UseVisualStyleBackColor = true;
+            radioButtonFlat1.AutoSize = true;
+            radioButtonFlat1.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat1.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat1.Enabled = false;
+            radioButtonFlat1.Location = new System.Drawing.Point(128, 22);
+            radioButtonFlat1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat1.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat1.Name = "radioButtonFlat1";
+            radioButtonFlat1.Size = new System.Drawing.Size(89, 19);
+            radioButtonFlat1.TabIndex = 1;
+            radioButtonFlat1.TabStop = true;
+            radioButtonFlat1.Text = "Octopods";
+            radioButtonFlat1.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat1.UseVisualStyleBackColor = true;
             // 
             // indigoMantas
             // 
-            this.indigoMantas.AutoSize = true;
-            this.indigoMantas.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.indigoMantas.DisabledColor = System.Drawing.Color.SlateGray;
-            this.indigoMantas.Enabled = false;
-            this.indigoMantas.Location = new System.Drawing.Point(7, 19);
-            this.indigoMantas.MinimumSize = new System.Drawing.Size(0, 15);
-            this.indigoMantas.Name = "indigoMantas";
-            this.indigoMantas.Size = new System.Drawing.Size(102, 17);
-            this.indigoMantas.TabIndex = 0;
-            this.indigoMantas.TabStop = true;
-            this.indigoMantas.Text = "Mantas (Solo)";
-            this.indigoMantas.UnCheckedColor = System.Drawing.Color.Gray;
-            this.indigoMantas.UseVisualStyleBackColor = true;
+            indigoMantas.AutoSize = true;
+            indigoMantas.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            indigoMantas.DisabledColor = System.Drawing.Color.SlateGray;
+            indigoMantas.Enabled = false;
+            indigoMantas.Location = new System.Drawing.Point(8, 22);
+            indigoMantas.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            indigoMantas.MinimumSize = new System.Drawing.Size(0, 17);
+            indigoMantas.Name = "indigoMantas";
+            indigoMantas.Size = new System.Drawing.Size(110, 19);
+            indigoMantas.TabIndex = 0;
+            indigoMantas.TabStop = true;
+            indigoMantas.Text = "Mantas (Solo)";
+            indigoMantas.UnCheckedColor = System.Drawing.Color.Gray;
+            indigoMantas.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.radioButtonFlat9);
-            this.groupBox2.Controls.Add(this.radioButtonFlat8);
-            this.groupBox2.Controls.Add(this.radioButtonFlat7);
-            this.groupBox2.ForeColor = System.Drawing.Color.Gainsboro;
-            this.groupBox2.Location = new System.Drawing.Point(17, 376);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(558, 48);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Ruby Acheivement Focus";
-            this.groupBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            groupBox2.Controls.Add(radioButtonFlat9);
+            groupBox2.Controls.Add(radioButtonFlat8);
+            groupBox2.Controls.Add(radioButtonFlat7);
+            groupBox2.ForeColor = System.Drawing.Color.Gainsboro;
+            groupBox2.Location = new System.Drawing.Point(20, 434);
+            groupBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox2.Size = new System.Drawing.Size(651, 55);
+            groupBox2.TabIndex = 7;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Ruby Acheivement Focus";
+            groupBox2.MouseDown += FormOceanSettings_MouseDown;
             // 
             // radioButtonFlat9
             // 
-            this.radioButtonFlat9.AutoSize = true;
-            this.radioButtonFlat9.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat9.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat9.Enabled = false;
-            this.radioButtonFlat9.Location = new System.Drawing.Point(225, 19);
-            this.radioButtonFlat9.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat9.Name = "radioButtonFlat9";
-            this.radioButtonFlat9.Size = new System.Drawing.Size(64, 17);
-            this.radioButtonFlat9.TabIndex = 2;
-            this.radioButtonFlat9.TabStop = true;
-            this.radioButtonFlat9.Text = "Squid";
-            this.radioButtonFlat9.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat9.UseVisualStyleBackColor = true;
+            radioButtonFlat9.AutoSize = true;
+            radioButtonFlat9.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat9.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat9.Enabled = false;
+            radioButtonFlat9.Location = new System.Drawing.Point(262, 22);
+            radioButtonFlat9.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat9.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat9.Name = "radioButtonFlat9";
+            radioButtonFlat9.Size = new System.Drawing.Size(67, 19);
+            radioButtonFlat9.TabIndex = 2;
+            radioButtonFlat9.TabStop = true;
+            radioButtonFlat9.Text = "Squid";
+            radioButtonFlat9.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat9.UseVisualStyleBackColor = true;
             // 
             // radioButtonFlat8
             // 
-            this.radioButtonFlat8.AutoSize = true;
-            this.radioButtonFlat8.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat8.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat8.Enabled = false;
-            this.radioButtonFlat8.Location = new System.Drawing.Point(110, 19);
-            this.radioButtonFlat8.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat8.Name = "radioButtonFlat8";
-            this.radioButtonFlat8.Size = new System.Drawing.Size(76, 17);
-            this.radioButtonFlat8.TabIndex = 1;
-            this.radioButtonFlat8.TabStop = true;
-            this.radioButtonFlat8.Text = "Shellfish";
-            this.radioButtonFlat8.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat8.UseVisualStyleBackColor = true;
+            radioButtonFlat8.AutoSize = true;
+            radioButtonFlat8.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat8.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat8.Enabled = false;
+            radioButtonFlat8.Location = new System.Drawing.Point(128, 22);
+            radioButtonFlat8.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat8.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat8.Name = "radioButtonFlat8";
+            radioButtonFlat8.Size = new System.Drawing.Size(81, 19);
+            radioButtonFlat8.TabIndex = 1;
+            radioButtonFlat8.TabStop = true;
+            radioButtonFlat8.Text = "Shellfish";
+            radioButtonFlat8.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat8.UseVisualStyleBackColor = true;
             // 
             // radioButtonFlat7
             // 
-            this.radioButtonFlat7.AutoSize = true;
-            this.radioButtonFlat7.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.radioButtonFlat7.DisabledColor = System.Drawing.Color.SlateGray;
-            this.radioButtonFlat7.Enabled = false;
-            this.radioButtonFlat7.Location = new System.Drawing.Point(7, 19);
-            this.radioButtonFlat7.MinimumSize = new System.Drawing.Size(0, 15);
-            this.radioButtonFlat7.Name = "radioButtonFlat7";
-            this.radioButtonFlat7.Size = new System.Drawing.Size(99, 17);
-            this.radioButtonFlat7.TabIndex = 0;
-            this.radioButtonFlat7.TabStop = true;
-            this.radioButtonFlat7.Text = "Shrimp (Solo)";
-            this.radioButtonFlat7.UnCheckedColor = System.Drawing.Color.Gray;
-            this.radioButtonFlat7.UseVisualStyleBackColor = true;
+            radioButtonFlat7.AutoSize = true;
+            radioButtonFlat7.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            radioButtonFlat7.DisabledColor = System.Drawing.Color.SlateGray;
+            radioButtonFlat7.Enabled = false;
+            radioButtonFlat7.Location = new System.Drawing.Point(8, 22);
+            radioButtonFlat7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            radioButtonFlat7.MinimumSize = new System.Drawing.Size(0, 17);
+            radioButtonFlat7.Name = "radioButtonFlat7";
+            radioButtonFlat7.Size = new System.Drawing.Size(109, 19);
+            radioButtonFlat7.TabIndex = 0;
+            radioButtonFlat7.TabStop = true;
+            radioButtonFlat7.Text = "Shrimp (Solo)";
+            radioButtonFlat7.UnCheckedColor = System.Drawing.Color.Gray;
+            radioButtonFlat7.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.assistedFishingLabel);
-            this.groupBox3.Controls.Add(this.assistedFishingToggle);
-            this.groupBox3.ForeColor = System.Drawing.Color.Gainsboro;
-            this.groupBox3.Location = new System.Drawing.Point(17, 242);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(212, 48);
-            this.groupBox3.TabIndex = 8;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Open World Fishing";
-            this.groupBox3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            groupBox3.Controls.Add(assistedFishingLabel);
+            groupBox3.Controls.Add(assistedFishingToggle);
+            groupBox3.ForeColor = System.Drawing.Color.Gainsboro;
+            groupBox3.Location = new System.Drawing.Point(20, 279);
+            groupBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox3.Size = new System.Drawing.Size(247, 55);
+            groupBox3.TabIndex = 8;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Open World Fishing";
+            groupBox3.MouseDown += FormOceanSettings_MouseDown;
             // 
             // assistedFishingLabel
             // 
-            this.assistedFishingLabel.AutoSize = true;
-            this.assistedFishingLabel.Location = new System.Drawing.Point(34, 20);
-            this.assistedFishingLabel.Name = "assistedFishingLabel";
-            this.assistedFishingLabel.Size = new System.Drawing.Size(82, 13);
-            this.assistedFishingLabel.TabIndex = 1;
-            this.assistedFishingLabel.Text = "Assisted Fishing";
+            assistedFishingLabel.AutoSize = true;
+            assistedFishingLabel.Location = new System.Drawing.Point(40, 23);
+            assistedFishingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            assistedFishingLabel.Name = "assistedFishingLabel";
+            assistedFishingLabel.Size = new System.Drawing.Size(91, 15);
+            assistedFishingLabel.TabIndex = 1;
+            assistedFishingLabel.Text = "Assisted Fishing";
             // 
             // assistedFishingToggle
             // 
-            this.assistedFishingToggle.AutoSize = true;
-            this.assistedFishingToggle.Location = new System.Drawing.Point(6, 19);
-            this.assistedFishingToggle.MinimumSize = new System.Drawing.Size(22, 10);
-            this.assistedFishingToggle.Name = "assistedFishingToggle";
-            this.assistedFishingToggle.OffBackColor = System.Drawing.Color.Gray;
-            this.assistedFishingToggle.OffToggleColor = System.Drawing.Color.Gainsboro;
-            this.assistedFishingToggle.OnBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.assistedFishingToggle.OnToggleColor = System.Drawing.Color.WhiteSmoke;
-            this.assistedFishingToggle.Size = new System.Drawing.Size(22, 14);
-            this.assistedFishingToggle.TabIndex = 0;
-            this.assistedFishingToggle.UseVisualStyleBackColor = true;
+            assistedFishingToggle.AutoSize = true;
+            assistedFishingToggle.Location = new System.Drawing.Point(7, 22);
+            assistedFishingToggle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            assistedFishingToggle.MinimumSize = new System.Drawing.Size(26, 12);
+            assistedFishingToggle.Name = "assistedFishingToggle";
+            assistedFishingToggle.OffBackColor = System.Drawing.Color.Gray;
+            assistedFishingToggle.OffToggleColor = System.Drawing.Color.Gainsboro;
+            assistedFishingToggle.OnBackColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            assistedFishingToggle.OnToggleColor = System.Drawing.Color.WhiteSmoke;
+            assistedFishingToggle.Size = new System.Drawing.Size(26, 14);
+            assistedFishingToggle.TabIndex = 0;
+            assistedFishingToggle.UseVisualStyleBackColor = true;
             // 
             // fishingPriorityGroupBox
             // 
-            this.fishingPriorityGroupBox.Controls.Add(this.ignoreBoat);
-            this.fishingPriorityGroupBox.Controls.Add(this.achievements);
-            this.fishingPriorityGroupBox.Controls.Add(this.fishingLog);
-            this.fishingPriorityGroupBox.Controls.Add(this.points);
-            this.fishingPriorityGroupBox.Controls.Add(this.automatic);
-            this.fishingPriorityGroupBox.ForeColor = System.Drawing.Color.Gainsboro;
-            this.fishingPriorityGroupBox.Location = new System.Drawing.Point(17, 79);
-            this.fishingPriorityGroupBox.Name = "fishingPriorityGroupBox";
-            this.fishingPriorityGroupBox.Size = new System.Drawing.Size(558, 49);
-            this.fishingPriorityGroupBox.TabIndex = 9;
-            this.fishingPriorityGroupBox.TabStop = false;
-            this.fishingPriorityGroupBox.Text = "Fishing Priority";
-            this.fishingPriorityGroupBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            fishingPriorityGroupBox.Controls.Add(ignoreBoat);
+            fishingPriorityGroupBox.Controls.Add(achievements);
+            fishingPriorityGroupBox.Controls.Add(fishingLog);
+            fishingPriorityGroupBox.Controls.Add(points);
+            fishingPriorityGroupBox.Controls.Add(automatic);
+            fishingPriorityGroupBox.ForeColor = System.Drawing.Color.Gainsboro;
+            fishingPriorityGroupBox.Location = new System.Drawing.Point(20, 91);
+            fishingPriorityGroupBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishingPriorityGroupBox.Name = "fishingPriorityGroupBox";
+            fishingPriorityGroupBox.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishingPriorityGroupBox.Size = new System.Drawing.Size(651, 57);
+            fishingPriorityGroupBox.TabIndex = 9;
+            fishingPriorityGroupBox.TabStop = false;
+            fishingPriorityGroupBox.Text = "Fishing Priority";
+            fishingPriorityGroupBox.MouseDown += FormOceanSettings_MouseDown;
             // 
             // ignoreBoat
             // 
-            this.ignoreBoat.AutoSize = true;
-            this.ignoreBoat.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.ignoreBoat.DisabledColor = System.Drawing.Color.SlateGray;
-            this.ignoreBoat.Location = new System.Drawing.Point(464, 18);
-            this.ignoreBoat.MinimumSize = new System.Drawing.Size(0, 15);
-            this.ignoreBoat.Name = "ignoreBoat";
-            this.ignoreBoat.Size = new System.Drawing.Size(92, 17);
-            this.ignoreBoat.TabIndex = 6;
-            this.ignoreBoat.TabStop = true;
-            this.ignoreBoat.Text = "Ignore Boat";
-            this.ignoreBoat.UnCheckedColor = System.Drawing.Color.Gray;
-            this.ignoreBoat.UseVisualStyleBackColor = true;
-            this.ignoreBoat.CheckedChanged += new System.EventHandler(this.ignoreBoat_CheckedChanged);
+            ignoreBoat.AutoSize = true;
+            ignoreBoat.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            ignoreBoat.DisabledColor = System.Drawing.Color.SlateGray;
+            ignoreBoat.Location = new System.Drawing.Point(541, 21);
+            ignoreBoat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ignoreBoat.MinimumSize = new System.Drawing.Size(0, 17);
+            ignoreBoat.Name = "ignoreBoat";
+            ignoreBoat.Size = new System.Drawing.Size(98, 19);
+            ignoreBoat.TabIndex = 6;
+            ignoreBoat.TabStop = true;
+            ignoreBoat.Text = "Ignore Boat";
+            ignoreBoat.UnCheckedColor = System.Drawing.Color.Gray;
+            ignoreBoat.UseVisualStyleBackColor = true;
+            ignoreBoat.CheckedChanged += ignoreBoat_CheckedChanged;
             // 
             // achievements
             // 
-            this.achievements.AutoSize = true;
-            this.achievements.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.achievements.DisabledColor = System.Drawing.Color.SlateGray;
-            this.achievements.Enabled = false;
-            this.achievements.Location = new System.Drawing.Point(330, 18);
-            this.achievements.MinimumSize = new System.Drawing.Size(0, 15);
-            this.achievements.Name = "achievements";
-            this.achievements.Size = new System.Drawing.Size(104, 17);
-            this.achievements.TabIndex = 5;
-            this.achievements.TabStop = true;
-            this.achievements.Text = "Achievements";
-            this.achievements.UnCheckedColor = System.Drawing.Color.Gray;
-            this.achievements.UseVisualStyleBackColor = true;
-            this.achievements.CheckedChanged += new System.EventHandler(this.achievements_CheckedChanged);
+            achievements.AutoSize = true;
+            achievements.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            achievements.DisabledColor = System.Drawing.Color.SlateGray;
+            achievements.Enabled = false;
+            achievements.Location = new System.Drawing.Point(385, 21);
+            achievements.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            achievements.MinimumSize = new System.Drawing.Size(0, 17);
+            achievements.Name = "achievements";
+            achievements.Size = new System.Drawing.Size(112, 19);
+            achievements.TabIndex = 5;
+            achievements.TabStop = true;
+            achievements.Text = "Achievements";
+            achievements.UnCheckedColor = System.Drawing.Color.Gray;
+            achievements.UseVisualStyleBackColor = true;
+            achievements.CheckedChanged += achievements_CheckedChanged;
             // 
             // fishingLog
             // 
-            this.fishingLog.AutoSize = true;
-            this.fishingLog.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.fishingLog.DisabledColor = System.Drawing.Color.SlateGray;
-            this.fishingLog.Location = new System.Drawing.Point(225, 18);
-            this.fishingLog.MinimumSize = new System.Drawing.Size(0, 15);
-            this.fishingLog.Name = "fishingLog";
-            this.fishingLog.Size = new System.Drawing.Size(91, 17);
-            this.fishingLog.TabIndex = 4;
-            this.fishingLog.TabStop = true;
-            this.fishingLog.Text = "Fishing Log";
-            this.fishingLog.UnCheckedColor = System.Drawing.Color.Gray;
-            this.fishingLog.UseVisualStyleBackColor = true;
-            this.fishingLog.CheckedChanged += new System.EventHandler(this.fishingLog_CheckedChanged);
+            fishingLog.AutoSize = true;
+            fishingLog.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            fishingLog.DisabledColor = System.Drawing.Color.SlateGray;
+            fishingLog.Location = new System.Drawing.Point(262, 21);
+            fishingLog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishingLog.MinimumSize = new System.Drawing.Size(0, 17);
+            fishingLog.Name = "fishingLog";
+            fishingLog.Size = new System.Drawing.Size(98, 19);
+            fishingLog.TabIndex = 4;
+            fishingLog.TabStop = true;
+            fishingLog.Text = "Fishing Log";
+            fishingLog.UnCheckedColor = System.Drawing.Color.Gray;
+            fishingLog.UseVisualStyleBackColor = true;
+            fishingLog.CheckedChanged += fishingLog_CheckedChanged;
             // 
             // points
             // 
-            this.points.AutoSize = true;
-            this.points.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.points.DisabledColor = System.Drawing.Color.SlateGray;
-            this.points.Location = new System.Drawing.Point(110, 18);
-            this.points.MinimumSize = new System.Drawing.Size(0, 15);
-            this.points.Name = "points";
-            this.points.Size = new System.Drawing.Size(66, 17);
-            this.points.TabIndex = 4;
-            this.points.TabStop = true;
-            this.points.Text = "Points";
-            this.points.UnCheckedColor = System.Drawing.Color.Gray;
-            this.points.UseVisualStyleBackColor = true;
-            this.points.CheckedChanged += new System.EventHandler(this.points_CheckedChanged);
+            points.AutoSize = true;
+            points.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            points.DisabledColor = System.Drawing.Color.SlateGray;
+            points.Location = new System.Drawing.Point(128, 21);
+            points.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            points.MinimumSize = new System.Drawing.Size(0, 17);
+            points.Name = "points";
+            points.Size = new System.Drawing.Size(70, 19);
+            points.TabIndex = 4;
+            points.TabStop = true;
+            points.Text = "Points";
+            points.UnCheckedColor = System.Drawing.Color.Gray;
+            points.UseVisualStyleBackColor = true;
+            points.CheckedChanged += points_CheckedChanged;
             // 
             // automatic
             // 
-            this.automatic.AutoSize = true;
-            this.automatic.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.automatic.DisabledColor = System.Drawing.Color.SlateGray;
-            this.automatic.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.automatic.Location = new System.Drawing.Point(7, 18);
-            this.automatic.MinimumSize = new System.Drawing.Size(0, 10);
-            this.automatic.Name = "automatic";
-            this.automatic.Size = new System.Drawing.Size(84, 17);
-            this.automatic.TabIndex = 4;
-            this.automatic.Text = "Automatic";
-            this.automatic.UnCheckedColor = System.Drawing.Color.Gray;
-            this.automatic.UseVisualStyleBackColor = true;
-            this.automatic.CheckedChanged += new System.EventHandler(this.automatic_CheckedChanged);
+            automatic.AutoSize = true;
+            automatic.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            automatic.DisabledColor = System.Drawing.Color.SlateGray;
+            automatic.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            automatic.Location = new System.Drawing.Point(8, 21);
+            automatic.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            automatic.MinimumSize = new System.Drawing.Size(0, 12);
+            automatic.Name = "automatic";
+            automatic.Size = new System.Drawing.Size(84, 17);
+            automatic.TabIndex = 4;
+            automatic.Text = "Automatic";
+            automatic.UnCheckedColor = System.Drawing.Color.Gray;
+            automatic.UseVisualStyleBackColor = true;
+            automatic.CheckedChanged += automatic_CheckedChanged;
             // 
             // fishingRoute
             // 
-            this.fishingRoute.Controls.Add(this.ruby);
-            this.fishingRoute.Controls.Add(this.indigo);
-            this.fishingRoute.ForeColor = System.Drawing.Color.Gainsboro;
-            this.fishingRoute.Location = new System.Drawing.Point(17, 134);
-            this.fishingRoute.Name = "fishingRoute";
-            this.fishingRoute.Size = new System.Drawing.Size(212, 48);
-            this.fishingRoute.TabIndex = 10;
-            this.fishingRoute.TabStop = false;
-            this.fishingRoute.Text = "Fishing Route";
-            this.fishingRoute.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            fishingRoute.Controls.Add(ruby);
+            fishingRoute.Controls.Add(indigo);
+            fishingRoute.ForeColor = System.Drawing.Color.Gainsboro;
+            fishingRoute.Location = new System.Drawing.Point(20, 155);
+            fishingRoute.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishingRoute.Name = "fishingRoute";
+            fishingRoute.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishingRoute.Size = new System.Drawing.Size(247, 55);
+            fishingRoute.TabIndex = 10;
+            fishingRoute.TabStop = false;
+            fishingRoute.Text = "Fishing Route";
+            fishingRoute.MouseDown += FormOceanSettings_MouseDown;
             // 
             // ruby
             // 
-            this.ruby.AutoSize = true;
-            this.ruby.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.ruby.DisabledColor = System.Drawing.Color.SlateGray;
-            this.ruby.Location = new System.Drawing.Point(110, 17);
-            this.ruby.MinimumSize = new System.Drawing.Size(0, 15);
-            this.ruby.Name = "ruby";
-            this.ruby.Size = new System.Drawing.Size(62, 17);
-            this.ruby.TabIndex = 3;
-            this.ruby.TabStop = true;
-            this.ruby.Text = "Ruby";
-            this.ruby.UnCheckedColor = System.Drawing.Color.Gray;
-            this.ruby.UseVisualStyleBackColor = true;
-            this.ruby.CheckedChanged += new System.EventHandler(this.ruby_CheckedChanged);
+            ruby.AutoSize = true;
+            ruby.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            ruby.DisabledColor = System.Drawing.Color.SlateGray;
+            ruby.Location = new System.Drawing.Point(128, 20);
+            ruby.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ruby.MinimumSize = new System.Drawing.Size(0, 17);
+            ruby.Name = "ruby";
+            ruby.Size = new System.Drawing.Size(64, 19);
+            ruby.TabIndex = 3;
+            ruby.TabStop = true;
+            ruby.Text = "Ruby";
+            ruby.UnCheckedColor = System.Drawing.Color.Gray;
+            ruby.UseVisualStyleBackColor = true;
+            ruby.CheckedChanged += ruby_CheckedChanged;
             // 
             // indigo
             // 
-            this.indigo.AutoSize = true;
-            this.indigo.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.indigo.DisabledColor = System.Drawing.Color.SlateGray;
-            this.indigo.Location = new System.Drawing.Point(7, 17);
-            this.indigo.MinimumSize = new System.Drawing.Size(0, 15);
-            this.indigo.Name = "indigo";
-            this.indigo.Size = new System.Drawing.Size(66, 17);
-            this.indigo.TabIndex = 2;
-            this.indigo.TabStop = true;
-            this.indigo.Text = "Indigo";
-            this.indigo.UnCheckedColor = System.Drawing.Color.Gray;
-            this.indigo.UseVisualStyleBackColor = true;
-            this.indigo.CheckedChanged += new System.EventHandler(this.indigo_CheckedChanged);
+            indigo.AutoSize = true;
+            indigo.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            indigo.DisabledColor = System.Drawing.Color.SlateGray;
+            indigo.Location = new System.Drawing.Point(8, 20);
+            indigo.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            indigo.MinimumSize = new System.Drawing.Size(0, 17);
+            indigo.Name = "indigo";
+            indigo.Size = new System.Drawing.Size(71, 19);
+            indigo.TabIndex = 2;
+            indigo.TabStop = true;
+            indigo.Text = "Indigo";
+            indigo.UnCheckedColor = System.Drawing.Color.Gray;
+            indigo.UseVisualStyleBackColor = true;
+            indigo.CheckedChanged += indigo_CheckedChanged;
             // 
             // lateQueue
             // 
-            this.lateQueue.Controls.Add(this.label5);
-            this.lateQueue.Controls.Add(this.label4);
-            this.lateQueue.Controls.Add(this.fishFoodToggle);
-            this.lateQueue.Controls.Add(this.lateQueueToggle);
-            this.lateQueue.ForeColor = System.Drawing.Color.Gainsboro;
-            this.lateQueue.Location = new System.Drawing.Point(17, 188);
-            this.lateQueue.Name = "lateQueue";
-            this.lateQueue.Size = new System.Drawing.Size(212, 48);
-            this.lateQueue.TabIndex = 11;
-            this.lateQueue.TabStop = false;
-            this.lateQueue.Text = "Trip Options";
-            this.lateQueue.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            lateQueue.Controls.Add(label5);
+            lateQueue.Controls.Add(label4);
+            lateQueue.Controls.Add(fishFoodToggle);
+            lateQueue.Controls.Add(lateQueueToggle);
+            lateQueue.ForeColor = System.Drawing.Color.Gainsboro;
+            lateQueue.Location = new System.Drawing.Point(20, 217);
+            lateQueue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lateQueue.Name = "lateQueue";
+            lateQueue.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lateQueue.Size = new System.Drawing.Size(247, 55);
+            lateQueue.TabIndex = 11;
+            lateQueue.TabStop = false;
+            lateQueue.Text = "Trip Options";
+            lateQueue.MouseDown += FormOceanSettings_MouseDown;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(144, 20);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(62, 13);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Crab Cakes";
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(168, 23);
+            label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(72, 15);
+            label5.TabIndex = 3;
+            label5.Text = "Nasi Goreng";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(35, 21);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Late Queue";
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(41, 24);
+            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(67, 15);
+            label4.TabIndex = 2;
+            label4.Text = "Late Queue";
             // 
             // fishFoodToggle
             // 
-            this.fishFoodToggle.AutoSize = true;
-            this.fishFoodToggle.Location = new System.Drawing.Point(116, 19);
-            this.fishFoodToggle.MinimumSize = new System.Drawing.Size(22, 10);
-            this.fishFoodToggle.Name = "fishFoodToggle";
-            this.fishFoodToggle.OffBackColor = System.Drawing.Color.Gray;
-            this.fishFoodToggle.OffToggleColor = System.Drawing.Color.Gainsboro;
-            this.fishFoodToggle.OnBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.fishFoodToggle.OnToggleColor = System.Drawing.Color.WhiteSmoke;
-            this.fishFoodToggle.Size = new System.Drawing.Size(22, 14);
-            this.fishFoodToggle.TabIndex = 1;
-            this.fishFoodToggle.UseVisualStyleBackColor = true;
+            fishFoodToggle.AutoSize = true;
+            fishFoodToggle.Location = new System.Drawing.Point(135, 22);
+            fishFoodToggle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishFoodToggle.MinimumSize = new System.Drawing.Size(26, 12);
+            fishFoodToggle.Name = "fishFoodToggle";
+            fishFoodToggle.OffBackColor = System.Drawing.Color.Gray;
+            fishFoodToggle.OffToggleColor = System.Drawing.Color.Gainsboro;
+            fishFoodToggle.OnBackColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            fishFoodToggle.OnToggleColor = System.Drawing.Color.WhiteSmoke;
+            fishFoodToggle.Size = new System.Drawing.Size(26, 14);
+            fishFoodToggle.TabIndex = 1;
+            fishFoodToggle.UseVisualStyleBackColor = true;
             // 
             // lateQueueToggle
             // 
-            this.lateQueueToggle.AutoSize = true;
-            this.lateQueueToggle.Location = new System.Drawing.Point(7, 20);
-            this.lateQueueToggle.MinimumSize = new System.Drawing.Size(22, 10);
-            this.lateQueueToggle.Name = "lateQueueToggle";
-            this.lateQueueToggle.OffBackColor = System.Drawing.Color.Gray;
-            this.lateQueueToggle.OffToggleColor = System.Drawing.Color.Gainsboro;
-            this.lateQueueToggle.OnBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.lateQueueToggle.OnToggleColor = System.Drawing.Color.WhiteSmoke;
-            this.lateQueueToggle.Size = new System.Drawing.Size(22, 14);
-            this.lateQueueToggle.TabIndex = 0;
-            this.lateQueueToggle.UseVisualStyleBackColor = true;
+            lateQueueToggle.AutoSize = true;
+            lateQueueToggle.Location = new System.Drawing.Point(8, 23);
+            lateQueueToggle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lateQueueToggle.MinimumSize = new System.Drawing.Size(26, 12);
+            lateQueueToggle.Name = "lateQueueToggle";
+            lateQueueToggle.OffBackColor = System.Drawing.Color.Gray;
+            lateQueueToggle.OffToggleColor = System.Drawing.Color.Gainsboro;
+            lateQueueToggle.OnBackColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            lateQueueToggle.OnToggleColor = System.Drawing.Color.WhiteSmoke;
+            lateQueueToggle.Size = new System.Drawing.Size(26, 14);
+            lateQueueToggle.TabIndex = 0;
+            lateQueueToggle.UseVisualStyleBackColor = true;
             // 
             // fullGPAction
             // 
-            this.fullGPAction.Controls.Add(this.GPActionChum);
-            this.fullGPAction.Controls.Add(this.GPActionDoubleHook);
-            this.fullGPAction.Controls.Add(this.GPActionNothing);
-            this.fullGPAction.ForeColor = System.Drawing.Color.Gainsboro;
-            this.fullGPAction.Location = new System.Drawing.Point(235, 134);
-            this.fullGPAction.Name = "fullGPAction";
-            this.fullGPAction.Size = new System.Drawing.Size(340, 48);
-            this.fullGPAction.TabIndex = 12;
-            this.fullGPAction.TabStop = false;
-            this.fullGPAction.Text = "Full GP Action";
-            this.fullGPAction.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            fullGPAction.Controls.Add(GPActionChum);
+            fullGPAction.Controls.Add(GPActionDoubleHook);
+            fullGPAction.Controls.Add(GPActionNothing);
+            fullGPAction.ForeColor = System.Drawing.Color.Gainsboro;
+            fullGPAction.Location = new System.Drawing.Point(274, 155);
+            fullGPAction.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fullGPAction.Name = "fullGPAction";
+            fullGPAction.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fullGPAction.Size = new System.Drawing.Size(397, 55);
+            fullGPAction.TabIndex = 12;
+            fullGPAction.TabStop = false;
+            fullGPAction.Text = "Full GP Action";
+            fullGPAction.MouseDown += FormOceanSettings_MouseDown;
             // 
             // GPActionChum
             // 
-            this.GPActionChum.AutoSize = true;
-            this.GPActionChum.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.GPActionChum.DisabledColor = System.Drawing.Color.SlateGray;
-            this.GPActionChum.Location = new System.Drawing.Point(246, 17);
-            this.GPActionChum.MinimumSize = new System.Drawing.Size(0, 15);
-            this.GPActionChum.Name = "GPActionChum";
-            this.GPActionChum.Size = new System.Drawing.Size(64, 17);
-            this.GPActionChum.TabIndex = 5;
-            this.GPActionChum.TabStop = true;
-            this.GPActionChum.Text = "Chum";
-            this.GPActionChum.UnCheckedColor = System.Drawing.Color.Gray;
-            this.GPActionChum.UseVisualStyleBackColor = true;
-            this.GPActionChum.CheckedChanged += new System.EventHandler(this.GPActionChum_CheckedChanged);
+            GPActionChum.AutoSize = true;
+            GPActionChum.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            GPActionChum.DisabledColor = System.Drawing.Color.SlateGray;
+            GPActionChum.Location = new System.Drawing.Point(287, 20);
+            GPActionChum.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GPActionChum.MinimumSize = new System.Drawing.Size(0, 17);
+            GPActionChum.Name = "GPActionChum";
+            GPActionChum.Size = new System.Drawing.Size(70, 19);
+            GPActionChum.TabIndex = 5;
+            GPActionChum.TabStop = true;
+            GPActionChum.Text = "Chum";
+            GPActionChum.UnCheckedColor = System.Drawing.Color.Gray;
+            GPActionChum.UseVisualStyleBackColor = true;
+            GPActionChum.CheckedChanged += GPActionChum_CheckedChanged;
             // 
             // GPActionDoubleHook
             // 
-            this.GPActionDoubleHook.AutoSize = true;
-            this.GPActionDoubleHook.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.GPActionDoubleHook.DisabledColor = System.Drawing.Color.SlateGray;
-            this.GPActionDoubleHook.Location = new System.Drawing.Point(112, 17);
-            this.GPActionDoubleHook.MinimumSize = new System.Drawing.Size(0, 15);
-            this.GPActionDoubleHook.Name = "GPActionDoubleHook";
-            this.GPActionDoubleHook.Size = new System.Drawing.Size(100, 17);
-            this.GPActionDoubleHook.TabIndex = 4;
-            this.GPActionDoubleHook.TabStop = true;
-            this.GPActionDoubleHook.Text = "Double Hook";
-            this.GPActionDoubleHook.UnCheckedColor = System.Drawing.Color.Gray;
-            this.GPActionDoubleHook.UseVisualStyleBackColor = true;
-            this.GPActionDoubleHook.CheckedChanged += new System.EventHandler(this.GPActionDoubleHook_CheckedChanged);
+            GPActionDoubleHook.AutoSize = true;
+            GPActionDoubleHook.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            GPActionDoubleHook.DisabledColor = System.Drawing.Color.SlateGray;
+            GPActionDoubleHook.Location = new System.Drawing.Point(131, 20);
+            GPActionDoubleHook.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GPActionDoubleHook.MinimumSize = new System.Drawing.Size(0, 17);
+            GPActionDoubleHook.Name = "GPActionDoubleHook";
+            GPActionDoubleHook.Size = new System.Drawing.Size(107, 19);
+            GPActionDoubleHook.TabIndex = 4;
+            GPActionDoubleHook.TabStop = true;
+            GPActionDoubleHook.Text = "Double Hook";
+            GPActionDoubleHook.UnCheckedColor = System.Drawing.Color.Gray;
+            GPActionDoubleHook.UseVisualStyleBackColor = true;
+            GPActionDoubleHook.CheckedChanged += GPActionDoubleHook_CheckedChanged;
             // 
             // GPActionNothing
             // 
-            this.GPActionNothing.AutoSize = true;
-            this.GPActionNothing.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.GPActionNothing.DisabledColor = System.Drawing.Color.SlateGray;
-            this.GPActionNothing.Location = new System.Drawing.Point(7, 17);
-            this.GPActionNothing.MinimumSize = new System.Drawing.Size(0, 15);
-            this.GPActionNothing.Name = "GPActionNothing";
-            this.GPActionNothing.Size = new System.Drawing.Size(74, 17);
-            this.GPActionNothing.TabIndex = 3;
-            this.GPActionNothing.TabStop = true;
-            this.GPActionNothing.Text = "Nothing";
-            this.GPActionNothing.UnCheckedColor = System.Drawing.Color.Gray;
-            this.GPActionNothing.UseVisualStyleBackColor = true;
-            this.GPActionNothing.CheckedChanged += new System.EventHandler(this.GPActionNothing_CheckedChanged);
+            GPActionNothing.AutoSize = true;
+            GPActionNothing.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            GPActionNothing.DisabledColor = System.Drawing.Color.SlateGray;
+            GPActionNothing.Location = new System.Drawing.Point(8, 20);
+            GPActionNothing.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GPActionNothing.MinimumSize = new System.Drawing.Size(0, 17);
+            GPActionNothing.Name = "GPActionNothing";
+            GPActionNothing.Size = new System.Drawing.Size(81, 19);
+            GPActionNothing.TabIndex = 3;
+            GPActionNothing.TabStop = true;
+            GPActionNothing.Text = "Nothing";
+            GPActionNothing.UnCheckedColor = System.Drawing.Color.Gray;
+            GPActionNothing.UseVisualStyleBackColor = true;
+            GPActionNothing.CheckedChanged += GPActionNothing_CheckedChanged;
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.patienceAlways);
-            this.groupBox5.Controls.Add(this.patienceSpectralOnly);
-            this.groupBox5.Controls.Add(this.patienceDefaultLogic);
-            this.groupBox5.ForeColor = System.Drawing.Color.Gainsboro;
-            this.groupBox5.Location = new System.Drawing.Point(235, 188);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(340, 48);
-            this.groupBox5.TabIndex = 13;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Use Patience Skill";
-            this.groupBox5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            groupBox5.Controls.Add(patienceAlways);
+            groupBox5.Controls.Add(patienceSpectralOnly);
+            groupBox5.Controls.Add(patienceDefaultLogic);
+            groupBox5.ForeColor = System.Drawing.Color.Gainsboro;
+            groupBox5.Location = new System.Drawing.Point(274, 217);
+            groupBox5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox5.Size = new System.Drawing.Size(397, 55);
+            groupBox5.TabIndex = 13;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Use Patience Skill";
+            groupBox5.MouseDown += FormOceanSettings_MouseDown;
             // 
             // patienceAlways
             // 
-            this.patienceAlways.AutoSize = true;
-            this.patienceAlways.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.patienceAlways.DisabledColor = System.Drawing.Color.SlateGray;
-            this.patienceAlways.Location = new System.Drawing.Point(246, 16);
-            this.patienceAlways.MinimumSize = new System.Drawing.Size(0, 15);
-            this.patienceAlways.Name = "patienceAlways";
-            this.patienceAlways.Size = new System.Drawing.Size(70, 17);
-            this.patienceAlways.TabIndex = 5;
-            this.patienceAlways.TabStop = true;
-            this.patienceAlways.Text = "Always";
-            this.patienceAlways.UnCheckedColor = System.Drawing.Color.Gray;
-            this.patienceAlways.UseVisualStyleBackColor = true;
-            this.patienceAlways.CheckedChanged += new System.EventHandler(this.patienceAlways_CheckedChanged);
+            patienceAlways.AutoSize = true;
+            patienceAlways.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            patienceAlways.DisabledColor = System.Drawing.Color.SlateGray;
+            patienceAlways.Location = new System.Drawing.Point(287, 18);
+            patienceAlways.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            patienceAlways.MinimumSize = new System.Drawing.Size(0, 17);
+            patienceAlways.Name = "patienceAlways";
+            patienceAlways.Size = new System.Drawing.Size(74, 19);
+            patienceAlways.TabIndex = 5;
+            patienceAlways.TabStop = true;
+            patienceAlways.Text = "Always";
+            patienceAlways.UnCheckedColor = System.Drawing.Color.Gray;
+            patienceAlways.UseVisualStyleBackColor = true;
+            patienceAlways.CheckedChanged += patienceAlways_CheckedChanged;
             // 
             // patienceSpectralOnly
             // 
-            this.patienceSpectralOnly.AutoSize = true;
-            this.patienceSpectralOnly.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.patienceSpectralOnly.DisabledColor = System.Drawing.Color.SlateGray;
-            this.patienceSpectralOnly.Location = new System.Drawing.Point(112, 16);
-            this.patienceSpectralOnly.MinimumSize = new System.Drawing.Size(0, 15);
-            this.patienceSpectralOnly.Name = "patienceSpectralOnly";
-            this.patienceSpectralOnly.Size = new System.Drawing.Size(100, 17);
-            this.patienceSpectralOnly.TabIndex = 4;
-            this.patienceSpectralOnly.TabStop = true;
-            this.patienceSpectralOnly.Text = "Spectral Only";
-            this.patienceSpectralOnly.UnCheckedColor = System.Drawing.Color.Gray;
-            this.patienceSpectralOnly.UseVisualStyleBackColor = true;
-            this.patienceSpectralOnly.CheckedChanged += new System.EventHandler(this.patienceSpectralOnly_CheckedChanged);
+            patienceSpectralOnly.AutoSize = true;
+            patienceSpectralOnly.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            patienceSpectralOnly.DisabledColor = System.Drawing.Color.SlateGray;
+            patienceSpectralOnly.Location = new System.Drawing.Point(131, 18);
+            patienceSpectralOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            patienceSpectralOnly.MinimumSize = new System.Drawing.Size(0, 17);
+            patienceSpectralOnly.Name = "patienceSpectralOnly";
+            patienceSpectralOnly.Size = new System.Drawing.Size(107, 19);
+            patienceSpectralOnly.TabIndex = 4;
+            patienceSpectralOnly.TabStop = true;
+            patienceSpectralOnly.Text = "Spectral Only";
+            patienceSpectralOnly.UnCheckedColor = System.Drawing.Color.Gray;
+            patienceSpectralOnly.UseVisualStyleBackColor = true;
+            patienceSpectralOnly.CheckedChanged += patienceSpectralOnly_CheckedChanged;
             // 
             // patienceDefaultLogic
             // 
-            this.patienceDefaultLogic.AutoSize = true;
-            this.patienceDefaultLogic.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.patienceDefaultLogic.DisabledColor = System.Drawing.Color.SlateGray;
-            this.patienceDefaultLogic.Location = new System.Drawing.Point(7, 16);
-            this.patienceDefaultLogic.MinimumSize = new System.Drawing.Size(0, 15);
-            this.patienceDefaultLogic.Name = "patienceDefaultLogic";
-            this.patienceDefaultLogic.Size = new System.Drawing.Size(100, 17);
-            this.patienceDefaultLogic.TabIndex = 3;
-            this.patienceDefaultLogic.TabStop = true;
-            this.patienceDefaultLogic.Text = "Default Logic";
-            this.patienceDefaultLogic.UnCheckedColor = System.Drawing.Color.Gray;
-            this.patienceDefaultLogic.UseVisualStyleBackColor = true;
-            this.patienceDefaultLogic.CheckedChanged += new System.EventHandler(this.patienceDefaultLogic_CheckedChanged);
+            patienceDefaultLogic.AutoSize = true;
+            patienceDefaultLogic.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            patienceDefaultLogic.DisabledColor = System.Drawing.Color.SlateGray;
+            patienceDefaultLogic.Location = new System.Drawing.Point(8, 18);
+            patienceDefaultLogic.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            patienceDefaultLogic.MinimumSize = new System.Drawing.Size(0, 17);
+            patienceDefaultLogic.Name = "patienceDefaultLogic";
+            patienceDefaultLogic.Size = new System.Drawing.Size(107, 19);
+            patienceDefaultLogic.TabIndex = 3;
+            patienceDefaultLogic.TabStop = true;
+            patienceDefaultLogic.Text = "Default Logic";
+            patienceDefaultLogic.UnCheckedColor = System.Drawing.Color.Gray;
+            patienceDefaultLogic.UseVisualStyleBackColor = true;
+            patienceDefaultLogic.CheckedChanged += patienceDefaultLogic_CheckedChanged;
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.fishExchangeSell);
-            this.groupBox4.Controls.Add(this.fishExchangeDesynthesize);
-            this.groupBox4.Controls.Add(this.fishExchangeNone);
-            this.groupBox4.ForeColor = System.Drawing.Color.Gainsboro;
-            this.groupBox4.Location = new System.Drawing.Point(235, 242);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(340, 48);
-            this.groupBox4.TabIndex = 14;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Fish Exchange";
-            this.groupBox4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            groupBox4.Controls.Add(fishExchangeSell);
+            groupBox4.Controls.Add(fishExchangeDesynthesize);
+            groupBox4.Controls.Add(fishExchangeNone);
+            groupBox4.ForeColor = System.Drawing.Color.Gainsboro;
+            groupBox4.Location = new System.Drawing.Point(274, 279);
+            groupBox4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox4.Size = new System.Drawing.Size(397, 55);
+            groupBox4.TabIndex = 14;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Fish Exchange";
+            groupBox4.MouseDown += FormOceanSettings_MouseDown;
             // 
             // fishExchangeSell
             // 
-            this.fishExchangeSell.AutoSize = true;
-            this.fishExchangeSell.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.fishExchangeSell.DisabledColor = System.Drawing.Color.SlateGray;
-            this.fishExchangeSell.Location = new System.Drawing.Point(246, 19);
-            this.fishExchangeSell.MinimumSize = new System.Drawing.Size(0, 15);
-            this.fishExchangeSell.Name = "fishExchangeSell";
-            this.fishExchangeSell.Size = new System.Drawing.Size(54, 17);
-            this.fishExchangeSell.TabIndex = 5;
-            this.fishExchangeSell.TabStop = true;
-            this.fishExchangeSell.Text = "Sell";
-            this.fishExchangeSell.UnCheckedColor = System.Drawing.Color.Gray;
-            this.fishExchangeSell.UseVisualStyleBackColor = true;
-            this.fishExchangeSell.CheckedChanged += new System.EventHandler(this.fishExchangeSell_CheckedChanged);
+            fishExchangeSell.AutoSize = true;
+            fishExchangeSell.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            fishExchangeSell.DisabledColor = System.Drawing.Color.SlateGray;
+            fishExchangeSell.Location = new System.Drawing.Point(287, 22);
+            fishExchangeSell.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishExchangeSell.MinimumSize = new System.Drawing.Size(0, 17);
+            fishExchangeSell.Name = "fishExchangeSell";
+            fishExchangeSell.Size = new System.Drawing.Size(55, 19);
+            fishExchangeSell.TabIndex = 5;
+            fishExchangeSell.TabStop = true;
+            fishExchangeSell.Text = "Sell";
+            fishExchangeSell.UnCheckedColor = System.Drawing.Color.Gray;
+            fishExchangeSell.UseVisualStyleBackColor = true;
+            fishExchangeSell.CheckedChanged += fishExchangeSell_CheckedChanged;
             // 
             // fishExchangeDesynthesize
             // 
-            this.fishExchangeDesynthesize.AutoSize = true;
-            this.fishExchangeDesynthesize.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.fishExchangeDesynthesize.DisabledColor = System.Drawing.Color.SlateGray;
-            this.fishExchangeDesynthesize.Location = new System.Drawing.Point(112, 19);
-            this.fishExchangeDesynthesize.MinimumSize = new System.Drawing.Size(0, 15);
-            this.fishExchangeDesynthesize.Name = "fishExchangeDesynthesize";
-            this.fishExchangeDesynthesize.Size = new System.Drawing.Size(100, 17);
-            this.fishExchangeDesynthesize.TabIndex = 4;
-            this.fishExchangeDesynthesize.TabStop = true;
-            this.fishExchangeDesynthesize.Text = "Desynthesize";
-            this.fishExchangeDesynthesize.UnCheckedColor = System.Drawing.Color.Gray;
-            this.fishExchangeDesynthesize.UseVisualStyleBackColor = true;
-            this.fishExchangeDesynthesize.CheckedChanged += new System.EventHandler(this.fishExchangeDesynthesize_CheckedChanged);
+            fishExchangeDesynthesize.AutoSize = true;
+            fishExchangeDesynthesize.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            fishExchangeDesynthesize.DisabledColor = System.Drawing.Color.SlateGray;
+            fishExchangeDesynthesize.Location = new System.Drawing.Point(131, 22);
+            fishExchangeDesynthesize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishExchangeDesynthesize.MinimumSize = new System.Drawing.Size(0, 17);
+            fishExchangeDesynthesize.Name = "fishExchangeDesynthesize";
+            fishExchangeDesynthesize.Size = new System.Drawing.Size(105, 19);
+            fishExchangeDesynthesize.TabIndex = 4;
+            fishExchangeDesynthesize.TabStop = true;
+            fishExchangeDesynthesize.Text = "Desynthesize";
+            fishExchangeDesynthesize.UnCheckedColor = System.Drawing.Color.Gray;
+            fishExchangeDesynthesize.UseVisualStyleBackColor = true;
+            fishExchangeDesynthesize.CheckedChanged += fishExchangeDesynthesize_CheckedChanged;
             // 
             // fishExchangeNone
             // 
-            this.fishExchangeNone.AutoSize = true;
-            this.fishExchangeNone.CheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(137)))), ((int)(((byte)(198)))));
-            this.fishExchangeNone.DisabledColor = System.Drawing.Color.SlateGray;
-            this.fishExchangeNone.Location = new System.Drawing.Point(7, 19);
-            this.fishExchangeNone.MinimumSize = new System.Drawing.Size(0, 15);
-            this.fishExchangeNone.Name = "fishExchangeNone";
-            this.fishExchangeNone.Size = new System.Drawing.Size(63, 17);
-            this.fishExchangeNone.TabIndex = 3;
-            this.fishExchangeNone.TabStop = true;
-            this.fishExchangeNone.Text = "None";
-            this.fishExchangeNone.UnCheckedColor = System.Drawing.Color.Gray;
-            this.fishExchangeNone.UseVisualStyleBackColor = true;
-            this.fishExchangeNone.CheckedChanged += new System.EventHandler(this.fishExchangeNone_CheckedChanged);
+            fishExchangeNone.AutoSize = true;
+            fishExchangeNone.CheckedColor = System.Drawing.Color.FromArgb(0, 137, 198);
+            fishExchangeNone.DisabledColor = System.Drawing.Color.SlateGray;
+            fishExchangeNone.Location = new System.Drawing.Point(8, 22);
+            fishExchangeNone.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            fishExchangeNone.MinimumSize = new System.Drawing.Size(0, 17);
+            fishExchangeNone.Name = "fishExchangeNone";
+            fishExchangeNone.Size = new System.Drawing.Size(66, 19);
+            fishExchangeNone.TabIndex = 3;
+            fishExchangeNone.TabStop = true;
+            fishExchangeNone.Text = "None";
+            fishExchangeNone.UnCheckedColor = System.Drawing.Color.Gray;
+            fishExchangeNone.UseVisualStyleBackColor = true;
+            fishExchangeNone.CheckedChanged += fishExchangeNone_CheckedChanged;
             // 
             // tackleboxGroup
             // 
-            this.tackleboxGroup.Controls.Add(this.stoneflynymphLabel);
-            this.tackleboxGroup.Controls.Add(this.mackerelstripLabel);
-            this.tackleboxGroup.Controls.Add(this.squidstripLabel);
-            this.tackleboxGroup.Controls.Add(this.pillbugLabel);
-            this.tackleboxGroup.Controls.Add(this.shrimpcagefeederLabel);
-            this.tackleboxGroup.Controls.Add(this.heavysteeljigLabel);
-            this.tackleboxGroup.Controls.Add(this.glowwormLabel);
-            this.tackleboxGroup.Controls.Add(this.rattailLabel);
-            this.tackleboxGroup.Controls.Add(this.plumpwormLabel);
-            this.tackleboxGroup.Controls.Add(this.krillLabel);
-            this.tackleboxGroup.Controls.Add(this.ragwormLabel);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxStoneflyNymph);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxMackerelStrip);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxShrimpCageFeeder);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxPillBug);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxSquidStrip);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxHeavySteelJig);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxGlowWorm);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxRatTail);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxPlumpWorm);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxKrill);
-            this.tackleboxGroup.Controls.Add(this.pictureBoxRagworm);
-            this.tackleboxGroup.Controls.Add(this.numericRestockAmount);
-            this.tackleboxGroup.Controls.Add(this.label7);
-            this.tackleboxGroup.Controls.Add(this.label6);
-            this.tackleboxGroup.Controls.Add(this.numericRestockThreshold);
-            this.tackleboxGroup.ForeColor = System.Drawing.Color.Gainsboro;
-            this.tackleboxGroup.Location = new System.Drawing.Point(581, 79);
-            this.tackleboxGroup.Name = "tackleboxGroup";
-            this.tackleboxGroup.Size = new System.Drawing.Size(125, 496);
-            this.tackleboxGroup.TabIndex = 15;
-            this.tackleboxGroup.TabStop = false;
-            this.tackleboxGroup.Text = "Tackle Box (Bait)";
-            this.tackleboxGroup.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            tackleboxGroup.Controls.Add(stoneflynymphLabel);
+            tackleboxGroup.Controls.Add(mackerelstripLabel);
+            tackleboxGroup.Controls.Add(squidstripLabel);
+            tackleboxGroup.Controls.Add(pillbugLabel);
+            tackleboxGroup.Controls.Add(shrimpcagefeederLabel);
+            tackleboxGroup.Controls.Add(heavysteeljigLabel);
+            tackleboxGroup.Controls.Add(glowwormLabel);
+            tackleboxGroup.Controls.Add(rattailLabel);
+            tackleboxGroup.Controls.Add(plumpwormLabel);
+            tackleboxGroup.Controls.Add(krillLabel);
+            tackleboxGroup.Controls.Add(ragwormLabel);
+            tackleboxGroup.Controls.Add(pictureBoxStoneflyNymph);
+            tackleboxGroup.Controls.Add(pictureBoxMackerelStrip);
+            tackleboxGroup.Controls.Add(pictureBoxShrimpCageFeeder);
+            tackleboxGroup.Controls.Add(pictureBoxPillBug);
+            tackleboxGroup.Controls.Add(pictureBoxSquidStrip);
+            tackleboxGroup.Controls.Add(pictureBoxHeavySteelJig);
+            tackleboxGroup.Controls.Add(pictureBoxGlowWorm);
+            tackleboxGroup.Controls.Add(pictureBoxRatTail);
+            tackleboxGroup.Controls.Add(pictureBoxPlumpWorm);
+            tackleboxGroup.Controls.Add(pictureBoxKrill);
+            tackleboxGroup.Controls.Add(pictureBoxRagworm);
+            tackleboxGroup.Controls.Add(numericRestockAmount);
+            tackleboxGroup.Controls.Add(label7);
+            tackleboxGroup.Controls.Add(label6);
+            tackleboxGroup.Controls.Add(numericRestockThreshold);
+            tackleboxGroup.ForeColor = System.Drawing.Color.Gainsboro;
+            tackleboxGroup.Location = new System.Drawing.Point(678, 91);
+            tackleboxGroup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tackleboxGroup.Name = "tackleboxGroup";
+            tackleboxGroup.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tackleboxGroup.Size = new System.Drawing.Size(146, 572);
+            tackleboxGroup.TabIndex = 15;
+            tackleboxGroup.TabStop = false;
+            tackleboxGroup.Text = "Tackle Box (Bait)";
+            tackleboxGroup.MouseDown += FormOceanSettings_MouseDown;
             // 
             // stoneflynymphLabel
             // 
-            this.stoneflynymphLabel.AutoSize = true;
-            this.stoneflynymphLabel.Location = new System.Drawing.Point(23, 381);
-            this.stoneflynymphLabel.Name = "stoneflynymphLabel";
-            this.stoneflynymphLabel.Size = new System.Drawing.Size(25, 13);
-            this.stoneflynymphLabel.TabIndex = 26;
-            this.stoneflynymphLabel.Text = "999";
+            stoneflynymphLabel.AutoSize = true;
+            stoneflynymphLabel.Location = new System.Drawing.Point(27, 440);
+            stoneflynymphLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            stoneflynymphLabel.Name = "stoneflynymphLabel";
+            stoneflynymphLabel.Size = new System.Drawing.Size(25, 15);
+            stoneflynymphLabel.TabIndex = 26;
+            stoneflynymphLabel.Text = "999";
             // 
             // mackerelstripLabel
             // 
-            this.mackerelstripLabel.AutoSize = true;
-            this.mackerelstripLabel.Location = new System.Drawing.Point(80, 317);
-            this.mackerelstripLabel.Name = "mackerelstripLabel";
-            this.mackerelstripLabel.Size = new System.Drawing.Size(25, 13);
-            this.mackerelstripLabel.TabIndex = 25;
-            this.mackerelstripLabel.Text = "999";
+            mackerelstripLabel.AutoSize = true;
+            mackerelstripLabel.Location = new System.Drawing.Point(93, 366);
+            mackerelstripLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            mackerelstripLabel.Name = "mackerelstripLabel";
+            mackerelstripLabel.Size = new System.Drawing.Size(25, 15);
+            mackerelstripLabel.TabIndex = 25;
+            mackerelstripLabel.Text = "999";
             // 
             // squidstripLabel
             // 
-            this.squidstripLabel.AutoSize = true;
-            this.squidstripLabel.Location = new System.Drawing.Point(23, 317);
-            this.squidstripLabel.Name = "squidstripLabel";
-            this.squidstripLabel.Size = new System.Drawing.Size(25, 13);
-            this.squidstripLabel.TabIndex = 24;
-            this.squidstripLabel.Text = "999";
+            squidstripLabel.AutoSize = true;
+            squidstripLabel.Location = new System.Drawing.Point(27, 366);
+            squidstripLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            squidstripLabel.Name = "squidstripLabel";
+            squidstripLabel.Size = new System.Drawing.Size(25, 15);
+            squidstripLabel.TabIndex = 24;
+            squidstripLabel.Text = "999";
             // 
             // pillbugLabel
             // 
-            this.pillbugLabel.AutoSize = true;
-            this.pillbugLabel.Location = new System.Drawing.Point(80, 253);
-            this.pillbugLabel.Name = "pillbugLabel";
-            this.pillbugLabel.Size = new System.Drawing.Size(25, 13);
-            this.pillbugLabel.TabIndex = 23;
-            this.pillbugLabel.Text = "999";
+            pillbugLabel.AutoSize = true;
+            pillbugLabel.Location = new System.Drawing.Point(93, 292);
+            pillbugLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            pillbugLabel.Name = "pillbugLabel";
+            pillbugLabel.Size = new System.Drawing.Size(25, 15);
+            pillbugLabel.TabIndex = 23;
+            pillbugLabel.Text = "999";
             // 
             // shrimpcagefeederLabel
             // 
-            this.shrimpcagefeederLabel.AutoSize = true;
-            this.shrimpcagefeederLabel.Location = new System.Drawing.Point(23, 253);
-            this.shrimpcagefeederLabel.Name = "shrimpcagefeederLabel";
-            this.shrimpcagefeederLabel.Size = new System.Drawing.Size(25, 13);
-            this.shrimpcagefeederLabel.TabIndex = 22;
-            this.shrimpcagefeederLabel.Text = "999";
+            shrimpcagefeederLabel.AutoSize = true;
+            shrimpcagefeederLabel.Location = new System.Drawing.Point(27, 292);
+            shrimpcagefeederLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            shrimpcagefeederLabel.Name = "shrimpcagefeederLabel";
+            shrimpcagefeederLabel.Size = new System.Drawing.Size(25, 15);
+            shrimpcagefeederLabel.TabIndex = 22;
+            shrimpcagefeederLabel.Text = "999";
             // 
             // heavysteeljigLabel
             // 
-            this.heavysteeljigLabel.AutoSize = true;
-            this.heavysteeljigLabel.Location = new System.Drawing.Point(80, 189);
-            this.heavysteeljigLabel.Name = "heavysteeljigLabel";
-            this.heavysteeljigLabel.Size = new System.Drawing.Size(25, 13);
-            this.heavysteeljigLabel.TabIndex = 21;
-            this.heavysteeljigLabel.Text = "999";
+            heavysteeljigLabel.AutoSize = true;
+            heavysteeljigLabel.Location = new System.Drawing.Point(93, 218);
+            heavysteeljigLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            heavysteeljigLabel.Name = "heavysteeljigLabel";
+            heavysteeljigLabel.Size = new System.Drawing.Size(25, 15);
+            heavysteeljigLabel.TabIndex = 21;
+            heavysteeljigLabel.Text = "999";
             // 
             // glowwormLabel
             // 
-            this.glowwormLabel.AutoSize = true;
-            this.glowwormLabel.Location = new System.Drawing.Point(23, 189);
-            this.glowwormLabel.Name = "glowwormLabel";
-            this.glowwormLabel.Size = new System.Drawing.Size(25, 13);
-            this.glowwormLabel.TabIndex = 20;
-            this.glowwormLabel.Text = "999";
+            glowwormLabel.AutoSize = true;
+            glowwormLabel.Location = new System.Drawing.Point(27, 218);
+            glowwormLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            glowwormLabel.Name = "glowwormLabel";
+            glowwormLabel.Size = new System.Drawing.Size(25, 15);
+            glowwormLabel.TabIndex = 20;
+            glowwormLabel.Text = "999";
             // 
             // rattailLabel
             // 
-            this.rattailLabel.AutoSize = true;
-            this.rattailLabel.Location = new System.Drawing.Point(80, 125);
-            this.rattailLabel.Name = "rattailLabel";
-            this.rattailLabel.Size = new System.Drawing.Size(25, 13);
-            this.rattailLabel.TabIndex = 19;
-            this.rattailLabel.Text = "999";
+            rattailLabel.AutoSize = true;
+            rattailLabel.Location = new System.Drawing.Point(93, 144);
+            rattailLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            rattailLabel.Name = "rattailLabel";
+            rattailLabel.Size = new System.Drawing.Size(25, 15);
+            rattailLabel.TabIndex = 19;
+            rattailLabel.Text = "999";
             // 
             // plumpwormLabel
             // 
-            this.plumpwormLabel.AutoSize = true;
-            this.plumpwormLabel.Location = new System.Drawing.Point(23, 125);
-            this.plumpwormLabel.Name = "plumpwormLabel";
-            this.plumpwormLabel.Size = new System.Drawing.Size(25, 13);
-            this.plumpwormLabel.TabIndex = 18;
-            this.plumpwormLabel.Text = "999";
+            plumpwormLabel.AutoSize = true;
+            plumpwormLabel.Location = new System.Drawing.Point(27, 144);
+            plumpwormLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            plumpwormLabel.Name = "plumpwormLabel";
+            plumpwormLabel.Size = new System.Drawing.Size(25, 15);
+            plumpwormLabel.TabIndex = 18;
+            plumpwormLabel.Text = "999";
             // 
             // krillLabel
             // 
-            this.krillLabel.AutoSize = true;
-            this.krillLabel.Location = new System.Drawing.Point(81, 61);
-            this.krillLabel.Name = "krillLabel";
-            this.krillLabel.Size = new System.Drawing.Size(25, 13);
-            this.krillLabel.TabIndex = 17;
-            this.krillLabel.Text = "999";
+            krillLabel.AutoSize = true;
+            krillLabel.Location = new System.Drawing.Point(94, 70);
+            krillLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            krillLabel.Name = "krillLabel";
+            krillLabel.Size = new System.Drawing.Size(25, 15);
+            krillLabel.TabIndex = 17;
+            krillLabel.Text = "999";
             // 
             // ragwormLabel
             // 
-            this.ragwormLabel.AutoSize = true;
-            this.ragwormLabel.Location = new System.Drawing.Point(23, 61);
-            this.ragwormLabel.Name = "ragwormLabel";
-            this.ragwormLabel.Size = new System.Drawing.Size(25, 13);
-            this.ragwormLabel.TabIndex = 16;
-            this.ragwormLabel.Text = "999";
+            ragwormLabel.AutoSize = true;
+            ragwormLabel.Location = new System.Drawing.Point(27, 70);
+            ragwormLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            ragwormLabel.Name = "ragwormLabel";
+            ragwormLabel.Size = new System.Drawing.Size(25, 15);
+            ragwormLabel.TabIndex = 16;
+            ragwormLabel.Text = "999";
             // 
             // pictureBoxStoneflyNymph
             // 
-            this.pictureBoxStoneflyNymph.Location = new System.Drawing.Point(15, 338);
-            this.pictureBoxStoneflyNymph.Name = "pictureBoxStoneflyNymph";
-            this.pictureBoxStoneflyNymph.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxStoneflyNymph.TabIndex = 14;
-            this.pictureBoxStoneflyNymph.TabStop = false;
+            pictureBoxStoneflyNymph.Location = new System.Drawing.Point(18, 390);
+            pictureBoxStoneflyNymph.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxStoneflyNymph.Name = "pictureBoxStoneflyNymph";
+            pictureBoxStoneflyNymph.Size = new System.Drawing.Size(47, 46);
+            pictureBoxStoneflyNymph.TabIndex = 14;
+            pictureBoxStoneflyNymph.TabStop = false;
             // 
             // pictureBoxMackerelStrip
             // 
-            this.pictureBoxMackerelStrip.Location = new System.Drawing.Point(72, 274);
-            this.pictureBoxMackerelStrip.Name = "pictureBoxMackerelStrip";
-            this.pictureBoxMackerelStrip.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxMackerelStrip.TabIndex = 13;
-            this.pictureBoxMackerelStrip.TabStop = false;
+            pictureBoxMackerelStrip.Location = new System.Drawing.Point(84, 316);
+            pictureBoxMackerelStrip.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxMackerelStrip.Name = "pictureBoxMackerelStrip";
+            pictureBoxMackerelStrip.Size = new System.Drawing.Size(47, 46);
+            pictureBoxMackerelStrip.TabIndex = 13;
+            pictureBoxMackerelStrip.TabStop = false;
             // 
             // pictureBoxShrimpCageFeeder
             // 
-            this.pictureBoxShrimpCageFeeder.Location = new System.Drawing.Point(15, 210);
-            this.pictureBoxShrimpCageFeeder.Name = "pictureBoxShrimpCageFeeder";
-            this.pictureBoxShrimpCageFeeder.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxShrimpCageFeeder.TabIndex = 12;
-            this.pictureBoxShrimpCageFeeder.TabStop = false;
+            pictureBoxShrimpCageFeeder.Location = new System.Drawing.Point(18, 242);
+            pictureBoxShrimpCageFeeder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxShrimpCageFeeder.Name = "pictureBoxShrimpCageFeeder";
+            pictureBoxShrimpCageFeeder.Size = new System.Drawing.Size(47, 46);
+            pictureBoxShrimpCageFeeder.TabIndex = 12;
+            pictureBoxShrimpCageFeeder.TabStop = false;
             // 
             // pictureBoxPillBug
             // 
-            this.pictureBoxPillBug.Location = new System.Drawing.Point(72, 210);
-            this.pictureBoxPillBug.Name = "pictureBoxPillBug";
-            this.pictureBoxPillBug.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxPillBug.TabIndex = 11;
-            this.pictureBoxPillBug.TabStop = false;
+            pictureBoxPillBug.Location = new System.Drawing.Point(84, 242);
+            pictureBoxPillBug.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxPillBug.Name = "pictureBoxPillBug";
+            pictureBoxPillBug.Size = new System.Drawing.Size(47, 46);
+            pictureBoxPillBug.TabIndex = 11;
+            pictureBoxPillBug.TabStop = false;
             // 
             // pictureBoxSquidStrip
             // 
-            this.pictureBoxSquidStrip.Location = new System.Drawing.Point(15, 274);
-            this.pictureBoxSquidStrip.Name = "pictureBoxSquidStrip";
-            this.pictureBoxSquidStrip.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxSquidStrip.TabIndex = 10;
-            this.pictureBoxSquidStrip.TabStop = false;
+            pictureBoxSquidStrip.Location = new System.Drawing.Point(18, 316);
+            pictureBoxSquidStrip.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxSquidStrip.Name = "pictureBoxSquidStrip";
+            pictureBoxSquidStrip.Size = new System.Drawing.Size(47, 46);
+            pictureBoxSquidStrip.TabIndex = 10;
+            pictureBoxSquidStrip.TabStop = false;
             // 
             // pictureBoxHeavySteelJig
             // 
-            this.pictureBoxHeavySteelJig.Location = new System.Drawing.Point(72, 146);
-            this.pictureBoxHeavySteelJig.Name = "pictureBoxHeavySteelJig";
-            this.pictureBoxHeavySteelJig.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxHeavySteelJig.TabIndex = 9;
-            this.pictureBoxHeavySteelJig.TabStop = false;
+            pictureBoxHeavySteelJig.Location = new System.Drawing.Point(84, 168);
+            pictureBoxHeavySteelJig.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxHeavySteelJig.Name = "pictureBoxHeavySteelJig";
+            pictureBoxHeavySteelJig.Size = new System.Drawing.Size(47, 46);
+            pictureBoxHeavySteelJig.TabIndex = 9;
+            pictureBoxHeavySteelJig.TabStop = false;
             // 
             // pictureBoxGlowWorm
             // 
-            this.pictureBoxGlowWorm.Location = new System.Drawing.Point(15, 146);
-            this.pictureBoxGlowWorm.Name = "pictureBoxGlowWorm";
-            this.pictureBoxGlowWorm.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxGlowWorm.TabIndex = 8;
-            this.pictureBoxGlowWorm.TabStop = false;
+            pictureBoxGlowWorm.Location = new System.Drawing.Point(18, 168);
+            pictureBoxGlowWorm.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxGlowWorm.Name = "pictureBoxGlowWorm";
+            pictureBoxGlowWorm.Size = new System.Drawing.Size(47, 46);
+            pictureBoxGlowWorm.TabIndex = 8;
+            pictureBoxGlowWorm.TabStop = false;
             // 
             // pictureBoxRatTail
             // 
-            this.pictureBoxRatTail.Location = new System.Drawing.Point(72, 82);
-            this.pictureBoxRatTail.Name = "pictureBoxRatTail";
-            this.pictureBoxRatTail.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxRatTail.TabIndex = 7;
-            this.pictureBoxRatTail.TabStop = false;
+            pictureBoxRatTail.Location = new System.Drawing.Point(84, 95);
+            pictureBoxRatTail.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxRatTail.Name = "pictureBoxRatTail";
+            pictureBoxRatTail.Size = new System.Drawing.Size(47, 46);
+            pictureBoxRatTail.TabIndex = 7;
+            pictureBoxRatTail.TabStop = false;
             // 
             // pictureBoxPlumpWorm
             // 
-            this.pictureBoxPlumpWorm.Location = new System.Drawing.Point(15, 82);
-            this.pictureBoxPlumpWorm.Name = "pictureBoxPlumpWorm";
-            this.pictureBoxPlumpWorm.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxPlumpWorm.TabIndex = 6;
-            this.pictureBoxPlumpWorm.TabStop = false;
+            pictureBoxPlumpWorm.Location = new System.Drawing.Point(18, 95);
+            pictureBoxPlumpWorm.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxPlumpWorm.Name = "pictureBoxPlumpWorm";
+            pictureBoxPlumpWorm.Size = new System.Drawing.Size(47, 46);
+            pictureBoxPlumpWorm.TabIndex = 6;
+            pictureBoxPlumpWorm.TabStop = false;
             // 
             // pictureBoxKrill
             // 
-            this.pictureBoxKrill.Location = new System.Drawing.Point(72, 18);
-            this.pictureBoxKrill.Name = "pictureBoxKrill";
-            this.pictureBoxKrill.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxKrill.TabIndex = 5;
-            this.pictureBoxKrill.TabStop = false;
+            pictureBoxKrill.Location = new System.Drawing.Point(84, 21);
+            pictureBoxKrill.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxKrill.Name = "pictureBoxKrill";
+            pictureBoxKrill.Size = new System.Drawing.Size(47, 46);
+            pictureBoxKrill.TabIndex = 5;
+            pictureBoxKrill.TabStop = false;
             // 
             // pictureBoxRagworm
             // 
-            this.pictureBoxRagworm.Location = new System.Drawing.Point(15, 18);
-            this.pictureBoxRagworm.Name = "pictureBoxRagworm";
-            this.pictureBoxRagworm.Size = new System.Drawing.Size(40, 40);
-            this.pictureBoxRagworm.TabIndex = 4;
-            this.pictureBoxRagworm.TabStop = false;
+            pictureBoxRagworm.Location = new System.Drawing.Point(18, 21);
+            pictureBoxRagworm.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pictureBoxRagworm.Name = "pictureBoxRagworm";
+            pictureBoxRagworm.Size = new System.Drawing.Size(47, 46);
+            pictureBoxRagworm.TabIndex = 4;
+            pictureBoxRagworm.TabStop = false;
             // 
             // numericRestockAmount
             // 
-            this.numericRestockAmount.Location = new System.Drawing.Point(15, 466);
-            this.numericRestockAmount.Maximum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            0});
-            this.numericRestockAmount.Name = "numericRestockAmount";
-            this.numericRestockAmount.Size = new System.Drawing.Size(94, 20);
-            this.numericRestockAmount.TabIndex = 3;
+            numericRestockAmount.Location = new System.Drawing.Point(18, 538);
+            numericRestockAmount.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            numericRestockAmount.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
+            numericRestockAmount.Name = "numericRestockAmount";
+            numericRestockAmount.Size = new System.Drawing.Size(110, 23);
+            numericRestockAmount.TabIndex = 3;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 450);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(89, 13);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "Restock Amount:";
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(14, 519);
+            label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(98, 15);
+            label7.TabIndex = 2;
+            label7.Text = "Restock Amount:";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 405);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(100, 13);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "Restock Threshold:";
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(14, 467);
+            label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(106, 15);
+            label6.TabIndex = 1;
+            label6.Text = "Restock Threshold:";
             // 
             // numericRestockThreshold
             // 
-            this.numericRestockThreshold.Location = new System.Drawing.Point(15, 421);
-            this.numericRestockThreshold.Maximum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            0});
-            this.numericRestockThreshold.Name = "numericRestockThreshold";
-            this.numericRestockThreshold.Size = new System.Drawing.Size(94, 20);
-            this.numericRestockThreshold.TabIndex = 0;
+            numericRestockThreshold.Location = new System.Drawing.Point(18, 486);
+            numericRestockThreshold.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            numericRestockThreshold.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
+            numericRestockThreshold.Name = "numericRestockThreshold";
+            numericRestockThreshold.Size = new System.Drawing.Size(110, 23);
+            numericRestockThreshold.TabIndex = 0;
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.Overall3MLabel);
-            this.groupBox7.Controls.Add(this.overall3mPicture);
-            this.groupBox7.Controls.Add(this.Overall1MLabel);
-            this.groupBox7.Controls.Add(this.overall1mPicture);
-            this.groupBox7.Controls.Add(this.Overall500kLabel);
-            this.groupBox7.Controls.Add(this.overall500kPicture);
-            this.groupBox7.Controls.Add(this.Overall100kLabel);
-            this.groupBox7.Controls.Add(this.overall100kPicture);
-            this.groupBox7.Controls.Add(this.Ruby16kLabel);
-            this.groupBox7.Controls.Add(this.ruby16kPicture);
-            this.groupBox7.Controls.Add(this.Ruby10kLabel);
-            this.groupBox7.Controls.Add(this.ruby10kPicture);
-            this.groupBox7.Controls.Add(this.Ruby5kLabel);
-            this.groupBox7.Controls.Add(this.ruby5kPicture);
-            this.groupBox7.Controls.Add(this.SquidLabel);
-            this.groupBox7.Controls.Add(this.squidPicture);
-            this.groupBox7.Controls.Add(this.ShellfishLabel);
-            this.groupBox7.Controls.Add(this.shellfishPicture);
-            this.groupBox7.Controls.Add(this.ShrimpLabel);
-            this.groupBox7.Controls.Add(this.shrimpPicture);
-            this.groupBox7.Controls.Add(this.Indigo20kLabel);
-            this.groupBox7.Controls.Add(this.indigo20kPicture);
-            this.groupBox7.Controls.Add(this.Indigo16kLabel);
-            this.groupBox7.Controls.Add(this.indigo16kPicture);
-            this.groupBox7.Controls.Add(this.Indigo10kLabel);
-            this.groupBox7.Controls.Add(this.indigo10kPicture);
-            this.groupBox7.Controls.Add(this.Indigo5kLabel);
-            this.groupBox7.Controls.Add(this.indigo5kPicture);
-            this.groupBox7.Controls.Add(this.CrabsLabel);
-            this.groupBox7.Controls.Add(this.crabsPicture);
-            this.groupBox7.Controls.Add(this.BalloonsLabel);
-            this.groupBox7.Controls.Add(this.balloonsPicture);
-            this.groupBox7.Controls.Add(this.SeadragonLabel);
-            this.groupBox7.Controls.Add(this.seadragonPicture);
-            this.groupBox7.Controls.Add(this.JellyfishLabel);
-            this.groupBox7.Controls.Add(this.jellyfishPicture);
-            this.groupBox7.Controls.Add(this.SharksLabel);
-            this.groupBox7.Controls.Add(this.sharksPicture);
-            this.groupBox7.Controls.Add(this.OctopodsLabel);
-            this.groupBox7.Controls.Add(this.octopodsPicture);
-            this.groupBox7.Controls.Add(this.mantasLabel);
-            this.groupBox7.Controls.Add(this.mantasPicture);
-            this.groupBox7.ForeColor = System.Drawing.Color.Gainsboro;
-            this.groupBox7.Location = new System.Drawing.Point(17, 430);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(556, 145);
-            this.groupBox7.TabIndex = 16;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Ocean Fishing Achievements";
-            this.groupBox7.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
+            groupBox7.Controls.Add(Overall3MLabel);
+            groupBox7.Controls.Add(overall3mPicture);
+            groupBox7.Controls.Add(Overall1MLabel);
+            groupBox7.Controls.Add(overall1mPicture);
+            groupBox7.Controls.Add(Overall500kLabel);
+            groupBox7.Controls.Add(overall500kPicture);
+            groupBox7.Controls.Add(Overall100kLabel);
+            groupBox7.Controls.Add(overall100kPicture);
+            groupBox7.Controls.Add(Ruby16kLabel);
+            groupBox7.Controls.Add(ruby16kPicture);
+            groupBox7.Controls.Add(Ruby10kLabel);
+            groupBox7.Controls.Add(ruby10kPicture);
+            groupBox7.Controls.Add(Ruby5kLabel);
+            groupBox7.Controls.Add(ruby5kPicture);
+            groupBox7.Controls.Add(SquidLabel);
+            groupBox7.Controls.Add(squidPicture);
+            groupBox7.Controls.Add(ShellfishLabel);
+            groupBox7.Controls.Add(shellfishPicture);
+            groupBox7.Controls.Add(ShrimpLabel);
+            groupBox7.Controls.Add(shrimpPicture);
+            groupBox7.Controls.Add(Indigo20kLabel);
+            groupBox7.Controls.Add(indigo20kPicture);
+            groupBox7.Controls.Add(Indigo16kLabel);
+            groupBox7.Controls.Add(indigo16kPicture);
+            groupBox7.Controls.Add(Indigo10kLabel);
+            groupBox7.Controls.Add(indigo10kPicture);
+            groupBox7.Controls.Add(Indigo5kLabel);
+            groupBox7.Controls.Add(indigo5kPicture);
+            groupBox7.Controls.Add(CrabsLabel);
+            groupBox7.Controls.Add(crabsPicture);
+            groupBox7.Controls.Add(BalloonsLabel);
+            groupBox7.Controls.Add(balloonsPicture);
+            groupBox7.Controls.Add(SeadragonLabel);
+            groupBox7.Controls.Add(seadragonPicture);
+            groupBox7.Controls.Add(JellyfishLabel);
+            groupBox7.Controls.Add(jellyfishPicture);
+            groupBox7.Controls.Add(SharksLabel);
+            groupBox7.Controls.Add(sharksPicture);
+            groupBox7.Controls.Add(OctopodsLabel);
+            groupBox7.Controls.Add(octopodsPicture);
+            groupBox7.Controls.Add(mantasLabel);
+            groupBox7.Controls.Add(mantasPicture);
+            groupBox7.ForeColor = System.Drawing.Color.Gainsboro;
+            groupBox7.Location = new System.Drawing.Point(20, 496);
+            groupBox7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox7.Name = "groupBox7";
+            groupBox7.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox7.Size = new System.Drawing.Size(649, 167);
+            groupBox7.TabIndex = 16;
+            groupBox7.TabStop = false;
+            groupBox7.Text = "Ocean Fishing Achievements";
+            groupBox7.MouseDown += FormOceanSettings_MouseDown;
             // 
             // Overall3MLabel
             // 
-            this.Overall3MLabel.AutoSize = true;
-            this.Overall3MLabel.Location = new System.Drawing.Point(511, 79);
-            this.Overall3MLabel.Name = "Overall3MLabel";
-            this.Overall3MLabel.Size = new System.Drawing.Size(22, 13);
-            this.Overall3MLabel.TabIndex = 41;
-            this.Overall3MLabel.Text = "3M";
+            Overall3MLabel.AutoSize = true;
+            Overall3MLabel.Location = new System.Drawing.Point(596, 91);
+            Overall3MLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Overall3MLabel.Name = "Overall3MLabel";
+            Overall3MLabel.Size = new System.Drawing.Size(24, 15);
+            Overall3MLabel.TabIndex = 41;
+            Overall3MLabel.Text = "3M";
             // 
             // overall3mPicture
             // 
-            this.overall3mPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.overall3mPicture.AutoCheck = false;
-            this.overall3mPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.overall3mPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.overall3mPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.overall3mPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.overall3mPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.overall3mPicture.Location = new System.Drawing.Point(503, 97);
-            this.overall3mPicture.Name = "overall3mPicture";
-            this.overall3mPicture.Size = new System.Drawing.Size(40, 40);
-            this.overall3mPicture.TabIndex = 40;
-            this.overall3mPicture.UseVisualStyleBackColor = true;
-            this.overall3mPicture.CheckedChanged += new System.EventHandler(this.overall3mPicture_CheckedChanged);
+            overall3mPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            overall3mPicture.AutoCheck = false;
+            overall3mPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            overall3mPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            overall3mPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            overall3mPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            overall3mPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            overall3mPicture.Location = new System.Drawing.Point(587, 112);
+            overall3mPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            overall3mPicture.Name = "overall3mPicture";
+            overall3mPicture.Size = new System.Drawing.Size(47, 46);
+            overall3mPicture.TabIndex = 40;
+            overall3mPicture.UseVisualStyleBackColor = true;
+            overall3mPicture.CheckedChanged += overall3mPicture_CheckedChanged;
             // 
             // Overall1MLabel
             // 
-            this.Overall1MLabel.AutoSize = true;
-            this.Overall1MLabel.Location = new System.Drawing.Point(463, 79);
-            this.Overall1MLabel.Name = "Overall1MLabel";
-            this.Overall1MLabel.Size = new System.Drawing.Size(22, 13);
-            this.Overall1MLabel.TabIndex = 39;
-            this.Overall1MLabel.Text = "1M";
+            Overall1MLabel.AutoSize = true;
+            Overall1MLabel.Location = new System.Drawing.Point(540, 91);
+            Overall1MLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Overall1MLabel.Name = "Overall1MLabel";
+            Overall1MLabel.Size = new System.Drawing.Size(24, 15);
+            Overall1MLabel.TabIndex = 39;
+            Overall1MLabel.Text = "1M";
             // 
             // overall1mPicture
             // 
-            this.overall1mPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.overall1mPicture.AutoCheck = false;
-            this.overall1mPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.overall1mPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.overall1mPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.overall1mPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.overall1mPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.overall1mPicture.Location = new System.Drawing.Point(454, 97);
-            this.overall1mPicture.Name = "overall1mPicture";
-            this.overall1mPicture.Size = new System.Drawing.Size(40, 40);
-            this.overall1mPicture.TabIndex = 38;
-            this.overall1mPicture.UseVisualStyleBackColor = true;
-            this.overall1mPicture.CheckedChanged += new System.EventHandler(this.overall1mPicture_CheckedChanged);
+            overall1mPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            overall1mPicture.AutoCheck = false;
+            overall1mPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            overall1mPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            overall1mPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            overall1mPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            overall1mPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            overall1mPicture.Location = new System.Drawing.Point(530, 112);
+            overall1mPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            overall1mPicture.Name = "overall1mPicture";
+            overall1mPicture.Size = new System.Drawing.Size(47, 46);
+            overall1mPicture.TabIndex = 38;
+            overall1mPicture.UseVisualStyleBackColor = true;
+            overall1mPicture.CheckedChanged += overall1mPicture_CheckedChanged;
             // 
             // Overall500kLabel
             // 
-            this.Overall500kLabel.AutoSize = true;
-            this.Overall500kLabel.Location = new System.Drawing.Point(411, 79);
-            this.Overall500kLabel.Name = "Overall500kLabel";
-            this.Overall500kLabel.Size = new System.Drawing.Size(32, 13);
-            this.Overall500kLabel.TabIndex = 37;
-            this.Overall500kLabel.Text = "500K";
+            Overall500kLabel.AutoSize = true;
+            Overall500kLabel.Location = new System.Drawing.Point(479, 91);
+            Overall500kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Overall500kLabel.Name = "Overall500kLabel";
+            Overall500kLabel.Size = new System.Drawing.Size(32, 15);
+            Overall500kLabel.TabIndex = 37;
+            Overall500kLabel.Text = "500K";
             // 
             // overall500kPicture
             // 
-            this.overall500kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.overall500kPicture.AutoCheck = false;
-            this.overall500kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.overall500kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.overall500kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.overall500kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.overall500kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.overall500kPicture.Location = new System.Drawing.Point(405, 97);
-            this.overall500kPicture.Name = "overall500kPicture";
-            this.overall500kPicture.Size = new System.Drawing.Size(40, 40);
-            this.overall500kPicture.TabIndex = 36;
-            this.overall500kPicture.UseVisualStyleBackColor = true;
-            this.overall500kPicture.CheckedChanged += new System.EventHandler(this.overall500kPicture_CheckedChanged);
+            overall500kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            overall500kPicture.AutoCheck = false;
+            overall500kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            overall500kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            overall500kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            overall500kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            overall500kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            overall500kPicture.Location = new System.Drawing.Point(472, 112);
+            overall500kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            overall500kPicture.Name = "overall500kPicture";
+            overall500kPicture.Size = new System.Drawing.Size(47, 46);
+            overall500kPicture.TabIndex = 36;
+            overall500kPicture.UseVisualStyleBackColor = true;
+            overall500kPicture.CheckedChanged += overall500kPicture_CheckedChanged;
             // 
             // Overall100kLabel
             // 
-            this.Overall100kLabel.AutoSize = true;
-            this.Overall100kLabel.Location = new System.Drawing.Point(361, 79);
-            this.Overall100kLabel.Name = "Overall100kLabel";
-            this.Overall100kLabel.Size = new System.Drawing.Size(32, 13);
-            this.Overall100kLabel.TabIndex = 35;
-            this.Overall100kLabel.Text = "100K";
+            Overall100kLabel.AutoSize = true;
+            Overall100kLabel.Location = new System.Drawing.Point(421, 91);
+            Overall100kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Overall100kLabel.Name = "Overall100kLabel";
+            Overall100kLabel.Size = new System.Drawing.Size(32, 15);
+            Overall100kLabel.TabIndex = 35;
+            Overall100kLabel.Text = "100K";
             // 
             // overall100kPicture
             // 
-            this.overall100kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.overall100kPicture.AutoCheck = false;
-            this.overall100kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.overall100kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.overall100kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.overall100kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.overall100kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.overall100kPicture.Location = new System.Drawing.Point(357, 97);
-            this.overall100kPicture.Name = "overall100kPicture";
-            this.overall100kPicture.Size = new System.Drawing.Size(40, 40);
-            this.overall100kPicture.TabIndex = 34;
-            this.overall100kPicture.UseVisualStyleBackColor = true;
-            this.overall100kPicture.CheckedChanged += new System.EventHandler(this.overall100kPicture_CheckedChanged);
+            overall100kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            overall100kPicture.AutoCheck = false;
+            overall100kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            overall100kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            overall100kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            overall100kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            overall100kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            overall100kPicture.Location = new System.Drawing.Point(416, 112);
+            overall100kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            overall100kPicture.Name = "overall100kPicture";
+            overall100kPicture.Size = new System.Drawing.Size(47, 46);
+            overall100kPicture.TabIndex = 34;
+            overall100kPicture.UseVisualStyleBackColor = true;
+            overall100kPicture.CheckedChanged += overall100kPicture_CheckedChanged;
             // 
             // Ruby16kLabel
             // 
-            this.Ruby16kLabel.AutoSize = true;
-            this.Ruby16kLabel.Location = new System.Drawing.Point(266, 79);
-            this.Ruby16kLabel.Name = "Ruby16kLabel";
-            this.Ruby16kLabel.Size = new System.Drawing.Size(26, 13);
-            this.Ruby16kLabel.TabIndex = 33;
-            this.Ruby16kLabel.Text = "16K";
+            Ruby16kLabel.AutoSize = true;
+            Ruby16kLabel.Location = new System.Drawing.Point(310, 91);
+            Ruby16kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Ruby16kLabel.Name = "Ruby16kLabel";
+            Ruby16kLabel.Size = new System.Drawing.Size(26, 15);
+            Ruby16kLabel.TabIndex = 33;
+            Ruby16kLabel.Text = "16K";
             // 
             // ruby16kPicture
             // 
-            this.ruby16kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.ruby16kPicture.AutoCheck = false;
-            this.ruby16kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.ruby16kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.ruby16kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.ruby16kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.ruby16kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ruby16kPicture.Location = new System.Drawing.Point(259, 97);
-            this.ruby16kPicture.Name = "ruby16kPicture";
-            this.ruby16kPicture.Size = new System.Drawing.Size(40, 40);
-            this.ruby16kPicture.TabIndex = 32;
-            this.ruby16kPicture.UseVisualStyleBackColor = true;
-            this.ruby16kPicture.CheckedChanged += new System.EventHandler(this.ruby16kPicture_CheckedChanged);
+            ruby16kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            ruby16kPicture.AutoCheck = false;
+            ruby16kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            ruby16kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            ruby16kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            ruby16kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            ruby16kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            ruby16kPicture.Location = new System.Drawing.Point(302, 112);
+            ruby16kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ruby16kPicture.Name = "ruby16kPicture";
+            ruby16kPicture.Size = new System.Drawing.Size(47, 46);
+            ruby16kPicture.TabIndex = 32;
+            ruby16kPicture.UseVisualStyleBackColor = true;
+            ruby16kPicture.CheckedChanged += ruby16kPicture_CheckedChanged;
             // 
             // Ruby10kLabel
             // 
-            this.Ruby10kLabel.AutoSize = true;
-            this.Ruby10kLabel.Location = new System.Drawing.Point(216, 79);
-            this.Ruby10kLabel.Name = "Ruby10kLabel";
-            this.Ruby10kLabel.Size = new System.Drawing.Size(26, 13);
-            this.Ruby10kLabel.TabIndex = 31;
-            this.Ruby10kLabel.Text = "10K";
+            Ruby10kLabel.AutoSize = true;
+            Ruby10kLabel.Location = new System.Drawing.Point(252, 91);
+            Ruby10kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Ruby10kLabel.Name = "Ruby10kLabel";
+            Ruby10kLabel.Size = new System.Drawing.Size(26, 15);
+            Ruby10kLabel.TabIndex = 31;
+            Ruby10kLabel.Text = "10K";
             // 
             // ruby10kPicture
             // 
-            this.ruby10kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.ruby10kPicture.AutoCheck = false;
-            this.ruby10kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.ruby10kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.ruby10kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.ruby10kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.ruby10kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ruby10kPicture.Location = new System.Drawing.Point(209, 97);
-            this.ruby10kPicture.Name = "ruby10kPicture";
-            this.ruby10kPicture.Size = new System.Drawing.Size(40, 40);
-            this.ruby10kPicture.TabIndex = 30;
-            this.ruby10kPicture.UseVisualStyleBackColor = true;
-            this.ruby10kPicture.CheckedChanged += new System.EventHandler(this.ruby10kPicture_CheckedChanged);
+            ruby10kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            ruby10kPicture.AutoCheck = false;
+            ruby10kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            ruby10kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            ruby10kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            ruby10kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            ruby10kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            ruby10kPicture.Location = new System.Drawing.Point(244, 112);
+            ruby10kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ruby10kPicture.Name = "ruby10kPicture";
+            ruby10kPicture.Size = new System.Drawing.Size(47, 46);
+            ruby10kPicture.TabIndex = 30;
+            ruby10kPicture.UseVisualStyleBackColor = true;
+            ruby10kPicture.CheckedChanged += ruby10kPicture_CheckedChanged;
             // 
             // Ruby5kLabel
             // 
-            this.Ruby5kLabel.AutoSize = true;
-            this.Ruby5kLabel.Location = new System.Drawing.Point(170, 79);
-            this.Ruby5kLabel.Name = "Ruby5kLabel";
-            this.Ruby5kLabel.Size = new System.Drawing.Size(20, 13);
-            this.Ruby5kLabel.TabIndex = 29;
-            this.Ruby5kLabel.Text = "5K";
+            Ruby5kLabel.AutoSize = true;
+            Ruby5kLabel.Location = new System.Drawing.Point(198, 91);
+            Ruby5kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Ruby5kLabel.Name = "Ruby5kLabel";
+            Ruby5kLabel.Size = new System.Drawing.Size(20, 15);
+            Ruby5kLabel.TabIndex = 29;
+            Ruby5kLabel.Text = "5K";
             // 
             // ruby5kPicture
             // 
-            this.ruby5kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.ruby5kPicture.AutoCheck = false;
-            this.ruby5kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.ruby5kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.ruby5kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.ruby5kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.ruby5kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ruby5kPicture.Location = new System.Drawing.Point(160, 97);
-            this.ruby5kPicture.Name = "ruby5kPicture";
-            this.ruby5kPicture.Size = new System.Drawing.Size(40, 40);
-            this.ruby5kPicture.TabIndex = 28;
-            this.ruby5kPicture.UseVisualStyleBackColor = true;
-            this.ruby5kPicture.CheckedChanged += new System.EventHandler(this.ruby5kPicture_CheckedChanged);
+            ruby5kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            ruby5kPicture.AutoCheck = false;
+            ruby5kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            ruby5kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            ruby5kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            ruby5kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            ruby5kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            ruby5kPicture.Location = new System.Drawing.Point(187, 112);
+            ruby5kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ruby5kPicture.Name = "ruby5kPicture";
+            ruby5kPicture.Size = new System.Drawing.Size(47, 46);
+            ruby5kPicture.TabIndex = 28;
+            ruby5kPicture.UseVisualStyleBackColor = true;
+            ruby5kPicture.CheckedChanged += ruby5kPicture_CheckedChanged;
             // 
             // SquidLabel
             // 
-            this.SquidLabel.AutoSize = true;
-            this.SquidLabel.Location = new System.Drawing.Point(113, 79);
-            this.SquidLabel.Name = "SquidLabel";
-            this.SquidLabel.Size = new System.Drawing.Size(34, 13);
-            this.SquidLabel.TabIndex = 27;
-            this.SquidLabel.Text = "Squid";
+            SquidLabel.AutoSize = true;
+            SquidLabel.Location = new System.Drawing.Point(132, 91);
+            SquidLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            SquidLabel.Name = "SquidLabel";
+            SquidLabel.Size = new System.Drawing.Size(37, 15);
+            SquidLabel.TabIndex = 27;
+            SquidLabel.Text = "Squid";
             // 
             // squidPicture
             // 
-            this.squidPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.squidPicture.AutoCheck = false;
-            this.squidPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.squidPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.squidPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.squidPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.squidPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.squidPicture.Location = new System.Drawing.Point(111, 97);
-            this.squidPicture.Name = "squidPicture";
-            this.squidPicture.Size = new System.Drawing.Size(40, 40);
-            this.squidPicture.TabIndex = 26;
-            this.squidPicture.UseVisualStyleBackColor = true;
-            this.squidPicture.CheckedChanged += new System.EventHandler(this.squidPicture_CheckedChanged);
+            squidPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            squidPicture.AutoCheck = false;
+            squidPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            squidPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            squidPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            squidPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            squidPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            squidPicture.Location = new System.Drawing.Point(130, 112);
+            squidPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            squidPicture.Name = "squidPicture";
+            squidPicture.Size = new System.Drawing.Size(47, 46);
+            squidPicture.TabIndex = 26;
+            squidPicture.UseVisualStyleBackColor = true;
+            squidPicture.CheckedChanged += squidPicture_CheckedChanged;
             // 
             // ShellfishLabel
             // 
-            this.ShellfishLabel.AutoSize = true;
-            this.ShellfishLabel.Location = new System.Drawing.Point(59, 79);
-            this.ShellfishLabel.Name = "ShellfishLabel";
-            this.ShellfishLabel.Size = new System.Drawing.Size(46, 13);
-            this.ShellfishLabel.TabIndex = 25;
-            this.ShellfishLabel.Text = "Shellfish";
+            ShellfishLabel.AutoSize = true;
+            ShellfishLabel.Location = new System.Drawing.Point(69, 91);
+            ShellfishLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            ShellfishLabel.Name = "ShellfishLabel";
+            ShellfishLabel.Size = new System.Drawing.Size(51, 15);
+            ShellfishLabel.TabIndex = 25;
+            ShellfishLabel.Text = "Shellfish";
             // 
             // shellfishPicture
             // 
-            this.shellfishPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.shellfishPicture.AutoCheck = false;
-            this.shellfishPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.shellfishPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.shellfishPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.shellfishPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.shellfishPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shellfishPicture.Location = new System.Drawing.Point(62, 97);
-            this.shellfishPicture.Name = "shellfishPicture";
-            this.shellfishPicture.Size = new System.Drawing.Size(40, 40);
-            this.shellfishPicture.TabIndex = 24;
-            this.shellfishPicture.UseVisualStyleBackColor = true;
-            this.shellfishPicture.CheckedChanged += new System.EventHandler(this.shellfishPicture_CheckedChanged);
+            shellfishPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            shellfishPicture.AutoCheck = false;
+            shellfishPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            shellfishPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            shellfishPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            shellfishPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            shellfishPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            shellfishPicture.Location = new System.Drawing.Point(72, 112);
+            shellfishPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            shellfishPicture.Name = "shellfishPicture";
+            shellfishPicture.Size = new System.Drawing.Size(47, 46);
+            shellfishPicture.TabIndex = 24;
+            shellfishPicture.UseVisualStyleBackColor = true;
+            shellfishPicture.CheckedChanged += shellfishPicture_CheckedChanged;
             // 
             // ShrimpLabel
             // 
-            this.ShrimpLabel.AutoSize = true;
-            this.ShrimpLabel.Location = new System.Drawing.Point(14, 79);
-            this.ShrimpLabel.Name = "ShrimpLabel";
-            this.ShrimpLabel.Size = new System.Drawing.Size(39, 13);
-            this.ShrimpLabel.TabIndex = 23;
-            this.ShrimpLabel.Text = "Shrimp";
+            ShrimpLabel.AutoSize = true;
+            ShrimpLabel.Location = new System.Drawing.Point(16, 91);
+            ShrimpLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            ShrimpLabel.Name = "ShrimpLabel";
+            ShrimpLabel.Size = new System.Drawing.Size(45, 15);
+            ShrimpLabel.TabIndex = 23;
+            ShrimpLabel.Text = "Shrimp";
             // 
             // shrimpPicture
             // 
-            this.shrimpPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.shrimpPicture.AutoCheck = false;
-            this.shrimpPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.shrimpPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.shrimpPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.shrimpPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.shrimpPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shrimpPicture.Location = new System.Drawing.Point(13, 97);
-            this.shrimpPicture.Name = "shrimpPicture";
-            this.shrimpPicture.Size = new System.Drawing.Size(40, 40);
-            this.shrimpPicture.TabIndex = 22;
-            this.shrimpPicture.UseVisualStyleBackColor = true;
-            this.shrimpPicture.CheckedChanged += new System.EventHandler(this.shrimpPicture_CheckedChanged);
+            shrimpPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            shrimpPicture.AutoCheck = false;
+            shrimpPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            shrimpPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            shrimpPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            shrimpPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            shrimpPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            shrimpPicture.Location = new System.Drawing.Point(15, 112);
+            shrimpPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            shrimpPicture.Name = "shrimpPicture";
+            shrimpPicture.Size = new System.Drawing.Size(47, 46);
+            shrimpPicture.TabIndex = 22;
+            shrimpPicture.UseVisualStyleBackColor = true;
+            shrimpPicture.CheckedChanged += shrimpPicture_CheckedChanged;
             // 
             // Indigo20kLabel
             // 
-            this.Indigo20kLabel.AutoSize = true;
-            this.Indigo20kLabel.Location = new System.Drawing.Point(510, 16);
-            this.Indigo20kLabel.Name = "Indigo20kLabel";
-            this.Indigo20kLabel.Size = new System.Drawing.Size(26, 13);
-            this.Indigo20kLabel.TabIndex = 21;
-            this.Indigo20kLabel.Text = "20K";
+            Indigo20kLabel.AutoSize = true;
+            Indigo20kLabel.Location = new System.Drawing.Point(595, 18);
+            Indigo20kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Indigo20kLabel.Name = "Indigo20kLabel";
+            Indigo20kLabel.Size = new System.Drawing.Size(26, 15);
+            Indigo20kLabel.TabIndex = 21;
+            Indigo20kLabel.Text = "20K";
             // 
             // indigo20kPicture
             // 
-            this.indigo20kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.indigo20kPicture.AutoCheck = false;
-            this.indigo20kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.indigo20kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.indigo20kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.indigo20kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.indigo20kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.indigo20kPicture.Location = new System.Drawing.Point(503, 34);
-            this.indigo20kPicture.Name = "indigo20kPicture";
-            this.indigo20kPicture.Size = new System.Drawing.Size(40, 40);
-            this.indigo20kPicture.TabIndex = 20;
-            this.indigo20kPicture.UseVisualStyleBackColor = true;
-            this.indigo20kPicture.CheckedChanged += new System.EventHandler(this.indigo20kPicture_CheckedChanged);
+            indigo20kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            indigo20kPicture.AutoCheck = false;
+            indigo20kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            indigo20kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            indigo20kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            indigo20kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            indigo20kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            indigo20kPicture.Location = new System.Drawing.Point(587, 39);
+            indigo20kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            indigo20kPicture.Name = "indigo20kPicture";
+            indigo20kPicture.Size = new System.Drawing.Size(47, 46);
+            indigo20kPicture.TabIndex = 20;
+            indigo20kPicture.UseVisualStyleBackColor = true;
+            indigo20kPicture.CheckedChanged += indigo20kPicture_CheckedChanged;
             // 
             // Indigo16kLabel
             // 
-            this.Indigo16kLabel.AutoSize = true;
-            this.Indigo16kLabel.Location = new System.Drawing.Point(461, 16);
-            this.Indigo16kLabel.Name = "Indigo16kLabel";
-            this.Indigo16kLabel.Size = new System.Drawing.Size(26, 13);
-            this.Indigo16kLabel.TabIndex = 19;
-            this.Indigo16kLabel.Text = "16K";
+            Indigo16kLabel.AutoSize = true;
+            Indigo16kLabel.Location = new System.Drawing.Point(538, 18);
+            Indigo16kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Indigo16kLabel.Name = "Indigo16kLabel";
+            Indigo16kLabel.Size = new System.Drawing.Size(26, 15);
+            Indigo16kLabel.TabIndex = 19;
+            Indigo16kLabel.Text = "16K";
             // 
             // indigo16kPicture
             // 
-            this.indigo16kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.indigo16kPicture.AutoCheck = false;
-            this.indigo16kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.indigo16kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.indigo16kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.indigo16kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.indigo16kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.indigo16kPicture.Location = new System.Drawing.Point(454, 34);
-            this.indigo16kPicture.Name = "indigo16kPicture";
-            this.indigo16kPicture.Size = new System.Drawing.Size(40, 40);
-            this.indigo16kPicture.TabIndex = 18;
-            this.indigo16kPicture.UseVisualStyleBackColor = true;
-            this.indigo16kPicture.CheckedChanged += new System.EventHandler(this.indigo16kPicture_CheckedChanged);
+            indigo16kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            indigo16kPicture.AutoCheck = false;
+            indigo16kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            indigo16kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            indigo16kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            indigo16kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            indigo16kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            indigo16kPicture.Location = new System.Drawing.Point(530, 39);
+            indigo16kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            indigo16kPicture.Name = "indigo16kPicture";
+            indigo16kPicture.Size = new System.Drawing.Size(47, 46);
+            indigo16kPicture.TabIndex = 18;
+            indigo16kPicture.UseVisualStyleBackColor = true;
+            indigo16kPicture.CheckedChanged += indigo16kPicture_CheckedChanged;
             // 
             // Indigo10kLabel
             // 
-            this.Indigo10kLabel.AutoSize = true;
-            this.Indigo10kLabel.Location = new System.Drawing.Point(411, 16);
-            this.Indigo10kLabel.Name = "Indigo10kLabel";
-            this.Indigo10kLabel.Size = new System.Drawing.Size(26, 13);
-            this.Indigo10kLabel.TabIndex = 17;
-            this.Indigo10kLabel.Text = "10K";
+            Indigo10kLabel.AutoSize = true;
+            Indigo10kLabel.Location = new System.Drawing.Point(479, 18);
+            Indigo10kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Indigo10kLabel.Name = "Indigo10kLabel";
+            Indigo10kLabel.Size = new System.Drawing.Size(26, 15);
+            Indigo10kLabel.TabIndex = 17;
+            Indigo10kLabel.Text = "10K";
             // 
             // indigo10kPicture
             // 
-            this.indigo10kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.indigo10kPicture.AutoCheck = false;
-            this.indigo10kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.indigo10kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.indigo10kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.indigo10kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.indigo10kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.indigo10kPicture.Location = new System.Drawing.Point(405, 34);
-            this.indigo10kPicture.Name = "indigo10kPicture";
-            this.indigo10kPicture.Size = new System.Drawing.Size(40, 40);
-            this.indigo10kPicture.TabIndex = 16;
-            this.indigo10kPicture.UseVisualStyleBackColor = true;
-            this.indigo10kPicture.CheckedChanged += new System.EventHandler(this.indigo10kPicture_CheckedChanged);
+            indigo10kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            indigo10kPicture.AutoCheck = false;
+            indigo10kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            indigo10kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            indigo10kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            indigo10kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            indigo10kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            indigo10kPicture.Location = new System.Drawing.Point(472, 39);
+            indigo10kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            indigo10kPicture.Name = "indigo10kPicture";
+            indigo10kPicture.Size = new System.Drawing.Size(47, 46);
+            indigo10kPicture.TabIndex = 16;
+            indigo10kPicture.UseVisualStyleBackColor = true;
+            indigo10kPicture.CheckedChanged += indigo10kPicture_CheckedChanged;
             // 
             // Indigo5kLabel
             // 
-            this.Indigo5kLabel.AutoSize = true;
-            this.Indigo5kLabel.Location = new System.Drawing.Point(366, 16);
-            this.Indigo5kLabel.Name = "Indigo5kLabel";
-            this.Indigo5kLabel.Size = new System.Drawing.Size(20, 13);
-            this.Indigo5kLabel.TabIndex = 15;
-            this.Indigo5kLabel.Text = "5K";
+            Indigo5kLabel.AutoSize = true;
+            Indigo5kLabel.Location = new System.Drawing.Point(427, 18);
+            Indigo5kLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Indigo5kLabel.Name = "Indigo5kLabel";
+            Indigo5kLabel.Size = new System.Drawing.Size(20, 15);
+            Indigo5kLabel.TabIndex = 15;
+            Indigo5kLabel.Text = "5K";
             // 
             // indigo5kPicture
             // 
-            this.indigo5kPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.indigo5kPicture.AutoCheck = false;
-            this.indigo5kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.indigo5kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.indigo5kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.indigo5kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.indigo5kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.indigo5kPicture.Location = new System.Drawing.Point(357, 34);
-            this.indigo5kPicture.Name = "indigo5kPicture";
-            this.indigo5kPicture.Size = new System.Drawing.Size(40, 40);
-            this.indigo5kPicture.TabIndex = 14;
-            this.indigo5kPicture.UseVisualStyleBackColor = true;
-            this.indigo5kPicture.CheckedChanged += new System.EventHandler(this.indigo5kPicture_CheckedChanged);
+            indigo5kPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            indigo5kPicture.AutoCheck = false;
+            indigo5kPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            indigo5kPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            indigo5kPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            indigo5kPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            indigo5kPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            indigo5kPicture.Location = new System.Drawing.Point(416, 39);
+            indigo5kPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            indigo5kPicture.Name = "indigo5kPicture";
+            indigo5kPicture.Size = new System.Drawing.Size(47, 46);
+            indigo5kPicture.TabIndex = 14;
+            indigo5kPicture.UseVisualStyleBackColor = true;
+            indigo5kPicture.CheckedChanged += indigo5kPicture_CheckedChanged;
             // 
             // CrabsLabel
             // 
-            this.CrabsLabel.AutoSize = true;
-            this.CrabsLabel.Location = new System.Drawing.Point(310, 16);
-            this.CrabsLabel.Name = "CrabsLabel";
-            this.CrabsLabel.Size = new System.Drawing.Size(34, 13);
-            this.CrabsLabel.TabIndex = 13;
-            this.CrabsLabel.Text = "Crabs";
+            CrabsLabel.AutoSize = true;
+            CrabsLabel.Location = new System.Drawing.Point(362, 18);
+            CrabsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            CrabsLabel.Name = "CrabsLabel";
+            CrabsLabel.Size = new System.Drawing.Size(37, 15);
+            CrabsLabel.TabIndex = 13;
+            CrabsLabel.Text = "Crabs";
             // 
             // crabsPicture
             // 
-            this.crabsPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.crabsPicture.AutoCheck = false;
-            this.crabsPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.crabsPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.crabsPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.crabsPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.crabsPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.crabsPicture.Location = new System.Drawing.Point(307, 34);
-            this.crabsPicture.Name = "crabsPicture";
-            this.crabsPicture.Size = new System.Drawing.Size(40, 40);
-            this.crabsPicture.TabIndex = 12;
-            this.crabsPicture.UseVisualStyleBackColor = true;
-            this.crabsPicture.CheckedChanged += new System.EventHandler(this.crabsPicture_CheckedChanged);
+            crabsPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            crabsPicture.AutoCheck = false;
+            crabsPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            crabsPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            crabsPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            crabsPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            crabsPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            crabsPicture.Location = new System.Drawing.Point(358, 39);
+            crabsPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            crabsPicture.Name = "crabsPicture";
+            crabsPicture.Size = new System.Drawing.Size(47, 46);
+            crabsPicture.TabIndex = 12;
+            crabsPicture.UseVisualStyleBackColor = true;
+            crabsPicture.CheckedChanged += crabsPicture_CheckedChanged;
             // 
             // BalloonsLabel
             // 
-            this.BalloonsLabel.AutoSize = true;
-            this.BalloonsLabel.Location = new System.Drawing.Point(259, 16);
-            this.BalloonsLabel.Name = "BalloonsLabel";
-            this.BalloonsLabel.Size = new System.Drawing.Size(47, 13);
-            this.BalloonsLabel.TabIndex = 11;
-            this.BalloonsLabel.Text = "Balloons";
+            BalloonsLabel.AutoSize = true;
+            BalloonsLabel.Location = new System.Drawing.Point(302, 18);
+            BalloonsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            BalloonsLabel.Name = "BalloonsLabel";
+            BalloonsLabel.Size = new System.Drawing.Size(52, 15);
+            BalloonsLabel.TabIndex = 11;
+            BalloonsLabel.Text = "Balloons";
             // 
             // balloonsPicture
             // 
-            this.balloonsPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.balloonsPicture.AutoCheck = false;
-            this.balloonsPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.balloonsPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.balloonsPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.balloonsPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.balloonsPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.balloonsPicture.Location = new System.Drawing.Point(258, 34);
-            this.balloonsPicture.Name = "balloonsPicture";
-            this.balloonsPicture.Size = new System.Drawing.Size(40, 40);
-            this.balloonsPicture.TabIndex = 10;
-            this.balloonsPicture.UseVisualStyleBackColor = true;
-            this.balloonsPicture.CheckedChanged += new System.EventHandler(this.balloonsPicture_CheckedChanged);
+            balloonsPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            balloonsPicture.AutoCheck = false;
+            balloonsPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            balloonsPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            balloonsPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            balloonsPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            balloonsPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            balloonsPicture.Location = new System.Drawing.Point(301, 39);
+            balloonsPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            balloonsPicture.Name = "balloonsPicture";
+            balloonsPicture.Size = new System.Drawing.Size(47, 46);
+            balloonsPicture.TabIndex = 10;
+            balloonsPicture.UseVisualStyleBackColor = true;
+            balloonsPicture.CheckedChanged += balloonsPicture_CheckedChanged;
             // 
             // SeadragonLabel
             // 
-            this.SeadragonLabel.AutoSize = true;
-            this.SeadragonLabel.Location = new System.Drawing.Point(198, 16);
-            this.SeadragonLabel.Name = "SeadragonLabel";
-            this.SeadragonLabel.Size = new System.Drawing.Size(64, 13);
-            this.SeadragonLabel.TabIndex = 9;
-            this.SeadragonLabel.Text = "Seadragons";
+            SeadragonLabel.AutoSize = true;
+            SeadragonLabel.Location = new System.Drawing.Point(231, 18);
+            SeadragonLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            SeadragonLabel.Name = "SeadragonLabel";
+            SeadragonLabel.Size = new System.Drawing.Size(68, 15);
+            SeadragonLabel.TabIndex = 9;
+            SeadragonLabel.Text = "Seadragons";
             // 
             // seadragonPicture
             // 
-            this.seadragonPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.seadragonPicture.AutoCheck = false;
-            this.seadragonPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.seadragonPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.seadragonPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.seadragonPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.seadragonPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.seadragonPicture.Location = new System.Drawing.Point(209, 34);
-            this.seadragonPicture.Name = "seadragonPicture";
-            this.seadragonPicture.Size = new System.Drawing.Size(40, 40);
-            this.seadragonPicture.TabIndex = 8;
-            this.seadragonPicture.UseVisualStyleBackColor = true;
-            this.seadragonPicture.CheckedChanged += new System.EventHandler(this.seadragonPicture_CheckedChanged);
+            seadragonPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            seadragonPicture.AutoCheck = false;
+            seadragonPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            seadragonPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            seadragonPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            seadragonPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            seadragonPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            seadragonPicture.Location = new System.Drawing.Point(244, 39);
+            seadragonPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            seadragonPicture.Name = "seadragonPicture";
+            seadragonPicture.Size = new System.Drawing.Size(47, 46);
+            seadragonPicture.TabIndex = 8;
+            seadragonPicture.UseVisualStyleBackColor = true;
+            seadragonPicture.CheckedChanged += seadragonPicture_CheckedChanged;
             // 
             // JellyfishLabel
             // 
-            this.JellyfishLabel.AutoSize = true;
-            this.JellyfishLabel.Location = new System.Drawing.Point(153, 16);
-            this.JellyfishLabel.Name = "JellyfishLabel";
-            this.JellyfishLabel.Size = new System.Drawing.Size(43, 13);
-            this.JellyfishLabel.TabIndex = 7;
-            this.JellyfishLabel.Text = "Jellyfish";
+            JellyfishLabel.AutoSize = true;
+            JellyfishLabel.Location = new System.Drawing.Point(178, 18);
+            JellyfishLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            JellyfishLabel.Name = "JellyfishLabel";
+            JellyfishLabel.Size = new System.Drawing.Size(48, 15);
+            JellyfishLabel.TabIndex = 7;
+            JellyfishLabel.Text = "Jellyfish";
             // 
             // jellyfishPicture
             // 
-            this.jellyfishPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.jellyfishPicture.AutoCheck = false;
-            this.jellyfishPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.jellyfishPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.jellyfishPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.jellyfishPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.jellyfishPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.jellyfishPicture.Location = new System.Drawing.Point(160, 34);
-            this.jellyfishPicture.Name = "jellyfishPicture";
-            this.jellyfishPicture.Size = new System.Drawing.Size(40, 40);
-            this.jellyfishPicture.TabIndex = 6;
-            this.jellyfishPicture.UseVisualStyleBackColor = true;
-            this.jellyfishPicture.CheckedChanged += new System.EventHandler(this.jellyfishPicture_CheckedChanged);
+            jellyfishPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            jellyfishPicture.AutoCheck = false;
+            jellyfishPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            jellyfishPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            jellyfishPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            jellyfishPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            jellyfishPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            jellyfishPicture.Location = new System.Drawing.Point(187, 39);
+            jellyfishPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            jellyfishPicture.Name = "jellyfishPicture";
+            jellyfishPicture.Size = new System.Drawing.Size(47, 46);
+            jellyfishPicture.TabIndex = 6;
+            jellyfishPicture.UseVisualStyleBackColor = true;
+            jellyfishPicture.CheckedChanged += jellyfishPicture_CheckedChanged;
             // 
             // SharksLabel
             // 
-            this.SharksLabel.AutoSize = true;
-            this.SharksLabel.Location = new System.Drawing.Point(111, 16);
-            this.SharksLabel.Name = "SharksLabel";
-            this.SharksLabel.Size = new System.Drawing.Size(40, 13);
-            this.SharksLabel.TabIndex = 5;
-            this.SharksLabel.Text = "Sharks";
+            SharksLabel.AutoSize = true;
+            SharksLabel.Location = new System.Drawing.Point(130, 18);
+            SharksLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            SharksLabel.Name = "SharksLabel";
+            SharksLabel.Size = new System.Drawing.Size(41, 15);
+            SharksLabel.TabIndex = 5;
+            SharksLabel.Text = "Sharks";
             // 
             // sharksPicture
             // 
-            this.sharksPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.sharksPicture.AutoCheck = false;
-            this.sharksPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.sharksPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.sharksPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.sharksPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.sharksPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sharksPicture.Location = new System.Drawing.Point(111, 34);
-            this.sharksPicture.Name = "sharksPicture";
-            this.sharksPicture.Size = new System.Drawing.Size(40, 40);
-            this.sharksPicture.TabIndex = 4;
-            this.sharksPicture.UseVisualStyleBackColor = true;
-            this.sharksPicture.CheckedChanged += new System.EventHandler(this.sharksPicture_CheckedChanged);
+            sharksPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            sharksPicture.AutoCheck = false;
+            sharksPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            sharksPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            sharksPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            sharksPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            sharksPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            sharksPicture.Location = new System.Drawing.Point(130, 39);
+            sharksPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            sharksPicture.Name = "sharksPicture";
+            sharksPicture.Size = new System.Drawing.Size(47, 46);
+            sharksPicture.TabIndex = 4;
+            sharksPicture.UseVisualStyleBackColor = true;
+            sharksPicture.CheckedChanged += sharksPicture_CheckedChanged;
             // 
             // OctopodsLabel
             // 
-            this.OctopodsLabel.AutoSize = true;
-            this.OctopodsLabel.Location = new System.Drawing.Point(57, 16);
-            this.OctopodsLabel.Name = "OctopodsLabel";
-            this.OctopodsLabel.Size = new System.Drawing.Size(53, 13);
-            this.OctopodsLabel.TabIndex = 3;
-            this.OctopodsLabel.Text = "Octopods";
+            OctopodsLabel.AutoSize = true;
+            OctopodsLabel.Location = new System.Drawing.Point(66, 18);
+            OctopodsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            OctopodsLabel.Name = "OctopodsLabel";
+            OctopodsLabel.Size = new System.Drawing.Size(59, 15);
+            OctopodsLabel.TabIndex = 3;
+            OctopodsLabel.Text = "Octopods";
             // 
             // octopodsPicture
             // 
-            this.octopodsPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.octopodsPicture.AutoCheck = false;
-            this.octopodsPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.octopodsPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.octopodsPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.octopodsPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.octopodsPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.octopodsPicture.Location = new System.Drawing.Point(62, 34);
-            this.octopodsPicture.Name = "octopodsPicture";
-            this.octopodsPicture.Size = new System.Drawing.Size(40, 40);
-            this.octopodsPicture.TabIndex = 2;
-            this.octopodsPicture.UseVisualStyleBackColor = true;
-            this.octopodsPicture.CheckedChanged += new System.EventHandler(this.octopodsPicture_CheckedChanged);
+            octopodsPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            octopodsPicture.AutoCheck = false;
+            octopodsPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            octopodsPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            octopodsPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            octopodsPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            octopodsPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            octopodsPicture.Location = new System.Drawing.Point(72, 39);
+            octopodsPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            octopodsPicture.Name = "octopodsPicture";
+            octopodsPicture.Size = new System.Drawing.Size(47, 46);
+            octopodsPicture.TabIndex = 2;
+            octopodsPicture.UseVisualStyleBackColor = true;
+            octopodsPicture.CheckedChanged += octopodsPicture_CheckedChanged;
             // 
             // mantasLabel
             // 
-            this.mantasLabel.AutoSize = true;
-            this.mantasLabel.Location = new System.Drawing.Point(12, 16);
-            this.mantasLabel.Name = "mantasLabel";
-            this.mantasLabel.Size = new System.Drawing.Size(42, 13);
-            this.mantasLabel.TabIndex = 1;
-            this.mantasLabel.Text = "Mantas";
+            mantasLabel.AutoSize = true;
+            mantasLabel.Location = new System.Drawing.Point(14, 18);
+            mantasLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            mantasLabel.Name = "mantasLabel";
+            mantasLabel.Size = new System.Drawing.Size(46, 15);
+            mantasLabel.TabIndex = 1;
+            mantasLabel.Text = "Mantas";
             // 
             // mantasPicture
             // 
-            this.mantasPicture.Appearance = System.Windows.Forms.Appearance.Button;
-            this.mantasPicture.AutoCheck = false;
-            this.mantasPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
-            this.mantasPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-            this.mantasPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.mantasPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.mantasPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.mantasPicture.Location = new System.Drawing.Point(13, 34);
-            this.mantasPicture.Name = "mantasPicture";
-            this.mantasPicture.Size = new System.Drawing.Size(40, 40);
-            this.mantasPicture.TabIndex = 0;
-            this.mantasPicture.UseVisualStyleBackColor = true;
-            this.mantasPicture.CheckedChanged += new System.EventHandler(this.mantasPicture_CheckedChanged);
+            mantasPicture.Appearance = System.Windows.Forms.Appearance.Button;
+            mantasPicture.AutoCheck = false;
+            mantasPicture.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
+            mantasPicture.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            mantasPicture.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            mantasPicture.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            mantasPicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            mantasPicture.Location = new System.Drawing.Point(15, 39);
+            mantasPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            mantasPicture.Name = "mantasPicture";
+            mantasPicture.Size = new System.Drawing.Size(47, 46);
+            mantasPicture.TabIndex = 0;
+            mantasPicture.UseVisualStyleBackColor = true;
+            mantasPicture.CheckedChanged += mantasPicture_CheckedChanged;
             // 
             // exitIcon
             // 
-            this.exitIcon.Image = ((System.Drawing.Image)(resources.GetObject("exitIcon.Image")));
-            this.exitIcon.Location = new System.Drawing.Point(698, 12);
-            this.exitIcon.Name = "exitIcon";
-            this.exitIcon.Size = new System.Drawing.Size(20, 20);
-            this.exitIcon.TabIndex = 17;
-            this.exitIcon.TabStop = false;
-            this.exitIcon.Click += new System.EventHandler(this.pictureBox10_Click);
-            this.exitIcon.MouseEnter += new System.EventHandler(this.pictureBox10_MouseEnter);
-            this.exitIcon.MouseLeave += new System.EventHandler(this.pictureBox10_MouseLeave);
+            exitIcon.Image = (System.Drawing.Image)resources.GetObject("exitIcon.Image");
+            exitIcon.Location = new System.Drawing.Point(814, 14);
+            exitIcon.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            exitIcon.Name = "exitIcon";
+            exitIcon.Size = new System.Drawing.Size(23, 23);
+            exitIcon.TabIndex = 17;
+            exitIcon.TabStop = false;
+            exitIcon.Click += pictureBox10_Click;
+            exitIcon.MouseEnter += pictureBox10_MouseEnter;
+            exitIcon.MouseLeave += pictureBox10_MouseLeave;
             // 
             // FormOceanSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(44)))));
-            this.ClientSize = new System.Drawing.Size(730, 600);
-            this.Controls.Add(this.exitIcon);
-            this.Controls.Add(this.groupBox7);
-            this.Controls.Add(this.tackleboxGroup);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox5);
-            this.Controls.Add(this.fullGPAction);
-            this.Controls.Add(this.lateQueue);
-            this.Controls.Add(this.fishingRoute);
-            this.Controls.Add(this.fishingPriorityGroupBox);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "FormOceanSettings";
-            this.Text = "FormIdleActivities";
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormOceanSettings_MouseDown);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.fishingPriorityGroupBox.ResumeLayout(false);
-            this.fishingPriorityGroupBox.PerformLayout();
-            this.fishingRoute.ResumeLayout(false);
-            this.fishingRoute.PerformLayout();
-            this.lateQueue.ResumeLayout(false);
-            this.lateQueue.PerformLayout();
-            this.fullGPAction.ResumeLayout(false);
-            this.fullGPAction.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.tackleboxGroup.ResumeLayout(false);
-            this.tackleboxGroup.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStoneflyNymph)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMackerelStrip)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShrimpCageFeeder)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPillBug)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSquidStrip)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxHeavySteelJig)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGlowWorm)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRatTail)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPlumpWorm)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxKrill)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRagworm)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericRestockAmount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericRestockThreshold)).EndInit();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.exitIcon)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.FromArgb(30, 30, 44);
+            ClientSize = new System.Drawing.Size(852, 692);
+            Controls.Add(exitIcon);
+            Controls.Add(groupBox7);
+            Controls.Add(tackleboxGroup);
+            Controls.Add(groupBox4);
+            Controls.Add(groupBox5);
+            Controls.Add(fullGPAction);
+            Controls.Add(lateQueue);
+            Controls.Add(fishingRoute);
+            Controls.Add(fishingPriorityGroupBox);
+            Controls.Add(groupBox3);
+            Controls.Add(groupBox2);
+            Controls.Add(groupBox1);
+            Controls.Add(label3);
+            Controls.Add(label1);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "FormOceanSettings";
+            Text = "FormIdleActivities";
+            MouseDown += FormOceanSettings_MouseDown;
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
+            fishingPriorityGroupBox.ResumeLayout(false);
+            fishingPriorityGroupBox.PerformLayout();
+            fishingRoute.ResumeLayout(false);
+            fishingRoute.PerformLayout();
+            lateQueue.ResumeLayout(false);
+            lateQueue.PerformLayout();
+            fullGPAction.ResumeLayout(false);
+            fullGPAction.PerformLayout();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
+            tackleboxGroup.ResumeLayout(false);
+            tackleboxGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxStoneflyNymph).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxMackerelStrip).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxShrimpCageFeeder).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPillBug).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxSquidStrip).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxHeavySteelJig).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxGlowWorm).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxRatTail).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPlumpWorm).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxKrill).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxRagworm).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericRestockAmount).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericRestockThreshold).EndInit();
+            groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)exitIcon).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
