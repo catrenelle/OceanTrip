@@ -39,14 +39,14 @@ namespace OceanTripPlanner.Definitions
             FoodList.BroccoliSpinachSaute,
             FoodList.VegetableSoup,
             FoodList.MesquiteSoup
-    };
+        };
 
         public static readonly int[] raidpotions = new int[]
         {
-            Potions.Grade1GemdraughtStrength,
-            Potions.Grade1GemdraughtDexterity,
-            Potions.Grade1GemdraughtIntelligence,
-            Potions.Grade1GemdraughtMind
+            Potions.Grade2GemdraughtStrength,
+            Potions.Grade2GemdraughtDexterity,
+            Potions.Grade2GemdraughtIntelligence,
+            Potions.Grade2GemdraughtMind
         };
 
         public static readonly int[] materiaxii = new int[]
@@ -394,6 +394,11 @@ namespace OceanTripPlanner.Definitions
         public static int Grade1GemdraughtDexterity = 44158;
         public static int Grade1GemdraughtIntelligence = 44160;
         public static int Grade1GemdraughtMind = 44161;
+
+        public static int Grade2GemdraughtStrength = 44162;
+        public static int Grade2GemdraughtDexterity = 44163;
+        public static int Grade2GemdraughtIntelligence = 44165;
+        public static int Grade2GemdraughtMind = 44166;
     }
 
     public static class Weather

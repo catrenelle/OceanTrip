@@ -1,3 +1,13 @@
+08/12/2024
+----------
+
+* Reversed the order for Crystal farming. It now does Clusters, Crystals, then Shards.
+
+* Updated the raid potion grind to be Grade 2 Gemdraught's
+
+* Changed references to RB_CN to RB_DT
+
+
 07/13/2024
 ----------
 

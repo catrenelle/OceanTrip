@@ -13,7 +13,7 @@ namespace OceanTrip
     // Borrowered from nt153133 - https://github.com/nt153133/LlamaPlugins
     public static class LlamaElements
     {
-#if RB_CN
+#if !RB_DT
         private const int offset0 = 0x1CA;
         private const int offset2 = 0x160;
 #else
