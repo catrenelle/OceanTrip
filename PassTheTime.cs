@@ -91,44 +91,44 @@ namespace OceanTripPlanner
                     
                     if (OceanTripNewSettings.Instance.firecrystal)
                     {
-                        crystalList.Add(Crystals.FireShard);
                         crystalList.Add(Crystals.FireCluster);
                         crystalList.Add(Crystals.FireCrystal);
+                        crystalList.Add(Crystals.FireShard);
                     }
 
                     if (OceanTripNewSettings.Instance.icecrystal)
                     {
-                        crystalList.Add(Crystals.IceShard);
                         crystalList.Add(Crystals.IceCluster);
                         crystalList.Add(Crystals.IceCrystal);
+                        crystalList.Add(Crystals.IceShard);
                     }
 
                     if (OceanTripNewSettings.Instance.windcrystal)
                     {
-                        crystalList.Add(Crystals.WindShard);
                         crystalList.Add(Crystals.WindCluster);
                         crystalList.Add(Crystals.WindCrystal);
+                        crystalList.Add(Crystals.WindShard);
                     }
 
                     if (OceanTripNewSettings.Instance.earthcrystal)
                     {
-                        crystalList.Add(Crystals.EarthShard);
                         crystalList.Add(Crystals.EarthCluster);
                         crystalList.Add(Crystals.EarthCrystal);
+                        crystalList.Add(Crystals.EarthShard);
                     }
 
                     if (OceanTripNewSettings.Instance.lightningcrystal)
                     {
-                        crystalList.Add(Crystals.LightningShard);
                         crystalList.Add(Crystals.LightningCluster);
                         crystalList.Add(Crystals.LightningCrystal);
+                        crystalList.Add(Crystals.LightningShard);
                     }
 
                     if (OceanTripNewSettings.Instance.watercrystal)
                     {
-                        crystalList.Add(Crystals.WaterShard);
                         crystalList.Add(Crystals.WaterCluster);
                         crystalList.Add(Crystals.WaterCrystal);
+                        crystalList.Add(Crystals.WaterShard);
                     }
 
 

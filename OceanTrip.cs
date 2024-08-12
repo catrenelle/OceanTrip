@@ -1146,7 +1146,7 @@ namespace OceanTripPlanner
 
 				if (baitWindow != null)
 				{
-					#if RB_CN
+					#if !RB_DT
 					baitWindow.SendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
 					#else
 					baitWindow.SendAction(1, 1, baitId);
