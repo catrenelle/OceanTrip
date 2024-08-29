@@ -617,7 +617,11 @@
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(72, 15);
             label5.TabIndex = 3;
+#if RB_DT
             label5.Text = "Nasi Goreng";
+#else
+            label5.Text = "Crab Cakes";
+#endif
             // 
             // label4
             // 
@@ -1846,7 +1850,7 @@
             PerformLayout();
         }
 
-        #endregion
+#endregion
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;

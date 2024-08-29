@@ -22,31 +22,57 @@ namespace OceanTripPlanner.Definitions
 
         public static readonly int[] aethersands = new int[]
         {
+#if !RB_DT
+            Material.DusklightAethersand,
+            Material.DawnlightAethersand,
+            Material.EverbrightAethersand,
+#endif
             Material.EverbornAethersand,
             Material.EverdeepAethersand,
             Material.EndstoneAethersand,
             Material.EndwoodAethersand,
             Material.EndtideAethersand,
             Material.EarthbreakAethersand,
+#if RB_DT
             Material.MythloamAethersand,
             Material.MythrootAethersand,
-            Material.MythbrineAethersand
+            Material.MythbrineAethersand,
+#endif
         };
 
         public static readonly int[] raidfood = new int[]
         {
+#if RB_DT
             FoodList.CreamyAlpacaPasta,
             FoodList.BroccoliSpinachSaute,
             FoodList.VegetableSoup,
-            FoodList.MesquiteSoup
+            FoodList.MesquiteSoup,
+#else
+            FoodList.HoneyedDragonfruit,
+            FoodList.BabaGhanoush,
+            FoodList.BakedEggplant,
+            FoodList.CaviarCanapes,
+#endif
         };
 
         public static readonly int[] raidpotions = new int[]
         {
+#if (RB_DT && !RB_CN)
             Potions.Grade2GemdraughtStrength,
             Potions.Grade2GemdraughtDexterity,
             Potions.Grade2GemdraughtIntelligence,
-            Potions.Grade2GemdraughtMind
+            Potions.Grade2GemdraughtMind,
+#elif (RB_DT && RB_CN)
+            Potions.Grade1GemdraughtStrength,
+            Potions.Grade1GemdraughtDexterity,
+            Potions.Grade1GemdraughtIntelligence,
+            Potions.Grade1GemdraughtMind,
+#else
+            Potions.Grade8TinctureStrength,
+            Potions.Grade8TinctureDexterity,
+            Potions.Grade8TinctureIntelligence,
+            Potions.Grade8TinctureMind,
+#endif
         };
 
         public static readonly int[] materiaxii = new int[]

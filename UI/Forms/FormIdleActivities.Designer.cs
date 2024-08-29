@@ -402,7 +402,12 @@
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(189, 15);
             label5.TabIndex = 10;
+#if RB_DT
             label5.Text = "Use \"Rroneek Steak\" when crafting";
+#else
+            label5.Text = "Use \"Calamari Ripieni\" when crafting";
+#endif
+
             // 
             // groupBox6
             // 
@@ -881,13 +886,21 @@
             selectedMateria.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             selectedMateria.ForeColor = System.Drawing.Color.Gainsboro;
             selectedMateria.FormattingEnabled = true;
+#if RB_DT
             selectedMateria.Items.AddRange(new object[] { "Grade XII", "Grade XI", "Grade X", "Grade IX", "Grade VIII", "Grade VII", "Grade VI", "Grade V", "Grade IV" });
+#else
+            selectedMateria.Items.AddRange(new object[] { "Grade X", "Grade IX", "Grade VIII", "Grade VII", "Grade VI", "Grade V", "Grade IV" });
+#endif
             selectedMateria.Location = new System.Drawing.Point(639, -2);
             selectedMateria.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             selectedMateria.Name = "selectedMateria";
             selectedMateria.Size = new System.Drawing.Size(140, 23);
             selectedMateria.TabIndex = 29;
+#if RB_DT
             selectedMateria.Text = "Grade XII";
+#else
+            selectedMateria.Text = "Grade X";
+#endif
             selectedMateria.SelectedIndexChanged += selectedMateria_SelectedIndexChanged;
             // 
             // materia6Label
@@ -1495,7 +1508,7 @@
             PerformLayout();
         }
 
-        #endregion
+#endregion
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;

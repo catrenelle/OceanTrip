@@ -3,17 +3,31 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>Ocean_Trip</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <PackageProjectUrl>https://github.com/catrenelle/OceanTrip/</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <AssemblyVersion>2024.08.27.1</AssemblyVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\Plugins\CarbuncleTech\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="GreyMagic">
       <HintPath>..\..\GreyMagic.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Update="UI\Controls\RadioButtonFlat.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -31,5 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WindowsBase" Version="4.6.1055.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>
