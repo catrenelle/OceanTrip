@@ -27,6 +27,7 @@ namespace OceanTripPlanner
     public enum OceanFood : int
     {
         NasiGoreng = 44078,
+        CrabCakes = 30481,
         None = 0
     }
 

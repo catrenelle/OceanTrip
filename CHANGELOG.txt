@@ -1,3 +1,23 @@
+08/28/2024
+----------
+
+* Major changes to the back-end code. Now reading the instance status and current zone from memory.
+
+* BotBase should now be language agnostic and work in all languages, as well as the CN client. There will still be a lot of English text in the logs and in the BotBase Settings UI.
+
+* BotBase should properly track zone transitions between the 3 fishing zones and not get confused (so long as the UI is set to the proper route). 
+
+* Players will no longer immediately run towards the randomly chosen fishing spot while the barrier is up. Instead, the player will eat the ocean food. Once the barrier goes down, the player should then run towards the randomly chosen fishing spot.
+
+* The issue causing multiple repair attempts at botbase start should now be resolved. This was due to a Lisbeth call not being proper, and has been temporarily disabled. If your gear drops below 50%, it will instead resort to using the Limsa Lominsa mender for now.
+
+* Removed the dependency on checking various chat messages that may have caused some wonkiness due to latency or chat spam. It's now going based on the memory values for everything.
+
+* Bite timers may be a few fractions of a second off, and I'm going to be tweaking these in the future.
+
+Please Note: This is a huge update, but has been tested by me on en-us through multiple runs. It remains to be tested in other languages and on the CN client officially, but it should work. Please report any issues in the #cats-ocean-trip channel of the Project BR discord.
+
+
 08/27/2024
 ----------
 

@@ -682,7 +682,11 @@ namespace OceanTripPlanner
 		public override bool WantButton { get; } = true;
 
 		private static Ocean_Trip.FormSettings settings;
-		public override async void OnButtonPress()
+
+		public Ocean_Trip.Endeavor Endeavor;
+
+
+        public override async void OnButtonPress()
 		{
 			if (settings == null || settings.IsDisposed)
 				settings = new Ocean_Trip.FormSettings();
@@ -702,6 +706,8 @@ namespace OceanTripPlanner
 
             FFXIV_Databinds.Instance.RefreshBait();
             FFXIV_Databinds.Instance.RefreshAchievements();
+			if (Endeavor == null)
+				Endeavor = new Ocean_Trip.Endeavor();
         }
 
 		public override void Start()
@@ -717,6 +723,9 @@ namespace OceanTripPlanner
 
             FFXIV_Databinds.Instance.RefreshBait();
             FFXIV_Databinds.Instance.RefreshAchievements();
+
+            if (Endeavor == null)
+                Endeavor = new Ocean_Trip.Endeavor();
 
             caughtFish = new List<uint>();
 			lastCaughtFish = 0;
@@ -882,7 +891,7 @@ namespace OceanTripPlanner
                         await PassTheTime.DesynthOcean(fishForSale);
 					}
 
-					await Lisbeth.SelfRepairWithMenderFallback();
+					//await Lisbeth.SelfRepairWithMenderFallback();
 					await LandRepair(50);
 				}
 
@@ -934,7 +943,7 @@ namespace OceanTripPlanner
 					}
 				}
 
-				await Lisbeth.SelfRepairWithMenderFallback();
+				//await Lisbeth.SelfRepairWithMenderFallback();
 
 				// LongBoatQueue = true = 13-15 Minutes
 				// LongBoatQueue = false = 10-13 minutes
@@ -966,115 +975,88 @@ namespace OceanTripPlanner
 				await GetOnBoat();
 			}
 
+
+
 			int spot = rnd.Next(6);
 			schedule = GetSchedule();
 			int posOnSchedule = 0;
 			string TimeOfDay = "";
 
-			while (OnBoat && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+			// Cache the director if needed
+			if (OnBoat)
+				Endeavor.CheckDirector();
+
+			while (OnBoat && Endeavor.waitingOnBoat)
 			{
-				if (!String.IsNullOrEmpty(FishingLog.AreaName))
-				{
-					// Reset for this round
-					caughtFish.Clear();
-					lastCaughtFish = 0;
-					caughtFishLogged = false;
-				}
+				// Reset for this round
+				caughtFish.Clear();
+				lastCaughtFish = 0;
+				caughtFishLogged = false;
 
                 FFXIV_Databinds.Instance.RefreshBait();
 
-                // English
-                // Deutsch
-                // Francais
-                // 日本語
-                // 中文
-                // 한국어
-                if (FishingLog.AreaName.Contains("Southern Strait") || FishingLog.AreaName.Contains("Merlthorstraße (Süd)")
-					|| FishingLog.AreaName.Contains("Détroit sud de Merlthor") || FishingLog.AreaName.Contains("メルトール海峡南")
-					|| FishingLog.AreaName.Contains("梅尔托尔海峡南") || FishingLog.AreaName.Contains("멜토르 해협 남쪽"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "south");
-					Log($"Southern Merlthor, {TimeOfDay}");
-					await GoFish(FishBait.Krill, FishBait.ShrimpCageFeeder, "south", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Galadion") || FishingLog.AreaName.Contains("Galadion-Bucht")
-					|| FishingLog.AreaName.Contains("Baie de Galadion") || FishingLog.AreaName.Contains("ガラディオン湾")
-					|| FishingLog.AreaName.Contains("加拉迪翁湾") || FishingLog.AreaName.Contains("갈라디온 만"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "galadion");
-					Log($"Galadion Bay, {TimeOfDay}");
-					await GoFish(FishBait.PlumpWorm, FishBait.GlowWorm, "galadion", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Northern Strait") || FishingLog.AreaName.Contains("Merlthorstraße (Nord)")
-					|| FishingLog.AreaName.Contains("Détroit nord de Merlthor") || FishingLog.AreaName.Contains("メルトール海峡北")
-					|| FishingLog.AreaName.Contains("梅尔托尔海峡北") || FishingLog.AreaName.Contains("멜토르 해협 북쪽"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "north");
-					Log($"Northern Merlthor, {TimeOfDay}");
-					await GoFish(FishBait.Ragworm, FishBait.HeavySteelJig, "north", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Rhotano Sea") || FishingLog.AreaName.Contains("Rhotano-See")
-					|| FishingLog.AreaName.Contains("Mer de Rhotano") || FishingLog.AreaName.Contains("ロータノ海")
-					|| FishingLog.AreaName.Contains("罗塔诺海") || FishingLog.AreaName.Contains("로타노 해"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "rhotano");
-					Log($"Rhotano Sea, {TimeOfDay}");
-					await GoFish(FishBait.Ragworm, FishBait.RatTail, "rhotano", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Cieldalaes") || FishingLog.AreaName.Contains("Cieldaläen")
-					|| FishingLog.AreaName.Contains("Cieldalaes") || FishingLog.AreaName.Contains("シェルダレー諸島")
-					|| FishingLog.AreaName.Contains("谢尔达莱群岛") || FishingLog.AreaName.Contains("시엘달레 제도"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "ciel");
-					Log($"Cieldalaes, {TimeOfDay}");
-					await GoFish(FishBait.Ragworm, FishBait.SquidStrip, "ciel", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Bloodbrine") || FishingLog.AreaName.Contains("Schwerblütiges")
-					|| FishingLog.AreaName.Contains("Mer Pourpre") || FishingLog.AreaName.Contains("緋汐海")
-					|| FishingLog.AreaName.Contains("绯汐海") || FishingLog.AreaName.Contains("붉은물결 바다"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "blood");
-					Log($"Bloodbrine, {TimeOfDay}");
-					await GoFish(FishBait.Krill, FishBait.PillBug, "blood", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Rothlyt Sound") || FishingLog.AreaName.Contains("Rothlyt-Meerbusen")
-					|| FishingLog.AreaName.Contains("Golfe de Rothlyt") || FishingLog.AreaName.Contains("ロズリト湾")
-					|| FishingLog.AreaName.Contains("罗斯利特湾") || FishingLog.AreaName.Contains("로들리트 만"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "sound");
-					Log($"Rothlyt Sound, {TimeOfDay}");
-					await GoFish(FishBait.PlumpWorm, FishBait.Ragworm, "sound", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Sirensong"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "sirensong");
-					Log($"Sirensong Sea, {TimeOfDay}");
-					await GoFish(FishBait.Ragworm, FishBait.MackerelStrip, "sirensong", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Kugane"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "kugane");
-					Log($"Kugane, {TimeOfDay}");
-					await GoFish(FishBait.Ragworm, FishBait.Ragworm, "kugane", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("Ruby Sea"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "rubysea");
-					Log($"The Ruby Sea, {TimeOfDay}");
-					await GoFish(FishBait.Ragworm, FishBait.SquidStrip, "rubysea", TimeOfDay, spot);
-				}
-				else if (FishingLog.AreaName.Contains("One River"))
-				{
-					TimeOfDay = GetBoatTimeOfDay(schedule, "oneriver");
-					Log($"The One River, {TimeOfDay}");
-					await GoFish(FishBait.PlumpWorm, FishBait.StoneflyNymph, "oneriver", TimeOfDay, spot);
-				}
-				else
-				{
-					if (!String.IsNullOrEmpty(FishingLog.AreaName))
-						Log($"Cannot determine location: {FishingLog.AreaName}");
-				}
+				ulong baitId = FishBait.Krill;
+				ulong spectralbaitId = FishBait.Krill;
+				string location = schedule[Endeavor.CurrentZone].Item1;
+				TimeOfDay = schedule[Endeavor.CurrentZone].Item2;
 
+				if (String.IsNullOrEmpty(TimeOfDay))
+					TimeOfDay = "Day";
+
+                switch (location)
+				{
+					case "south":
+						baitId = FishBait.Krill;
+						spectralbaitId = FishBait.ShrimpCageFeeder;
+						break;
+					case "galadion":
+						baitId = FishBait.PlumpWorm;
+						spectralbaitId = FishBait.GlowWorm;
+						break;
+					case "north":
+						baitId = FishBait.Ragworm;
+						spectralbaitId = FishBait.HeavySteelJig;
+						break;
+                    case "rhotano":
+                        baitId = FishBait.Ragworm;
+                        spectralbaitId = FishBait.HeavySteelJig;
+                        break;
+					case "ciel":
+						baitId = FishBait.Ragworm;
+						spectralbaitId = FishBait.SquidStrip;
+						break;
+					case "blood":
+						baitId = FishBait.Krill;
+						spectralbaitId = FishBait.PillBug;
+						break;
+					case "sound":
+						baitId = FishBait.PlumpWorm;
+						spectralbaitId = FishBait.Ragworm;
+						break;
+					case "sirensong":
+						baitId = FishBait.Ragworm;
+						spectralbaitId = FishBait.Ragworm;
+						break;
+					case "kugane":
+						baitId = FishBait.Ragworm;
+						spectralbaitId = FishBait.Ragworm;
+						break;
+					case "rubysea":
+						baitId = FishBait.Ragworm;
+						spectralbaitId = FishBait.SquidStrip;
+						break;
+					case "oneriver":
+						baitId = FishBait.PlumpWorm;
+						spectralbaitId = FishBait.StoneflyNymph;
+						break;
+					default:
+						baitId = FishBait.Ragworm;
+						spectralbaitId = FishBait.Ragworm;
+                        Log($"Cannot determine location. Zone: {Endeavor.CurrentZone}, Status: {Endeavor.Status}, On Boat: {OnBoat}");
+                        break;
+                }
+
+                await GoFish(baitId, spectralbaitId, location, TimeOfDay, spot);
 				await Coroutine.Sleep(2000);
 			}
 
@@ -1111,16 +1093,6 @@ namespace OceanTripPlanner
 			}
 
 			await Coroutine.Sleep(2000);
-		}
-
-		private string GetBoatTimeOfDay(Tuple<string, string>[] schedule, string area)
-		{
-			string TimeOfDay = schedule.FirstOrDefault(x => x.Item1 == area).Item2;
-
-			if (String.IsNullOrEmpty(TimeOfDay))
-				TimeOfDay = "Day";
-
-			return TimeOfDay;
 		}
 
 		private async Task ChangeBait(ulong baitId)
@@ -1201,9 +1173,9 @@ namespace OceanTripPlanner
 			{
 				if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 				{
-					// My testing has shown that there is always a 0.2f variance here, so remove that variance
+					// My testing has shown that there is always a 2.8f variance here, so remove that variance
 					// May need future adjustment. Might just be an issue in latency.
-					bite = (DateTime.Now - startedCast).TotalSeconds - 0.2f;
+					bite = (DateTime.Now - startedCast).TotalSeconds + 2.8f;
 
                     Log($"Bite Time: {bite:F1}s");
 					FishingManager.Hook();
@@ -1224,14 +1196,20 @@ namespace OceanTripPlanner
 
             if (OceanTripNewSettings.Instance.OceanFood && !Core.Player.HasAura(CharacterAuras.WellFed))
             {
-                if (DataManager.GetItem((uint)OceanFood.NasiGoreng, true).ItemCount() >= 1)
+#if RB_DT
+				uint food = (uint)OceanFood.NasiGoreng;
+#else
+                uint food = (uint)OceanFood.CrabCakes;
+#endif
+
+                if (DataManager.GetItem(food, true).ItemCount() >= 1)
                 {
-                    edibleFood = (uint)OceanFood.NasiGoreng;
+                    edibleFood = food;
                     edibleFoodHQ = true;
                 }
-                else if (DataManager.GetItem((uint)OceanFood.NasiGoreng, false).ItemCount() >= 1)
+                else if (DataManager.GetItem(food, false).ItemCount() >= 1)
                 {
-                    edibleFood = (uint)OceanFood.NasiGoreng;
+                    edibleFood = food;
                     edibleFoodHQ = false;
                 }
                 else
@@ -1260,32 +1238,33 @@ namespace OceanTripPlanner
                 }
                 else
                 {
-                    Log($"Out of {DataManager.GetItem((uint)OceanFood.NasiGoreng, false).CurrentLocaleName} to eat!");
+                    Log($"Out of {DataManager.GetItem(food, false).CurrentLocaleName} to eat!");
                 }
             }
 
-            // Just in case you're already standing in a fishing spot. IE: Restarting botbase/rebornbuddy			
-            if (!ActionManager.CanCast(Actions.Cast, Core.Me) && FishingManager.State == FishingState.None)
+
+			while (OnBoat && Endeavor.shouldFish)
 			{
-                FFXIV_Databinds.Instance.RefreshBait();
-				FFXIV_Databinds.Instance.RefreshAchievements();
+                // Just in case you're already standing in a fishing spot. IE: Restarting botbase/rebornbuddy			
+                if (!ActionManager.CanCast(Actions.Cast, Core.Me) && FishingManager.State == FishingState.None)
+                {
+                    FFXIV_Databinds.Instance.RefreshBait();
+                    FFXIV_Databinds.Instance.RefreshAchievements();
 
-                //Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
-				while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
-				{
-					Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
-					await Coroutine.Sleep(100);
-				}
-				Navigator.PlayerMover.MoveStop();
-				await Coroutine.Sleep(500);
-				Core.Me.SetFacing(headings[spot]);
-			}
+                    //Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
+                    while (fishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
+                    {
+                        Navigator.PlayerMover.MoveTowards(fishSpots[spot]);
+                        await Coroutine.Sleep(100);
+                    }
+                    Navigator.PlayerMover.MoveStop();
+                    await Coroutine.Sleep(500);
+                    Core.Me.SetFacing(headings[spot]);
 
-			await Coroutine.Sleep(1000);
+                    await Coroutine.Sleep(400);
+                }
 
-			while (OnBoat && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
-			{
-				if (WorldManager.CurrentWeatherId != Weather.Spectral)
+                if (WorldManager.CurrentWeatherId != Weather.Spectral)
 				{
 					if (spectraled == true)
 					{
@@ -1339,7 +1318,7 @@ namespace OceanTripPlanner
                         Log("Checking for a recently caught fish.");
 
                     // Did we catch a fish? Let's log it.
-                    if (ChatCheck("You land", "measuring") && !caughtFishLogged)
+                    if (lastCaughtFish != FishingLog.LastFishCaught && !caughtFishLogged)
 					{
 						lastCaughtFish = FishingLog.LastFishCaught;
 						caughtFish.Add(FishingLog.LastFishCaught);
@@ -1873,7 +1852,7 @@ namespace OceanTripPlanner
 					await Coroutine.Sleep(300);
 				}
 
-				while ((FishingManager.State != FishingState.PoleReady) && !ChatCheck("[NPCAnnouncements]", "Weigh the anchors") && !ChatCheck("[NPCAnnouncements]", "measure your catch!"))
+				while ((FishingManager.State != FishingState.PoleReady) && Endeavor.shouldFish)
 				{
                     await Coroutine.Sleep(300); // Do not remove or game will stutter.
 
@@ -1892,7 +1871,7 @@ namespace OceanTripPlanner
                         if (OceanTripNewSettings.Instance.LoggingMode)
                             Log("Checking bite timer.");
 
-                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds - 0.3f; // Offset against the Coroutine.Sleep(800) above.
+                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds + 2.7f; 
                         bool doubleHook = false;
 
                         Log($"Bite Time: {biteElapsed:F1}s");
@@ -2763,32 +2742,26 @@ namespace OceanTripPlanner
 
 		private async Task EmptyScrips(int itemId, int scripThreshold)
 		{
-			//TODO: Buy other stuff with scrip
-			if (SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.PurpleGatherersScrips) > scripThreshold)
-			{
-				Logging.Write(Colors.Aqua, $"[Ocean Trip] Purchasing {(int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.PurpleGatherersScrips) / 20} Hi-Cordials!");
+#if RB_DT
+			SpecialCurrency currency = SpecialCurrency.PurpleGatherersScrips;
+#else
+            SpecialCurrency currency = SpecialCurrency.WhiteGatherersScrips;
+#endif
 
-                await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.PurpleGatherersScrips) / 20, "Exchange", "false", 0);
+            //TODO: Buy other stuff with scrip
+            if (SpecialCurrencyManager.GetCurrencyCount(currency) > scripThreshold)
+			{
+				Logging.Write(Colors.Aqua, $"[Ocean Trip] Purchasing {(int)SpecialCurrencyManager.GetCurrencyCount(currency) / 20} Hi-Cordials!");
+
+                await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(currency) / 20, "Exchange", "false", 0);
 			}
 
         }
 
 		private async Task WaitForCastLog()
 		{
-			await Coroutine.Wait(3000, () => (ChatCheck("cast your line", "cast your line") || ChatCheck("recast your line", "recast your line")));
-		}
-
-
-		private bool ChatCheck(string chattype, string chatmessage)
-		{
-			try
-			{
-				return GamelogManager.CurrentBuffer.Last(chatline => chatline.FullLine.Contains(chattype)).FullLine.Contains(chatmessage);
-			}
-			catch
-			{
-				return false;
-			}
+			//await Coroutine.Wait(3000, () => (ChatCheck("cast your line", "cast your line") || ChatCheck("recast your line", "recast your line")));
+			await Coroutine.Wait(3000, () => (FishingManager.State == FishingState.Reelin));
 		}
 
 		private bool FocusFishLog

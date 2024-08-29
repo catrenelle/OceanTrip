@@ -39,13 +39,19 @@ namespace OceanTripPlanner
 
                 if (OceanTripNewSettings.Instance.useCraftingFood)
                 {
-                    if (DataManager.GetItem((uint)FoodList.RroneekSteak, true).ItemCount() > 0)
+#if RB_DT
+                    int food = FoodList.RroneekSteak;
+#else
+                    int food = FoodList.CalamariRipieni;
+#endif
+
+                    if (DataManager.GetItem((uint)food, true).ItemCount() > 0)
                     {
-                        lisFood = FoodList.RroneekSteak + hqOffset; // HQ
+                        lisFood = food + hqOffset; // HQ
                         hqFood = true;
                     }
                     else
-                        lisFood = FoodList.RroneekSteak; // Reg
+                        lisFood = food; // Reg
                 }
 
                 //Resume last order
@@ -150,9 +156,15 @@ namespace OceanTripPlanner
 					var currencyList = new List<int>();
                     if (OceanTripNewSettings.Instance.refillScrips)
                     {
-                        //currencyList.Add((int)Currency.WhiteCraftersScrips);
+#if !RB_DT
+                        currencyList.Add((int)Currency.WhiteCraftersScrips);
+#endif
+
                         currencyList.Add((int)Currency.PurpleCraftersScrips);
+
+#if RB_DT
                         currencyList.Add((int)Currency.OrangeCraftersScrips);
+#endif
                     }
 
 					foreach (var currency in currencyList)
@@ -299,6 +311,8 @@ namespace OceanTripPlanner
                 if (freeToCraft)
 				{
 					var materiaList = new List<int>();
+
+#if RB_DT
                     // Grade XII
                     if (OceanTripNewSettings.Instance.materiaxii1)
                         materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxii[0]);
@@ -325,6 +339,8 @@ namespace OceanTripPlanner
                         materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[4]);
                     if (OceanTripNewSettings.Instance.materiaxi6)
                         materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiaxi[5]);
+#endif
+
                     // Grade X
                     if (OceanTripNewSettings.Instance.materiax1)
                         materiaList.Add(OceanTripPlanner.Definitions.Defaults.materiax[0]);
