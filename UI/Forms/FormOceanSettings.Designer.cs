@@ -615,7 +615,7 @@
             label5.Location = new System.Drawing.Point(168, 23);
             label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(72, 15);
+            label5.Size = new System.Drawing.Size(66, 15);
             label5.TabIndex = 3;
 #if RB_DT
             label5.Text = "Nasi Goreng";
@@ -705,10 +705,10 @@
             GPActionDoubleHook.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GPActionDoubleHook.MinimumSize = new System.Drawing.Size(0, 17);
             GPActionDoubleHook.Name = "GPActionDoubleHook";
-            GPActionDoubleHook.Size = new System.Drawing.Size(107, 19);
+            GPActionDoubleHook.Size = new System.Drawing.Size(140, 19);
             GPActionDoubleHook.TabIndex = 4;
             GPActionDoubleHook.TabStop = true;
-            GPActionDoubleHook.Text = "Double Hook";
+            GPActionDoubleHook.Text = "Double/Triple Hook";
             GPActionDoubleHook.UnCheckedColor = System.Drawing.Color.Gray;
             GPActionDoubleHook.UseVisualStyleBackColor = true;
             GPActionDoubleHook.CheckedChanged += GPActionDoubleHook_CheckedChanged;
