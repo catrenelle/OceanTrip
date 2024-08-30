@@ -209,6 +209,7 @@ namespace OceanTripPlanner.Definitions
         public const uint PrecisionHookset = 4179;
         public const uint IdenticalCast = 4596;
         public const uint ThaliaksFavor = 26804;
+        public const uint TripleHook = 27523;
     }
 
     public static class CharacterAuras
