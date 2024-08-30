@@ -31,7 +31,7 @@ namespace Ocean_Trip
         {
             // Are we on the boat?
             if ((WorldManager.RawZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby)
-                && DirectorManager.ActiveDirector != null && DirectorPtr == IntPtr.Zero)
+                && DirectorManager.ActiveDirector != null && (DirectorPtr == IntPtr.Zero || DirectorPtr != DirectorManager.ActiveDirector.Pointer))
             {
                 DirectorPtr = DirectorManager.ActiveDirector.Pointer;
             }

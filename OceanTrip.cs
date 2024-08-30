@@ -2416,8 +2416,17 @@ namespace OceanTripPlanner
 
                         if (doubleHook && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && spectraled)
 						{
-							Log("Using Double Hook!");
-							ActionManager.DoAction(Actions.DoubleHook, Core.Me);
+							if (ActionManager.CanCast(Actions.TripleHook, Core.Me))
+							{
+                                Log("Using Triple Hook!");
+                                ActionManager.DoAction(Actions.TripleHook, Core.Me);
+                            }
+                            else
+							{
+								Log("Using Double Hook!");
+								ActionManager.DoAction(Actions.DoubleHook, Core.Me);
+							}
+
 							lastCastMooch = false;
 						}
 						else if (FishingManager.HasPatience)
@@ -2449,8 +2458,16 @@ namespace OceanTripPlanner
 
                             if (!spectraled && Core.Me.MaxGP >= 500 && ((Core.Me.MaxGP - Core.Me.CurrentGP) <= 100) && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && OceanTripNewSettings.Instance.FullGPAction == FullGPAction.DoubleHook)
 							{
-								Log("Triggering Full GP Action to keep regen going - Double Hook!");
-								ActionManager.DoAction(Actions.DoubleHook, Core.Me);
+								if (ActionManager.CanCast(Actions.TripleHook, Core.Me))
+								{
+                                    Log("Triggering Full GP Action to keep regen going - Triple Hook!");
+                                    ActionManager.DoAction(Actions.TripleHook, Core.Me);
+                                }
+                                else
+								{
+									Log("Triggering Full GP Action to keep regen going - Double Hook!");
+									ActionManager.DoAction(Actions.DoubleHook, Core.Me);
+								}
 							}
 							else
 							{

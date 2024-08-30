@@ -1,3 +1,11 @@
+08/30/2024
+----------
+
+* For any instance where the botbase should Double Hook, a Triple Hook will be used instead if you have enough GP.
+
+* An issue was found where the pointer can change over time. Since we're caching the pointer, this can be a bad thing. A check has been added to verify the pointer cache and refresh it if needed each time the player gets on a boat.
+
+
 08/28/2024
 ----------
 
