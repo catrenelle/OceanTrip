@@ -1,0 +1,376 @@
+[
+  {
+    "RouteName": "Galadion Bay",
+    "RouteShortName": "galadion",
+    "NormalBait": 29716,
+    "SpectralBait": 2603,
+    "normal": [
+      {
+        "Fish1": 29766,
+        "Fish2": 29749,
+        "Fish3": 29750,
+        "Fish4": 29754,
+        "Fish5": 29752,
+        "Fish6": 29753,
+        "Fish7": 29751,
+        "Fish8": 29782,
+        "Fish9": 29756,
+        "Fish10": 29788
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 29766,
+        "Fish2": 29749,
+        "Fish3": 29750,
+        "Fish4": 29754,
+        "Fish5": 29752,
+        "Fish6": 29753,
+        "Fish7": 29751,
+        "Fish8": 29782,
+        "Fish9": 29756,
+        "Fish10": 29788
+      }
+    ]
+  },
+  {
+    "RouteName": "Kugane",
+    "RouteShortName": "kugane",
+    "NormalBait": 29714,
+    "SpectralBait": 29714,
+    "normal": [
+      {
+        "Fish1": 40551,
+        "Fish2": 40552,
+        "Fish3": 40553,
+        "Fish4": 40554,
+        "Fish5": 40555,
+        "Fish6": 40556,
+        "Fish7": 40557,
+        "Fish8": 40558,
+        "Fish9": 40559,
+        "Fish10": 40560
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 40551,
+        "Fish2": 40552,
+        "Fish3": 40553,
+        "Fish4": 40554,
+        "Fish5": 40555,
+        "Fish6": 40556,
+        "Fish7": 40557,
+        "Fish8": 40558,
+        "Fish9": 40559,
+        "Fish10": 40560
+      }
+    ]
+  },
+  {
+    "RouteName": "Rhotano Sea",
+    "RouteShortName": "rhotano",
+    "NormalBait": 29714,
+    "SpectralBait": 2619,
+    "normal": [
+      {
+        "Fish1": 29775,
+        "Fish2": 29767,
+        "Fish3": 29768,
+        "Fish4": 29769,
+        "Fish5": 29770,
+        "Fish6": 29762,
+        "Fish7": 29772,
+        "Fish8": 29780,
+        "Fish9": 29774,
+        "Fish10": 29790
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 29775,
+        "Fish2": 29767,
+        "Fish3": 29768,
+        "Fish4": 29769,
+        "Fish5": 29770,
+        "Fish6": 29762,
+        "Fish7": 29772,
+        "Fish8": 29780,
+        "Fish9": 29774,
+        "Fish10": 29790
+      }
+    ]
+  },
+  {
+    "RouteName": "The Bloodbrine Sea",
+    "RouteShortName": "blood",
+    "NormalBait": 29715,
+    "SpectralBait": 2587,
+    "normal": [
+      {
+        "Fish1": 32085,
+        "Fish2": 32086,
+        "Fish3": 32087,
+        "Fish4": 32088,
+        "Fish5": 32089,
+        "Fish6": 32090,
+        "Fish7": 32091,
+        "Fish8": 32092,
+        "Fish9": 32093,
+        "Fish10": 32094
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 32085,
+        "Fish2": 32086,
+        "Fish3": 32087,
+        "Fish4": 32088,
+        "Fish5": 32089,
+        "Fish6": 32090,
+        "Fish7": 32091,
+        "Fish8": 32092,
+        "Fish9": 32093,
+        "Fish10": 32094
+      }
+    ]
+  },
+  {
+    "RouteName": "The Cieldalaes",
+    "RouteShortName": "ciel",
+    "NormalBait": 29714,
+    "SpectralBait": 27590,
+    "normal": [
+      {
+        "Fish1": 32065,
+        "Fish2": 32066,
+        "Fish3": 32067,
+        "Fish4": 32068,
+        "Fish5": 32069,
+        "Fish6": 32070,
+        "Fish7": 32071,
+        "Fish8": 32072,
+        "Fish9": 32073,
+        "Fish10": 32074
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 32065,
+        "Fish2": 32066,
+        "Fish3": 32067,
+        "Fish4": 32068,
+        "Fish5": 32069,
+        "Fish6": 32070,
+        "Fish7": 32071,
+        "Fish8": 32072,
+        "Fish9": 32073,
+        "Fish10": 32074
+      }
+    ]
+  },
+  {
+    "RouteName": "The Northern Strait of Merlthor",
+    "RouteShortName": "north",
+    "NormalBait": 29714,
+    "SpectralBait": 2619,
+    "normal": [
+      {
+        "Fish1": 29748,
+        "Fish2": 29776,
+        "Fish3": 29777,
+        "Fish4": 29778,
+        "Fish5": 29773,
+        "Fish6": 29771,
+        "Fish7": 29781,
+        "Fish8": 29764,
+        "Fish9": 29783,
+        "Fish10": 29791
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 29748,
+        "Fish2": 29776,
+        "Fish3": 29777,
+        "Fish4": 29778,
+        "Fish5": 29773,
+        "Fish6": 29771,
+        "Fish7": 29781,
+        "Fish8": 29764,
+        "Fish9": 29783,
+        "Fish10": 29791
+      }
+    ]
+  },
+  {
+    "RouteName": "The One River",
+    "RouteShortName": "oneriver",
+    "NormalBait": 29716,
+    "SpectralBait": 12704,
+    "normal": [
+      {
+        "Fish1": 40591,
+        "Fish2": 40592,
+        "Fish3": 40593,
+        "Fish4": 40594,
+        "Fish5": 40595,
+        "Fish6": 40596,
+        "Fish7": 40597,
+        "Fish8": 40598,
+        "Fish9": 40599,
+        "Fish10": 40600
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 40591,
+        "Fish2": 40592,
+        "Fish3": 40593,
+        "Fish4": 40594,
+        "Fish5": 40595,
+        "Fish6": 40596,
+        "Fish7": 40597,
+        "Fish8": 40598,
+        "Fish9": 40599,
+        "Fish10": 40600
+      }
+    ]
+  },
+  {
+    "RouteName": "The Rothlyt Sound",
+    "RouteShortName": "sound",
+    "NormalBait": 29716,
+    "SpectralBait": 29714,
+    "normal": [
+      {
+        "Fish1": 32105,
+        "Fish2": 32106,
+        "Fish3": 32107,
+        "Fish4": 32108,
+        "Fish5": 32109,
+        "Fish6": 32110,
+        "Fish7": 32111,
+        "Fish8": 32112,
+        "Fish9": 32113,
+        "Fish10": 32114
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 32105,
+        "Fish2": 32106,
+        "Fish3": 32107,
+        "Fish4": 32108,
+        "Fish5": 32109,
+        "Fish6": 32110,
+        "Fish7": 32111,
+        "Fish8": 32112,
+        "Fish9": 32113,
+        "Fish10": 32114
+      }
+    ]
+  },
+  {
+    "RouteName": "The Ruby Sea",
+    "RouteShortName": "rubysea",
+    "NormalBait": 29714,
+    "SpectralBait": 27590,
+    "normal": [
+      {
+        "Fish1": 40571,
+        "Fish2": 40572,
+        "Fish3": 40573,
+        "Fish4": 40574,
+        "Fish5": 40575,
+        "Fish6": 40576,
+        "Fish7": 40577,
+        "Fish8": 40578,
+        "Fish9": 40579,
+        "Fish10": 40580
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 40571,
+        "Fish2": 40572,
+        "Fish3": 40573,
+        "Fish4": 40574,
+        "Fish5": 40575,
+        "Fish6": 40576,
+        "Fish7": 40577,
+        "Fish8": 40578,
+        "Fish9": 40579,
+        "Fish10": 40580
+      }
+    ]
+  },
+  {
+    "RouteName": "The Sirensong Sea",
+    "RouteShortName": "sirensong",
+    "NormalBait": 29714,
+    "SpectralBait": 29714,
+    "normal": [
+      {
+        "Fish1": 40531,
+        "Fish2": 40532,
+        "Fish3": 40533,
+        "Fish4": 40534,
+        "Fish5": 40535,
+        "Fish6": 40536,
+        "Fish7": 40537,
+        "Fish8": 40538,
+        "Fish9": 40539,
+        "Fish10": 40540
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 40531,
+        "Fish2": 40532,
+        "Fish3": 40533,
+        "Fish4": 40534,
+        "Fish5": 40535,
+        "Fish6": 40536,
+        "Fish7": 40537,
+        "Fish8": 40538,
+        "Fish9": 40539,
+        "Fish10": 40540
+      }
+    ]
+  },
+  {
+    "RouteName": "The Southern Strait of Merlthor",
+    "RouteShortName": "south",
+    "NormalBait": 29715,
+    "SpectralBait": 2613,
+    "normal": [
+      {
+        "Fish1": 29757,
+        "Fish2": 29758,
+        "Fish3": 29759,
+        "Fish4": 29779,
+        "Fish5": 29761,
+        "Fish6": 29760,
+        "Fish7": 29763,
+        "Fish8": 29755,
+        "Fish9": 29765,
+        "Fish10": 29789
+      }
+    ],
+    "spectral": [
+      {
+        "Fish1": 29757,
+        "Fish2": 29758,
+        "Fish3": 29759,
+        "Fish4": 29779,
+        "Fish5": 29761,
+        "Fish6": 29760,
+        "Fish7": 29763,
+        "Fish8": 29755,
+        "Fish9": 29765,
+        "Fish10": 29789
+      }
+    ]
+  }
+]

@@ -1,3 +1,19 @@
+09/10/2024
+----------
+
+* Removed hard coding of routes and switch statements to set the location baits. Now relies on a pre-loaded JSON file that I generate and maintain. Found in the Resources folder as fishingRoutes.json
+
+* Removed the hard coding for oceanList and fishToSell. Now relies on a pre-loaded JSON file that I generate and maintain. Found in the Resources folder as fishList.json
+
+* Tweaked bite timer checks to try and get a more accurate bite time. Generally spot on or within .1s, but there are times when it can be off.
+
+* Added two new classes to the code - Routes and Fish, and moved functions around to better organize code. 
+
+* Reworked DH and TH code to use new fishy list. This consolidates ~600 lines of checks into ~14 lines. Rework now allows DH and TH in non-spectral zones depending on the DH/TH Bonus of the fish or the potential points.
+
+* Removed the opening of the Achievements window due to advancements in LlamaLibrary. This is long overdue on my part as it became no longer necessary a while ago.
+
+
 08/30/2024
 ----------
 

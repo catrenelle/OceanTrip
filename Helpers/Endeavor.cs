@@ -63,32 +63,40 @@ namespace Ocean_Trip
         {
             get
             {
+                bool response;
+
                 switch (Status)
                 {
                     case FishingStatus.Fishing:
-                        return true;
+                        response = true;
                         break;
                     default:
-                        return false;
+                        response = false;
                         break;
                 }
+
+                return response;
             }
         }
 
         public bool waitingOnBoat
         {
             get 
-            { 
+            {
+                bool response;
+
                 switch (Status)
                 {
                     case FishingStatus.NotActive:
                     case FishingStatus.Finished:
-                        return false;
+                        response =  false;
                         break;
                     default:
-                        return true;
+                        response = true;
                         break;
                 }
+
+                return response;
             }
         }
 
