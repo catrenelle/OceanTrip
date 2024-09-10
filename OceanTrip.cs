@@ -34,6 +34,8 @@ using System.Windows.Input;
 using Ocean_Trip.Helpers;
 using LlamaLibrary.Structs;
 using System.Runtime.CompilerServices;
+using Ocean_Trip.Definitions;
+using Roslyn.Utilities;
 
 namespace OceanTripPlanner
 {
@@ -72,569 +74,8 @@ namespace OceanTripPlanner
 
 		private bool ignoreBoat { get { if (OceanTripNewSettings.Instance.FishPriority == FishPriority.IgnoreBoat) { return true; } else { return false; } } }
 
-		private readonly int[] oceanFish = new[] {
-			OceanFish.GaladionGoby,
-			OceanFish.RosyBream,
-			OceanFish.TripodFish,
-			OceanFish.GhoulBarracuda,
-			OceanFish.LeopardEel,
-			OceanFish.Sunfly,
-			OceanFish.RhotanoWahoo,
-			OceanFish.RhotanoSardine,
-			OceanFish.DeepPlaice,
-			OceanFish.Floefish,
-			OceanFish.Megasquid,
-			OceanFish.OschonsStone,
-			OceanFish.Jasperhead,
-			OceanFish.TarnishedShark,
-			OceanFish.MarineBomb,
-			OceanFish.MomoraMora,
-			OceanFish.CrimsonMonkfish,
-			OceanFish.ChromeHammerhead,
-			OceanFish.OgreEel,
-			OceanFish.TossedDagger,
-			OceanFish.ShaggySeadragon,
-			OceanFish.NetCrawler,
-			OceanFish.CyanOctopus,
-			OceanFish.Heavenswimmer,
-			OceanFish.MerlthorButterfly,
-			OceanFish.Gladius,
-			OceanFish.DarkNautilus,
-			OceanFish.Lampfish,
-			OceanFish.MerlthorLobster,
-			OceanFish.ElderDinichthys,
-			OceanFish.Drunkfish,
-			OceanFish.LittleLeviathan,
-			OceanFish.Sabaton,
-			OceanFish.ShootingStar,
-			OceanFish.MermansMane,
-			OceanFish.Heavenskey,
-			OceanFish.GhostShark,
-			OceanFish.QuicksilverBlade,
-			OceanFish.NavigatorsPrint,
-			OceanFish.CasketOyster,
-			OceanFish.Fishmonger,
-			OceanFish.MythrilSovereign,
-			OceanFish.NimbleDancer,
-			OceanFish.SeaNettle,
-			OceanFish.GreatGrandmarlin,
-			OceanFish.ShipwrecksSail,
-			OceanFish.CharlatanSurvivor,
-			OceanFish.HiAetherlouse,
-			OceanFish.AzeymasSleeve,
-			OceanFish.AethericSeadragon,
-			OceanFish.CoralSeadragon,
-			OceanFish.Roguesaurus,
-			OceanFish.Aronnax,
-			OceanFish.Sweeper,
-			OceanFish.Silencer,
-			OceanFish.DeepSeaEel,
-			OceanFish.Executioner,
-			OceanFish.WildUrchin,
-			OceanFish.TrueBarramundi,
-			OceanFish.ProdigalSon,
-			OceanFish.Slipsnail,
-			OceanFish.Hammerclaw,
-			OceanFish.Coccosteus,
-			OceanFish.BartholomewTheChopper,
-			OceanFish.Prowler,
-			OceanFish.Mopbeard,
-			OceanFish.FloatingSaucer,
-			OceanFish.Gugrusaurus,
-			OceanFish.FunnelShark,
-			OceanFish.TheFallenOne,
-			OceanFish.SpectralMegalodon,
-			OceanFish.SpectralDiscus,
-			OceanFish.SpectralSeaBo,
-			OceanFish.SpectralBass,
-			OceanFish.Sothis,
-			OceanFish.CoralManta,
-			OceanFish.Stonescale,
-			OceanFish.Elasmosaurus,
-			OceanFish.TortoiseshellCrab,
-			OceanFish.LadysCameo,
-			OceanFish.MetallicBoxfish,
-			OceanFish.GoobbueRay,
-			OceanFish.Watermoura,
-			OceanFish.KingCobrafish,
-			OceanFish.MamahiMahi,
-			OceanFish.LavandinRemora,
-			OceanFish.SpectralButterfly,
-			OceanFish.CieldalaesGeode,
-			OceanFish.TitanshellCrab,
-			OceanFish.MythrilBoxfish,
-			OceanFish.MistbeardsCup,
-			OceanFish.AnomalocarisSaron,
-			OceanFish.FlamingEel,
-			OceanFish.JetborneManta,
-			OceanFish.DevilsSting,
-			OceanFish.Callichthyid,
-			OceanFish.MeanderingMora,
-			OceanFish.Hafgufa,
-			OceanFish.ThaliakCrab,
-			OceanFish.StarOfTheDestroyer,
-			OceanFish.TrueScad,
-			OceanFish.BloodedWrasse,
-			OceanFish.BloodpolishCrab,
-			OceanFish.BlueStitcher,
-			OceanFish.BloodfreshTuna,
-			OceanFish.SunkenMask,
-			OceanFish.SpectralEel,
-			OceanFish.Bareface,
-			OceanFish.OracularCrab,
-			OceanFish.DravanianBream,
-			OceanFish.Skaldminni,
-			OceanFish.SerratedClam,
-			OceanFish.BeatificVision,
-			OceanFish.Exterminator,
-			OceanFish.GoryTuna,
-			OceanFish.Ticinepomis,
-			OceanFish.QuartzHammerhead,
-			OceanFish.SeafaringToad,
-			OceanFish.CrowPuffer,
-			OceanFish.StripOfRothlytKelp,
-			OceanFish.LivingLantern,
-			OceanFish.HoneycombFish,
-			OceanFish.Godsbed,
-			OceanFish.Lansquenet,
-			OceanFish.ThavnairianShark,
-			OceanFish.NephriteEel,
-			OceanFish.Spectresaur,
-			OceanFish.GinkgoFin,
-			OceanFish.GarumJug,
-			OceanFish.SmoothJaguar,
-			OceanFish.RothlytMussel,
-			OceanFish.LeviElver,
-			OceanFish.PearlBombfish,
-			OceanFish.Trollfish,
-			OceanFish.Panoptes,
-			OceanFish.CrepeSole,
-			OceanFish.Knifejaw,
-			OceanFish.Placodus,
-			OceanFish.DeepshadeSardine,
-			OceanFish.SirensongMussel,
-			OceanFish.Arrowhead,
-			OceanFish.PinkShrimp,
-			OceanFish.SirensongMullet,
-			OceanFish.SelkiePuffer,
-			OceanFish.PoetsPipe,
-			OceanFish.MarineMatanga,
-			OceanFish.SpectralCoelacanth,
-			OceanFish.DuskShark,
-			OceanFish.MermaidScale,
-			OceanFish.Broadhead,
-			OceanFish.VividPinkShrimp,
-			OceanFish.SunkenCoelacanth,
-			OceanFish.SirensSigh,
-			OceanFish.BlackjawedHelicoprion,
-			OceanFish.Impostopus,
-			OceanFish.JadeShrimp,
-			OceanFish.NymeiasWheel,
-			OceanFish.Taniwha,
-			OceanFish.RubyHerring,
-			OceanFish.WhirlpoolTurban,
-			OceanFish.LeopardPrawn,
-			OceanFish.SpearSquid,
-			OceanFish.FloatingLantern,
-			OceanFish.RubescentTatsunoko,
-			OceanFish.Hatatate,
-			OceanFish.SilentShark,
-			OceanFish.SpectralWrasse,
-			OceanFish.Mizuhiki,
-			OceanFish.SnappingKoban,
-			OceanFish.SilkweftPrawn,
-			OceanFish.StingfinTrevally,
-			OceanFish.SwordtipSquid,
-			OceanFish.Mailfish,
-			OceanFish.IdatensBolt,
-			OceanFish.MaelstromTurban,
-			OceanFish.Shoshitsuki,
-			OceanFish.Spadefish,
-			OceanFish.GlassDragon,
-			OceanFish.CrimsonKelp,
-			OceanFish.ReefSquid,
-			OceanFish.PinebarkFlounder,
-			OceanFish.MantleMoray,
-			OceanFish.BardedLobster,
-			OceanFish.ShisuiGoby,
-			OceanFish.Sanbaso,
-			OceanFish.VioletSentry,
-			OceanFish.SpectralSnakeEel,
-			OceanFish.HeavensentShark,
-			OceanFish.FleetingSquid,
-			OceanFish.BowbarbLobster,
-			OceanFish.PitchPickle,
-			OceanFish.SenbeiOctopus,
-			OceanFish.TentacaleThresher,
-			OceanFish.BekkoRockhugger,
-			OceanFish.YellowIris,
-			OceanFish.CrimsonSentry,
-			OceanFish.FlyingSquid,
-			OceanFish.HellsClaw,
-			OceanFish.CatchingCarp,
-			OceanFish.GarleanBluegill,
-			OceanFish.YanxianSoftshell,
-			OceanFish.PrincessSalmon,
-			OceanFish.Calligraph,
-			OceanFish.SingularShrimp,
-			OceanFish.BrocadeCarp,
-			OceanFish.YanxianSturgeon,
-			OceanFish.SpectralKotsuZetsu,
-			OceanFish.FishyShark,
-			OceanFish.GensuiShrimp,
-			OceanFish.YatonoKami,
-			OceanFish.HeronsEel,
-			OceanFish.CrowshadowMussel,
-			OceanFish.YanxianGoby,
-			OceanFish.IridescentTrout,
-			OceanFish.UnNamazu,
-			OceanFish.Gakugyo,
-			OceanFish.GinrinGoshiki,
-			OceanFish.JewelofPlumSpring
-		};
-
-		private static readonly int[] fishForSale = new int[]
-		{
-			OceanFish.GaladionGoby,
-			OceanFish.GaladionChovy,
-			OceanFish.RosyBream,
-			OceanFish.TripodFish,
-			OceanFish.Sunfly,
-			OceanFish.TarnishedShark,
-			OceanFish.TossedDagger,
-			OceanFish.Jasperhead,
-			OceanFish.MerlthorLobster,
-			OceanFish.Heavenswimmer,
-			OceanFish.GhoulBarracuda,
-			OceanFish.LeopardEel,
-			OceanFish.MarineBomb,
-			OceanFish.MomoraMora,
-			OceanFish.MerlthorButterfly,
-			OceanFish.Gladius,
-			OceanFish.RhotanoWahoo,
-			OceanFish.RhotanoSardine,
-			OceanFish.DeepPlaice,
-			OceanFish.CrimsonMonkfish,
-			OceanFish.Lampfish,
-			OceanFish.OgreEel,
-			OceanFish.CyanOctopus,
-			OceanFish.ChromeHammerhead,
-			OceanFish.Floefish,
-			OceanFish.Megasquid,
-			OceanFish.OschonsStone,
-			OceanFish.LaNosceanJelly,
-			OceanFish.ShaggySeadragon,
-			OceanFish.NetCrawler,
-			OceanFish.DarkNautilus,
-			OceanFish.ElderDinichthys,
-			OceanFish.Drunkfish,
-			OceanFish.LittleLeviathan,
-			OceanFish.Sabaton,
-			OceanFish.ShootingStar,
-			OceanFish.Hammerclaw,
-			OceanFish.Heavenskey,
-			OceanFish.GhostShark,
-			OceanFish.QuicksilverBlade,
-			OceanFish.NavigatorsPrint,
-			OceanFish.CasketOyster,
-			OceanFish.Fishmonger,
-			OceanFish.MythrilSovereign,
-			OceanFish.NimbleDancer,
-			OceanFish.SeaNettle,
-			OceanFish.GreatGrandmarlin,
-			OceanFish.ShipwrecksSail,
-			OceanFish.AzeymasSleeve,
-			OceanFish.HiAetherlouse,
-			OceanFish.FloatingSaucer,
-			OceanFish.AethericSeadragon,
-			OceanFish.CoralSeadragon,
-			OceanFish.Roguesaurus,
-			OceanFish.MermansMane,
-			OceanFish.Sweeper,
-			OceanFish.Silencer,
-			OceanFish.DeepSeaEel,
-			OceanFish.Executioner,
-			OceanFish.WildUrchin,
-			OceanFish.TrueBarramundi,
-			OceanFish.Mopbeard,
-			OceanFish.Slipsnail,
-			OceanFish.Aronnax,
-			OceanFish.Coccosteus,
-			OceanFish.BartholomewTheChopper,
-			OceanFish.Prowler,
-			OceanFish.CharlatanSurvivor,
-			OceanFish.ProdigalSon,
-			OceanFish.Gugrusaurus,
-			OceanFish.FunnelShark,
-			OceanFish.SpectralMegalodon,
-			OceanFish.SpectralDiscus,
-			OceanFish.SpectralSeaBo,
-			OceanFish.SpectralBass,
-			OceanFish.TortoiseshellCrab,
-			OceanFish.LadysCameo,
-			OceanFish.MetallicBoxfish,
-			OceanFish.GoobbueRay,
-			OceanFish.Watermoura,
-			OceanFish.KingCobrafish,
-			OceanFish.MamahiMahi,
-			OceanFish.LavandinRemora,
-			OceanFish.SpectralButterfly,
-			OceanFish.CieldalaesGeode,
-			OceanFish.TitanshellCrab,
-			OceanFish.MythrilBoxfish,
-			OceanFish.MistbeardsCup,
-			OceanFish.AnomalocarisSaron,
-			OceanFish.FlamingEel,
-			OceanFish.JetborneManta,
-			OceanFish.DevilsSting,
-			OceanFish.Callichthyid,
-			OceanFish.MeanderingMora,
-			OceanFish.ThaliakCrab,
-			OceanFish.StarOfTheDestroyer,
-			OceanFish.TrueScad,
-			OceanFish.BloodedWrasse,
-			OceanFish.BloodpolishCrab,
-			OceanFish.BlueStitcher,
-			OceanFish.BloodfreshTuna,
-			OceanFish.SunkenMask,
-			OceanFish.SpectralEel,
-			OceanFish.Bareface,
-			OceanFish.OracularCrab,
-			OceanFish.DravanianBream,
-			OceanFish.Skaldminni,
-			OceanFish.SerratedClam,
-			OceanFish.BeatificVision,
-			OceanFish.Exterminator,
-			OceanFish.GoryTuna,
-			OceanFish.Ticinepomis,
-			OceanFish.QuartzHammerhead,
-			OceanFish.CrowPuffer,
-			OceanFish.StripOfRothlytKelp,
-			OceanFish.LivingLantern,
-			OceanFish.HoneycombFish,
-			OceanFish.Godsbed,
-			OceanFish.Lansquenet,
-			OceanFish.ThavnairianShark,
-			OceanFish.NephriteEel,
-			OceanFish.Spectresaur,
-			OceanFish.GinkgoFin,
-			OceanFish.GarumJug,
-			OceanFish.SmoothJaguar,
-			OceanFish.RothlytMussel,
-			OceanFish.LeviElver,
-			OceanFish.PearlBombfish,
-			OceanFish.Trollfish,
-			OceanFish.Panoptes,
-			OceanFish.CrepeSole,
-			OceanFish.Knifejaw,
-			OceanFish.DeepshadeSardine,
-			OceanFish.SirensongMussel,
-			OceanFish.Arrowhead,
-			OceanFish.PinkShrimp,
-			OceanFish.SirensongMullet,
-			OceanFish.SelkiePuffer,
-			OceanFish.PoetsPipe,
-			OceanFish.MarineMatanga,
-			OceanFish.SpectralCoelacanth,
-			OceanFish.DuskShark,
-			OceanFish.MermaidScale,
-			OceanFish.Broadhead,
-			OceanFish.VividPinkShrimp,
-			OceanFish.SunkenCoelacanth,
-			OceanFish.SirensSigh,
-			OceanFish.BlackjawedHelicoprion,
-			OceanFish.Impostopus,
-			OceanFish.JadeShrimp,
-			OceanFish.NymeiasWheel,
-			OceanFish.RubyHerring,
-			OceanFish.WhirlpoolTurban,
-			OceanFish.LeopardPrawn,
-			OceanFish.SpearSquid,
-			OceanFish.FloatingLantern,
-			OceanFish.RubescentTatsunoko,
-			OceanFish.Hatatate,
-			OceanFish.SilentShark,
-			OceanFish.SpectralWrasse,
-			OceanFish.Mizuhiki,
-			OceanFish.SnappingKoban,
-			OceanFish.SilkweftPrawn,
-			OceanFish.StingfinTrevally,
-			OceanFish.SwordtipSquid,
-			OceanFish.Mailfish,
-			OceanFish.IdatensBolt,
-			OceanFish.MaelstromTurban,
-			OceanFish.Shoshitsuki,
-			OceanFish.Spadefish,
-			OceanFish.CrimsonKelp,
-			OceanFish.ReefSquid,
-			OceanFish.PinebarkFlounder,
-			OceanFish.MantleMoray,
-			OceanFish.BardedLobster,
-			OceanFish.ShisuiGoby,
-			OceanFish.Sanbaso,
-			OceanFish.VioletSentry,
-			OceanFish.SpectralSnakeEel,
-			OceanFish.HeavensentShark,
-			OceanFish.FleetingSquid,
-			OceanFish.BowbarbLobster,
-			OceanFish.PitchPickle,
-			OceanFish.SenbeiOctopus,
-			OceanFish.TentacaleThresher,
-			OceanFish.BekkoRockhugger,
-			OceanFish.YellowIris,
-			OceanFish.CrimsonSentry,
-			OceanFish.FlyingSquid,
-			OceanFish.CatchingCarp,
-			OceanFish.GarleanBluegill,
-			OceanFish.YanxianSoftshell,
-			OceanFish.PrincessSalmon,
-			OceanFish.Calligraph,
-			OceanFish.SingularShrimp,
-			OceanFish.BrocadeCarp,
-			OceanFish.YanxianSturgeon,
-			OceanFish.SpectralKotsuZetsu,
-			OceanFish.FishyShark,
-			OceanFish.GensuiShrimp,
-			OceanFish.YatonoKami,
-			OceanFish.HeronsEel,
-			OceanFish.CrowshadowMussel,
-			OceanFish.YanxianGoby,
-			OceanFish.IridescentTrout,
-			OceanFish.UnNamazu,
-			OceanFish.Gakugyo,
-			OceanFish.GinrinGoshiki
-		};
-
-		// Indigo
-		private static readonly string[] fullPattern = new[] { "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN" };
-
-		// Ruby
-		private static readonly int[] ruby_fullPattern = new[]
-		{
-			1,2,3,4,5,6,1,2,3,4,5,6,
-			2,3,4,5,6,1,2,3,4,5,6,1,
-			3,4,5,6,1,2,3,4,5,6,1,2,
-			4,5,6,1,2,3,4,5,6,1,2,3,
-			5,6,1,2,3,4,5,6,1,2,3,4,
-			6,1,2,3,4,5,6,1,2,3,4,5
-		};
-
-		// Indigo
-		private static readonly Tuple<string, string>[] NS = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("south", "Night"),
-			new Tuple<string, string>("galadion", "Day"),
-			new Tuple<string, string>("north", "Sunset")
-		};
-		private static readonly Tuple<string, string>[] NN = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("south", "Day"),
-			new Tuple<string, string>("galadion", "Sunset"),
-			new Tuple<string, string>("north", "Night")
-		};
-		private static readonly Tuple<string, string>[] ND = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("south", "Sunset"),
-			new Tuple<string, string>("galadion", "Night"),
-			new Tuple<string, string>("north", "Day")
-		};
-		private static readonly Tuple<string, string>[] RS = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("galadion", "Night"),
-			new Tuple<string, string>("south", "Day"),
-			new Tuple<string, string>("rhotano", "Sunset")
-		};
-		private static readonly Tuple<string, string>[] RN = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("galadion", "Day"),
-			new Tuple<string, string>("south", "Sunset"),
-			new Tuple<string, string>("rhotano", "Night")
-		};
-		private static readonly Tuple<string, string>[] RD = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("galadion", "Sunset"),
-			new Tuple<string, string>("south", "Night"),
-			new Tuple<string, string>("rhotano", "Day")
-		};
-		private static readonly Tuple<string, string>[] BS = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("ciel", "Night"),
-			new Tuple<string, string>("north", "Day"),
-			new Tuple<string, string>("blood", "Sunset")
-		};
-		private static readonly Tuple<string, string>[] BN = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("ciel", "Day"),
-			new Tuple<string, string>("north", "Sunset"),
-			new Tuple<string, string>("blood", "Night")
-		};
-		private static readonly Tuple<string, string>[] BD = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("ciel", "Sunset"),
-			new Tuple<string, string>("north", "Night"),
-			new Tuple<string, string>("blood", "Day")
-		};
-		private static readonly Tuple<string, string>[] TS = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("ciel", "Night"),
-			new Tuple<string, string>("rhotano", "Day"),
-			new Tuple<string, string>("sound", "Sunset")
-		};
-		private static readonly Tuple<string, string>[] TN = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("ciel", "Day"),
-			new Tuple<string, string>("rhotano", "Sunset"),
-			new Tuple<string, string>("sound", "Night")
-		};
-		private static readonly Tuple<string, string>[] TD = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("ciel", "Sunset"),
-			new Tuple<string, string>("rhotano", "Night"),
-			new Tuple<string, string>("sound", "Day")
-		};
-
-		// Ruby
-		private static readonly Tuple<string, string>[] Ruby_RS = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("sirensong", "Night"),
-			new Tuple<string, string>("kugane", "Day"),
-			new Tuple<string, string>("rubysea", "Sunset")
-		};
-
-		private static readonly Tuple<string, string>[] Ruby_RN = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("sirensong", "Day"),
-			new Tuple<string, string>("kugane", "Sunset"),
-			new Tuple<string, string>("rubysea", "Night")
-		};
-
-		private static readonly Tuple<string, string>[] Ruby_RD = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("sirensong", "Sunset"),
-			new Tuple<string, string>("kugane", "Night"),
-			new Tuple<string, string>("rubysea", "Day")
-		};
-
-		private static readonly Tuple<string, string>[] Ruby_OS = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("sirensong", "Night"),
-			new Tuple<string, string>("kugane", "Day"),
-			new Tuple<string, string>("oneriver", "Sunset")
-		};
-
-		private static readonly Tuple<string, string>[] Ruby_ON = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("sirensong", "Day"),
-			new Tuple<string, string>("kugane", "Sunset"),
-			new Tuple<string, string>("oneriver", "Night")
-		};
-
-		private static readonly Tuple<string, string>[] Ruby_OD = new Tuple<string, string>[3]
-		{
-			new Tuple<string, string>("sirensong", "Sunset"),
-			new Tuple<string, string>("kugane", "Night"),
-			new Tuple<string, string>("oneriver", "Day")
-		};
+		private List<Routes> fishingRoutes;
+		private List<Fish> fishList;
 
 
 		private static readonly Tuple<uint, Vector3>[] SummoningBells = new Tuple<uint, Vector3>[]
@@ -706,7 +147,14 @@ namespace OceanTripPlanner
 
             FFXIV_Databinds.Instance.RefreshBait();
             FFXIV_Databinds.Instance.RefreshAchievements();
-			if (Endeavor == null)
+
+            if (fishingRoutes == null)
+                fishingRoutes = Routes.GetRoutes();
+
+            if (fishList == null)
+                fishList = Fish.GetFish();
+
+            if (Endeavor == null)
 				Endeavor = new Ocean_Trip.Endeavor();
         }
 
@@ -717,12 +165,18 @@ namespace OceanTripPlanner
             Log("Initializing OceanTrip Settings.");
 			if (settings == null || settings.IsDisposed)
 				settings = new Ocean_Trip.FormSettings();
-
 			Log("OceanTrip Settings Loaded.");
 
 
             FFXIV_Databinds.Instance.RefreshBait();
             FFXIV_Databinds.Instance.RefreshAchievements();
+
+
+			if (fishingRoutes == null)
+				fishingRoutes = Routes.GetRoutes();
+
+			if (fishList == null)
+				fishList = Fish.GetFish();
 
             if (Endeavor == null)
                 Endeavor = new Ocean_Trip.Endeavor();
@@ -770,7 +224,7 @@ namespace OceanTripPlanner
 			TimeSpan stop = new TimeSpan((DateTime.UtcNow.Hour % 2 == 0 ? DateTime.UtcNow.Hour + 2 : DateTime.UtcNow.Hour), (OceanTripNewSettings.Instance.LateBoatQueue ? 13 : 0), 0); //TimeUntilNextBoat();
 
 
-			schedule = GetSchedule();
+			schedule = Routes.GetSchedule();
 
 			if (!ignoreBoat)
 			{
@@ -817,10 +271,6 @@ namespace OceanTripPlanner
 
 			if (!InitializationComplete)
 			{
-				Log("Initializing achievements for tracking progress.");
-				await Achievements.OpenWindow();
-				Log("Achievements loaded.");
-
 				if (missingFish.Count == 0)
 					if (File.Exists(Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt")))
 					{
@@ -847,7 +297,7 @@ namespace OceanTripPlanner
 				try
 				{
 					Log("Obtaining current list of missing ocean fish.");
-					missingFish = await FishingLog.GetFishLog(oceanFish);
+					missingFish = await FishingLog.GetFishLog(fishList.Select(x => x.FishID).ToList());
 
 					Log($"Total missing ocean fish: {missingFish.Count()}");
 					FishingLog.SaveMissingFishLog(missingFish);
@@ -883,12 +333,12 @@ namespace OceanTripPlanner
 					if (OceanTripNewSettings.Instance.ExchangeFish == ExchangeFish.Sell)
 					{
                         await Coroutine.Sleep(3000);
-                        await LandSell(fishForSale);
+                        await LandSell(fishList.Where(x => x.Rarity != "Rare").Select(x => x.FishID).ToList());
 					}
 					else if (OceanTripNewSettings.Instance.ExchangeFish == ExchangeFish.Desynth)
 					{
                         await Coroutine.Sleep(3000);
-                        await PassTheTime.DesynthOcean(fishForSale);
+                        await PassTheTime.DesynthOcean(fishList.Where(x => x.Rarity != "Rare").Select(x => x.FishID).ToList());
 					}
 
 					//await Lisbeth.SelfRepairWithMenderFallback();
@@ -963,7 +413,8 @@ namespace OceanTripPlanner
 				if (FishingManager.State != FishingState.None)
 					ActionManager.DoAction(Actions.Quit, Core.Me);
 
-				if (Core.Me.CurrentJob != ClassJobType.Fisher)
+
+                if (Core.Me.CurrentJob != ClassJobType.Fisher)
 				{
 					await SwitchToJob(ClassJobType.Fisher);
 					Log("Switching to FSH class...");
@@ -978,8 +429,8 @@ namespace OceanTripPlanner
 
 
 			int spot = rnd.Next(6);
-			schedule = GetSchedule();
-			int posOnSchedule = 0;
+			schedule = Routes.GetSchedule();
+			string location = "";
 			string TimeOfDay = "";
 
 			// Cache the director if needed
@@ -997,69 +448,30 @@ namespace OceanTripPlanner
 
 				ulong baitId = FishBait.Krill;
 				ulong spectralbaitId = FishBait.Krill;
-				string location = schedule[Endeavor.CurrentZone].Item1;
+				
+				location = schedule[Endeavor.CurrentZone].Item1;
 				TimeOfDay = schedule[Endeavor.CurrentZone].Item2;
 
 				if (String.IsNullOrEmpty(TimeOfDay))
 					TimeOfDay = "Day";
 
-                switch (location)
+				// Get the baits required
+				var currentRoute = fishingRoutes.Where(x => x.RouteShortName == location).FirstOrDefault();
+				if (currentRoute == null)
 				{
-					case "south":
-						baitId = FishBait.Krill;
-						spectralbaitId = FishBait.ShrimpCageFeeder;
-						break;
-					case "galadion":
-						baitId = FishBait.PlumpWorm;
-						spectralbaitId = FishBait.GlowWorm;
-						break;
-					case "north":
-						baitId = FishBait.Ragworm;
-						spectralbaitId = FishBait.HeavySteelJig;
-						break;
-                    case "rhotano":
-                        baitId = FishBait.Ragworm;
-                        spectralbaitId = FishBait.HeavySteelJig;
-                        break;
-					case "ciel":
-						baitId = FishBait.Ragworm;
-						spectralbaitId = FishBait.SquidStrip;
-						break;
-					case "blood":
-						baitId = FishBait.Krill;
-						spectralbaitId = FishBait.PillBug;
-						break;
-					case "sound":
-						baitId = FishBait.PlumpWorm;
-						spectralbaitId = FishBait.Ragworm;
-						break;
-					case "sirensong":
-						baitId = FishBait.Ragworm;
-						spectralbaitId = FishBait.Ragworm;
-						break;
-					case "kugane":
-						baitId = FishBait.Ragworm;
-						spectralbaitId = FishBait.Ragworm;
-						break;
-					case "rubysea":
-						baitId = FishBait.Ragworm;
-						spectralbaitId = FishBait.SquidStrip;
-						break;
-					case "oneriver":
-						baitId = FishBait.PlumpWorm;
-						spectralbaitId = FishBait.StoneflyNymph;
-						break;
-					default:
-						baitId = FishBait.Ragworm;
-						spectralbaitId = FishBait.Ragworm;
-                        Log($"Cannot determine location. Zone: {Endeavor.CurrentZone}, Status: {Endeavor.Status}, On Boat: {OnBoat}");
-                        break;
+                    baitId = FishBait.Ragworm;
+                    spectralbaitId = FishBait.Ragworm;
+                    Log($"Cannot determine location. Zone: {Endeavor.CurrentZone}, Status: {Endeavor.Status}, On Boat: {OnBoat}");
                 }
+                else
+				{
+					baitId = currentRoute.NormalBait;
+					spectralbaitId = currentRoute.SpectralBait;
+				}
 
                 await GoFish(baitId, spectralbaitId, location, TimeOfDay, spot);
 				await Coroutine.Sleep(2000);
 			}
-
 
 			AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
 			if (windowByName != null)
@@ -1258,10 +670,10 @@ namespace OceanTripPlanner
                         await Coroutine.Sleep(100);
                     }
                     Navigator.PlayerMover.MoveStop();
-                    await Coroutine.Sleep(500);
+                    await Coroutine.Sleep(300);
                     Core.Me.SetFacing(headings[spot]);
 
-                    await Coroutine.Sleep(400);
+                    await Coroutine.Sleep(100);
                 }
 
                 if (WorldManager.CurrentWeatherId != Weather.Spectral)
@@ -1312,7 +724,7 @@ namespace OceanTripPlanner
 
                 if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
-					await Coroutine.Sleep(300);
+					//await Coroutine.Sleep(300);
 
                     if (OceanTripNewSettings.Instance.LoggingMode)
                         Log("Checking for a recently caught fish.");
@@ -1355,6 +767,7 @@ namespace OceanTripPlanner
 							|| (lastCaughtFish == OceanFish.SilentShark && caughtFish.Where(x => x == OceanFish.SilentShark).Count() < 2)
 							|| (lastCaughtFish == OceanFish.SunkenCoelacanth && caughtFish.Where(x => x == OceanFish.SunkenCoelacanth).Count() < 3)
 							|| (lastCaughtFish == OceanFish.PoetsPipe && caughtFish.Where(x => x == OceanFish.PoetsPipe).Count() < 2)
+							|| (lastCaughtFish == OceanFish.FunnelShark && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto || OceanTripNewSettings.Instance.FishPriority == FishPriority.Points) && Core.Me.CurrentGP >= 700)
 						)
 						&& (ActionManager.CanCast(Actions.IdenticalCast, Core.Me)) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 					{
@@ -1831,7 +1244,7 @@ namespace OceanTripPlanner
 								{
 									Log("Triggering Full GP Action to keep regen going - Chum!");
 									ActionManager.DoAction(Actions.Chum, Core.Me);
-									await Coroutine.Sleep(800);
+									//await Coroutine.Sleep(800);
 								}
 							}
 
@@ -1849,13 +1262,11 @@ namespace OceanTripPlanner
 						lastCastMooch = false;
 					}
 
-					await Coroutine.Sleep(300);
+					await Coroutine.Sleep(100);
 				}
 
 				while ((FishingManager.State != FishingState.PoleReady) && Endeavor.shouldFish)
 				{
-                    await Coroutine.Sleep(300); // Do not remove or game will stutter.
-
                     //Spectral popped, don't wait for normal fish
                     if (WorldManager.CurrentWeatherId == Weather.Spectral && !spectraled)
 					{
@@ -1868,10 +1279,7 @@ namespace OceanTripPlanner
 
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 					{
-                        if (OceanTripNewSettings.Instance.LoggingMode)
-                            Log("Checking bite timer.");
-
-                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds + 2.7f; 
+                        double biteElapsed = (DateTime.Now - startedCast).TotalSeconds + 2.8f; 
                         bool doubleHook = false;
 
                         Log($"Bite Time: {biteElapsed:F1}s");
@@ -1879,542 +1287,26 @@ namespace OceanTripPlanner
                         if (OceanTripNewSettings.Instance.LoggingMode)
                             Log("Checking if we should double hook based on bite timer and current fishing conditions!");
 
-                        // Made this more readable.
-                        if (location == "galadion" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)) //Galadion Bay					
+
+						if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
 						{
-							if (timeOfDay == "Day")
-							{
-								// Day - ! tug at 8+ seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 8.0f)
-									doubleHook = true;
-
-								// Day - !! tug at 2 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed < 3.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								// Sunset - !!! tug
-								if (FishingManager.TugType == TugType.Heavy)
-									doubleHook = true;
-
-								// Sunset - !! tug at 2 or 6 seconds
-								if (FishingManager.TugType == TugType.Medium && ((biteElapsed >= 2.0f && biteElapsed < 3.0f) || (biteElapsed >= 6.0f && biteElapsed < 7.0f)))
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Night")
-							{
-								// Night - !! tug at 2 or 4 seconds
-								if (FishingManager.TugType == TugType.Medium && ((biteElapsed >= 2.0f && biteElapsed < 3.0f) || (biteElapsed >= 4.0f && biteElapsed < 5.0f)))
-									doubleHook = true;
-							}
-						}
-
-						if (location == "south" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)) //Southern Merlthor
-						{
-							if (timeOfDay == "Day")
-							{
-								// Day - !!! tug
-								if (FishingManager.TugType == TugType.Heavy)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								// Sunset - ! tug at 8+ seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 8.0f)
-									doubleHook = true;
-
-								// Sunset - Any fish after a Mooch
-								if (lastCastMooch)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Night")
-							{
-								// Night - Any fish after a mooch
-								if (lastCastMooch)
-									doubleHook = true;
-							}
-						}
-
-						if (location == "north" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							if (timeOfDay == "Day")
-							{
-								// Day - !!! tug
-								if (FishingManager.TugType == TugType.Heavy)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								// Sunset - ! tug at 8+ seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 8.0f)
-									doubleHook = true;
-
-								// Sunset - !!! tug
-								if (FishingManager.TugType == TugType.Heavy)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Night")
-							{
-								// Night - !! tug at 6+ seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 6.0f)
-									doubleHook = true;
-
-								// Night - !!! tug
-								if (FishingManager.TugType == TugType.Heavy)
-									doubleHook = true;
-							}
-						}
-
-						if (location == "rhotano" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							if (timeOfDay == "Day")
-							{
-								// Day - !!! tug
-								if (FishingManager.TugType == TugType.Heavy)
-									doubleHook = true;
-
-								// Day - !! tug at 6 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 6.0f && biteElapsed < 7.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								// Sunset - ! tug at 4-6 seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 4.0f && biteElapsed <= 6.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Night")
-							{
-								// ! tug at 7+ seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 7.0f)
-									doubleHook = true;
-
-								// ! tug at 4-6 seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 4.0f && biteElapsed <= 6.0f)
-									doubleHook = true;
-							}
-						}
-
-						if (location == "ciel" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							if (timeOfDay == "Day")
-							{
-								// Day - !! tug at 6+ seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 6.0f)
-									doubleHook = true;
-
-								// Day - !! tug at 2-3 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								// Sunset - !! tug at 7+ seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 7.0f)
-									doubleHook = true;
-
-								// Sunset - !! tug at 2-3 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Night")
-							{
-								// Night - !! tug at 2-3 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
-									doubleHook = true;
-							}
-						}
-
-						if (location == "blood" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							if (timeOfDay == "Day")
-							{
-								// Day - ! tug at 6+ seconds
-								if (FishingManager.TugType == TugType.Light && biteElapsed >= 6.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								// Sunset - !!! tug at 6+ seconds
-								if (FishingManager.TugType == TugType.Heavy && biteElapsed >= 6.0f)
-									doubleHook = true;
-
-								// Sunset - !! tug at 2 seconds 
-								if (FishingManager.TugType == TugType.Medium && biteElapsed < 3.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Night")
-							{
-								// Night - !! tug at 6+ seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 6.0f)
-									doubleHook = true;
-
-								// Night - !! tug at 2 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed < 3.0f)
-									doubleHook = true;
-							}
-						}
-
-						if (location == "sound" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							if (timeOfDay == "Day")
-							{
-								// Day - !! tug at 5 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed < 6.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								// Sunset - !! tug at 8 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed < 9.0f)
-									doubleHook = true;
-							}
-
-							if (timeOfDay == "Night")
-							{
-								// Night - !! tug at 5 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed < 6.0f)
-									doubleHook = true;
-
-								// Night - !! tug at 8 seconds
-								if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed < 9.0f)
-									doubleHook = true;
-							}
-						}
-
-						// Ruby Route
-						if (location == "sirensong" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							// Reg: Rag
-							// Spec: Krill
-
-							if (timeOfDay == "Day")
-							{
-								if (spectraled)
-								{
-                                    // Krill bait timers
-
-                                    // Day - ! tug at 3-4 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-                                        doubleHook = true;
-
-                                    // Day - !! tug at 3-4 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-                                    // Day - ! tug at 11-20 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 11.0f && biteElapsed <= 20.0f)
-                                        doubleHook = true;
-                                }
-                            }
-
-							if (timeOfDay == "Sunset")
-							{
-								if (spectraled)
-								{
-                                    // Krill bait timers
-
-                                    // Sunset - ! tug at 3-4 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-                                    // Sunset - !! tug at 3-4 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-                                    // Sunset - !! tug at 7-8 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 7.0f && biteElapsed <= 8.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-                                    // Sunset - ! tug at 11-20 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 11.0f && biteElapsed <= 20.0f)
-                                        doubleHook = true;
-                                }
-                            }
-
-							if (timeOfDay == "Night")
-							{
-								if (spectraled)
-								{
-									// Krill bait timers
-
-									// Night - ! tug at 3-4 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-									// Night - ! tug at 6-8 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 6.0f && biteElapsed <= 8.0f)
-										doubleHook = true;                                
-                                }
-                                else
-								{
-									// Night - ! tug at 11-20 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 11.0f && biteElapsed <= 20.0f)
-										doubleHook = true;
-								}
-							}
-						}
-
-						if (location == "kugane" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							// Reg: Rag
-							// Spec: Krill
-
-							if (timeOfDay == "Day")
-							{
-								if (spectraled)
-								{
-                                    // Day - ! tug at 2-3 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
-                                        doubleHook = true;
-
-                                    // Day - ! tug at 5-7 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
-                                        doubleHook = true;
-
-                                    // Day - !! tug at 8-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed <= 12.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-                                    // Day - !! tug at 18-29 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
-                                        doubleHook = true;
-                                }
-                            }
-
-							if (timeOfDay == "Sunset")
-							{
-								if (spectraled)
-								{
-									// Sunset - ! tug at 2-3 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
-										doubleHook = true;
-
-                                    // Sunset - ! tug at 5-7 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
-                                        doubleHook = true;
-
-                                    // Sunset - !! tug at 8-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed <= 12.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-                                    // Sunset - !! tug at 18-29 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
-                                        doubleHook = true;
-                                }
-                            }
-
-							if (timeOfDay == "Night")
-							{
-								if (spectraled)
-								{
-									// Night - ! tug at 2-3 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 2.0f && biteElapsed <= 3.0f)
-										doubleHook = true;
-
-                                    // Night - !! tug at 8-12 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 8.0f && biteElapsed <= 12.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-                                    // Night - !! tug at 18-29 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
-                                        doubleHook = true;
-                                }
-                            }
-						}
-
-						if (location == "rubysea" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							// Reg: Ragworm
-							// Spec: Plump
-
-							if (timeOfDay == "Day")
-							{
-								if (spectraled)
-								{
-                                    // Day - ! tug at 3-4 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-                                        doubleHook = true;
-
-                                    // Day - !! tug at 3-4 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-                                        doubleHook = true;
-
-                                    // Day - !! tug at 5-8 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-									// Day - ! tug at 10-18 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
-										doubleHook = true;
-
-                                    // Day - !! tug at 10-18 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
-                                        doubleHook = true;
-                                }
-                            }
-
-							if (timeOfDay == "Sunset")
-							{
-								if (spectraled)
-								{
-									// Sunset - ! tug at 3-4 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-									// Sunset - !! tug at 3-4 seconds
-									if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-                                    // Sunset - !! tug at 5-8 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-									// Sunset - ! tug at 10-18 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
-										doubleHook = true;
-
-                                    // Sunset - !! tug at 10-18 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
-                                        doubleHook = true;
-                                }
-                            }
-
-							if (timeOfDay == "Night")
-							{
-								if (spectraled)
-								{
-									// Night - ! tug at 3-4 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-									// Night - !! tug at 3-4 seconds
-									if (FishingManager.TugType == TugType.Medium && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-                                    // Night - !! tug at 5-8 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 8.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-									// Night - ! tug at 10-18 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
-										doubleHook = true;
-
-                                    // Night - !! tug at 10-18 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 10.0f && biteElapsed <= 18.0f)
-                                        doubleHook = true;
-                                }
-                            }
-						}
-
-						if (location == "oneriver" && (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto))
-						{
-							// Reg: Plump
-							// Spec: Krill
-
-							if (timeOfDay == "Day")
-							{
-								if (spectraled)
-								{
-                                    // Day - ! tug at 3-4 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-                                        doubleHook = true;
-
-                                    // Day - ! tug at 5-7 seconds
-                                    if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-									// Day - ! tug at 18-29 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
-										doubleHook = true;
-								}
-							}
-
-							if (timeOfDay == "Sunset")
-							{
-								if (spectraled)
-								{
-									// Sunset - ! tug at 3-4 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-									// Sunset - ! tug at 5-7 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
-										doubleHook = true;
-
-                                    // Sunset - !! tug at 5-6 seconds
-                                    if (FishingManager.TugType == TugType.Medium && biteElapsed >= 5.0f && biteElapsed <= 6.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-									// Sunset - ! tug at 18-29 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
-										doubleHook = true;
-								}
-							}
-
-							if (timeOfDay == "Night")
-							{
-								if (spectraled)
-								{
-									// Night - ! tug at 3-4 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 3.0f && biteElapsed <= 4.0f)
-										doubleHook = true;
-
-									// Night - ! tug at 5-7 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 5.0f && biteElapsed <= 7.0f)
-										doubleHook = true;
-                                    
-									// Night - !!! tug at 5-6 seconds
-                                    if (FishingManager.TugType == TugType.Heavy && biteElapsed >= 5.0f && biteElapsed <= 6.0f)
-                                        doubleHook = true;
-                                }
-                                else
-								{
-									// Night - ! tug at 18-29 seconds
-									if (FishingManager.TugType == TugType.Light && biteElapsed >= 18.0f && biteElapsed <= 29.0f)
-										doubleHook = true;
-								}
-							}
+							// Check if we should DH or TH - Special handling for South's lastMooch rule - Always DH/TH after a Mooch in South if spectral.
+							if (fishList.Any(x => x.RouteShortName == location
+													&& (biteElapsed >= x.BiteStart && biteElapsed < (x.BiteEnd == x.BiteStart ? x.BiteEnd + 1.0 : x.BiteEnd)
+													&& x.WeatherExclusion1 != WorldManager.CurrentWeather
+													&& x.WeatherExclusion2 != WorldManager.CurrentWeather
+													&& x.TimeOfDayExclusion1 != timeOfDay
+													&& x.TimeOfDayExclusion2 != timeOfDay
+													&& x.BiteType == FishingManager.TugType
+													&& (((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3))
+													) || (location == "south" && lastCastMooch && (timeOfDay == "Sunset" || timeOfDay == "Night") && spectraled)))
+								doubleHook = true;
 						}
 
                         if (OceanTripNewSettings.Instance.LoggingMode)
-                            Log("Done checking for double hook conditions.");
+	                        Log("Done checking for double hook conditions.");
 
-                        if (doubleHook && ActionManager.CanCast(Actions.DoubleHook, Core.Me) && spectraled)
+                        if (doubleHook && ActionManager.CanCast(Actions.DoubleHook, Core.Me))
 						{
 							if (ActionManager.CanCast(Actions.TripleHook, Core.Me))
 							{
@@ -2487,14 +1379,14 @@ namespace OceanTripPlanner
                         FFXIV_Databinds.Instance.RefreshBait();
                         FFXIV_Databinds.Instance.RefreshAchievements();
                     }
-                }
-			}
 
-            if (OceanTripNewSettings.Instance.LoggingMode)
-                Log("Mandatory 2 second wait (to prevent hangs)");
+                    await Coroutine.Sleep(100); 
+                }
+            }
+
 
             spectraled = false;
-			await Coroutine.Sleep(2000); // DO NOT CHANGE
+			await Coroutine.Sleep(100); 
             //await Coroutine.Yield();
 
             //Log("Waiting for next stop...");
@@ -2508,7 +1400,13 @@ namespace OceanTripPlanner
 		{
 			var Dryskthota = GameObjectManager.GetObjectByNPCId(NPC.Dryskthota);
 
-			if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader && !PartyManager.CrossRealm))
+            if (Core.Me.CurrentJob != ClassJobType.Fisher)
+            {
+                await SwitchToJob(ClassJobType.Fisher);
+                Logging.Write(Colors.Aqua, "[Ocean Trip] Switching to FSH class...");
+            }
+
+            if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader && !PartyManager.CrossRealm))
 			{
 				// Wait for party members to be nearby - Thanks zzi and nt153133!
 				await Coroutine.Wait(TimeSpan.FromMinutes(30), PartyLeaderWaitConditions);
@@ -2603,6 +1501,9 @@ namespace OceanTripPlanner
 				gearSets.First(gs => gs.Class == job).Activate();
 				await Coroutine.Sleep(1000);
 			}
+
+			if (Core.Me.CurrentJob != job)
+				Logging.Write(Colors.Red, $"[Ocean Trip] Could not change to FSH.");
 		}
 
 		private async Task UseCordial()
@@ -2726,7 +1627,7 @@ namespace OceanTripPlanner
 			}
 		}
 
-		private async Task LandSell(int[] itemIds)
+		private async Task LandSell(List<int> itemIds)
 		{
 			var itemsToSell = InventoryManager.FilledSlots.Where(bs => bs.IsSellable && itemIds.Contains((int)bs.RawItemId));
 			if (itemsToSell.Count() != 0)
@@ -2822,78 +1723,6 @@ namespace OceanTripPlanner
 
 			await Coroutine.Sleep(200);
         }
-
-        public static Tuple<string, string>[] GetSchedule(DateTime? time = null, string route = null)
-		{
-			int epoch;
-
-            if (!time.HasValue)
-                epoch = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-            else
-                epoch = (int)(time.Value.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-
-
-			
-
-            if ((route is null && OceanTripNewSettings.Instance.FishingRoute == FishingRoute.Ruby) || (route == "Ruby"))
-			{
-                // Thanks to https://millhio.re/oceancalculator2.html which was more accurate than what I was using. Translated the JS over to C#.
-                int twoHourChunk = ((epoch / 7200) + 40) % ruby_fullPattern.Length;
-
-				if (twoHourChunk >= ruby_fullPattern.Length)
-					twoHourChunk = twoHourChunk - ruby_fullPattern.Length + 4;
-
-				switch (ruby_fullPattern[twoHourChunk])
-				{
-                    case 1:
-                        return Ruby_OD;
-                    case 2:
-						return Ruby_RD;
-					case 3:
-						return Ruby_OS;
-                    case 4:
-                        return Ruby_RS;
-                    case 5:
-						return Ruby_ON;
-                    case 6:
-                        return Ruby_RN;
-                }
-            }
-			else
-			{
-                int twoHourChunk = ((epoch / 7200) + 88) % fullPattern.Length;
-
-				switch (fullPattern[twoHourChunk])
-				{
-					case "NS": //Northern Strait
-						return NS;
-					case "NN":
-						return NN;
-					case "ND":
-						return ND;
-					case "RS": //Rhotano
-						return RS;
-					case "RN":
-						return RN;
-					case "RD":
-						return RD;
-					case "BS": //Bloodbrine
-						return BS;
-					case "BN":
-						return BN;
-					case "BD":
-						return BD;
-					case "TS": //Rothlyte
-						return TS;
-					case "TN":
-						return TN;
-					case "TD":
-						return TD;
-				}
-			}
-
-			return null;
-		}
 
         private static bool PartyLeaderWaitConditions()
         {

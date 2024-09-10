@@ -9,7 +9,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <PackageProjectUrl>https://github.com/catrenelle/OceanTrip/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <AssemblyVersion>2024.08.27.1</AssemblyVersion>
+    <AssemblyVersion>2024.08.28.23</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\Plugins\CarbuncleTech\README.md">

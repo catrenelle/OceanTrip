@@ -21,6 +21,7 @@ using LlamaLibrary.Helpers.WorldTravel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using Lisbeth = OceanTripPlanner.Helpers.Lisbeth;
+using Ocean_Trip.Definitions;
 
 namespace OceanTripPlanner
 {
@@ -510,9 +511,9 @@ namespace OceanTripPlanner
 			await Coroutine.Sleep(500);
 		}
 
-		public static async Task DesynthOcean(int[] itemId)
+		public static async Task DesynthOcean(List<int> itemId)
 		{
-			var itemsToDesynth = InventoryManager.FilledSlots.Where(bs => bs.IsDesynthesizable && itemId.Contains((int)bs.RawItemId));
+            var itemsToDesynth = InventoryManager.FilledSlots.Where(bs => bs.IsDesynthesizable && itemId.Contains((int)bs.RawItemId));
 
 			if (itemsToDesynth.Count() != 0)
 			{

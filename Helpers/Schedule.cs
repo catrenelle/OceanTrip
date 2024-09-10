@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using OceanTrip;
+using Ocean_Trip.Definitions;
 
 namespace OceanTripPlanner
 {
@@ -49,7 +50,7 @@ namespace OceanTripPlanner
                 if (time.Minute == 59)
                     time = time.AddMinutes(1);
 
-                var schedule = OceanTrip.GetSchedule(time, route);
+                var schedule = Routes.GetSchedule(time, route);
                 int posOnSchedule = 0;
 
                 // Build the schedule!

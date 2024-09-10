@@ -10,7 +10,6 @@ namespace OceanTripPlanner.Helpers
 	public static class Lisbeth
     {
         private static Func<Task> _stopGently, _selfRepairWithMenderFallback;
-        private static Func<int> _getEmptyInventorySlotCount;
         private static Action _openWindow;
 
         private static object _lisbeth;
@@ -73,11 +72,6 @@ namespace OceanTripPlanner.Helpers
         public static async Task SelfRepairWithMenderFallback()
         {
             await _selfRepairWithMenderFallback();
-        }
-
-        public static int GetEmptyInventorySlotCount()
-        {
-            return _getEmptyInventorySlotCount();
         }
 
         public static void OpenWindow()

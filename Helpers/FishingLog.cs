@@ -54,7 +54,7 @@ namespace OceanTrip
             }
         }
 
-        public static async Task<List<uint>> GetFishLog(int[] oceanFish)
+        public static async Task<List<uint>> GetFishLog(List<int> oceanFish)
         {
             var fishList = await AgentFishGuide2.Instance.GetFishList();
             var recordedFish = fishList.Where(x => x.HasCaught).Select(x => (int)x.FishItem).ToList();
