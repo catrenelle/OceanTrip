@@ -1,4 +1,5 @@
-﻿using LlamaLibrary.Properties;
+﻿using ff14bot.Helpers;
+using LlamaLibrary.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using OceanTripPlanner;
@@ -20,18 +21,6 @@ namespace Ocean_Trip.Definitions
         public uint SpectralBait { get; set; }
         public List<RouteFish> normal { get; set; }
         public List<RouteFish> spectral { get; set; }
-
-
-        public static List<Routes> GetRoutes()
-        {
-            List<Routes> route;
-
-            var file = Path.Combine(Environment.CurrentDirectory, $@"BotBases\Ocean-Trip\Resources\fishingRoutes.json");
-            string json = File.ReadAllText(file);
-            route = JsonConvert.DeserializeObject<List<Routes>>(json);
-
-            return route;
-        }
 
         // Indigo
         public static readonly string[] fullPattern = new[] { "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "BS", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "TS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "NS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "RS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "BN", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "TN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "NN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "RN", "BD", "TD", "ND", "RD", "BS", "TS", "NS", "RS", "BN", "TN", "NN" };
@@ -249,5 +238,86 @@ namespace Ocean_Trip.Definitions
         public int Fish8 { get; set; }
         public int Fish9 { get; set; }
         public int Fish10 { get; set; }
+    }
+
+    public class RouteWithFish
+    {
+        public Routes Route { get; set; }
+        public List<Fish> NormalFish { get; set; }
+        public List<Fish> SpectralFish { get; set; }
+    }
+
+    public static class RouteDataCache
+    {
+        private static List<RouteWithFish> _cachedRoutesWithFish;
+
+        public static List<RouteWithFish> GetRoutesWithFish()
+        {
+            if (_cachedRoutesWithFish == null)
+            {
+                _cachedRoutesWithFish = LoadRoutesWithFishData();
+            }
+            return _cachedRoutesWithFish;
+        }
+
+        public static void InvalidateCache()
+        {
+            _cachedRoutesWithFish = null;
+        }
+
+        private static List<RouteWithFish> LoadRoutesWithFishData()
+        {
+            try
+            {
+                var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
+                string filePath = null;
+
+                foreach (var dir in possibleDirectories)
+                {
+                    var potentialPath = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", "fishingRoutes.json");
+                    if (File.Exists(potentialPath))
+                    {
+                        filePath = potentialPath;
+                        break;
+                    }
+                }
+
+                if (filePath == null || !File.Exists(filePath))
+                {
+                    throw new FileNotFoundException("The routes file was not found.", filePath);
+                }
+
+                var json = File.ReadAllText(filePath);
+                var routes = JsonConvert.DeserializeObject<List<Routes>>(json);
+
+                var fishList = FishDataCache.GetFish();
+
+                return routes.Select(route => new RouteWithFish
+                {
+                    Route = route,
+                    NormalFish = GetFishForRouteSegment(route.normal[0], fishList),
+                    SpectralFish = GetFishForRouteSegment(route.spectral[0], fishList)
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                Console.WriteLine($"An error occurred while getting the routes list: {ex.Message}");
+                return new List<RouteWithFish>(); // Return an empty list in case of error
+            }
+        }
+
+        private static List<Fish> GetFishForRouteSegment(dynamic routeSegment, List<Fish> fishList)
+        {
+            var fishIds = new List<int?>
+            {
+                routeSegment.Fish1, routeSegment.Fish2, routeSegment.Fish3,
+                routeSegment.Fish4, routeSegment.Fish5, routeSegment.Fish6,
+                routeSegment.Fish7, routeSegment.Fish8, routeSegment.Fish9,
+                routeSegment.Fish10
+            };
+
+            return fishIds.Select(fishId => fishList.FirstOrDefault(fish => fish.FishID == fishId)).ToList();
+        }
     }
 }

@@ -62,34 +62,26 @@ namespace Ocean_Trip
 
             scheduleGrid.Rows.Clear();
 
+            var dayImage = Resources.day;
+            var sunsetImage = Resources.sunset;
+            var nightImage = Resources.night;
+            var blankImage = Resources.blank;
+
             foreach (var schedule in schedules)
             {
                 // Time of Day
-                Image ToD;
-                switch (schedule.routeTime)
+                Image ToD = schedule.routeTime switch
                 {
-                    case "Day":
-                        ToD = Resources.day;
-                        break;
-                    case "Sunset":
-                        ToD = Resources.sunset;
-                        break;
-                    case "Night":
-                        ToD = Resources.night;
-                        break;
-                    default:
-                        ToD = Resources.day;
-                        break;
-                }
+                    "Day" => dayImage,
+                    "Sunset" => sunsetImage,
+                    "Night" => nightImage,
+                    _ => dayImage,
+                };
 
                 // Objectives
-                Image objective1 = Resources.blank;
-                Image objective2 = Resources.blank;
                 var objectives = schedule.objectives.Split(',');
-                if (objectives.Length > 0)
-                    objective1 = objectiveImages(objectives[0].Trim());
-                if (objectives.Length > 1)
-                    objective2 = objectiveImages(objectives[1].Trim());
+                Image objective1 = objectives.Length > 0 ? objectiveImages(objectives[0].Trim()) : blankImage;
+                Image objective2 = objectives.Length > 1 ? objectiveImages(objectives[1].Trim()) : blankImage;
 
                 scheduleGrid.Rows.Add(schedule.day, schedule.time, schedule.routeName, ToD, objective1, objective2);
             }

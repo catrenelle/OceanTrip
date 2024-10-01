@@ -1,3 +1,17 @@
+09/30/2024
+----------
+
+* Fixed a potential issue for old installs under the "Ocean Trip" folder as opposed to "Ocean-Trip" or "OceanTrip". It should no longer crash for older users.
+
+* There has been a lot more code refactoring performed to optimize things and clean up code. This includes changing the pre-cache and invalidation of the route/fish data that gets loaded from the JSON files. All this refactoring has lead to massive changes in the code. Please report any issues you might encounter.
+
+* Rewrote Bait Selection logic for all routes, both normal and spectral. Ongoing testing will be needed to ensure the bot can still catch all fish, but all checks that I've done insist this should still work. This rework has allowed me to remove over 100 lines of code and greatly reduce the complexity (and bad programming practices). In addition, it's now factoring in the proper favorite bait for fish instead of generalizing for some.
+
+* To give a better understanding of the logic checks performed and what you might be catching, the BotBase should now show potential fish when it tells you the bite elapsed timer. This is still being worked on, as bite timers need adjustment. There is still the potential for a 0.1s difference in actual timer that may cause the incorrect fish to show.
+
+* Current Route is still being worked on, so it has been temporarily disabled until the next release.
+
+
 09/10/2024
 ----------
 

@@ -82,7 +82,7 @@ namespace Ocean_Trip
 
         private void buttonCurrentRoute_Click(object sender, EventArgs e)
         {
-            loadForm(new FormCurrentRoute(this), sender);
+            //loadForm(new FormCurrentRoute(this), sender);
         }
 
         private void loadForm(Form childForm, object sender)
@@ -96,7 +96,7 @@ namespace Ocean_Trip
             currentForm.FormBorderStyle = FormBorderStyle.None;
             currentForm.Dock = DockStyle.Fill;
             panelMain.Controls.Add(currentForm);
-            panelMain.Tag = currentForm; ; ;
+            panelMain.Tag = currentForm;
             currentForm.BringToFront();
             currentForm.Show();
         }
