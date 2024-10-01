@@ -11,6 +11,9 @@ using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.RemoteAgents;
+using Microsoft.CodeAnalysis.CSharp;
+using Newtonsoft.Json;
+using Ocean_Trip.Definitions;
 using OceanTripPlanner.Definitions;
 
 namespace OceanTrip
@@ -20,6 +23,15 @@ namespace OceanTrip
         private static string name = "IKDFishingLog";
         private static int elementCount => LlamaElements.ElementCount(name);
         private static TwoInt[] Elements => LlamaElements.___Elements(name);
+
+
+        private static string fileName = Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt");
+        private static List<uint> _cachedMissingFishList;
+        public static List<uint> MissingFish()
+        {
+            return _cachedMissingFishList;
+        }
+
 
         public static string AreaName 
         { 
@@ -54,49 +66,70 @@ namespace OceanTrip
             }
         }
 
-        public static async Task<List<uint>> GetFishLog(List<int> oceanFish)
+        public static void InvalidateCache()
         {
-            var fishList = await AgentFishGuide2.Instance.GetFishList();
-            var recordedFish = fishList.Where(x => x.HasCaught).Select(x => (int)x.FishItem).ToList();
-
-            Logging.Write($" Total Fish: {fishList.Count()}");
-            Logging.Write($" Ocean Fish: {oceanFish.Count()}");
-            Logging.Write($"Caught Fish: {recordedFish.Count()}");
-            //Logging.Write($"Less Ocean Fish: {fishList.Select(x => (int)x.FishItem).ToList().Except(oceanFish.ToList()).Count()}");
-
-            fishList = null;
-
-
-            // Convert the list to uint
-            List<uint> newOceanFishList = oceanFish.Except(recordedFish).ToList().ConvertAll(x => (uint)x);
-            Logging.Write($"Missing Fish: {newOceanFishList.Count()}");
-            return newOceanFishList;
+            _cachedMissingFishList = null;
         }
 
-        public static void SaveMissingFishLog(List<uint> missingFish)
+        public static void AddFish(uint fishId)
         {
-            var file = Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt");
+            if (!_cachedMissingFishList.Contains(fishId))
+                _cachedMissingFishList.Add(fishId);
+        }
 
-            if (File.Exists(file))
-                File.Delete(file);
+        public static void RemoveFish(uint fishId)
+        {
+            if (_cachedMissingFishList.Contains(fishId))
+                _cachedMissingFishList.Remove(fishId);
+        }
 
-            File.WriteAllLines(file, missingFish.Select(x => x.ToString()));
+
+        public static async Task InitializeFishLog()
+        {
+
+            if (_cachedMissingFishList != null)
+                _cachedMissingFishList = null;
+
+            if (!File.Exists(fileName))
+            {
+
+                var fishList = await AgentFishGuide2.Instance.GetFishList();
+                var recordedFish = fishList.Where(x => x.HasCaught).Select(x => (int)x.FishItem).ToList();
+                var oceanFish = FishDataCache.GetFish().Select(x => x.FishID).ToList();
+
+                // Convert the list to uint
+                List<uint> newOceanFishList = oceanFish.Except(recordedFish).ToList().ConvertAll(x => (uint)x);
+
+                Logging.Write($"  Ocean Fish: {oceanFish.Count()}");
+                Logging.Write($"Missing Fish: {newOceanFishList.Count()}");
+
+                fishList = null;
+                recordedFish = null;
+                oceanFish = null;
+
+                _cachedMissingFishList = newOceanFishList;
+                SaveMissingFishLog();
+            }
+            else
+                LoadMissingFishLog();
+        }
+
+        public static void SaveMissingFishLog()
+        {
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+            File.WriteAllLines(fileName, _cachedMissingFishList.Select(x => x.ToString()));
             return;
         }
 
-        public static void LoadMissingFishLog(out List<uint> missingFish)
+        public static void LoadMissingFishLog()
         {
-            var file = Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripMissingFish.txt");
-            missingFish = File.ReadAllLines(file).Select(x => (uint)Convert.ToInt32(x)).ToList();
+            if (_cachedMissingFishList != null)
+                _cachedMissingFishList = null;
 
-            //List<string> missingFishNames = new List<string>();
-            //foreach (var fish in missingFish)
-            //    missingFishNames.Add(DataManager.GetItem(fish).EnglishName);
-
-            //settings.updateMissingFish(missingFishNames);
-            //missingFishNames.Clear();
-
-            return;
+            if (File.Exists(fileName))
+                _cachedMissingFishList = File.ReadAllLines(fileName).Select(x => (uint)Convert.ToInt32(x)).ToList();
         }
     }
 }

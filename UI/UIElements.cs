@@ -46,7 +46,7 @@ namespace Ocean_Trip
             SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
         }
 
-        // Parse Tile Sheet, 10x32 Tiles (320), 40x40 pixels each (400x1280)
+        // Parse Tile Sheet, 10x34 Tiles (340), 40x40 pixels each (400x1280)
         public static Image getIconImage(int x, int y)
         {
             Image imgsrc = Resources.icons;

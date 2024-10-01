@@ -22,37 +22,23 @@ namespace OceanTripPlanner.Definitions
 
         public static readonly int[] aethersands = new int[]
         {
-#if !RB_DT
-            Material.DusklightAethersand,
-            Material.DawnlightAethersand,
-            Material.EverbrightAethersand,
-#endif
             Material.EverbornAethersand,
             Material.EverdeepAethersand,
             Material.EndstoneAethersand,
             Material.EndwoodAethersand,
             Material.EndtideAethersand,
             Material.EarthbreakAethersand,
-#if RB_DT
             Material.MythloamAethersand,
             Material.MythrootAethersand,
             Material.MythbrineAethersand,
-#endif
         };
 
         public static readonly int[] raidfood = new int[]
         {
-#if RB_DT
             FoodList.CreamyAlpacaPasta,
             FoodList.BroccoliSpinachSaute,
             FoodList.VegetableSoup,
             FoodList.MesquiteSoup,
-#else
-            FoodList.HoneyedDragonfruit,
-            FoodList.BabaGhanoush,
-            FoodList.BakedEggplant,
-            FoodList.CaviarCanapes,
-#endif
         };
 
         public static readonly int[] raidpotions = new int[]
@@ -216,6 +202,7 @@ namespace OceanTripPlanner.Definitions
     {
         public static uint WellFed = 48;
         public static uint FishersIntuition = 568;
+        public static uint Chum = 763;
         public static uint AnglersFortune = 850;
         public static uint AnglersArt = 2778;
     }

@@ -1,5 +1,7 @@
 ﻿using ff14bot.Enums;
+using ff14bot.Helpers;
 using Newtonsoft.Json;
+using Ocean_Trip.Definitions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,17 +34,62 @@ namespace Ocean_Trip.Definitions
         public string WeatherExclusion2 { get; set; }
         public string TimeOfDayExclusion1 { get; set; }
         public string TimeOfDayExclusion2 { get; set; }
+    }
 
+    public static class FishDataCache
+    {
+        private static List<Fish> _cachedFishList;
 
         public static List<Fish> GetFish()
         {
-            List<Fish> fish;
+            if (_cachedFishList == null)
+            {
+                _cachedFishList = LoadFishData();
+            }
+            return _cachedFishList;
+        }
 
-            var file = Path.Combine(Environment.CurrentDirectory, $@"BotBases\Ocean-Trip\Resources\fishList.json");
-            string json = File.ReadAllText(file);
-            fish = JsonConvert.DeserializeObject<List<Fish>>(json);
+        public static void InvalidateCache()
+        {
+            _cachedFishList = null;
+        }
 
-            return fish;
+        private static List<Fish> LoadFishData()
+        {
+            try
+            {
+                var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
+                string filePath = null;
+
+                foreach (var dir in possibleDirectories)
+                {
+                    var potentialPath = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", "fishList.json");
+                    if (File.Exists(potentialPath))
+                    {
+                        filePath = potentialPath;
+                        break;
+                    }
+                }
+
+                if (filePath == null || !File.Exists(filePath))
+                {
+                    throw new FileNotFoundException("The fish list file was not found.", filePath);
+                }
+
+                var json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<List<Fish>>(json);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                Logging.Write($"[Ocean Trip] Error loading fish list: {ex.Message}");
+                return new List<Fish>(); // Return an empty list in case of error
+            }
+        }
+
+        private static List<Fish> FishAvailable()
+        {
+            return null;
         }
     }
 }
