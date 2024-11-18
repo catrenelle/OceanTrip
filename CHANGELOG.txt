@@ -1,3 +1,11 @@
+11/17/2024
+----------
+
+* Finally updated the README.md file to reflect the latest version of Ocean Trip. This includes a new point-value target for the Ruby Route so you can gauge your success during the trip.
+
+* Updated Offsets for patch 7.1. Additional changes may be needed down the road as more functionality is fixed/restored.
+
+
 09/30/2024
 ----------
 

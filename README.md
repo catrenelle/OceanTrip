@@ -1,14 +1,19 @@
 
 # OceanTrip
 
-This BotBase will take the most complicated parts of Ocean Fishing and simplify it for you. It utilizes logic from [Zeke's guide](https://docs.google.com/spreadsheets/d/17A_IIlSO0wWmn8I3-mrH6JRok0ZIxiNFaDH2MhN63cI/edit#gid=1411459855) and does all of the hard work for you.
+This BotBase will take the most complicated parts of Ocean Fishing and simplify it for you. Whether you are going on the original Indigo route or the Ruby route, the BotBase utilizes the publicly available data found on Lulu's Ocean Fishing website. This includes the Ocean Fishing Spreadsheet that is managed by Tyo'to Tayuun and bite timers from Teamcraft as well as data that I've collected during my testing and development of this BotBase.
 
-For best results, you should be level 90 with 900+GP available to you. In my own runs, I'm using fully pentamelded gathering gear with 973 GP (after eating Crab Cakes). Please note that as far as food goes, the focus should be on GP+ rather than Perception/Gathering. If you can do GP+ and Perception (IE: Crab Cakes or Peppered Popotoes) then you are all set!
+For best results, you should be level 90 or higher with 900+GP available to use. In my own runs, I'm using fully pentamelded gathering gear with 973 GP. Please note that as far as food goes, the focus is on GP+ and not on actual stats like perception or gathering. This is because stats have little to no influence in what you catch while on the boat.
 
 Please note that your success rates will vary. Some runs will be very low scoring, others can be very high. Ocean Trip has less to do with stats and everything to do with RNG. You can manipulate some factors, such as double hooking at the right time and identical casting when required. I've hit 20k points using this bot many times now, so I know it's easily accomplished.
 
-Ideally, you should aim for the following point values and can use this to gauge your potential success rate:
+## Installation
 
+Installation is as simple as opening UpdateBuddy and checking the box for Ocean Trip, then restarting RebornBuddy. If you have an old version from before UpdateBuddy, it's recommended you delete it and install through UpdateBuddy.
+
+
+## Indigo Route Point Targets
+Ideally, you should aim for the following point values and can use this to gauge your potential success rate:
 
 | Bonus Multiplier | 10k Mount | 16k Title | 20k Title |
 | :--------------: | :-------: | :-------: | :-------: |
@@ -20,53 +25,94 @@ Ideally, you should aim for the following point values and can use this to gauge
 | 80 | 5556 | 8889 | 11112 |
 | 90 | 5264 | 8422 | 10527 |
 
+
+## Ruby Route Point Targets
+Ideally, you should aim for the following point values and can use this to gauge your potential success rate:
+
+| Bonus Multiplier | 5k Achievement | 10k Minion | 16k Title |
+| :--------------: | :-------: | :-------: | :-------: |
+| 30 | 3847 | 7693 | 12309 |
+| 40 | 3573 | 7144 | 11430 |
+| 50 | 3335 | 6668 | 10668 |
+| 60 | 3126 | 6251 | 10001 |
+| 70 | 2942 | 5883 | 9413 |
+| 80 | 2779 | 5557 | 8890 |
+| 90 | 2633 | 5264 | 8422 |
+
+
 ## BotBase Settings
 When Idling:
 
-| Idle Stuff | Values | Description|
-| :--- | :--- | :--- |
-| Craft Mats | True/False | Should the bot gather crafting stuff while waiting? This includes Immutable Solution, Dinosaur Leather, Sphalerite, Royal Mistletoe, Cloud Cotton Boll, Cloud Mythril Ore, Stormcloud Cotton Boll |
-| Craft Raid Food | True/False | Should the bot craft lvl 90 food while passing the time? Currently crafts Caviar Canapes, Honeyed Dragonfruit, Baked Eggplant, and Baba Ghanoush. |
-| Craft Raid Potions | None, Grade8, Grade7, Grade6 | Should the bot craft lvl 90 potions while passing the time? Currently crafts Grade 6/7 Tinctures of Strength, Dexterity, and Intelligence. Grade 8 requires Alche-mist. Grade 7 requires Palaka Mistletoe. These can only be obtained using battle scrips. Ocean Trip will NOT gather Astronomy scrips for you. | 
-| Custom Lisbeth Order | True/False | Should the bot read your "BoatOrder.json" file in the root folder of RebornBuddy? |
-| Gather Shards | True/False | Should the bot gather shards and crystals while passing the time? |
-| Get Aethersand | |True/False | Should the bot gather aethersand? Currently gathers Dusklight, Dawnlight, Everbright, Everborn, Everdeep, Endstone, Endwood, Endtide, and Earthbreak Aethersand |
-| Purchase Hi-Cordials | True/False | Should the bot spend excess scrips to purchase hi-cordials? The bot will purchase until you are at 1500 scrips or less. |
-| Purchase Materia | IV-X | Should the bot purchase materia (from IV through X) using scripts while waiting for the boat? Can only select one level at a time. |
-| Refill Crafter Scrips | True/False | Should the bot refill your white/purple crafter scrips while passing the time? Currently refills up to 3000 scrips. |
-| Refresh Retainers| None, Any city with a summoning bell | Should the bot automatically complete and reassign ventures? |
-| Resume Lisbeth Order | True/False | If something was left mid-progress in Lisbeth, should it continue where it left off? |
-| Use Crafting Food | None, Stone Soup, Seafood Stew (Normal/HQ), Chili Crab (HQ), Tasi tou Vounou (HQ), Calamari Ripieni (Normal/HQ) | What food should be used while crafting? |
+During downtime between fishing trips, the BotBase can perform the following actions (Requires Lisbeth):
+* Gather Materials
+* Gather Aethersand
+* Craft Raid Food
+* Craft Raid Potions
+* Restock Crystals
+* Purchase Materia (Grade IV - Grade XII)
+	* For Grade XI and XII, you will need to complete the Dawntrail quests and unlock them before the BotBase can farm them.
 
 When Ocean Fishing:
+* Specify Fishing Priority
+	* Automatic (Default) - Will focus on Fishing Log when missing fish are available, otherwise focuses on points.
+	* Points - Self explainatory, will focus on getting points based on DH / TH values of fish available.
+	* Fishing Log - Self explainatory, will focus on catching fish you have not caught.
+	* Achievements (Currently Disabled - Work in Progress) - Focus on the various fishing achievements such as catching Jellyfish.
+	* Ignore Boat - This will allow you to utilize the BotBase in order to focus on the "Idle" activities such as raid preparation.
 
-| Ocean Fishing | Values | Description |
-| :--- | :--- | :--- |
-| Bait Restock Amount | 0 or higher | How much bait should the bot keep in inventory? Set to 0 to disable restocking of bait (not advised). |
-| Bait Restock Threshold | 0 or higher | How low on bait should the bot be before it purchases more? Set to 0 to disable restocking of bait (not advised). |
-| Exchange Fish | Sell, Desynth, None | What should the bot do with the fish after finishing an Ocean Trip? No blues will be sold or desynthesized. |
-| Fishing Priority | FishLog, Points, Auto | What should the focus be when fishing on the boat? FishLog may give a really low score as it focuses entirely on missing fish entries. No doublehooking will occur during spectral events while this is set to FishLog. Points will focus on point values, regardless of intuition or missing fish. Double Hooking will occur during spectral events based on Zeke's rules. Auto is a blend of FishLog and Points mode, where it will focus on completing the Fishing Log if possible. If no fish are available at the location/time, then Auto will operate in Points mode. |
-| Fishing Route | Indigo, Ruby | Which route to take when fishing after speaking to Dryskthota. Default value is Indigo.
-| Full GP Action | None, Chum, DoubleHook | What should the bot do when you have full GP? Chum is a good choice while going for your Fishing Log. Double Hook is useless unless it's a spectral event or you're trying to trigger intuition for certain fish. The bot handles that already. | 
-| Late Queue | True, False | Should the bot queue up as soon as the boat becomes available or 13 minutes after? If set to true, the bot will wait until the 13 minute mark before attempting to queue. Late queues may contribute to better points, as it is easier to get higher scores and multipliers when less people are on the boat. |
-| Use Fishing Food | None, Peppered Popotoes, Crab Cakes | What food should be used for Ocean Trips? These items give +GP and +Perception. The more GP you have, the better.  If you have less than 10 of the selected food in stock, Lisbeth will attempt to craft 40 more. |
-| Use Patience Skill | OnlyForSpecificFish, AlwaysUsePatience, SpectralOnly | When do you want to enable Patience? Only works if you have the skills. OnlyForSpecificFish will use the default rules where it is required for specific spectral fish. |
+* Fishing Route
+	* Indigo - The "original" route for Ocean Fishing, with zones such as Rothlyt Sound
+	* Ruby - This is the route introduced after Endwalker, the "Ruby Sea"
+* Full GP Actions 
+	* None - Don't do anything outside of normal logic when player GP is full. This is the recommended setting.
+	* Double/Triple Hook - This will automatically double or triple hook (based on GP and skill availability) when GP is full.
+	* Chum - This will automatically chum when the player is full on GP.
+* Trip Options
+	* Late Queue - This will queue up for the boat around the 13 minute mark. If disabled, will queue up as soon as the boat is available.
+	* Ocean Food - This will have the player eat a predefined food that grants the most GP upon boarding the boat. As of DawnTrail 7.0 release, this is Nasi Goreng. This is subject to change with future releases and may not match what I've listed in this readme.
 
-When out in the open world trying to complete your fish log, you can settle down at a fishing hole and allow the bot to assist you in fishing:
+* Use Patience Skill
+	* Default Logic - Will only activate Patience for certain fish that require it. Recommended if level 90 or above.
+	* Spectral Only - Will activate Patience Skill for Spectral events and try to keep it active during the spectral.
+	* Always - Will always try to keep Patience active. Recommended if below level 90 to catch large fish.
 
-| Open World Fishing | Values | Description |
-| :--- | :--- | :--- |
-| Assisted Fishing | True/False | Should the bot assist when fishing in the open world? You will need to do the initial cast, and the bot will take over until you decide to use the quit ability. The bot will auto-quit and queue up when the boat becomes available. Assisted fishing will auto-mooch, cast, hook, and use Thaliak's favor. |
+* Fish Exchange
+	* None - Keep all the fish you catch.
+	* Desynthesize - As it sounds, will Desynthesize all ocean fish you have caught except for the Spectral Blue's.
+	* Sell - Sell all the ocean fish you have caught except for the Spectral Blue's.
+	
+* Indigo Achievement Focus (only if "Achievements" is set for Priority - Currently disabled due to being work in progress)
+	* Mantas (Solo) - Attempts to catch 25 mantas
+	* Octopods - Attempts to catch 150 octopods (requires party)
+	* Sharks - Attempts to catch 200 sharks (requires party)
+	* Jellyfish - Attempts to catch 150 jellyfish (requires party)
+	* Seadragons - Attempts to catch 100 seadragons (requires party)
+	* Balloons - Attempts to catch 250 fugu (requires party)
+	* Crabs - Attempts to catch 250 crabs (requires party)
+
+* Ruby Achievement Focus (only if "Achievements" is set for Priority - Currently disabled due to being work in progress)
+	* Shrimp (Solo) - Attempts to catch 50 shrimp
+	* Shellfish - Attempts to catch 350 shellfish (requires party)
+	* Squid - Attempts to catch 400 squid (requires party)
+
+There is an additional option to enable or disable "Open World Fishing". This allows you to settle down at a fishing hole, cast your line with whatever bait you wish and have the bot take over to auto-hook, auto-cast, or auto-mooch. It will not manage your bait for you, but will give you a brief pause before auto-casting to allow you to change bait or use abilities such as Prize Catch. This is not intended to catch big-fish, but will allow you to sit back and relax while filling your fishing log.
 
 
-## Installation
+## Tacklebox
 
-In the plugins tab of RebornBuddy, go to "repoBuddy" and click settings.
+In the Ocean Settings screen, there is a Tacklebox panel. This panel will show you all the bait required for Ocean Fishing. This is combined between Indigo and Ruby. It is recommended that you have all the necessary bait to go fishing, even if you are under level 90. You can mouse-over the icon for each bait to know what the bait is. The count that appears under the bait icon is how much bait is in your inventory. Ocean Trip will not factor in any bait that you have in a retainer, so make sure to keep it in your inventory or else it may try to restock
 
-In the bottom of the window, you'll see 3 text boxes. Enter the following and click "Add Row".
-Repo Name: OceanTrip
-Dropdown:  BotBase
-Repo URL:  https://github.com/catrenelle/OceanTrip.git/trunk
+* Restock Threshold - If the bait in your inventory goes below this number, the BotBase will try to restock before the next Ocean Trip begins.
+
+* Restock Amount - If the BotBase goes below the threshold and requires restocking, it will purchase bait until you have this amount in your inventory. In case the bait is a lure, it will restock up to 15. This is because you can occasionally lose a lure during fishing (although uncommon).
+
+
+## Ocean Fishing Achievements
+
+While this feature is currently a work in progress and Achievement focus is disabled, you can track your progress with this panel in the Ocean Settings screen. From a high-level view, you'll know what points achievements you have or need for each route and what your progress is towards the "World Class Troller" title. If you have any of the special focus achievements such as Mantas or Octopods, they will also be displayed here.
+
+If an icon is greyed out, you do not have the achievement or the BotBase was unable to determine that you have the achievement. If it's in full-color, the BotBase was able to determine that you have the achievement.
+
 
 ## Support Development
 
@@ -76,4 +122,4 @@ https://bmc.link/cathousegames
 
 ## Special Thanks
 
-This BotBase would not be possible without the work of Antony256, the original author of Ocean Trip. I also want to thank anyone who contributes suggestions, ideas, bug fixes, etc.
+This BotBase would not be possible without the work of Antony256, the original author of Ocean Trip. I also want to thank anyone who contributes suggestions, ideas, bug fixes, etc. This includes nt153113 for Llama Library and lots of advice/help provided, as well as Saga for his work on Lisbeth. In addition, anyone that appears as a contributer on the GitHub Repo or has provided support/assistance in the Project BR discord.
