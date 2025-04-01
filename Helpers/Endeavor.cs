@@ -17,11 +17,11 @@ namespace Ocean_Trip
         internal static class Offsets
         {
 #if !RB_CN
+            internal const int statusOffset = 0x1E14;
+            internal const int zoneOffset = 0x1E18;
+#else
             internal const int statusOffset = 0x1E0C;
             internal const int zoneOffset = 0x1E10;
-#else
-            internal const int statusOffset = 0x1CD4; 
-            internal const int zoneOffset = 0x1CD8; 
 #endif
         }
 

@@ -1,3 +1,9 @@
+04/01/2025
+----------
+
+* Basic support to restore fishing in Patch 7.2
+
+
 11/17/2024
 ----------
 
