@@ -43,22 +43,10 @@ namespace OceanTripPlanner.Definitions
 
         public static readonly int[] raidpotions = new int[]
         {
-#if (RB_DT && !RB_CN)
             Potions.Grade2GemdraughtStrength,
             Potions.Grade2GemdraughtDexterity,
             Potions.Grade2GemdraughtIntelligence,
             Potions.Grade2GemdraughtMind,
-#elif (RB_DT && RB_CN)
-            Potions.Grade1GemdraughtStrength,
-            Potions.Grade1GemdraughtDexterity,
-            Potions.Grade1GemdraughtIntelligence,
-            Potions.Grade1GemdraughtMind,
-#else
-            Potions.Grade8TinctureStrength,
-            Potions.Grade8TinctureDexterity,
-            Potions.Grade8TinctureIntelligence,
-            Potions.Grade8TinctureMind,
-#endif
         };
 
         public static readonly int[] materiaxii = new int[]
