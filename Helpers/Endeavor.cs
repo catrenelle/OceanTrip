@@ -12,102 +12,102 @@ using ProtoBuf.Grpc;
 
 namespace Ocean_Trip
 {
-    public class Endeavor
-    {
-        internal static class Offsets
-        {
+	public class Endeavor
+	{
+		internal static class Offsets
+		{
 #if !RB_CN
-            internal const int statusOffset = 0x2014; // Patch 7.25
-            internal const int zoneOffset = 0x2018;
+			internal const int statusOffset = 0x2014; // Patch 7.25
+			internal const int zoneOffset = 0x2018;
 #else
-            internal const int statusOffset = 0x2014; // Patch 7.25
-            internal const int zoneOffset = 0x2018;
+			internal const int statusOffset = 0x2014; // Patch 7.25
+			internal const int zoneOffset = 0x2018;
 #endif
-        }
+		}
 
-        private IntPtr DirectorPtr;
+		private IntPtr DirectorPtr;
 
-        public void CheckDirector()
-        {
-            // Are we on the boat?
-            if ((WorldManager.RawZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby)
-                && DirectorManager.ActiveDirector != null && (DirectorPtr == IntPtr.Zero || DirectorPtr != DirectorManager.ActiveDirector.Pointer))
-            {
-                DirectorPtr = DirectorManager.ActiveDirector.Pointer;
-            }
-        }
+		public void CheckDirector()
+		{
+			// Are we on the boat?
+			if ((WorldManager.RawZoneId == Zones.TheEndeavor || WorldManager.RawZoneId == Zones.TheEndeaver_Ruby)
+				&& DirectorManager.ActiveDirector != null && (DirectorPtr == IntPtr.Zero || DirectorPtr != DirectorManager.ActiveDirector.Pointer))
+			{
+				DirectorPtr = DirectorManager.ActiveDirector.Pointer;
+			}
+		}
 
-        public FishingStatus Status { 
-            get 
-            {
-                if (DirectorPtr == IntPtr.Zero)
-                    return FishingStatus.NotActive;
-                else
-                    return Core.Memory.Read<FishingStatus>(DirectorPtr + Offsets.statusOffset);
-            }
-        }
+		public FishingStatus Status { 
+			get 
+			{
+				if (DirectorPtr == IntPtr.Zero)
+					return FishingStatus.NotActive;
+				else
+					return Core.Memory.Read<FishingStatus>(DirectorPtr + Offsets.statusOffset);
+			}
+		}
 
-        // Should always return 0, 1, 2 if initialized, or 99 if uninitialized
-        public uint CurrentZone
-        {
-            get
-            {
-                if (DirectorPtr == IntPtr.Zero)
-                    return 99;
-                else
-                    return Core.Memory.Read<uint>(DirectorPtr + Offsets.zoneOffset);
-            }
-        }
+		// Should always return 0, 1, 2 if initialized, or 99 if uninitialized
+		public uint CurrentZone
+		{
+			get
+			{
+				if (DirectorPtr == IntPtr.Zero)
+					return 99;
+				else
+					return Core.Memory.Read<uint>(DirectorPtr + Offsets.zoneOffset);
+			}
+		}
 
-        public bool shouldFish
-        {
-            get
-            {
-                bool response;
+		public bool shouldFish
+		{
+			get
+			{
+				bool response;
 
-                switch (Status)
-                {
-                    case FishingStatus.Fishing:
-                        response = true;
-                        break;
-                    default:
-                        response = false;
-                        break;
-                }
+				switch (Status)
+				{
+					case FishingStatus.Fishing:
+						response = true;
+						break;
+					default:
+						response = false;
+						break;
+				}
 
-                return response;
-            }
-        }
+				return response;
+			}
+		}
 
-        public bool waitingOnBoat
-        {
-            get 
-            {
-                bool response;
+		public bool waitingOnBoat
+		{
+			get 
+			{
+				bool response;
 
-                switch (Status)
-                {
-                    case FishingStatus.NotActive:
-                    case FishingStatus.Finished:
-                        response =  false;
-                        break;
-                    default:
-                        response = true;
-                        break;
-                }
+				switch (Status)
+				{
+					case FishingStatus.NotActive:
+					case FishingStatus.Finished:
+						response =  false;
+						break;
+					default:
+						response = true;
+						break;
+				}
 
-                return response;
-            }
-        }
+				return response;
+			}
+		}
 
-        public enum FishingStatus : uint
-        {
-            WaitingForPlayers = 0,
-            SwitchingZone = 1,
-            Fishing = 2,
-            NewZone = 3,
-            Finished = 4,
-            NotActive = 99,
-        }
-    }
+		public enum FishingStatus : uint
+		{
+			WaitingForPlayers = 0,
+			SwitchingZone = 1,
+			Fishing = 2,
+			NewZone = 3,
+			Finished = 4,
+			NotActive = 99,
+		}
+	}
 }
