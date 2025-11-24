@@ -1,7 +1,16 @@
+11/24/2025
+----------
+
+* Complete overhaul / refactor of the code. Split everything into various strategies and procedures instead of having so much in OceanTrip.cs.
+
+* Settings file format has been changed. First load should convert your settings over to the new format. If this fails, you may need to reconfigure OceanTrip to your liking.
+
+
 08/12/2025
 ----------
 
 * CN Support for 7.25
+
 
 06/24/2025
 ----------

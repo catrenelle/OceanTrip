@@ -12,6 +12,9 @@
     <AssemblyVersion>2024.08.28.23</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="nul" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\..\Plugins\CarbuncleTech\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -20,6 +23,9 @@
   <ItemGroup>
     <Reference Include="GreyMagic">
       <HintPath>..\..\GreyMagic.dll</HintPath>
+    </Reference>
+    <Reference Include="RebornBuddy">
+      <HintPath>..\..\RebornBuddy.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
