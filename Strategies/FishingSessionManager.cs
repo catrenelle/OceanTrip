@@ -90,27 +90,21 @@ namespace OceanTripPlanner.Strategies
 							Log("Using Mooch!");
 							FishingManager.Mooch();
 							context.SetLastCastMooch(true);
-							await context.WaitForCastLogCallback();
-							context.SetStartedCast(DateTime.Now);
 						}
 						else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
 						{
 							Log("Using Mooch II!");
 							FishingManager.MoochTwo();
 							context.SetLastCastMooch(true);
-							await context.WaitForCastLogCallback();
-							context.SetStartedCast(DateTime.Now);
 						}
 						else
 						{
 							// Select and apply bait based on current conditions
 							await context.SelectAndApplyBaitCallback(spectraled);
 
-							Log("Casting and then waiting for chat message about cast!", OceanLogLevel.Debug);
+							Log("Casting!", OceanLogLevel.Debug);
 
 							FishingManager.Cast();
-							await context.WaitForCastLogCallback();
-							context.SetStartedCast(DateTime.Now);
 							context.SetLastCastMooch(false);
 						}
 					}
@@ -137,7 +131,7 @@ namespace OceanTripPlanner.Strategies
 					{
 						var hookContext = new HookContext
 						{
-							BiteElapsedSeconds = (DateTime.Now - context.GetStartedCast()).TotalSeconds + FishingConstants.BITE_TIME_VARIANCE,
+							BiteElapsedSeconds = FishingManager.TimeSinceCast.TotalSeconds + FishingConstants.BITE_TIMER_OFFSET,
 							Spectraled = spectraled,
 							Location = context.Location,
 							TimeOfDay = context.TimeOfDay,
@@ -270,16 +264,12 @@ namespace OceanTripPlanner.Strategies
 		public Action RefreshBaitCallback { get; set; }
 		public Func<bool, Task> ManageBuffsCallback { get; set; }
 		public Func<Task<bool>> ProcessCaughtFishCallback { get; set; }
-		public Func<Task> WaitForCastLogCallback { get; set; }
 		public Func<bool, Task> SelectAndApplyBaitCallback { get; set; }
 		public Action<bool> OnHookExecutedCallback { get; set; }
 
 		// State management
-		private DateTime _startedCast;
 		private bool _lastCastMooch;
 
-		public DateTime GetStartedCast() => _startedCast;
-		public void SetStartedCast(DateTime value) => _startedCast = value;
 		public bool GetLastCastMooch() => _lastCastMooch;
 		public void SetLastCastMooch(bool value) => _lastCastMooch = value;
 	}

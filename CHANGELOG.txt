@@ -1,3 +1,15 @@
+11/28/2025
+----------
+
+* BUGFIX: Fixed race conditions that would cause Pass The Time events to only run once, or not at all.
+
+* BUGFIX: Fixed an issue where it was possible to not do anything once on the boat.
+
+* Changed the bite timer calculation to use FishingManager.TimeSinceCast that was added directly into RB. There is a difference between RB and GatherBuddy in time. I've attempted to offset this, but there is a 0.1s margin of error that can occur.
+
+* When no fish is detected, OceanTrip will attempt to find the nearest fish within 0.1s of the bite for the same tug type. It will then use this to determine Double/Triple Hook logic.
+
+
 11/24/2025
 ----------
 
