@@ -61,9 +61,15 @@ namespace OceanTripPlanner.Definitions
 		// ========================================
 
 		/// <summary>
-		/// Bite time variance adjustment factor in seconds (0.8s)
+		/// Offset to adjust FishingManager.TimeSinceCast to match expected bite times (-0.3s)
 		/// </summary>
-		public const float BITE_TIME_VARIANCE = 0.8f;
+		public const double BITE_TIMER_OFFSET = -0.3;
+
+		/// <summary>
+		/// Tolerance for matching fish by bite time (0.1s)
+		/// Used as fallback when no exact match is found
+		/// </summary>
+		public const double BITE_TIME_TOLERANCE = 0.1;
 
 		/// <summary>
 		/// Buff check interval in milliseconds (5000ms = 5 seconds)
@@ -128,11 +134,6 @@ namespace OceanTripPlanner.Definitions
 		/// Timeout for waiting for shop window to close (2000ms = 2 seconds)
 		/// </summary>
 		public const int SHOP_CLOSE_TIMEOUT_MS = 2000;
-
-		/// <summary>
-		/// Timeout for waiting for fishing cast to complete (1000ms = 1 second)
-		/// </summary>
-		public const int CAST_COMPLETION_TIMEOUT_MS = 1000;
 
 		// ========================================
 		// BOAT QUEUE TIMING CONSTANTS

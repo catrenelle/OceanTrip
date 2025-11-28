@@ -54,9 +54,6 @@ namespace OceanTripPlanner
 
 		private static Random rnd = new Random();
 
-		private DateTime startedCast;
-		private double bite;
-
 		private Tuple<string, string>[] schedule;
 		private System.Timers.Timer execute;
 		private readonly object timerLock = new object();
@@ -178,7 +175,10 @@ namespace OceanTripPlanner
 			{
 				// Create new timer if null or disposed
 				if (execute == null)
+				{
 					execute = new System.Timers.Timer();
+					execute.AutoReset = false; // Only fire once, then manually restart
+				}
 
 				TimeSpan timeLeftUntilFirstRun = TimeUntilNextBoat();
 				if (timeLeftUntilFirstRun.TotalMilliseconds < 0)
@@ -222,21 +222,7 @@ namespace OceanTripPlanner
 				}
 			}
 
-		TimeSpan timeLeftUntilFirstRun = BoatScheduleCalculator.TimeUntilNextBoat(OceanTripNewSettings.Instance.LateBoatQueue);
-
-			// Thread-safe timer access
-			lock (timerLock)
-			{
-				if (execute != null && !execute.Enabled)
-				{
-					if (timeLeftUntilFirstRun.TotalMilliseconds < 0)
-						execute.Interval = 100;
-					else
-						execute.Interval = timeLeftUntilFirstRun.TotalMilliseconds;
-
-					execute.Start();
-				}
-			}
+		// Timer will be restarted after voyage completes in HandleVoyageCompletion()
 		}
 
 		public override void Stop()
@@ -342,8 +328,8 @@ namespace OceanTripPlanner
 			{
 				if (Core.Me.CurrentJob != ClassJobType.Fisher)
 				{
-					await SwitchToJob(ClassJobType.Fisher);
 					Log("Switching to FSH class...");
+					await SwitchToJob(ClassJobType.Fisher);
 				}
 			}
 
@@ -370,8 +356,23 @@ namespace OceanTripPlanner
 
 			if (Core.Me.CurrentJob != ClassJobType.Fisher)
 			{
-				await SwitchToJob(ClassJobType.Fisher);
 				Log("Switching to FSH class...");
+				await SwitchToJob(ClassJobType.Fisher);
+			}
+
+			// Verify we're actually Fisher before proceeding to the boat
+			if (Core.Me.CurrentJob != ClassJobType.Fisher)
+			{
+				Log("ERROR: Failed to switch to Fisher class. Cannot board boat. Waiting 5 seconds and retrying...");
+				await Coroutine.Sleep(5000);
+				await SwitchToJob(ClassJobType.Fisher);
+
+				// Final check - if still not Fisher, log error and return
+				if (Core.Me.CurrentJob != ClassJobType.Fisher)
+				{
+					Log($"CRITICAL: Unable to switch to Fisher (current: {Core.Me.CurrentJob}). Skipping boat boarding.");
+					return;
+				}
 			}
 
 			Log("Time to queue up for the boat!");
@@ -449,7 +450,6 @@ namespace OceanTripPlanner
 				RefreshBaitCallback = () => FFXIV_Databinds.Instance.RefreshBait(),
 				ManageBuffsCallback = ManageBuffsAndConsumables,
 				ProcessCaughtFishCallback = ProcessCaughtFish,
-				WaitForCastLogCallback = WaitForCastLog,
 				SelectAndApplyBaitCallback = async (spectraled) =>
 				{
 					await SelectAndApplyBait(spectraled, location, TimeOfDay, baitId, spectralbaitId, currentRoute);
@@ -498,6 +498,21 @@ namespace OceanTripPlanner
 					PassTheTime.freeToCraft = true;
 				}
 
+			// Restart the timer for the next boat
+			lock (timerLock)
+			{
+				if (execute != null)
+				{
+					TimeSpan timeLeftUntilNextRun = TimeUntilNextBoat();
+					if (timeLeftUntilNextRun.TotalMilliseconds < 0)
+						execute.Interval = 100;
+					else
+						execute.Interval = timeLeftUntilNextRun.TotalMilliseconds;
+
+					execute.Start();
+				}
+			}
+
 				await Coroutine.Sleep(FishingConstants.VOYAGE_COMPLETION_DELAY_MS);
 			}
 		}
@@ -530,20 +545,14 @@ namespace OceanTripPlanner
 				if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch || FishingManager.CanMoochAny == FishingManager.AvailableMooch.Both)
 				{
 					FishingManager.Mooch();
-					await WaitForCastLog();
-					startedCast = DateTime.Now;
 				}
 				else if (FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
 				{
 					FishingManager.MoochTwo();
-					await WaitForCastLog();
-					startedCast = DateTime.Now;
 				}
 				else
 				{
 					FishingManager.Cast();
-					await WaitForCastLog();
-					startedCast = DateTime.Now;
 				}
 			}
 
@@ -556,11 +565,7 @@ namespace OceanTripPlanner
 			{
 				if (FishingManager.CanHook && FishingManager.State == FishingState.Bite)
 				{
-					// My testing has shown that there is always a 2.8f variance here, so remove that variance
-					// May need future adjustment. Might just be an issue in latency.
-					bite = (DateTime.Now - startedCast).TotalSeconds + FishingConstants.BITE_TIME_VARIANCE;
-
-					Log($"Bite Time: {bite:F1}s");
+					Log($"Bite Time: {FishingManager.TimeSinceCast.TotalSeconds + FishingConstants.BITE_TIMER_OFFSET:F1}s");
 					FishingManager.Hook();
 				}
 
@@ -573,17 +578,44 @@ namespace OceanTripPlanner
 		{
 			if (Core.Me.CurrentJob == job) return;
 
+			// Close any open crafting windows that might block job switching
+			if (CraftingLog.IsOpen)
+			{
+				CraftingLog.Close();
+				await Coroutine.Wait(5000, () => !CraftingLog.IsOpen);
+			}
+
+			// Wait for any ongoing crafting to finish
+			if (CraftingManager.IsCrafting)
+			{
+				Log("Waiting for crafting to finish before switching jobs...");
+				await Coroutine.Wait(30000, () => !CraftingManager.IsCrafting);
+			}
+
 			var gearSets = GearsetManager.GearSets.Where(i => i.InUse);
 
 			if (gearSets.Any(gs => gs.Class == job))
 			{
-				Logging.Write(Colors.Fuchsia, $"[ChangeJob] Found GearSet");
+				Logging.Write(Colors.Fuchsia, $"[ChangeJob] Found GearSet for {job}");
 				gearSets.First(gs => gs.Class == job).Activate();
-				await Coroutine.Sleep(FishingConstants.STANDARD_DELAY_MS);
+
+				// Wait for the job change to actually complete (up to 10 seconds)
+				if (await Coroutine.Wait(10000, () => Core.Me.CurrentJob == job))
+				{
+					Log($"Successfully switched to {job}");
+				}
+				else
+				{
+					// Retry once if first attempt failed
+					Log($"First job switch attempt failed, retrying...");
+					await Coroutine.Sleep(FishingConstants.STANDARD_DELAY_MS);
+					gearSets.First(gs => gs.Class == job).Activate();
+					await Coroutine.Wait(10000, () => Core.Me.CurrentJob == job);
+				}
 			}
 
 			if (Core.Me.CurrentJob != job)
-				Logging.Write(Colors.Red, $"[Ocean Trip] Could not change to FSH.");
+				Logging.Write(Colors.Red, $"[Ocean Trip] Could not change to {job}. Current job: {Core.Me.CurrentJob}");
 		}
 
 		/// <summary>
@@ -666,12 +698,6 @@ namespace OceanTripPlanner
 				await PassTheTime.IdleLisbeth(itemId, (int)SpecialCurrencyManager.GetCurrencyCount(currency) / 20, "Exchange", "false", 0);
 			}
 
-		}
-
-		private async Task WaitForCastLog()
-		{
-			//await Coroutine.Wait(FishingConstants.DIALOG_WINDOW_TIMEOUT_MS, () => (ChatCheck("cast your line", "cast your line") || ChatCheck("recast your line", "recast your line")));
-			await Coroutine.Wait(FishingConstants.CAST_COMPLETION_TIMEOUT_MS, () => (FishingManager.State == FishingState.Reelin));
 		}
 
 		private bool FocusFishLog
@@ -760,7 +786,7 @@ namespace OceanTripPlanner
 		/// Process caught fish and check for Identical Cast
 		/// Returns true if Identical Cast was used and casting has started
 		/// </summary>
-		private async Task<bool> ProcessCaughtFish()
+		private Task<bool> ProcessCaughtFish()
 		{
 			Log("Checking for a recently caught fish.", OceanLogLevel.Debug);
 
@@ -813,15 +839,13 @@ namespace OceanTripPlanner
 			{
 				Log("Identical Cast!");
 				ActionManager.DoAction(Actions.IdenticalCast, Core.Me);
-				await WaitForCastLog();
-				startedCast = DateTime.Now;
 
 				Log("Done checking for Identical Cast.", OceanLogLevel.Debug);
-				return true;  // Identical Cast was used, casting has started
+				return Task.FromResult(true);  // Identical Cast was used, casting has started
 			}
 
 			Log("Done checking for Identical Cast.", OceanLogLevel.Debug);
-			return false;  // No Identical Cast, proceed with normal flow
+			return Task.FromResult(false);  // No Identical Cast, proceed with normal flow
 		}
 
 		/// <summary>

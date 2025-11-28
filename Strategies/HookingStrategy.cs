@@ -34,30 +34,25 @@ namespace OceanTripPlanner.Strategies
 		public Task ExecuteHook(HookContext context)
 		{
 			double biteElapsed = Math.Round(context.BiteElapsedSeconds, 1);
-			const double Tolerance = 1e-6; // Floating Point Precision
 			bool doubleHook = false;
 
 			// Cache current weather to avoid repeated API calls in LINQ queries
 			string currentWeather = _gameCache.CurrentWeather;
 
-			// Build fish lists for bite prediction
-			List<Fish> spectralFishToCatch = (context.CurrentRoute == null
-				? new List<Fish>()
-				: context.CurrentRoute.SpectralFish.Where(x => x.TimeOfDayExclusion1 != context.TimeOfDay
-					&& x.TimeOfDayExclusion2 != context.TimeOfDay
-					&& x.BiteType == FishingManager.TugType
-					&& (x.BiteStart - Tolerance) <= biteElapsed
-					&& (x.BiteEnd + Tolerance) >= biteElapsed)).ToList();
+			// Build fish lists for bite prediction - first try exact match, then fallback to nearest
+			List<Fish> spectralFishToCatch = FindMatchingFish(
+				context.CurrentRoute?.SpectralFish,
+				biteElapsed,
+				context.TimeOfDay,
+				currentWeather,
+				excludeWeather: false);
 
-			List<Fish> normalFishToCatch = (context.CurrentRoute == null
-				? new List<Fish>()
-				: context.CurrentRoute.NormalFish.Where(x => x.TimeOfDayExclusion1 != context.TimeOfDay
-					&& x.TimeOfDayExclusion2 != context.TimeOfDay
-					&& x.WeatherExclusion1 != currentWeather
-					&& x.WeatherExclusion2 != currentWeather
-					&& x.BiteType == FishingManager.TugType
-					&& (x.BiteStart - Tolerance) <= biteElapsed
-					&& (x.BiteEnd + Tolerance) >= biteElapsed)).ToList();
+			List<Fish> normalFishToCatch = FindMatchingFish(
+				context.CurrentRoute?.NormalFish,
+				biteElapsed,
+				context.TimeOfDay,
+				currentWeather,
+				excludeWeather: true);
 
 			var potentialFish = String.Join(", ", (context.Spectraled ? spectralFishToCatch : normalFishToCatch).Select(x => _gameCache.GetItemName((uint)x.FishID)).ToList());
 
@@ -71,17 +66,18 @@ namespace OceanTripPlanner.Strategies
 			// Determine if Double/Triple Hook should be used for points
 			if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
 			{
-				// Check if we should DH or TH - Special handling for South's lastMooch rule - Always DH/TH after a Mooch in South if spectral.
-				if (FishDataCache.GetFish().Any(x => x.RouteShortName == context.Location
-												&& (biteElapsed >= (x.BiteStart - Tolerance) && biteElapsed <= (x.BiteEnd + Tolerance)
-												&& x.WeatherExclusion1 != currentWeather
-												&& x.WeatherExclusion2 != currentWeather
-												&& x.TimeOfDayExclusion1 != context.TimeOfDay
-												&& x.TimeOfDayExclusion2 != context.TimeOfDay
-												&& x.BiteType == FishingManager.TugType
-												&& (((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3))
-												) || (context.Location == "south" && context.LastCastMooch && (context.TimeOfDay == "Sunset" || context.TimeOfDay == "Night") && context.Spectraled)))
+				// Special handling for South's lastMooch rule - Always DH/TH after a Mooch in South if spectral.
+				if (context.Location == "south" && context.LastCastMooch && (context.TimeOfDay == "Sunset" || context.TimeOfDay == "Night") && context.Spectraled)
+				{
 					doubleHook = true;
+				}
+				else
+				{
+					// Find matching fish for DH/TH decision with fallback to nearest
+					var matchingFish = FindMatchingFishForHook(context.Location, biteElapsed, context.TimeOfDay, currentWeather);
+					doubleHook = matchingFish.Any(x =>
+						((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3));
+				}
 			}
 
 			Log("Done checking for double hook conditions.", OceanLogLevel.Debug);
@@ -154,6 +150,92 @@ namespace OceanTripPlanner.Strategies
 			FFXIV_Databinds.Instance.RefreshBait();
 
 			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Find matching fish from a list, with fallback to nearest fish if no exact match
+		/// </summary>
+		private List<Fish> FindMatchingFish(IEnumerable<Fish> fishList, double biteElapsed, string timeOfDay, string currentWeather, bool excludeWeather)
+		{
+			if (fishList == null)
+				return new List<Fish>();
+
+			// Filter by time of day, weather (if applicable), and tug type
+			var eligibleFish = fishList.Where(x =>
+				x.TimeOfDayExclusion1 != timeOfDay &&
+				x.TimeOfDayExclusion2 != timeOfDay &&
+				x.BiteType == FishingManager.TugType &&
+				(!excludeWeather || (x.WeatherExclusion1 != currentWeather && x.WeatherExclusion2 != currentWeather))).ToList();
+
+			// First try exact match (within bite range)
+			var exactMatches = eligibleFish.Where(x =>
+				x.BiteStart <= biteElapsed && x.BiteEnd >= biteElapsed).ToList();
+
+			if (exactMatches.Any())
+				return exactMatches;
+
+			// No exact match - find nearest fish within tolerance
+			return FindNearestFish(eligibleFish, biteElapsed);
+		}
+
+		/// <summary>
+		/// Find matching fish for hook decision from all fish data, with fallback to nearest
+		/// </summary>
+		private List<Fish> FindMatchingFishForHook(string location, double biteElapsed, string timeOfDay, string currentWeather)
+		{
+			var allFish = FishDataCache.GetFish();
+
+			// Filter by location, time of day, weather, and tug type
+			var eligibleFish = allFish.Where(x =>
+				x.RouteShortName == location &&
+				x.TimeOfDayExclusion1 != timeOfDay &&
+				x.TimeOfDayExclusion2 != timeOfDay &&
+				x.WeatherExclusion1 != currentWeather &&
+				x.WeatherExclusion2 != currentWeather &&
+				x.BiteType == FishingManager.TugType).ToList();
+
+			// First try exact match (within bite range)
+			var exactMatches = eligibleFish.Where(x =>
+				x.BiteStart <= biteElapsed && x.BiteEnd >= biteElapsed).ToList();
+
+			if (exactMatches.Any())
+				return exactMatches;
+
+			// No exact match - find nearest fish within tolerance
+			return FindNearestFish(eligibleFish, biteElapsed);
+		}
+
+		/// <summary>
+		/// Find the nearest fish by bite time within the configured tolerance
+		/// </summary>
+		private List<Fish> FindNearestFish(List<Fish> eligibleFish, double biteElapsed)
+		{
+			if (!eligibleFish.Any())
+				return new List<Fish>();
+
+			// Calculate distance to each fish's bite range
+			var fishWithDistance = eligibleFish.Select(x =>
+			{
+				double distance;
+				if (biteElapsed < x.BiteStart)
+					distance = x.BiteStart - biteElapsed;
+				else if (biteElapsed > x.BiteEnd)
+					distance = biteElapsed - x.BiteEnd;
+				else
+					distance = 0; // Within range (shouldn't happen as we check exact matches first)
+
+				return new { Fish = x, Distance = distance };
+			}).ToList();
+
+			// Find minimum distance
+			double minDistance = fishWithDistance.Min(x => x.Distance);
+
+			// Only return fish within tolerance
+			if (minDistance > FishingConstants.BITE_TIME_TOLERANCE)
+				return new List<Fish>();
+
+			// Return all fish at the minimum distance (could be multiple with same bite time)
+			return fishWithDistance.Where(x => Math.Abs(x.Distance - minDistance) < 0.001).Select(x => x.Fish).ToList();
 		}
 
 		/// <summary>
