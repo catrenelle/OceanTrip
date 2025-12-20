@@ -1,4 +1,4 @@
-﻿using ff14bot.Managers;
+using ff14bot.Managers;
 using ff14bot;
 using System;
 using System.Collections.Generic;
@@ -16,9 +16,9 @@ namespace Ocean_Trip
 	{
 		internal static class Offsets
 		{
-#if !RB_CN
-			internal const int statusOffset = 0x2014; // Patch 7.25
-			internal const int zoneOffset = 0x2018;
+#if !RB_TC
+			internal const int statusOffset = 0x1FBC; // Patch 7.4
+			internal const int zoneOffset = 0x1FC0;
 #else
 			internal const int statusOffset = 0x2014; // Patch 7.25
 			internal const int zoneOffset = 0x2018;
