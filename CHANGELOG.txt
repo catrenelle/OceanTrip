@@ -1,3 +1,9 @@
+12/19/2025
+----------
+
+* Updated offsets for Patch 7.4 support.
+
+
 11/28/2025
 ----------
 
