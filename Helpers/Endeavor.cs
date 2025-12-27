@@ -24,10 +24,10 @@ namespace Ocean_Trip
 //			internal const int zoneOffset = 0x2018;
 //			internal const int statusOffset = 0x1E14; // Patch 7.20
 //			internal const int zoneOffset = 0x1E18;
-//			internal const int statusOffset = 0x1E0C; // Patch 7.10
-//			internal const int zoneOffset = 0x1E10;
-			internal const int statusOffset = 0x1DBC; // Patch 7.00
-			internal const int zoneOffset = 0x1DC0;
+			internal const int statusOffset = 0x1E0C; // Patch 7.10
+			internal const int zoneOffset = 0x1E10;
+//			internal const int statusOffset = 0x1DBC; // Patch 7.00
+//			internal const int zoneOffset = 0x1DC0;
 #endif
 		}
 
