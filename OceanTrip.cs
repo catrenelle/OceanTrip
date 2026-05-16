@@ -454,7 +454,16 @@ namespace OceanTripPlanner
 				{
 					lastLoggedLocation = location;
 					string priorityMode = OceanTripNewSettings.Instance.FishPriority.ToString();
-					string focusMode = FocusFishLog ? "Fish Log" : "Points";
+					string focusMode;
+					if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Achievements)
+					{
+						var focus = AchievementFishDataCache.GetCurrentAchievementFocus();
+						focusMode = focus != AchievementType.None ? focus.ToString() : "None";
+					}
+					else
+					{
+						focusMode = FocusFishLog ? "Fish Log" : "Points";
+					}
 					Log($"Zone: {Schedule.areaName(location)} ({location}), Time: {TimeOfDay}, Stop: {Endeavor.CurrentZone + 1}/3, Priority: {priorityMode} ({focusMode})");
 
 					var zoneRoute = RouteDataCache.GetRoutesWithFish().FirstOrDefault(x => x.Route.RouteShortName == location);

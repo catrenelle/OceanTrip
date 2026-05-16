@@ -205,6 +205,14 @@ namespace Ocean_Trip
 			overall1mPicture.Image = ImageExtensions.ToGrayScale(UIElements.getIconImage(1, 27));
 			overall3mPicture.Image = ImageExtensions.ToGrayScale(UIElements.getIconImage(1, 27));
 
+			// Wire up achievement checkbox handlers BEFORE data bindings so the
+			// CheckedChanged handler is attached when bindings read initial values.
+			// Without this, reopening the form after dispose loses color icons because
+			// the singleton's properties are already true, the binding fires CheckedChanged
+			// immediately, but no handler is attached yet to set the color image. Then
+			// RefreshAchievements() no-ops (value unchanged) so the icon stays greyscale.
+			SetupAchievementCheckboxHandlers();
+
 			// Achievements Databind
 			mantasPicture.DataBindings.Add("Checked", OceanTripPlanner.FFXIV_Databinds.Instance, "achievementMantas", false, DataSourceUpdateMode.OnPropertyChanged);
 			octopodsPicture.DataBindings.Add("Checked", OceanTripPlanner.FFXIV_Databinds.Instance, "achievementOctopods", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -233,9 +241,6 @@ namespace Ocean_Trip
 			overall500kPicture.DataBindings.Add("Checked", OceanTripPlanner.FFXIV_Databinds.Instance, "achievement500koverall", false, DataSourceUpdateMode.OnPropertyChanged);
 			overall1mPicture.DataBindings.Add("Checked", OceanTripPlanner.FFXIV_Databinds.Instance, "achievement1moverall", false, DataSourceUpdateMode.OnPropertyChanged);
 			overall3mPicture.DataBindings.Add("Checked", OceanTripPlanner.FFXIV_Databinds.Instance, "achievement3moverall", false, DataSourceUpdateMode.OnPropertyChanged);
-
-			// Wire up unified achievement checkbox handler
-			SetupAchievementCheckboxHandlers();
 
 			// Wire up unified radio button handlers
 			SetupRadioButtonHandlers();

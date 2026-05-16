@@ -253,7 +253,7 @@ namespace OceanTripPlanner.Strategies
 		private async Task MoveToFishingSpot(int spot)
 		{
 			//Navigator.PlayerMover.MoveTowards(FishingConstants.FishSpots[spot]);
-			while (FishingConstants.FishSpots[spot].Distance2DSqr(Core.Me.Location) > 2)
+			while (FishingConstants.FishSpots[spot].Distance2DSqr(Core.Me.Location) > 0.25)
 			{
 				Navigator.PlayerMover.MoveTowards(FishingConstants.FishSpots[spot]);
 				await Coroutine.Yield();

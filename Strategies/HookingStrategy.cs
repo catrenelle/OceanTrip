@@ -95,12 +95,21 @@ namespace OceanTripPlanner.Strategies
 							AchievementFishDataCache.MapAchievementString(f.Achievement) == achievementFocus);
 					}
 
-					// No achievement fish matched — fall through to points-based DH/TH
+					// Only fall back to points-based DH/TH if no achievement fish can spawn here at all
 					if (!doubleHook)
 					{
-						var matchingFish = FindMatchingFishForHook(context.Location, matchElapsed, context.TimeOfDay, currentWeather);
-						doubleHook = matchingFish.Any(x =>
-							((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3));
+						bool achievementFishAvailable = AchievementFishDataCache.GetFishForLocation(context.Location, achievementFocus)
+							.Any(f => f.TimeOfDayExclusion1 != context.TimeOfDay &&
+								f.TimeOfDayExclusion2 != context.TimeOfDay &&
+								f.WeatherExclusion1 != currentWeather &&
+								f.WeatherExclusion2 != currentWeather);
+
+						if (!achievementFishAvailable)
+						{
+							var matchingFish = FindMatchingFishForHook(context.Location, matchElapsed, context.TimeOfDay, currentWeather);
+							doubleHook = matchingFish.Any(x =>
+								((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3));
+						}
 					}
 				}
 				else if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
