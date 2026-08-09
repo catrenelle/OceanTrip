@@ -174,7 +174,8 @@ namespace OceanTripPlanner.Strategies
 							CurrentRoute = context.CurrentRoute,
 							LastCastMooch = context.GetLastCastMooch(),
 							ChainCastTargetFishId = context.GetChainCastTargetFishId(),
-							ChainMoochTargetFishId = context.GetChainMoochTargetFishId()
+							ChainMoochTargetFishId = context.GetChainMoochTargetFishId(),
+							MissionRequiredTugType = context.GetMissionRequiredTugType()
 						};
 						hookContext.SetHookExecutedCallback(context.OnHookExecutedCallback);
 						await _hookingStrategy.ExecuteHook(hookContext);
@@ -310,6 +311,7 @@ namespace OceanTripPlanner.Strategies
 		private bool _shouldMooch;
 		private uint _chainCastTargetFishId;
 		private uint _chainMoochTargetFishId;
+		private TugType? _missionRequiredTugType;
 
 		public bool GetLastCastMooch() => _lastCastMooch;
 		public void SetLastCastMooch(bool value) => _lastCastMooch = value;
@@ -319,5 +321,7 @@ namespace OceanTripPlanner.Strategies
 		public void SetChainCastTargetFishId(uint value) => _chainCastTargetFishId = value;
 		public uint GetChainMoochTargetFishId() => _chainMoochTargetFishId;
 		public void SetChainMoochTargetFishId(uint value) => _chainMoochTargetFishId = value;
+		public TugType? GetMissionRequiredTugType() => _missionRequiredTugType;
+		public void SetMissionRequiredTugType(TugType? value) => _missionRequiredTugType = value;
 	}
 }

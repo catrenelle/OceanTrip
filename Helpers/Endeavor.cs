@@ -19,6 +19,14 @@ namespace Ocean_Trip
 #if !RB_TC
 			internal const int statusOffset = 0x1FBC; // Patch 7.4
 			internal const int zoneOffset = 0x1FC0;
+
+			// Confirmed against FFXIVClientStructs' InstanceContentOceanFishing struct layout
+			internal const int mission1TypeOffset = 0x25C8;
+			internal const int mission2TypeOffset = 0x25CC;
+			internal const int mission3TypeOffset = 0x25D0;
+			internal const int mission1ProgressOffset = 0x25D4;
+			internal const int mission2ProgressOffset = 0x25D6;
+			internal const int mission3ProgressOffset = 0x25D8;
 #else
 //			internal const int statusOffset = 0x2014; // Patch 7.25
 //			internal const int zoneOffset = 0x2018;
@@ -28,6 +36,10 @@ namespace Ocean_Trip
 //			internal const int zoneOffset = 0x1E10;
 //			internal const int statusOffset = 0x1DBC; // Patch 7.00
 //			internal const int zoneOffset = 0x1DC0;
+
+			// Mission offsets are NOT verified for the TC client's older patch — the struct layout
+			// may differ from the current-patch layout above. Mission tracking properties below
+			// return 0 (unavailable) under RB_TC rather than guessing at unverified offsets.
 #endif
 		}
 
@@ -64,6 +76,65 @@ namespace Ocean_Trip
 					return Core.Memory.Read<uint>(DirectorPtr + Offsets.zoneOffset);
 			}
 		}
+
+#if !RB_TC
+		private uint ReadMissionUInt(int offset)
+		{
+			if (DirectorPtr == IntPtr.Zero)
+				return 0;
+			return Core.Memory.Read<uint>(DirectorPtr + offset);
+		}
+
+		private ushort ReadMissionUShort(int offset)
+		{
+			if (DirectorPtr == IntPtr.Zero)
+				return 0;
+			return Core.Memory.Read<ushort>(DirectorPtr + offset);
+		}
+#endif
+
+		// Row ID into the IKDPlayerMissionCondition sheet (0 = no mission in this slot / not yet loaded)
+		public uint Mission1Type =>
+#if !RB_TC
+			ReadMissionUInt(Offsets.mission1TypeOffset);
+#else
+			0;
+#endif
+
+		public uint Mission2Type =>
+#if !RB_TC
+			ReadMissionUInt(Offsets.mission2TypeOffset);
+#else
+			0;
+#endif
+
+		public uint Mission3Type =>
+#if !RB_TC
+			ReadMissionUInt(Offsets.mission3TypeOffset);
+#else
+			0;
+#endif
+
+		public ushort Mission1Progress =>
+#if !RB_TC
+			ReadMissionUShort(Offsets.mission1ProgressOffset);
+#else
+			0;
+#endif
+
+		public ushort Mission2Progress =>
+#if !RB_TC
+			ReadMissionUShort(Offsets.mission2ProgressOffset);
+#else
+			0;
+#endif
+
+		public ushort Mission3Progress =>
+#if !RB_TC
+			ReadMissionUShort(Offsets.mission3ProgressOffset);
+#else
+			0;
+#endif
 
 		public bool shouldFish
 		{

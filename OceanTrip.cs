@@ -50,6 +50,10 @@ namespace OceanTripPlanner
 		private uint lastCaughtFish = 0;
 		private bool caughtFishLogged = false;
 
+		// Last-logged progress per mission slot, to only log on change. ushort.MaxValue means
+		// "not yet observed" so a real progress of 0 still logs once.
+		private readonly ushort[] lastLoggedMissionProgress = { ushort.MaxValue, ushort.MaxValue, ushort.MaxValue };
+
 		private bool ignoreBoat { get { if (OceanTripNewSettings.Instance.FishPriority == FishPriority.IgnoreBoat) { return true; } else { return false; } } }
 
 		private static Random rnd = new Random();
@@ -497,6 +501,7 @@ namespace OceanTripPlanner
 					fishingContext.SetShouldMooch(result.shouldMooch);
 					fishingContext.SetChainCastTargetFishId(result.chainCastTargetFishId);
 					fishingContext.SetChainMoochTargetFishId(result.chainMoochTargetFishId);
+					fishingContext.SetMissionRequiredTugType(result.missionRequiredTugType);
 				};
 				await fishingSessionManager.ExecuteFishingSession(fishingContext);
 			}
@@ -885,6 +890,8 @@ namespace OceanTripPlanner
 
 			Log($"ProcessCaughtFish: currentFish={currentFish}, lastCaughtFish={lastCaughtFish}, caughtFishLogged={caughtFishLogged}", OceanLogLevel.Debug);
 
+			LogMissionProgress();
+
 			// Did we catch a fish? Let's log it.
 			if (lastCaughtFish != currentFish && !caughtFishLogged)
 			{
@@ -962,9 +969,36 @@ namespace OceanTripPlanner
 		}
 
 		/// <summary>
+		/// Log live mission progress for all three slots, once per change. Reads raw memory
+		/// (mission type IDs, not UI text), so this works regardless of client language.
+		/// Unavailable under RB_TC — see Endeavor.cs for why.
+		/// </summary>
+		private void LogMissionProgress()
+		{
+			LogMissionSlot(0, Endeavor.Mission1Type, Endeavor.Mission1Progress);
+			LogMissionSlot(1, Endeavor.Mission2Type, Endeavor.Mission2Progress);
+			LogMissionSlot(2, Endeavor.Mission3Type, Endeavor.Mission3Progress);
+		}
+
+		private void LogMissionSlot(int slot, uint missionType, ushort progress)
+		{
+			if (missionType == 0 || progress == lastLoggedMissionProgress[slot])
+				return;
+
+			lastLoggedMissionProgress[slot] = progress;
+
+			var condition = MissionDataCache.GetById(missionType);
+			string description = condition != null
+				? $"{condition.Text}: {progress}/{condition.Count}"
+				: $"Unknown mission type {missionType} ({progress})";
+
+			Log($"Mission {slot + 1}: {description}");
+		}
+
+		/// <summary>
 		/// Select and apply the appropriate bait based on spectral status, location, time of day, and fish log
 		/// </summary>
-		private async Task<(bool shouldMooch, uint chainCastTargetFishId, uint chainMoochTargetFishId)> SelectAndApplyBait(bool spectraled, string location, string timeOfDay, ulong baitId, ulong spectralbaitId, RouteWithFish currentRoute)
+		private async Task<(bool shouldMooch, uint chainCastTargetFishId, uint chainMoochTargetFishId, TugType? missionRequiredTugType)> SelectAndApplyBait(bool spectraled, string location, string timeOfDay, ulong baitId, ulong spectralbaitId, RouteWithFish currentRoute)
 		{
 			// Determine if target fish is available in this zone
 			uint targetFishId = OceanTripNewSettings.Instance.TargetFishId;
@@ -1016,7 +1050,31 @@ namespace OceanTripPlanner
 				await normalBaitSelector.SelectBait(context);
 			}
 
-			return (context.ShouldMooch, context.ChainCastTargetFishId, context.ChainMoochTargetFishId);
+			return (context.ShouldMooch, context.ChainCastTargetFishId, context.ChainMoochTargetFishId, GetActiveMissionTugType());
+		}
+
+		/// <summary>
+		/// Bite-strength missions ("Catch fish with a weak/strong/ferocious bite") can be actively
+		/// accelerated with Double/Triple Hook — checks all three mission slots and returns the tug
+		/// type of the first one that's both a bite-strength mission and not yet complete.
+		/// </summary>
+		private TugType? GetActiveMissionTugType()
+		{
+			return CheckMissionSlotTugType(Endeavor.Mission1Type, Endeavor.Mission1Progress)
+				?? CheckMissionSlotTugType(Endeavor.Mission2Type, Endeavor.Mission2Progress)
+				?? CheckMissionSlotTugType(Endeavor.Mission3Type, Endeavor.Mission3Progress);
+		}
+
+		private TugType? CheckMissionSlotTugType(uint missionType, ushort progress)
+		{
+			if (missionType == 0)
+				return null;
+
+			var condition = MissionDataCache.GetById(missionType);
+			if (condition == null || progress >= condition.Count)
+				return null; // unknown mission, or already complete — nothing left to target
+
+			return MissionDataCache.GetRequiredTugType(condition.Text);
 		}
 
 		private static readonly HashSet<int> NeverExchangeFish = new HashSet<int>

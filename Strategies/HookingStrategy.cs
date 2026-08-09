@@ -128,6 +128,16 @@ namespace OceanTripPlanner.Strategies
 						doubleHook = IsPointsWorthDoubleHook(matchingFish);
 					}
 				}
+
+				// Bite-strength missions ("Catch fish with a weak/strong/ferocious bite"): a single
+				// hookset catches several fish sharing this tug, multiplying mission progress. Worth
+				// it regardless of the points/GP-cost math above and regardless of FishPriority — a
+				// mission's value is a 5-20% multiplier on the ENTIRE voyage score, not just this catch.
+				if (!doubleHook && context.MissionRequiredTugType.HasValue && context.MissionRequiredTugType.Value == FishingManager.TugType)
+				{
+					Log("Bite matches an active bite-strength mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
+					doubleHook = true;
+				}
 			}
 
 			Log("Done checking for double hook conditions.", OceanLogLevel.Debug);
@@ -464,6 +474,13 @@ namespace OceanTripPlanner.Strategies
 		/// when LastCastMooch is true (i.e. this bite came from a mooch, not a plain cast).
 		/// </summary>
 		public uint ChainMoochTargetFishId { get; set; }
+
+		/// <summary>
+		/// Set when an active bite-strength mission ("Catch fish with a weak/strong/ferocious
+		/// bite") still needs progress — a bite matching this tug is worth Double/Triple Hooking
+		/// regardless of the usual points/GP-cost math, since it multiplies mission progress.
+		/// </summary>
+		public TugType? MissionRequiredTugType { get; set; }
 
 		private Action<bool> _onHookExecutedCallback;
 
