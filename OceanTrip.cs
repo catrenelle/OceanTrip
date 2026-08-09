@@ -72,8 +72,6 @@ namespace OceanTripPlanner
 		private FishingSessionManager fishingSessionManager;
 		private BaitRestockStrategy baitRestockStrategy;
 		private CordialStrategy cordialStrategy;
-		private FishCatchLogger fishCatchLogger;
-		private SpectralDetector spectralDetector;
 
 		public override string Name => "Ocean Trip";
 
@@ -163,8 +161,6 @@ namespace OceanTripPlanner
 			fishingSessionManager = new FishingSessionManager(gameCache, hookingStrategy);
 			baitRestockStrategy = new BaitRestockStrategy();
 			cordialStrategy = new CordialStrategy(gameCache);
-			fishCatchLogger = new FishCatchLogger(gameCache, (text, level) => Log(text, level));
-			spectralDetector = new SpectralDetector(gameCache, (text, level) => Log(text, level));
 
 			// Initialize timer with thread-safe lock
 			lock (timerLock)
@@ -497,8 +493,10 @@ namespace OceanTripPlanner
 				};
 				fishingContext.SelectAndApplyBaitCallback = async (spectraled) =>
 				{
-					bool shouldMooch = await SelectAndApplyBait(spectraled, location, TimeOfDay, baitId, spectralbaitId, currentRoute);
-					fishingContext.SetShouldMooch(shouldMooch);
+					var result = await SelectAndApplyBait(spectraled, location, TimeOfDay, baitId, spectralbaitId, currentRoute);
+					fishingContext.SetShouldMooch(result.shouldMooch);
+					fishingContext.SetChainCastTargetFishId(result.chainCastTargetFishId);
+					fishingContext.SetChainMoochTargetFishId(result.chainMoochTargetFishId);
 				};
 				await fishingSessionManager.ExecuteFishingSession(fishingContext);
 			}
@@ -852,17 +850,22 @@ namespace OceanTripPlanner
 			// Should we use Thaliak's Favor?
 			Log("Checking if we need to use Thaliak's Favor", OceanLogLevel.Debug);
 
-			if (spectraled && gameCache.NeedsGPRecovery(FishingConstants.THALIAK_GP_THRESHOLD) && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me))
+			// No cooldown or cast time on this action, so drain banked Angler's Art stacks (cap 10,
+			// 3 consumed per use) in a loop rather than firing once — otherwise GP recovery was
+			// throttled to 150/cast even when several uses' worth of stacks were already banked.
+			int thaliakUses = 0;
+			while (gameCache.NeedsGPRecovery(FishingConstants.THALIAK_GP_THRESHOLD)
+				&& ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me)
+				&& thaliakUses < FishingConstants.THALIAK_MAX_CHAIN_USES)
 			{
 				Log("Using Thaliak's Favor!");
 				ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
 				await Coroutine.Wait(1000, () => !ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me));
-			}
-			else if (!spectraled && gameCache.NeedsGPRecovery(FishingConstants.THALIAK_GP_THRESHOLD) && ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me) && Core.Player.Auras.Any(x => x.Id == CharacterAuras.AnglersArt && x.Value >= 3))
-			{
-				Log("Using Thaliak's Favor!");
-				ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-				await Coroutine.Wait(1000, () => !ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me));
+
+				// Force a fresh GP read — RefreshIfNeeded's 100ms throttle would otherwise let the
+				// loop re-check against the stale (pre-cast) GPDeficit and miscount remaining need.
+				gameCache.Refresh();
+				thaliakUses++;
 			}
 
 			Log("Done with Thaliak's Favor.", OceanLogLevel.Debug);
@@ -961,7 +964,7 @@ namespace OceanTripPlanner
 		/// <summary>
 		/// Select and apply the appropriate bait based on spectral status, location, time of day, and fish log
 		/// </summary>
-		private async Task<bool> SelectAndApplyBait(bool spectraled, string location, string timeOfDay, ulong baitId, ulong spectralbaitId, RouteWithFish currentRoute)
+		private async Task<(bool shouldMooch, uint chainCastTargetFishId, uint chainMoochTargetFishId)> SelectAndApplyBait(bool spectraled, string location, string timeOfDay, ulong baitId, ulong spectralbaitId, RouteWithFish currentRoute)
 		{
 			// Determine if target fish is available in this zone
 			uint targetFishId = OceanTripNewSettings.Instance.TargetFishId;
@@ -1013,7 +1016,7 @@ namespace OceanTripPlanner
 				await normalBaitSelector.SelectBait(context);
 			}
 
-			return context.ShouldMooch;
+			return (context.ShouldMooch, context.ChainCastTargetFishId, context.ChainMoochTargetFishId);
 		}
 
 		private static readonly HashSet<int> NeverExchangeFish = new HashSet<int>

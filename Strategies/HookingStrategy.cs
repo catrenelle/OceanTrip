@@ -78,6 +78,18 @@ namespace OceanTripPlanner.Strategies
 			if (isFuzzy)
 				LogExcludedFish(context, currentWeather);
 
+			// Narrow-target modes (Achievement focus / TargetFishId): decline bites that can't be
+			// what we're after. Hooking and declining both end this attempt either way, but only
+			// hooking incurs an unpredictable-length catch resolution (size-roll/log/achievement
+			// popups) — skip it when bite-time+tug prediction already rules out our target.
+			if (!ShouldAttemptHook(context, matchedFish))
+			{
+				var bestGuessName = matchedFish.Any() ? _gameCache.GetItemName((uint)matchedFish.First().FishID) : "unknown fish";
+				Log($"Declining bite — predicted {bestGuessName} isn't the current target, skipping to avoid a wasted catch.", OceanLogLevel.Debug);
+				context.OnHookExecuted(false);
+				return Task.CompletedTask;
+			}
+
 			Log("Checking if we should double hook based on bite timer and current fishing conditions!", OceanLogLevel.Debug);
 
 			// DH/TH cannot be used during Patience — fish always escapes without Precision/Powerful Hookset
@@ -99,8 +111,7 @@ namespace OceanTripPlanner.Strategies
 					if (!doubleHook)
 					{
 						var matchingFish = FindMatchingFishForHook(context.Location, matchElapsed, context.TimeOfDay, currentWeather);
-						doubleHook = matchingFish.Any(x =>
-							((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3));
+						doubleHook = IsPointsWorthDoubleHook(matchingFish);
 					}
 				}
 				else if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
@@ -114,8 +125,7 @@ namespace OceanTripPlanner.Strategies
 					{
 						// Find matching fish for DH/TH decision with fallback to nearest
 						var matchingFish = FindMatchingFishForHook(context.Location, matchElapsed, context.TimeOfDay, currentWeather);
-						doubleHook = matchingFish.Any(x =>
-							((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3));
+						doubleHook = IsPointsWorthDoubleHook(matchingFish);
 					}
 				}
 			}
@@ -200,6 +210,88 @@ namespace OceanTripPlanner.Strategies
 			FFXIV_Databinds.Instance.RefreshBait();
 
 			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Narrow-target gate for Achievement mode / TargetFishId: only hook bites that plausibly
+		/// are the target. Only applies when that target is actually reachable at this location
+		/// and spectral state right now — otherwise every bite here would be wrongly declined for
+		/// the whole zone visit (e.g. achievement focus has no fish here, or TargetFishId is for a
+		/// different zone), which falls back to hooking normally instead.
+		/// </summary>
+		private bool ShouldAttemptHook(HookContext context, List<Fish> matchedFish)
+		{
+			uint targetFishId = OceanTripNewSettings.Instance.TargetFishId;
+			bool targetFishHere = targetFishId != 0 &&
+				FishDataCache.GetFish().Any(f => f.FishID == (int)targetFishId && f.RouteShortName == context.Location);
+
+			AchievementType achievementFocus = AchievementType.None;
+			bool achievementFishHere = false;
+			if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Achievements)
+			{
+				achievementFocus = AchievementFishDataCache.GetCurrentAchievementFocus();
+				if (achievementFocus != AchievementType.None)
+				{
+					achievementFishHere = AchievementFishDataCache.GetFishForLocation(context.Location, achievementFocus)
+						.Any(f => f.SpectralFish == context.Spectraled);
+				}
+			}
+
+			// A bait selector explicitly flagged this cast as chasing one specific prerequisite fish
+			// (mooch-chain source, or an Intuition prereq) — honor that regardless of FishPriority;
+			// the bait itself was chosen for that fish, so anything else biting is a distraction.
+			uint chainTarget = context.LastCastMooch ? context.ChainMoochTargetFishId : context.ChainCastTargetFishId;
+			bool chainTargetActive = chainTarget != 0;
+
+			// No narrow-target condition is actually active right now — hook everything as normal.
+			if (!targetFishHere && !achievementFishHere && !chainTargetActive)
+				return true;
+
+			var bestGuess = matchedFish.FirstOrDefault();
+			if (bestGuess == null)
+				return true; // no prediction available — don't block hooking on uncertainty
+
+			if (chainTargetActive)
+			{
+				if (bestGuess.FishID == (int)chainTarget)
+					return true;
+
+				// A mooch can sometimes catch the same source fish again instead of the intended
+				// target (e.g. Snapping Koban can mooch into itself) — accept a re-catch of the
+				// cast-source fish too, so the chain continues with another mooch attempt instead
+				// of discarding a valid catch and restarting from a fresh cast.
+				if (context.LastCastMooch && context.ChainCastTargetFishId != 0 && bestGuess.FishID == (int)context.ChainCastTargetFishId)
+					return true;
+
+				return false;
+			}
+
+			if (targetFishHere && bestGuess.FishID == (int)targetFishId)
+				return true;
+
+			if (achievementFishHere &&
+				!string.IsNullOrEmpty(bestGuess.Achievement) &&
+				AchievementFishDataCache.MapAchievementString(bestGuess.Achievement) == achievementFocus)
+				return true;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Points-based DH/TH decision: only worth it if the top-candidate fish's total expected
+		/// payoff (Points x DH/TH catch-count bonus) exceeds the real GP cost of the action
+		/// (400 for Double Hook, 700 for Triple Hook — verified against game data). Uses only the
+		/// closest bite-time match, not any fuzzy candidate in the pool — a low-confidence guess
+		/// shouldn't justify a 400-700 GP spend.
+		/// </summary>
+		private bool IsPointsWorthDoubleHook(List<Fish> matchingFish)
+		{
+			var bestGuess = matchingFish.FirstOrDefault();
+			if (bestGuess == null)
+				return false;
+
+			return (bestGuess.Points * bestGuess.THBonus > FishingConstants.TRIPLE_HOOK_GP_COST && bestGuess.THBonus > 1)
+				|| (bestGuess.Points * bestGuess.DHBonus > FishingConstants.DOUBLE_HOOK_GP_COST && bestGuess.DHBonus > 1);
 		}
 
 		/// <summary>
@@ -360,6 +452,18 @@ namespace OceanTripPlanner.Strategies
 		public string TimeOfDay { get; set; }
 		public RouteWithFish CurrentRoute { get; set; }
 		public bool LastCastMooch { get; set; }
+
+		/// <summary>
+		/// Non-zero when this cast is chasing a specific prerequisite fish (mooch-chain source,
+		/// or an Intuition prereq) — set by the bait selector that ran before this cast.
+		/// </summary>
+		public uint ChainCastTargetFishId { get; set; }
+
+		/// <summary>
+		/// Non-zero when a mooch off this cast's catch is chasing a specific fish. Only relevant
+		/// when LastCastMooch is true (i.e. this bite came from a mooch, not a plain cast).
+		/// </summary>
+		public uint ChainMoochTargetFishId { get; set; }
 
 		private Action<bool> _onHookExecutedCallback;
 

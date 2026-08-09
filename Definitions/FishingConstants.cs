@@ -32,6 +32,22 @@ namespace OceanTripPlanner.Definitions
 		/// </summary>
 		public const int FULL_GP_BUFFER = 100;
 
+		/// <summary>
+		/// Real GP cost of Double Hook, verified via game data (XIVAPI Action 269)
+		/// </summary>
+		public const int DOUBLE_HOOK_GP_COST = 400;
+
+		/// <summary>
+		/// Real GP cost of Triple Hook, verified via game data (XIVAPI Action 27523)
+		/// </summary>
+		public const int TRIPLE_HOOK_GP_COST = 700;
+
+		/// <summary>
+		/// Safety cap on consecutive Thaliak's Favor casts per check (stacks self-limit at ~3 uses
+		/// per full Angler's Art bank of 10, this just guards against an unexpected infinite loop)
+		/// </summary>
+		public const int THALIAK_MAX_CHAIN_USES = 4;
+
 		// ========================================
 		// LURE CONSTANTS
 		// ========================================

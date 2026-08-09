@@ -100,9 +100,45 @@ namespace OceanTripPlanner.Strategies
 							if (prereqFish != null)
 							{
 								selectedBait = prereqFish.FavoriteBait;
+								context.ChainCastTargetFishId = (uint)prereq.FishID;
 								var caught = caughtFish.Count(x => x == (uint)prereq.FishID);
 								baitReason = $"Targeting {caught}/{prereq.Count}x {prereqFish.FishName} (prereq for missing {missingIntuitionFish.FishName})";
 								break;
+							}
+						}
+					}
+
+					// Mooch-type prereqs: the fish to mooch FROM isn't tracked in IntuitionPrereqs
+					// at all (only the mooch target and count are), so these can't be resolved
+					// generically. Only the chains confirmed against the community spreadsheet /
+					// known game mechanics are hardcoded here.
+					if (selectedBait == 0)
+					{
+						var moochPrereq = missingIntuitionFish.IntuitionPrereqs
+							.FirstOrDefault(p => p.IsMooch && caughtFish.Count(x => x == (uint)p.FishID) < p.Count);
+
+						if (moochPrereq != null)
+						{
+							uint moochSourceFishId = 0;
+							if (moochPrereq.FishID == OceanFish.ElderDinichthys)
+								moochSourceFishId = (uint)OceanFish.TossedDagger; // Shooting Star chain
+							else if (moochPrereq.FishID == OceanFish.Gladius)
+								moochSourceFishId = (uint)OceanFish.GhoulBarracuda; // Little Leviathan chain
+							else if (moochPrereq.FishID == OceanFish.SilentShark)
+								moochSourceFishId = (uint)OceanFish.LeopardPrawn; // Mizuhiki chain — repeats (needs 2x Silent Shark)
+
+							if (moochSourceFishId != 0)
+							{
+								var sourceFish = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == (int)moochSourceFishId);
+								if (sourceFish != null)
+								{
+									context.ShouldMooch = true;
+									selectedBait = sourceFish.FavoriteBait;
+									context.ChainCastTargetFishId = moochSourceFishId;
+									context.ChainMoochTargetFishId = (uint)moochPrereq.FishID;
+									var moochTargetName = _gameCache.GetItemName((uint)moochPrereq.FishID);
+									baitReason = $"Switching bait to {_gameCache.GetItemName(sourceFish.FavoriteBait)} in order to catch 1x {sourceFish.FishName} to mooch into {moochTargetName} (prereq for missing {missingIntuitionFish.FishName})";
+								}
 							}
 						}
 					}

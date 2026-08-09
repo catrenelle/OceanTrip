@@ -172,7 +172,9 @@ namespace OceanTripPlanner.Strategies
 							Location = context.Location,
 							TimeOfDay = context.TimeOfDay,
 							CurrentRoute = context.CurrentRoute,
-							LastCastMooch = context.GetLastCastMooch()
+							LastCastMooch = context.GetLastCastMooch(),
+							ChainCastTargetFishId = context.GetChainCastTargetFishId(),
+							ChainMoochTargetFishId = context.GetChainMoochTargetFishId()
 						};
 						hookContext.SetHookExecutedCallback(context.OnHookExecutedCallback);
 						await _hookingStrategy.ExecuteHook(hookContext);
@@ -306,10 +308,16 @@ namespace OceanTripPlanner.Strategies
 		// State management
 		private bool _lastCastMooch;
 		private bool _shouldMooch;
+		private uint _chainCastTargetFishId;
+		private uint _chainMoochTargetFishId;
 
 		public bool GetLastCastMooch() => _lastCastMooch;
 		public void SetLastCastMooch(bool value) => _lastCastMooch = value;
 		public bool GetShouldMooch() => _shouldMooch;
 		public void SetShouldMooch(bool value) => _shouldMooch = value;
+		public uint GetChainCastTargetFishId() => _chainCastTargetFishId;
+		public void SetChainCastTargetFishId(uint value) => _chainCastTargetFishId = value;
+		public uint GetChainMoochTargetFishId() => _chainMoochTargetFishId;
+		public void SetChainMoochTargetFishId(uint value) => _chainMoochTargetFishId = value;
 	}
 }

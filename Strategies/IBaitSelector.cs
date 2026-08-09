@@ -42,5 +42,18 @@ namespace OceanTripPlanner.Strategies
 		/// FishingSessionManager checks this before mooching — prevents blind mooch loops.
 		/// </summary>
 		public bool ShouldMooch { get; set; }
+
+		/// <summary>
+		/// When non-zero, the specific fish this cast is chasing as a prerequisite (e.g. the source
+		/// fish for a mooch chain, or an Intuition prereq). Lets HookingStrategy decline bites that
+		/// aren't this fish instead of catching whatever bites and derailing the chain.
+		/// </summary>
+		public uint ChainCastTargetFishId { get; set; }
+
+		/// <summary>
+		/// When non-zero, the specific fish the *mooch* off this cast's catch is chasing (only
+		/// relevant once ShouldMooch fires and the following cast is a mooch, not a plain cast).
+		/// </summary>
+		public uint ChainMoochTargetFishId { get; set; }
 	}
 }
