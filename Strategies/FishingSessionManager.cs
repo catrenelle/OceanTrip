@@ -114,6 +114,13 @@ namespace OceanTripPlanner.Strategies
 							// Select and apply bait based on current conditions
 							await context.SelectAndApplyBaitCallback(spectraled);
 
+							// Prize Catch before Cast, not after a bite — it's a pre-commit buff
+							// ("next catch is Large") that has to be up before the line goes out to
+							// cover a blind Double/Triple Hook. Mooch bites don't go through this
+							// branch, matching the guide's advice that spending it on a Mooch is
+							// rarely worthwhile.
+							await context.PrizeCatchCallback(spectraled);
+
 							Log("Casting!", OceanLogLevel.Debug);
 
 							FishingManager.Cast();
@@ -175,7 +182,8 @@ namespace OceanTripPlanner.Strategies
 							LastCastMooch = context.GetLastCastMooch(),
 							ChainCastTargetFishId = context.GetChainCastTargetFishId(),
 							ChainMoochTargetFishId = context.GetChainMoochTargetFishId(),
-							MissionRequiredTugType = context.GetMissionRequiredTugType()
+							MissionRequiredTugType = context.GetMissionRequiredTugType(),
+							MissionRequiredAchievementTags = context.GetMissionRequiredAchievementTags()
 						};
 						hookContext.SetHookExecutedCallback(context.OnHookExecutedCallback);
 						await _hookingStrategy.ExecuteHook(hookContext);
@@ -304,6 +312,7 @@ namespace OceanTripPlanner.Strategies
 		public Func<bool, Task> ManageBuffsCallback { get; set; }
 		public Func<Task<bool>> ProcessCaughtFishCallback { get; set; }
 		public Func<bool, Task> SelectAndApplyBaitCallback { get; set; }
+		public Func<bool, Task> PrizeCatchCallback { get; set; }
 		public Action<bool> OnHookExecutedCallback { get; set; }
 
 		// State management
@@ -312,6 +321,7 @@ namespace OceanTripPlanner.Strategies
 		private uint _chainCastTargetFishId;
 		private uint _chainMoochTargetFishId;
 		private TugType? _missionRequiredTugType;
+		private string[] _missionRequiredAchievementTags;
 
 		public bool GetLastCastMooch() => _lastCastMooch;
 		public void SetLastCastMooch(bool value) => _lastCastMooch = value;
@@ -323,5 +333,7 @@ namespace OceanTripPlanner.Strategies
 		public void SetChainMoochTargetFishId(uint value) => _chainMoochTargetFishId = value;
 		public TugType? GetMissionRequiredTugType() => _missionRequiredTugType;
 		public void SetMissionRequiredTugType(TugType? value) => _missionRequiredTugType = value;
+		public string[] GetMissionRequiredAchievementTags() => _missionRequiredAchievementTags;
+		public void SetMissionRequiredAchievementTags(string[] value) => _missionRequiredAchievementTags = value;
 	}
 }

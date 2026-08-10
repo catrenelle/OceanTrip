@@ -1,0 +1,107 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Ocean Trip"
+        Width="1180" Height="680"
+        MinWidth="720" MinHeight="480"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        Background="{DynamicResource BackgroundBrush}">
+	<shell:WindowChrome.WindowChrome>
+		<shell:WindowChrome CaptionHeight="0"
+		                     ResizeBorderThickness="6"
+		                     GlassFrameThickness="0"
+		                     CornerRadius="10" />
+	</shell:WindowChrome.WindowChrome>
+	<Border x:Name="RootBorder" Background="{DynamicResource BackgroundBrush}">
+		<Border.Style>
+			<Style TargetType="Border">
+				<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+				<Setter Property="BorderThickness" Value="1" />
+				<Setter Property="CornerRadius" Value="10" />
+				<Style.Triggers>
+					<DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+						<Setter Property="BorderThickness" Value="0" />
+						<Setter Property="CornerRadius" Value="0" />
+					</DataTrigger>
+				</Style.Triggers>
+			</Style>
+		</Border.Style>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="48" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="26" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="210" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<!-- Title bar: logo, drag-to-move, window controls -->
+			<Grid x:Name="TitleBar" Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource SurfaceBrush}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+					<Image x:Name="LogoImage" Height="40" />
+				</StackPanel>
+
+				<Button x:Name="MinimizeButton" Grid.Column="1" Height="48" Style="{DynamicResource TitleBarButton}">
+					<Line X1="0" Y1="0" X2="10" Y2="0" Stroke="{DynamicResource TextSecondaryBrush}"
+					      StrokeThickness="1.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+				</Button>
+
+				<Button x:Name="MaximizeButton" Grid.Column="2" Height="48" Style="{DynamicResource TitleBarButton}">
+					<Rectangle Width="10" Height="10" Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.4" />
+				</Button>
+
+				<Button x:Name="CloseButton"
+				        Grid.Column="3"
+				        Content="&#xE711;"
+				        FontFamily="Segoe MDL2 Assets"
+				        Height="48"
+				        Style="{DynamicResource TitleBarButton}" />
+			</Grid>
+
+			<!-- Nav sidebar -->
+			<StackPanel Grid.Row="1" Grid.Column="0" Background="{DynamicResource SurfaceBrush}">
+				<StackPanel Margin="8,16,8,8">
+					<Button x:Name="NavIdleActivities" Content="Idle Activities" Style="{DynamicResource NavButton}" Margin="0,0,0,4" Tag="Active" />
+					<Button x:Name="NavOceanSettings" Content="Ocean Settings" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
+					<Button x:Name="NavSchedule" Content="Schedule" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
+					<Button x:Name="NavCurrentRoute" Content="Current Route" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
+				</StackPanel>
+
+				<Border Height="1" Background="{DynamicResource BorderBrush}" Margin="16,8" />
+
+				<StackPanel Margin="8,8,8,8">
+					<Button x:Name="NavLisbeth" Content="Lisbeth" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
+					<Button x:Name="NavLlamaMarket" Content="Llama Market" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
+				</StackPanel>
+			</StackPanel>
+
+			<!-- Page content — no margin here; each page controls its own inner padding so its
+			     ScrollViewer (and scrollbar) can span the full content area edge-to-edge. -->
+			<ContentControl x:Name="PageContent" Grid.Row="1" Grid.Column="1" />
+
+			<!-- Status bar: live connection state -->
+			<Grid Grid.Row="2" Grid.ColumnSpan="2" Background="{DynamicResource SurfaceBrush}">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="1" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Border Grid.Row="0" Background="{DynamicResource BorderBrush}" />
+				<StackPanel Grid.Row="1" Orientation="Horizontal" Margin="16,0" VerticalAlignment="Center">
+					<Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+					<TextBlock x:Name="StatusText" Text="Checking..." Style="{DynamicResource SecondaryText}" Margin="8,0,0,0" VerticalAlignment="Center" />
+				</StackPanel>
+			</Grid>
+		</Grid>
+	</Border>
+</Window>

@@ -9,6 +9,40 @@ namespace OceanTripPlanner.Definitions
 	public static class FishingConstants
 	{
 		// ========================================
+		// LEVELING MODE CONSTANTS
+		// ========================================
+
+		/// <summary>
+		/// Fisher level below which Auto priority resolves to Leveling mode instead — see
+		/// OceanTripNewSettings.EffectiveFishPriority.
+		/// </summary>
+		public const int LEVELING_MODE_LEVEL_CAP = 90;
+
+		/// <summary>
+		/// The only baits Leveling mode ever equips or restocks — cheap, purchasable, and enough to
+		/// catch something on every route without needing any of the specialty/prereq-chain baits the
+		/// other priorities use.
+		/// </summary>
+		public static readonly HashSet<uint> LEVELING_ALLOWED_BAITS = new HashSet<uint>
+		{
+			FishBait.Krill,
+			FishBait.Ragworm,
+			FishBait.PlumpWorm,
+		};
+
+		// ========================================
+		// QUEST GATING CONSTANTS
+		// ========================================
+
+		/// <summary>
+		/// "All the Fish in the Sea" — the Fisher quest that unlocks Ocean Fishing voyages.
+		/// Verified via XIVAPI Quest 69379. Passed directly to QuestLogManager.IsQuestCompleted, which
+		/// takes the raw Quest-sheet row ID (matches FFXIVClientStructs' own IsQuestComplete(uint)
+		/// convenience overload — no manual 0x10000 offset needed).
+		/// </summary>
+		public const uint OCEAN_FISHING_UNLOCK_QUEST_ID = 69379;
+
+		// ========================================
 		// GP MANAGEMENT CONSTANTS
 		// ========================================
 
@@ -43,10 +77,27 @@ namespace OceanTripPlanner.Definitions
 		public const int TRIPLE_HOOK_GP_COST = 700;
 
 		/// <summary>
+		/// Real GP cost of Prize Catch, verified via game data (XIVAPI Action 26806)
+		/// </summary>
+		public const int PRIZE_CATCH_GP_COST = 200;
+
+		/// <summary>
+		/// Real GP cost of Identical Cast, verified via game data (XIVAPI Action 4596)
+		/// </summary>
+		public const int IDENTICAL_CAST_GP_COST = 350;
+
+		/// <summary>
 		/// Safety cap on consecutive Thaliak's Favor casts per check (stacks self-limit at ~3 uses
 		/// per full Angler's Art bank of 10, this just guards against an unexpected infinite loop)
 		/// </summary>
 		public const int THALIAK_MAX_CHAIN_USES = 4;
+
+		/// <summary>
+		/// A spectral current can no longer start once a stop's remaining time drops below this
+		/// (game rule, not a tunable). Past this point there's nothing left to bank GP for at this
+		/// stop, so GP-banking should release back to normal top-up behavior.
+		/// </summary>
+		public const int SPECTRAL_CUTOFF_SECONDS = 90;
 
 		// ========================================
 		// LURE CONSTANTS
@@ -174,6 +225,19 @@ namespace OceanTripPlanner.Definitions
 		/// Timeout for waiting for shop window to close (2000ms = 2 seconds)
 		/// </summary>
 		public const int SHOP_CLOSE_TIMEOUT_MS = 2000;
+
+		/// <summary>
+		/// FishingManager.ChangeBait can legitimately return false (no exception) if its internal
+		/// bait-selection window isn't open/ready yet — a brief retry clears that race. Delay
+		/// between attempts (300ms).
+		/// </summary>
+		public const int BAIT_CHANGE_RETRY_DELAY_MS = 300;
+
+		/// <summary>
+		/// Max attempts for a single BaitChanger.ChangeBait call before giving up and logging a
+		/// failure instead of silently casting with the wrong bait still equipped.
+		/// </summary>
+		public const int BAIT_CHANGE_MAX_ATTEMPTS = 3;
 
 		// ========================================
 		// BOAT QUEUE TIMING CONSTANTS

@@ -116,6 +116,11 @@ namespace OceanTripPlanner.Strategies
 			if (pref == LurePreference.None)
 				return false;
 
+			// Leveling mode never uses lures — it's meant to be the simplest possible loop, and
+			// lures spend GP a leveling character often can't spare.
+			if (OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Leveling)
+				return false;
+
 			// Never during spectral — lures group all fast-biting spectral fish together,
 			// making bite-time identification impossible
 			if (context.Spectraled)

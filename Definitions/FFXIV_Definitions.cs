@@ -212,9 +212,23 @@ namespace OceanTripPlanner.Definitions
 		public const uint PrecisionHookset = 4179;
 		public const uint IdenticalCast = 4596;
 		public const uint ThaliaksFavor = 26804;
+
+		/// <summary>
+		/// Guarantees the next catch is Large (2x points), until you catch something or quit fishing.
+		/// Verified via XIVAPI Action 26806: Name "Prize Catch", ClassJobLevel 81, GP cost 200.
+		/// </summary>
+		public const uint PrizeCatch = 26806;
+
 		public const uint TripleHook = 27523;
 		public const uint ModestLure = 37595;
 		public const uint AmbitiousLure = 37594;
+
+		/// <summary>
+		/// "Abandons fishing but keeps your equipment at the ready" (GP cost 0, level 1, Fisher-only).
+		/// Verified via XIVAPI Action sheet row 37047. Lets us bail out of an unwanted bite
+		/// immediately instead of letting it sit until the bite times out on its own.
+		/// </summary>
+		public const uint Rest = 37047;
 	}
 
 	public static class CharacterAuras

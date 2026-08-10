@@ -1,0 +1,91 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<StackPanel Margin="28">
+		<TextBlock Text="Schedule" Style="{DynamicResource HeaderText}" />
+		<TextBlock Text="Where would you like to go today?" Style="{DynamicResource SecondaryText}" Margin="0,0,0,10" />
+
+		<GroupBox Header="Simulate Current Route" Style="{DynamicResource Card}">
+			<StackPanel Orientation="Horizontal">
+				<CheckBox x:Name="SimulateEnabledCheck" Content="Enable" Margin="0,0,24,0" VerticalAlignment="Center" />
+				<TextBlock Text="Route:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+				<ComboBox x:Name="SimRouteCombo" Width="100" Margin="0,0,24,0">
+					<ComboBoxItem Content="Indigo" />
+					<ComboBoxItem Content="Ruby" />
+				</ComboBox>
+				<TextBlock Text="Stop:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+				<ComboBox x:Name="SimLegCombo" Width="100" Margin="0,0,24,0">
+					<ComboBoxItem Content="Stop 1" />
+					<ComboBoxItem Content="Stop 2" />
+					<ComboBoxItem Content="Stop 3" />
+				</ComboBox>
+				<Button x:Name="RerollMissionsButton" Content="Reroll Missions" Style="{DynamicResource PrimaryButton}" />
+			</StackPanel>
+		</GroupBox>
+
+		<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+			<TextBlock Text="Route:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+			<ComboBox x:Name="RouteCombo" Width="120">
+				<ComboBoxItem Content="Indigo" />
+				<ComboBoxItem Content="Ruby" />
+			</ComboBox>
+		</StackPanel>
+
+		<DataGrid x:Name="ScheduleGrid"
+		          AutoGenerateColumns="False"
+		          IsReadOnly="True"
+		          CanUserAddRows="False"
+		          CanUserDeleteRows="False"
+		          CanUserResizeRows="False"
+		          CanUserSortColumns="False"
+		          HeadersVisibility="Column"
+		          GridLinesVisibility="Horizontal"
+		          Background="{DynamicResource SurfaceBrush}"
+		          Foreground="{DynamicResource TextPrimaryBrush}"
+		          BorderThickness="1"
+		          BorderBrush="{DynamicResource BorderBrush}"
+		          RowBackground="{DynamicResource SurfaceBrush}"
+		          AlternatingRowBackground="{DynamicResource BackgroundBrush}"
+		          HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+		          VerticalGridLinesBrush="{DynamicResource BorderBrush}"
+		          RowHeaderWidth="0"
+		          MaxHeight="520">
+			<DataGrid.ColumnHeaderStyle>
+				<Style TargetType="DataGridColumnHeader">
+					<Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+					<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+					<Setter Property="FontFamily" Value="Segoe UI" />
+					<Setter Property="FontSize" Value="12" />
+					<Setter Property="FontWeight" Value="SemiBold" />
+					<Setter Property="Padding" Value="8,6" />
+					<Setter Property="HorizontalContentAlignment" Value="Left" />
+				</Style>
+			</DataGrid.ColumnHeaderStyle>
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="70" />
+				<DataGridTextColumn Header="Route Start Time" Binding="{Binding Time}" Width="130" />
+				<DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="*" />
+				<DataGridTemplateColumn Header="Time of Day" Width="90">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Image Source="{Binding TimeOfDayIcon}" Width="22" Height="22" Margin="4" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="First Objective" Width="110">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Image Source="{Binding Objective1Icon}" ToolTip="{Binding Objective1Name}" Width="22" Height="22" Margin="4" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Second Objective" Width="110">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Image Source="{Binding Objective2Icon}" ToolTip="{Binding Objective2Name}" Width="22" Height="22" Margin="4" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</StackPanel>
+</UserControl>

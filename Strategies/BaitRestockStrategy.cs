@@ -38,9 +38,11 @@ namespace OceanTripPlanner.Strategies
 		}
 
 		/// <summary>
-		/// Restock all required baits based on inventory thresholds
+		/// Restock all required baits based on inventory thresholds. When allowedBaits is provided
+		/// (Leveling mode), every other bait is skipped entirely regardless of its own threshold —
+		/// Leveling never acquires anything beyond that set.
 		/// </summary>
-		public async Task RestockBait(int defaultThreshold, uint defaultAmount)
+		public async Task RestockBait(int defaultThreshold, uint defaultAmount, HashSet<uint> allowedBaits = null)
 		{
 			// Build configuration for each bait type
 			var baitConfigs = new List<BaitConfig>
@@ -65,7 +67,8 @@ namespace OceanTripPlanner.Strategies
 
 			// Determine which baits need restocking
 			var baitsToRestock = baitConfigs
-				.Where(config => PassTheTime.inventoryCount((int)config.BaitId) < config.Threshold && config.CanAcquire())
+				.Where(config => (allowedBaits == null || allowedBaits.Contains(config.BaitId))
+					&& PassTheTime.inventoryCount((int)config.BaitId) < config.Threshold && config.CanAcquire())
 				.ToList();
 
 			if (!baitsToRestock.Any())

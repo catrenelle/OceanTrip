@@ -1,0 +1,79 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Grid>
+		<StackPanel x:Name="EmptyStatePanel" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+			<TextBlock Text="Not Currently on an Ocean Voyage" Style="{DynamicResource HeaderText}" HorizontalAlignment="Center" />
+			<TextBlock Text="Board the ferry to see live fish tracking for your current route."
+			           Style="{DynamicResource SecondaryText}" HorizontalAlignment="Center" />
+		</StackPanel>
+
+		<ScrollViewer x:Name="ContentScroll" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+			<StackPanel Margin="28">
+				<Border x:Name="SimulationBanner" Visibility="Collapsed" Margin="0,0,0,12" Padding="10,6"
+				        CornerRadius="4" Background="#33FFA726" BorderBrush="#FFA726" BorderThickness="1">
+					<TextBlock Text="Simulation Mode — showing a simulated route/stop from the Schedule page, not live game state"
+					           Style="{DynamicResource BodyText}" FontWeight="SemiBold" TextWrapping="Wrap" />
+				</Border>
+
+				<!-- Banner: FFXIV's own Ocean Fishing Duty Finder artwork (Resources/OceanFishingBanner.png,
+				     extracted from ContentFinderCondition row 730's Image_hr1 field) as a backsplash.
+				     Route name/status + recommended bait live in the left column, active missions in
+				     the right — a full-panel dark scrim (not just a bottom gradient) keeps both legible
+				     regardless of where they land over the photo. Self-sizes to its content (MinHeight
+				     only) so it doesn't reserve empty space when there are no active missions, and the
+				     missions column collapses to 0 width in that case so the left column fills in. -->
+				<Border x:Name="RouteBannerCard" MinHeight="150" Margin="0,0,0,16" CornerRadius="10">
+					<Border.Background>
+						<ImageBrush x:Name="RouteBannerBrush" Stretch="UniformToFill" />
+					</Border.Background>
+					<Grid>
+						<Border CornerRadius="10" Background="#C20A0B12" />
+
+						<Grid Margin="20,16,20,16">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition x:Name="MissionsColumnDef" Width="210" />
+							</Grid.ColumnDefinitions>
+
+							<StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="0,0,20,0">
+								<TextBlock x:Name="RouteHeaderText" Text="Current Route"
+								           FontFamily="Segoe UI" FontSize="22" FontWeight="Bold" Foreground="White" />
+								<TextBlock x:Name="RouteSubText" FontFamily="Segoe UI" FontSize="12"
+								           Foreground="#DDDDDD" Margin="0,2,0,16" />
+
+								<TextBlock Text="RECOMMENDED BAIT" FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
+								           Foreground="#6EC6F0" Margin="0,0,0,8" />
+								<Grid HorizontalAlignment="Left">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
+									<StackPanel x:Name="NormalBaitPanel" Grid.Column="0" Margin="0,0,24,0" />
+									<StackPanel x:Name="SpectralBaitPanel" Grid.Column="1" />
+								</Grid>
+							</StackPanel>
+
+							<StackPanel x:Name="MissionsColumn" Grid.Column="1" VerticalAlignment="Top">
+								<TextBlock Text="CURRENT MISSIONS" FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
+								           Foreground="#6EC6F0" Margin="0,0,0,8" />
+								<StackPanel x:Name="MissionsPanel" />
+							</StackPanel>
+						</Grid>
+					</Grid>
+				</Border>
+
+				<GroupBox x:Name="FishLogTargetGroup" Header="Fishing Log Target" Style="{DynamicResource Card}" Visibility="Collapsed">
+					<WrapPanel x:Name="FishLogTargetPanel" Orientation="Horizontal" />
+				</GroupBox>
+
+				<GroupBox Header="Normal Fish" Style="{DynamicResource Card}">
+					<WrapPanel x:Name="NormalFishPanel" Orientation="Horizontal" />
+				</GroupBox>
+
+				<GroupBox Header="Spectral Current Fish" Style="{DynamicResource Card}">
+					<WrapPanel x:Name="SpectralFishPanel" Orientation="Horizontal" />
+				</GroupBox>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
+</UserControl>

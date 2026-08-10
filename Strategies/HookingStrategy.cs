@@ -40,7 +40,11 @@ namespace OceanTripPlanner.Strategies
 			// Chum reduces bite time by ~50% — double observed time to match our database windows
 			double matchElapsed = hasChum ? biteElapsed * 2.0 : biteElapsed;
 
-			// Cache current weather to avoid repeated API calls in LINQ queries
+			// Force a fresh read rather than relying on GameStateCache's ambient 100ms-throttled
+			// RefreshIfNeeded() polling from the outer bite-wait loop — weather can change (e.g. the
+			// moment Spectral Current ends) in that gap, and this decision (hook accept/decline,
+			// DH/TH, exclusion logging) only runs once per bite, so a full refresh here is cheap.
+			_gameCache.Refresh();
 			string currentWeather = _gameCache.CurrentWeather;
 
 			// Build fish lists for bite prediction - first try exact match, then fallback to nearest
@@ -85,7 +89,20 @@ namespace OceanTripPlanner.Strategies
 			if (!ShouldAttemptHook(context, matchedFish))
 			{
 				var bestGuessName = matchedFish.Any() ? _gameCache.GetItemName((uint)matchedFish.First().FishID) : "unknown fish";
-				Log($"Declining bite — predicted {bestGuessName} isn't the current target, skipping to avoid a wasted catch.", OceanLogLevel.Debug);
+
+				// Rest (0 GP) safely abandons the bite immediately instead of waiting for it to
+				// time out on its own — no risk of accidentally hooking the unwanted fish, and it
+				// doesn't strip buffs (Intuition, Chum, etc.) the way some other bail-out paths would.
+				if (ActionManager.CanCast(Actions.Rest, Core.Me))
+				{
+					Log($"Declining bite — predicted {bestGuessName} isn't the current target. Using Rest to bail out.", OceanLogLevel.Debug);
+					ActionManager.DoAction(Actions.Rest, Core.Me);
+				}
+				else
+				{
+					Log($"Declining bite — predicted {bestGuessName} isn't the current target, skipping to avoid a wasted catch.", OceanLogLevel.Debug);
+				}
+
 				context.OnHookExecuted(false);
 				return Task.CompletedTask;
 			}
@@ -114,8 +131,12 @@ namespace OceanTripPlanner.Strategies
 						doubleHook = IsPointsWorthDoubleHook(matchingFish);
 					}
 				}
-				else if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
+				else if (OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Points || OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Auto)
 				{
+					// Leveling mode (a raw Auto reading resolves here when EffectiveFishPriority
+					// isn't Points/Auto) never reaches this branch — no DH/TH points-chasing while
+					// leveling, just a plain Hook on whatever bites.
+
 					// Special handling for South's lastMooch rule - Always DH/TH after a Mooch in South if spectral.
 					if (context.Location == "south" && context.LastCastMooch && (context.TimeOfDay == "Sunset" || context.TimeOfDay == "Night") && context.Spectraled)
 					{
@@ -137,6 +158,20 @@ namespace OceanTripPlanner.Strategies
 				{
 					Log("Bite matches an active bite-strength mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
 					doubleHook = true;
+				}
+
+				// Category missions ("Catch sharks", "Catch fugu"): same idea, but matched by the
+				// predicted fish's Achievement tag instead of tug type — a multi-catch hookset nets
+				// several of the matching category at once.
+				if (!doubleHook && context.MissionRequiredAchievementTags != null)
+				{
+					var bestGuess = matchedFish.FirstOrDefault();
+					if (bestGuess != null && !string.IsNullOrEmpty(bestGuess.Achievement)
+						&& context.MissionRequiredAchievementTags.Contains(bestGuess.Achievement))
+					{
+						Log("Bite matches an active category mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
+						doubleHook = true;
+					}
 				}
 			}
 
@@ -481,6 +516,13 @@ namespace OceanTripPlanner.Strategies
 		/// regardless of the usual points/GP-cost math, since it multiplies mission progress.
 		/// </summary>
 		public TugType? MissionRequiredTugType { get; set; }
+
+		/// <summary>
+		/// Set when an active category mission ("Catch sharks", "Catch fugu") still needs progress —
+		/// a bite whose predicted fish's Achievement tag is in this list is worth Double/Triple
+		/// Hooking for the same reason as MissionRequiredTugType.
+		/// </summary>
+		public string[] MissionRequiredAchievementTags { get; set; }
 
 		private Action<bool> _onHookExecutedCallback;
 

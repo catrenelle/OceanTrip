@@ -1,5 +1,8 @@
 using System;
 using System.ComponentModel;
+using ff14bot;
+using ff14bot.Enums;
+using OceanTripPlanner.Definitions;
 using OceanTripPlanner.Settings;
 
 namespace OceanTripPlanner
@@ -18,7 +21,15 @@ namespace OceanTripPlanner
 		Points,
 		Auto,
 		IgnoreBoat,
-		Achievements
+		Achievements,
+
+		/// <summary>
+		/// Below Fisher level 90: catch anything, only using Krill/Ragworm/Plump Worm, no lures, no
+		/// restocking any other bait — simplest possible loop for gaining Fisher XP. Selectable
+		/// directly, or entered automatically by Auto mode below level 90 — see
+		/// OceanTripNewSettings.EffectiveFishPriority.
+		/// </summary>
+		Leveling
 	}
 
 	public enum OceanFood : int
@@ -708,6 +719,29 @@ namespace OceanTripPlanner
 		{
 			get => _settings.FishPriority;
 			set => _settings.FishPriority = value;
+		}
+
+		/// <summary>
+		/// What every decision (bait, lures, restocking, hooking) should actually treat the priority
+		/// as — the raw FishPriority setting, except Auto resolves to Leveling below Fisher level 90.
+		/// A leveling character has none of the DH/TH/Prize Catch/points-optimization abilities
+		/// unlocked anyway, and dragging Auto's missing-fish/points bait logic in during that window
+		/// just wastes bait it can't use — better to keep it simple until level 90.
+		///
+		/// Reads Core.Me.Levels[ClassJobType.Fisher] (the same per-job lookup BaitRestockStrategy
+		/// already uses for its Goldsmith check), not Core.Me.ClassLevel — ClassLevel only reflects
+		/// whichever job is currently active, which would read the wrong level entirely if the bot is
+		/// started before switching to Fisher.
+		/// </summary>
+		public FishPriority EffectiveFishPriority
+		{
+			get
+			{
+				if (FishPriority == FishPriority.Auto && Core.Me.Levels[ClassJobType.Fisher] < FishingConstants.LEVELING_MODE_LEVEL_CAP)
+					return FishPriority.Leveling;
+
+				return FishPriority;
+			}
 		}
 
 		public bool LateBoatQueue

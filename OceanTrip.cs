@@ -54,6 +54,11 @@ namespace OceanTripPlanner
 		// "not yet observed" so a real progress of 0 still logs once.
 		private readonly ushort[] lastLoggedMissionProgress = { ushort.MaxValue, ushort.MaxValue, ushort.MaxValue };
 
+		// Whether a spectral current has already occurred at the current stop. Reset on stop
+		// transition (see the lastLoggedLocation check below); set once spectral is observed active.
+		// Used to gate GP-banking — see ManageBuffsAndConsumables.
+		private bool _hadSpectralThisStop;
+
 		private bool ignoreBoat { get { if (OceanTripNewSettings.Instance.FishPriority == FishPriority.IgnoreBoat) { return true; } else { return false; } } }
 
 		private static Random rnd = new Random();
@@ -88,26 +93,17 @@ namespace OceanTripPlanner
 
 		public override bool WantButton { get; } = true;
 
-		private static Ocean_Trip.FormSettings settings;
-
 		public Ocean_Trip.Endeavor Endeavor;
 
 		private GameStateCache gameCache => GameStateCache.Instance;
-
-		/// <summary>
-		/// Initialize or reinitialize settings form
-		/// </summary>
-		private void InitializeSettings()
-		{
-			if (settings == null || settings.IsDisposed)
-				settings = new Ocean_Trip.FormSettings();
-		}
 
 		/// <summary>
 		/// Initialize shared resources used by both OnButtonPress and Start
 		/// </summary>
 		private void InitializeSharedResources()
 		{
+			Ocean_Trip.OceanFishingOffsetSync.RunAsync();
+
 			FFXIV_Databinds.Instance.RefreshBait();
 			FFXIV_Databinds.Instance.RefreshAchievements();
 
@@ -115,26 +111,19 @@ namespace OceanTripPlanner
 			FishDataCache.GetFish();
 			RouteDataCache.GetRoutesWithFish();
 
-			FFXIV_Databinds.Instance.RefreshCurrentRoute();
-
 			if (Endeavor == null)
 				Endeavor = new Ocean_Trip.Endeavor();
 		}
 
 		public override void OnButtonPress()
 		{
-			InitializeSettings();
-
 			try
 			{
-				// Temporary. Future item to come. Currently not working and is a proof of concept. :)
-				//settings.tempHideRouteInformationTab();
-
-				settings.Show();
-				settings.Activate();
+				Ocean_Trip.UI.Wpf.ShellWindow.Show();
 			}
-			catch
+			catch (Exception ex)
 			{
+				Logging.Write(Colors.Red, $"[Ocean Trip] WPF shell failed: {ex}");
 			}
 
 			InitializeSharedResources();
@@ -142,11 +131,27 @@ namespace OceanTripPlanner
 
 		public override void Start()
 		{
-			TreeHooks.Instance.ClearAll();
+			// Ocean Fishing itself is gated behind a Fisher quest — without it, none of the Endeavor
+			// memory reads or boat-boarding logic have anything valid to work against, so check this
+			// before touching any of that rather than letting it fail confusingly mid-voyage-prep.
+			if (!QuestLogManager.IsQuestCompleted(FishingConstants.OCEAN_FISHING_UNLOCK_QUEST_ID))
+			{
+				Log("Ocean Fishing isn't unlocked yet — complete the Fisher quest \"All the Fish in the Sea\" " +
+					"(level 1, from Fhilsnoe at the Limsa Lominsa Lower Decks aftcastle) before running this BotBase.");
+				TreeRoot.Stop("Ocean Fishing not unlocked — complete \"All the Fish in the Sea\" first.");
+				return;
+			}
 
-			Log("Initializing OceanTrip Settings.");
-			InitializeSettings();
-			Log("OceanTrip Settings Loaded.");
+			int fisherLevel = Core.Me.Levels[ClassJobType.Fisher];
+			if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto
+				&& fisherLevel < FishingConstants.LEVELING_MODE_LEVEL_CAP)
+			{
+				Log($"Fisher level {fisherLevel} is below {FishingConstants.LEVELING_MODE_LEVEL_CAP} — " +
+					$"Automatic priority will focus on leveling (Krill/Ragworm/Plump Worm only, no lures) " +
+					$"until you reach {FishingConstants.LEVELING_MODE_LEVEL_CAP}.");
+			}
+
+			TreeHooks.Instance.ClearAll();
 
 			InitializeSharedResources();
 
@@ -256,7 +261,6 @@ namespace OceanTripPlanner
 			//FishingLog.MissingFish();
 			await FishingLog.InitializeFishLog();
 			FFXIV_Databinds.Instance.RefreshBait();
-			FFXIV_Databinds.Instance.RefreshCurrentRoute();
 
 			await OceanFishing();
 
@@ -288,7 +292,6 @@ namespace OceanTripPlanner
 
 			FFXIV_Databinds.Instance.RefreshBait();
 			FFXIV_Databinds.Instance.RefreshAchievements();
-			FFXIV_Databinds.Instance.RefreshCurrentRoute();
 
 			if (OceanTripNewSettings.Instance.BaitRestockThreshold > 10 && OceanTripNewSettings.Instance.BaitRestockAmount > 30)
 				await RestockBait(OceanTripNewSettings.Instance.BaitRestockThreshold, (uint)OceanTripNewSettings.Instance.BaitRestockAmount);
@@ -439,7 +442,6 @@ namespace OceanTripPlanner
 				caughtFishLogged = false;
 
 				FFXIV_Databinds.Instance.RefreshBait();
-				FFXIV_Databinds.Instance.RefreshCurrentRoute();
 
 				ulong baitId = FishBait.Krill;
 				ulong spectralbaitId = FishBait.Krill;
@@ -453,6 +455,7 @@ namespace OceanTripPlanner
 				if (location != lastLoggedLocation)
 				{
 					lastLoggedLocation = location;
+					_hadSpectralThisStop = false;
 					string priorityMode = OceanTripNewSettings.Instance.FishPriority.ToString();
 					string focusMode = FocusFishLog ? "Fish Log" : "Points";
 					Log($"Zone: {Schedule.areaName(location)} ({location}), Time: {TimeOfDay}, Stop: {Endeavor.CurrentZone + 1}/3, Priority: {priorityMode} ({focusMode})");
@@ -488,11 +491,11 @@ namespace OceanTripPlanner
 					RefreshUICallback = () =>
 					{
 						FFXIV_Databinds.Instance.RefreshAchievements();
-						FFXIV_Databinds.Instance.RefreshCurrentRoute();
 					},
 					RefreshBaitCallback = () => FFXIV_Databinds.Instance.RefreshBait(),
 					ManageBuffsCallback = ManageBuffsAndConsumables,
 					ProcessCaughtFishCallback = ProcessCaughtFish,
+					PrizeCatchCallback = MaybeUsePrizeCatch,
 					OnHookExecutedCallback = (logged) => { caughtFishLogged = logged; lastCaughtFish = 0; }
 				};
 				fishingContext.SelectAndApplyBaitCallback = async (spectraled) =>
@@ -502,6 +505,7 @@ namespace OceanTripPlanner
 					fishingContext.SetChainCastTargetFishId(result.chainCastTargetFishId);
 					fishingContext.SetChainMoochTargetFishId(result.chainMoochTargetFishId);
 					fishingContext.SetMissionRequiredTugType(result.missionRequiredTugType);
+					fishingContext.SetMissionRequiredAchievementTags(result.missionRequiredAchievementTags);
 				};
 				await fishingSessionManager.ExecuteFishingSession(fishingContext);
 			}
@@ -525,6 +529,12 @@ namespace OceanTripPlanner
 					// This is super sloppy as we have to rely on a bunch of sleeps right now.
 					await Coroutine.Sleep(FishingConstants.RESULTS_CALCULATION_DELAY_MS);
 
+					// Read + log the actual results (score, bonuses, placement) now, while the
+					// window's still up — this is the only point in the whole voyage where these are
+					// knowable for certain, since bonus eligibility (spectral-catch counts, rare-fish
+					// catches, etc.) isn't reliably predictable live.
+					LogVoyageResult();
+
 					// What if the player already clicked the button and we're now loading or something else? This will potentially CRASH the client. Look into refining this later.
 					windowByName = RaptureAtkUnitManager.GetWindowByName("IKDResult");
 					if (windowByName != null)
@@ -541,7 +551,6 @@ namespace OceanTripPlanner
 
 					Log($"Done loading! This voyage is OVER! Time to wait for the next boat.", OceanLogLevel.Debug);
 
-					FFXIV_Databinds.Instance.RefreshCurrentRoute();
 					PassTheTime.freeToCraft = true;
 				}
 
@@ -561,6 +570,83 @@ namespace OceanTripPlanner
 				}
 
 				await Coroutine.Sleep(FishingConstants.VOYAGE_COMPLETION_DELAY_MS);
+			}
+		}
+
+		private static readonly string VoyageHistoryPath =
+			Path.Combine(JsonSettings.CharacterSettingsDirectory, "OceanTripVoyageHistory.csv");
+
+		/// <summary>
+		/// Reads the just-finished voyage's results (score, bonuses, placement) from Endeavor and
+		/// both logs a human-readable summary and appends a row to a persistent CSV so results are
+		/// trackable over time, not just visible for the few seconds the results window is up.
+		/// </summary>
+		private void LogVoyageResult()
+		{
+			var result = Endeavor.ReadVoyageResult();
+			if (result == null)
+			{
+				Log("Could not read voyage results (director not initialized) — skipping results log.", OceanLogLevel.Debug);
+				return;
+			}
+
+			var bonuses = result.BonusIds
+				.Select(id => BonusDataCache.GetById(id))
+				.Where(b => b != null)
+				.ToList();
+
+			string placementText = result.Placement.HasValue
+				? $"{Ordinal(result.Placement.Value)} of {result.TrackedPlayers.Count}"
+				: "unranked (not in top 10)";
+
+			Log($"Voyage complete: {result.TotalPoints} points, placed {placementText}, {result.CaughtFish} fish caught, {result.ExperiencePoints} XP.");
+
+			if (bonuses.Count > 0)
+				Log($"Bonuses earned: {string.Join(", ", bonuses.Select(b => $"{b.Objective} (+{b.BonusMultiplier - 100}%)"))}");
+			else
+				Log("Bonuses earned: none.");
+
+			try
+			{
+				bool needsHeader = !File.Exists(VoyageHistoryPath);
+				using (var writer = new StreamWriter(VoyageHistoryPath, append: true))
+				{
+					if (needsHeader)
+						writer.WriteLine("Timestamp,Route,TotalPoints,Placement,TrackedPlayers,CaughtFish,ExperiencePoints,Scrip1,Scrip2,Bonuses");
+
+					string bonusField = string.Join("; ", bonuses.Select(b => b.Objective));
+					writer.WriteLine(string.Join(",",
+						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+						OceanTripNewSettings.Instance.FishingRoute,
+						result.TotalPoints,
+						result.Placement?.ToString() ?? "",
+						result.TrackedPlayers.Count,
+						result.CaughtFish,
+						result.ExperiencePoints,
+						result.Scrip1Amount,
+						result.Scrip2Amount,
+						CsvQuote(bonusField)));
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Write($"[Ocean Trip] Failed to write voyage history log: {ex.Message}");
+			}
+		}
+
+		private static string CsvQuote(string field) => "\"" + (field ?? "").Replace("\"", "\"\"") + "\"";
+
+		private static string Ordinal(int n)
+		{
+			if (n % 100 >= 11 && n % 100 <= 13)
+				return $"{n}th";
+
+			switch (n % 10)
+			{
+				case 1: return $"{n}st";
+				case 2: return $"{n}nd";
+				case 3: return $"{n}rd";
+				default: return $"{n}th";
 			}
 		}
 
@@ -741,7 +827,11 @@ namespace OceanTripPlanner
 		/// </summary>
 		public async Task RestockBait(int baitThreshold, uint baitCap)
 		{
-			await baitRestockStrategy.RestockBait(baitThreshold, baitCap);
+			var allowedBaits = OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Leveling
+				? FishingConstants.LEVELING_ALLOWED_BAITS
+				: null;
+
+			await baitRestockStrategy.RestockBait(baitThreshold, baitCap, allowedBaits);
 		}
 
 		public async Task LandSell(List<int> itemIds)
@@ -822,7 +912,8 @@ namespace OceanTripPlanner
 		private async Task ManageBuffsAndConsumables(bool spectraled)
 		{
 			// Check for spectral weather changes
-			if (gameCache.CurrentWeatherId != Weather.Spectral)
+			bool currentlySpectral = gameCache.CurrentWeatherId == Weather.Spectral;
+			if (!currentlySpectral)
 			{
 				if (spectraled == true)
 				{
@@ -837,43 +928,96 @@ namespace OceanTripPlanner
 					Log("Spectral popped!");
 					spectraled = true;
 				}
+				_hadSpectralThisStop = true;
 			}
 
 			await Coroutine.Yield();
 
-			// Should we Cordial?
-			Log("Checking for Hi-Cordial Use.", OceanLogLevel.Debug);
+			// Bank GP/Angler's Art instead of proactively spending it while still chasing this stop's
+			// first spectral current — Thaliak's Favor and Hi-Cordial are worth far more spent in a
+			// burst during the current than trickled out during ordinary fishing. That window closes
+			// as soon as: spectral is currently active (spend freely — see below), a spectral current
+			// has already happened at this stop, or under 90s remain (a current can't start that
+			// close to the stop ending, so there's nothing left to bank for). SecondsRemainingAtStop
+			// returning null (offset/unit assumption didn't pan out) fails toward still banking rather
+			// than assuming a current is imminent when we can't actually tell.
+			double? secondsRemaining = Endeavor.SecondsRemainingAtStop;
+			bool spectralStillChasable = !_hadSpectralThisStop
+				&& (secondsRemaining == null || secondsRemaining > FishingConstants.SPECTRAL_CUTOFF_SECONDS);
+			bool shouldBankGp = spectralStillChasable && !currentlySpectral;
 
-			if (gameCache.NeedsGPRecovery(FishingConstants.CORDIAL_GP_THRESHOLD))
+			if (shouldBankGp)
 			{
-				await UseCordial();
-				await Coroutine.Yield();
+				Log("Banking GP for spectral current — skipping proactive Cordial/Thaliak's Favor.", OceanLogLevel.Debug);
 			}
-
-			Log("Done with Cordials.", OceanLogLevel.Debug);
-
-			// Should we use Thaliak's Favor?
-			Log("Checking if we need to use Thaliak's Favor", OceanLogLevel.Debug);
-
-			// No cooldown or cast time on this action, so drain banked Angler's Art stacks (cap 10,
-			// 3 consumed per use) in a loop rather than firing once — otherwise GP recovery was
-			// throttled to 150/cast even when several uses' worth of stacks were already banked.
-			int thaliakUses = 0;
-			while (gameCache.NeedsGPRecovery(FishingConstants.THALIAK_GP_THRESHOLD)
-				&& ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me)
-				&& thaliakUses < FishingConstants.THALIAK_MAX_CHAIN_USES)
+			else
 			{
-				Log("Using Thaliak's Favor!");
-				ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
-				await Coroutine.Wait(1000, () => !ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me));
+				// Should we Cordial?
+				Log("Checking for Hi-Cordial Use.", OceanLogLevel.Debug);
 
-				// Force a fresh GP read — RefreshIfNeeded's 100ms throttle would otherwise let the
-				// loop re-check against the stale (pre-cast) GPDeficit and miscount remaining need.
-				gameCache.Refresh();
-				thaliakUses++;
+				if (gameCache.NeedsGPRecovery(FishingConstants.CORDIAL_GP_THRESHOLD))
+				{
+					await UseCordial();
+					await Coroutine.Yield();
+				}
+
+				Log("Done with Cordials.", OceanLogLevel.Debug);
+
+				// Should we use Thaliak's Favor?
+				Log("Checking if we need to use Thaliak's Favor", OceanLogLevel.Debug);
+
+				// No cooldown or cast time on this action, so drain banked Angler's Art stacks (cap 10,
+				// 3 consumed per use) in a loop rather than firing once — otherwise GP recovery was
+				// throttled to 150/cast even when several uses' worth of stacks were already banked.
+				int thaliakUses = 0;
+				while (gameCache.NeedsGPRecovery(FishingConstants.THALIAK_GP_THRESHOLD)
+					&& ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me)
+					&& thaliakUses < FishingConstants.THALIAK_MAX_CHAIN_USES)
+				{
+					Log("Using Thaliak's Favor!");
+					ActionManager.DoAction(Actions.ThaliaksFavor, Core.Me);
+					await Coroutine.Wait(1000, () => !ActionManager.CanCast(Actions.ThaliaksFavor, Core.Me));
+
+					// Force a fresh GP read — RefreshIfNeeded's 100ms throttle would otherwise let the
+					// loop re-check against the stale (pre-cast) GPDeficit and miscount remaining need.
+					gameCache.Refresh();
+					thaliakUses++;
+				}
+
+				Log("Done with Thaliak's Favor.", OceanLogLevel.Debug);
 			}
+		}
 
-			Log("Done with Thaliak's Favor.", OceanLogLevel.Debug);
+		/// <summary>
+		/// "Blind" Prize Catch — cast before the line goes out (not chained off a confirmed bite via
+		/// Identical Cast) so whatever bites next is guaranteed Large, covering a blind Double/Triple
+		/// Hook. Gated to Spectral Current: outside it there's rarely enough point value on a single
+		/// catch to justify 200 GP for a guaranteed-Large roll the way there is on spectral fish.
+		/// Scoped to Points/Auto — Achievement mode cares about catch count per species, not Large
+		/// status, so Prize Catch doesn't help it the way it helps score.
+		/// </summary>
+		private async Task MaybeUsePrizeCatch(bool spectraled)
+		{
+			if (!spectraled)
+				return;
+
+			var priority = OceanTripNewSettings.Instance.EffectiveFishPriority;
+			if (priority != FishPriority.Points && priority != FishPriority.Auto)
+				return;
+
+			// Only worth committing to blind if there's GP left over afterward for the Double Hook
+			// that actually cashes in the guaranteed-Large roll — otherwise Prize Catch's own 200 GP
+			// just guarantees a Large fish off a plain Hook, which doesn't recoup the spend the way a
+			// DH/TH catch does.
+			if (Core.Me.CurrentGP < FishingConstants.PRIZE_CATCH_GP_COST + FishingConstants.DOUBLE_HOOK_GP_COST)
+				return;
+
+			if (!ActionManager.CanCast(Actions.PrizeCatch, Core.Me))
+				return;
+
+			Log("Using Prize Catch!");
+			ActionManager.DoAction(Actions.PrizeCatch, Core.Me);
+			await Coroutine.Wait(1000, () => !ActionManager.CanCast(Actions.PrizeCatch, Core.Me));
 		}
 
 		/// <summary>
@@ -925,7 +1069,13 @@ namespace OceanTripPlanner
 			Log("Checking if we need to use Identical Cast.", OceanLogLevel.Debug);
 
 			bool shouldIdenticalCast = false;
+			bool comboPrizeCatch = false;
 
+			// Leveling mode never chases anything via Identical Cast — chains below are all in
+			// service of missing-fish/achievement/points goals a leveling character isn't pursuing,
+			// and IC itself costs 350 GP that's better left for plain Hooksets while leveling.
+			if (OceanTripNewSettings.Instance.EffectiveFishPriority != FishPriority.Leveling)
+			{
 			// Check dictionary for standard identical cast fish
 			if (FishingConstants.IdenticalCastTargets.TryGetValue(lastCaughtFish, out int requiredCount))
 			{
@@ -935,10 +1085,29 @@ namespace OceanTripPlanner
 			}
 			// Special case for Funnel Shark (points mode only)
 			else if (lastCaughtFish == OceanFish.FunnelShark
-				&& (OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto || OceanTripNewSettings.Instance.FishPriority == FishPriority.Points)
+				&& (OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Auto || OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Points)
 				&& Core.Me.CurrentGP >= 700)
 			{
 				shouldIdenticalCast = true;
+			}
+			// DH-IC-PC-TH combo: the fish just caught independently clears the "worth Triple Hooking"
+			// bar on its own economics (the same math HookingStrategy.IsPointsWorthDoubleHook applies
+			// at bite time) — pin it via Identical Cast and guarantee the re-catch Large via Prize
+			// Catch, instead of moving on to an unconfirmed cast. Reusing that exact threshold means
+			// the next bite's independent DH/TH re-evaluation will also land on Triple Hook for this
+			// same fish, so the combo doesn't go to waste on a plain Hook. Requires the full IC+PC+TH
+			// round trip up front (not just per-step affordability) so we don't strand mid-combo.
+			else if ((OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Auto || OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Points)
+				&& gameCache.CurrentWeatherId == Weather.Spectral)
+			{
+				var comboFishData = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == (int)lastCaughtFish);
+				if (comboFishData != null && comboFishData.THBonus > 1
+					&& comboFishData.Points * comboFishData.THBonus > FishingConstants.TRIPLE_HOOK_GP_COST
+					&& Core.Me.CurrentGP >= FishingConstants.IDENTICAL_CAST_GP_COST + FishingConstants.PRIZE_CATCH_GP_COST + FishingConstants.TRIPLE_HOOK_GP_COST)
+				{
+					shouldIdenticalCast = true;
+					comboPrizeCatch = true;
+				}
 			}
 			// Achievement mode: IC on any fish matching the target achievement
 			else if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Achievements)
@@ -954,9 +1123,19 @@ namespace OceanTripPlanner
 					}
 				}
 			}
+			} // EffectiveFishPriority != Leveling
 
 			if (shouldIdenticalCast && ActionManager.CanCast(Actions.IdenticalCast, Core.Me) && !Core.Player.HasAura(CharacterAuras.FishersIntuition))
 			{
+				// Prize Catch before Identical Cast, matching the guide's ordering — Identical Cast is
+				// what actually re-casts the line (see the "casting has started" comment below), so the
+				// Large guarantee needs to already be up before that happens.
+				if (comboPrizeCatch && ActionManager.CanCast(Actions.PrizeCatch, Core.Me))
+				{
+					Log("Using Prize Catch (combo)!");
+					ActionManager.DoAction(Actions.PrizeCatch, Core.Me);
+				}
+
 				Log("Identical Cast!");
 				ActionManager.DoAction(Actions.IdenticalCast, Core.Me);
 
@@ -998,8 +1177,29 @@ namespace OceanTripPlanner
 		/// <summary>
 		/// Select and apply the appropriate bait based on spectral status, location, time of day, and fish log
 		/// </summary>
-		private async Task<(bool shouldMooch, uint chainCastTargetFishId, uint chainMoochTargetFishId, TugType? missionRequiredTugType)> SelectAndApplyBait(bool spectraled, string location, string timeOfDay, ulong baitId, ulong spectralbaitId, RouteWithFish currentRoute)
+		private async Task<(bool shouldMooch, uint chainCastTargetFishId, uint chainMoochTargetFishId, TugType? missionRequiredTugType, string[] missionRequiredAchievementTags)> SelectAndApplyBait(bool spectraled, string location, string timeOfDay, ulong baitId, ulong spectralbaitId, RouteWithFish currentRoute)
 		{
+			// Force a fresh read (bait selection happens once per cast, not once per frame, so this
+			// is cheap) rather than trusting whatever the last ambient RefreshIfNeeded() from the
+			// previous bite-wait loop happened to catch — weather can change between casts.
+			gameCache.Refresh();
+
+			// Leveling mode bypasses NormalBaitSelector/SpectralBaitSelector entirely rather than
+			// threading a "stay within these 3 baits" flag through their prereq-chain/points logic —
+			// both selectors reference a dozen+ other bait types across their branches, and missing
+			// even one there would leak a disallowed bait. Prefer the route's own curated bait when
+			// it's already one of the 3 allowed (better bite rates for free); otherwise fall back to
+			// Krill, matching the fallback FishingSessionManager already uses when route data is
+			// missing entirely.
+			if (OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Leveling)
+			{
+				uint routeBait = (uint)(spectraled ? spectralbaitId : baitId);
+				uint levelingBait = FishingConstants.LEVELING_ALLOWED_BAITS.Contains(routeBait) ? routeBait : FishBait.Krill;
+
+				await baitChanger.ChangeBait(levelingBait, $"Leveling mode — using {gameCache.GetItemName(levelingBait)}");
+				return (false, 0, 0, null, null);
+			}
+
 			// Determine if target fish is available in this zone
 			uint targetFishId = OceanTripNewSettings.Instance.TargetFishId;
 			uint contextTargetFishId = 0;
@@ -1050,7 +1250,7 @@ namespace OceanTripPlanner
 				await normalBaitSelector.SelectBait(context);
 			}
 
-			return (context.ShouldMooch, context.ChainCastTargetFishId, context.ChainMoochTargetFishId, GetActiveMissionTugType());
+			return (context.ShouldMooch, context.ChainCastTargetFishId, context.ChainMoochTargetFishId, GetActiveMissionTugType(), GetActiveMissionAchievementTags());
 		}
 
 		/// <summary>
@@ -1075,6 +1275,29 @@ namespace OceanTripPlanner
 				return null; // unknown mission, or already complete — nothing left to target
 
 			return MissionDataCache.GetRequiredTugType(condition.Text);
+		}
+
+		/// <summary>
+		/// Category missions ("Catch sharks", "Catch fugu") — same idea as GetActiveMissionTugType,
+		/// but for the mission archetype matched by Fish.Achievement tag instead of tug type.
+		/// </summary>
+		private string[] GetActiveMissionAchievementTags()
+		{
+			return CheckMissionSlotAchievementTags(Endeavor.Mission1Type, Endeavor.Mission1Progress)
+				?? CheckMissionSlotAchievementTags(Endeavor.Mission2Type, Endeavor.Mission2Progress)
+				?? CheckMissionSlotAchievementTags(Endeavor.Mission3Type, Endeavor.Mission3Progress);
+		}
+
+		private string[] CheckMissionSlotAchievementTags(uint missionType, ushort progress)
+		{
+			if (missionType == 0)
+				return null;
+
+			var condition = MissionDataCache.GetById(missionType);
+			if (condition == null || progress >= condition.Count)
+				return null; // unknown mission, or already complete — nothing left to target
+
+			return MissionDataCache.GetRequiredAchievementTags(condition.Text);
 		}
 
 		private static readonly HashSet<int> NeverExchangeFish = new HashSet<int>
