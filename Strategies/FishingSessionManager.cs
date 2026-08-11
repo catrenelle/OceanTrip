@@ -97,6 +97,7 @@ namespace OceanTripPlanner.Strategies
 						{
 							Log("Using Mooch!");
 							_moochCastOffset = FishingManager.TimeSinceCast.TotalSeconds;
+							context.RefreshMissionStateCallback?.Invoke();
 							FishingManager.Mooch();
 							context.SetLastCastMooch(true);
 							context.SetShouldMooch(false);
@@ -105,12 +106,20 @@ namespace OceanTripPlanner.Strategies
 						{
 							Log("Using Mooch II!");
 							_moochCastOffset = FishingManager.TimeSinceCast.TotalSeconds;
+							context.RefreshMissionStateCallback?.Invoke();
 							FishingManager.MoochTwo();
 							context.SetLastCastMooch(true);
 							context.SetShouldMooch(false);
 						}
 						else
 						{
+							// See FishingConstants.POST_CATCH_BAIT_SETTLE_MS — right after a catch, the
+							// client's reel-in animation/tackle-box UI needs a moment to settle before
+							// ChangeBait's own bait-selection window will actually open. Not needed on
+							// the very first cast of a stop (State == None, nothing to settle from).
+							if (FishingManager.State == FishingState.PoleReady)
+								await Coroutine.Sleep(FishingConstants.POST_CATCH_BAIT_SETTLE_MS);
+
 							// Select and apply bait based on current conditions
 							await context.SelectAndApplyBaitCallback(spectraled);
 
@@ -314,6 +323,15 @@ namespace OceanTripPlanner.Strategies
 		public Func<bool, Task> SelectAndApplyBaitCallback { get; set; }
 		public Func<bool, Task> PrizeCatchCallback { get; set; }
 		public Action<bool> OnHookExecutedCallback { get; set; }
+
+		/// <summary>
+		/// Re-reads active mission tug-type/achievement-tag requirements from Endeavor and stores
+		/// them on this context. SelectAndApplyBaitCallback already does this as part of bait
+		/// selection, but the mooch-continuation path (FishingSessionManager) skips that callback
+		/// entirely, so it needs this lighter equivalent to avoid hooking against a stale mission
+		/// snapshot from before the mooch's source cast.
+		/// </summary>
+		public Action RefreshMissionStateCallback { get; set; }
 
 		// State management
 		private bool _lastCastMooch;

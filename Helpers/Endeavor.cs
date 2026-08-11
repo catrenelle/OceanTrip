@@ -24,12 +24,26 @@ namespace Ocean_Trip
 			internal static int statusOffset = 0x1FBC;
 			internal static int zoneOffset = 0x1FC0;
 
-			// Duration = total length of the current stop, TimeOffset = elapsed time within it, both
-			// in seconds — "time left at this stop" is Duration - TimeOffset. Used to gate GP-banking
-			// (hold Thaliak's Favor/Hi-Cordial for a spectral-current burst) off once a current can no
-			// longer occur this stop (inside the last 1:30).
-			internal static int durationOffset = 0x1FC4;
+			// TimeOffset = elapsed seconds within the current stop. "Time left at this stop" is NOT
+			// Duration - TimeOffset (Duration, at 0x1FC4, turned out to be a constant 420 per
+			// FFXIVClientStructs — "It always is 420" — not this stop's actual remaining length; a
+			// live 2026-08-11 bug report showed this reading as ~0 with 5:30 genuinely left on the
+			// in-game clock once TimeOffset climbed past 420, breaking the GP-banking gate below for
+			// the back half of every stop). The correct formula, per aers' own comment on the field
+			// that actually holds it: "InstanceContentDirector.ContentDirector.ContentTimeLeft -
+			// TimeOffset = time left in current zone." ContentTimeLeft lives in the base
+			// ContentDirector struct (0xCF0) that InstanceContentOceanFishing inherits from — same
+			// DirectorPtr, just a much lower, shared-engine offset instead of the OceanFishing-
+			// specific ones below. Used to gate GP-banking (hold Thaliak's Favor/Hi-Cordial for a
+			// spectral-current burst) off once a current can no longer occur this stop (inside the
+			// last 1:30).
 			internal static int timeOffsetOffset = 0x1FC8;
+
+			// Not covered by OceanFishingOffsetSync — that only fetches/parses
+			// InstanceContentOceanFishing.cs, and this field is declared in ContentDirector.cs
+			// instead. Pinned here manually; if it ever drifts, the sync mechanism would need
+			// extending to fetch that second file too.
+			internal static int contentTimeLeftOffset = 0xCF0;
 
 			// Voyage results screen data — see Endeavor.VoyageResult / ReadVoyageResult(). AllResultSize
 			// and LocalIndexInAllResult are single bytes; IndividualResult and LocalPlayerAllResult are
@@ -64,8 +78,20 @@ namespace Ocean_Trip
 			// also agree with each other on Duration/TimeOffset below, same cross-check). Worst case
 			// if this patch-window guess is wrong: Mission*Type resolves to an unrecognized row ID,
 			// MissionDataCache.GetById() returns null, and mission tracking no-ops same as before.
-			internal const int durationOffset = 0x1E1C;
+			//
+			// Unlike Status/CurrentZone above, these 11 fields have no confirmed prior-patch value on
+			// record — this diff is their first appearance. When TC patches past 7.20 and these get
+			// re-confirmed, comment out the current values as history (Status/CurrentZone convention)
+			// instead of overwriting them, so the next swap after that has an anchor too.
 			internal const int timeOffsetOffset = 0x1E20;
+
+			// ContentTimeLeft (see the long comment on the global-client branch above for why this
+			// replaced Duration) lives in the base ContentDirector struct shared by every duty type
+			// that uses a content director, not just Ocean Fishing — engine-wide structs like this
+			// tend to be far more stable across patches than content-specific ones, so 0xCF0 is
+			// assumed unchanged from the global client. NOT independently confirmed on a live TC
+			// client, unlike the fields above.
+			internal const int contentTimeLeftOffset = 0xCF0;
 
 			// Same three-commit cross-check as Duration/TimeOffset above.
 			internal const int allResultSizeOffset = 0x2240;
@@ -118,12 +144,13 @@ namespace Ocean_Trip
 		}
 
 		/// <summary>
-		/// Seconds left at the current stop (Duration - TimeOffset, both read live), or null if that
-		/// can't be determined right now — either the director isn't initialized yet, or the reading
-		/// falls outside any plausible stop length (a stale/incorrect offset reads as some enormous or
-		/// zero value rather than throwing, so this has to be sanity-checked rather than trusted
-		/// blindly). Callers that gate behavior on this should treat null as "unknown" and fail toward
-		/// whichever choice is safe to be wrong about, not assume a spectral current is imminent.
+		/// Seconds left at the current stop (ContentTimeLeft - TimeOffset, both read live), or null
+		/// if that can't be determined right now — either the director isn't initialized yet, or the
+		/// reading falls outside any plausible stop length (a stale/incorrect offset reads as some
+		/// enormous or negative value rather than throwing, so this has to be sanity-checked rather
+		/// than trusted blindly). Callers that gate behavior on this should treat null as "unknown"
+		/// and fail toward whichever choice is safe to be wrong about, not assume a spectral current
+		/// is imminent.
 		/// </summary>
 		public double? SecondsRemainingAtStop
 		{
@@ -132,15 +159,17 @@ namespace Ocean_Trip
 				if (DirectorPtr == IntPtr.Zero)
 					return null;
 
-				uint duration = Core.Memory.Read<uint>(DirectorPtr + Offsets.durationOffset);
+				float contentTimeLeft = Core.Memory.Read<float>(DirectorPtr + Offsets.contentTimeLeftOffset);
 				uint elapsed = Core.Memory.Read<uint>(DirectorPtr + Offsets.timeOffsetOffset);
 
 				// Ocean Fishing stops are 15 minutes; anything wildly outside that range means the
 				// offset (or its unit assumption) is wrong, not that the stop is actually that length.
-				if (duration == 0 || duration > 3600)
+				// ContentTimeLeft is shared by every duty type that uses a content director, not just
+				// Ocean Fishing, so this can't lean on an Ocean-Fishing-specific invariant beyond that.
+				if (contentTimeLeft <= 0 || contentTimeLeft > 3600)
 					return null;
 
-				return Math.Max(0, (double)duration - elapsed);
+				return Math.Max(0, (double)contentTimeLeft - elapsed);
 			}
 		}
 

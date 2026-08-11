@@ -239,6 +239,19 @@ namespace OceanTripPlanner.Definitions
 		/// </summary>
 		public const int BAIT_CHANGE_MAX_ATTEMPTS = 3;
 
+		/// <summary>
+		/// FishingManager.State flips to PoleReady as soon as a catch resolves in memory, but the
+		/// client's reel-in animation and tackle-box UI can still be settling for a moment after
+		/// that. Observed live: calling ChangeBait immediately (zero delay) failed all
+		/// BAIT_CHANGE_MAX_ATTEMPTS retries 100% of the time right after a catch — each attempt
+		/// burning ~5s inside FishingManager.ChangeBait itself, ~16s wasted total, casting with
+		/// the wrong bait every time. A short settle delay before the first attempt (not the retry
+		/// loop, which already has its own delay) gives the client time to catch up. Only applies
+		/// post-catch (State == PoleReady) — the very first cast of a stop (State == None) has
+		/// nothing to settle from and doesn't need it.
+		/// </summary>
+		public const int POST_CATCH_BAIT_SETTLE_MS = 1500;
+
 		// ========================================
 		// BOAT QUEUE TIMING CONSTANTS
 		// ========================================

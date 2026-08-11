@@ -29,14 +29,21 @@ namespace Ocean_Trip
 		private static bool _hasRun;
 
 		// Upstream field name -> the Endeavor.Offsets field it maps to. Only these are tracked;
-		// every other field in the struct (Duration, WeatherId, fish-catch results, etc.) is parsed
-		// but ignored since Endeavor doesn't read them.
+		// every other field in the struct (Duration, WeatherId, etc.) is parsed but ignored since
+		// Endeavor doesn't read them. Duration turned out to be a constant (always 420, not this
+		// stop's actual length) — see the long comment on Endeavor.Offsets.timeOffsetOffset —
+		// ContentTimeLeft replaced it but lives in a different upstream file (ContentDirector.cs)
+		// this sync doesn't fetch, so it isn't self-updating like the fields below.
 		private static readonly (string FieldName, Func<int> Get, Action<int> Set)[] TrackedFields =
 		{
 			("Status", () => Endeavor.Offsets.statusOffset, v => Endeavor.Offsets.statusOffset = v),
 			("CurrentZone", () => Endeavor.Offsets.zoneOffset, v => Endeavor.Offsets.zoneOffset = v),
-			("Duration", () => Endeavor.Offsets.durationOffset, v => Endeavor.Offsets.durationOffset = v),
 			("TimeOffset", () => Endeavor.Offsets.timeOffsetOffset, v => Endeavor.Offsets.timeOffsetOffset = v),
+			("AllResultSize", () => Endeavor.Offsets.allResultSizeOffset, v => Endeavor.Offsets.allResultSizeOffset = v),
+			("LocalIndexInAllResult", () => Endeavor.Offsets.localIndexInAllResultOffset, v => Endeavor.Offsets.localIndexInAllResultOffset = v),
+			("IndividualResult", () => Endeavor.Offsets.individualResultOffset, v => Endeavor.Offsets.individualResultOffset = v),
+			("LocalPlayerAllResult", () => Endeavor.Offsets.localPlayerAllResultOffset, v => Endeavor.Offsets.localPlayerAllResultOffset = v),
+			("AllResults", () => Endeavor.Offsets.allResultsOffset, v => Endeavor.Offsets.allResultsOffset = v),
 			("Mission1Type", () => Endeavor.Offsets.mission1TypeOffset, v => Endeavor.Offsets.mission1TypeOffset = v),
 			("Mission2Type", () => Endeavor.Offsets.mission2TypeOffset, v => Endeavor.Offsets.mission2TypeOffset = v),
 			("Mission3Type", () => Endeavor.Offsets.mission3TypeOffset, v => Endeavor.Offsets.mission3TypeOffset = v),
