@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
+using OceanTripPlanner.Helpers;
 
 namespace Ocean_Trip.UI.Wpf
 {
@@ -39,6 +40,7 @@ namespace Ocean_Trip.UI.Wpf
 			var pageContent = (ContentControl)window.FindName("PageContent");
 			var statusDot = (System.Windows.Shapes.Ellipse)window.FindName("StatusDot");
 			var statusText = (TextBlock)window.FindName("StatusText");
+			var missingFishText = (TextBlock)window.FindName("MissingFishText");
 
 			var navIdleActivities = (Button)window.FindName("NavIdleActivities");
 			var navOceanSettings = (Button)window.FindName("NavOceanSettings");
@@ -94,6 +96,22 @@ namespace Ocean_Trip.UI.Wpf
 				bool connected = ff14bot.Core.Me != null;
 				statusDot.Fill = (Brush)Application.Current.Resources[connected ? "AccentBrush" : "TextSecondaryBrush"];
 				statusText.Text = connected ? $"Connected · {ff14bot.Core.Me.Name}" : "Not Connected";
+
+				// Fish Log progress, visible from every page — MissingFish() is null until a
+				// character is connected and InitializeFishLog() has run, not just "zero missing".
+				var missingFish = connected ? global::OceanTrip.FishingLog.MissingFish() : null;
+				if (missingFish == null)
+				{
+					missingFishText.Visibility = Visibility.Collapsed;
+				}
+				else
+				{
+					int total = Ocean_Trip.Definitions.FishDataCache.GetFish().Count;
+					missingFishText.Text = missingFish.Count == 0
+						? "No missing fish"
+						: $"{missingFish.Count}/{total} fish missing";
+					missingFishText.Visibility = Visibility.Visible;
+				}
 			}
 
 			RefreshStatus();
@@ -128,16 +146,8 @@ namespace Ocean_Trip.UI.Wpf
 
 		private static BitmapImage TryLoadLogoImage()
 		{
-			var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
-
-			foreach (var dir in possibleDirectories)
-			{
-				var potentialPath = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", "OceanTripNewLogo.png");
-				if (File.Exists(potentialPath))
-					return new BitmapImage(new Uri(potentialPath, UriKind.Absolute));
-			}
-
-			return null;
+			var path = BotBasesResourceLocator.Resolve("Resources", "OceanTripNewLogo.png");
+			return path == null ? null : new BitmapImage(new Uri(path, UriKind.Absolute));
 		}
 	}
 }

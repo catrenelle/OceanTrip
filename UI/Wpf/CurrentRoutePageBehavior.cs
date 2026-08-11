@@ -11,6 +11,7 @@ using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using OceanTripPlanner;
+using OceanTripPlanner.Helpers;
 
 namespace Ocean_Trip.UI.Wpf
 {
@@ -136,18 +137,12 @@ namespace Ocean_Trip.UI.Wpf
 			if (_cachedBannerImage != null)
 				return _cachedBannerImage;
 
-			var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
-			foreach (var dir in possibleDirectories)
-			{
-				var path = System.IO.Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", "OceanFishingBanner.png");
-				if (System.IO.File.Exists(path))
-				{
-					_cachedBannerImage = new BitmapImage(new Uri(path, UriKind.Absolute));
-					return _cachedBannerImage;
-				}
-			}
+			var path = BotBasesResourceLocator.Resolve("Resources", "OceanFishingBanner.png");
+			if (path == null)
+				return null;
 
-			return null;
+			_cachedBannerImage = new BitmapImage(new Uri(path, UriKind.Absolute));
+			return _cachedBannerImage;
 		}
 
 		private static void Refresh(UserControl page)
@@ -238,6 +233,10 @@ namespace Ocean_Trip.UI.Wpf
 
 			BuildMissionsCard(page, missionSlots);
 			var missionOpportunities = GetMissionDHOpportunities(missionSlots);
+
+			bool spectralActive = !simulating && WorldManager.CurrentWeatherId == OceanTripPlanner.Definitions.Weather.Spectral;
+			double? secondsRemaining = simulating ? (double?)null : endeavor.SecondsRemainingAtStop;
+			BuildStrategyPanel(page, location, simulating, spectralActive, secondsRemaining, missionOpportunities);
 
 			BuildFishPanel((WrapPanel)page.FindName("NormalFishPanel"), normalFish, missingFish, IsAvailable, missionOpportunities, timeOfDay, weather);
 			BuildFishPanel((WrapPanel)page.FindName("SpectralFishPanel"), spectralFish, missingFish, IsAvailable, missionOpportunities, timeOfDay, weather);
@@ -378,6 +377,135 @@ namespace Ocean_Trip.UI.Wpf
 			return row;
 		}
 
+		/// <summary>
+		/// Plain-language summary of what the bot is actually prioritizing right now — priority
+		/// mode, spectral/GP focus, achievement/target-fish focus, and any missions it's watching
+		/// bites for. Built from settings + live weather/GP/mission reads only — no calls into the
+		/// stateful bait selectors (same constraint as the rest of this page, see the class doc
+		/// comment), so it can't show cast-by-cast internals like an active mooch chain — only the
+		/// standing priorities that drive them.
+		/// </summary>
+		private static void BuildStrategyPanel(UserControl page, string location, bool simulating, bool spectralActive,
+			double? secondsRemaining, List<MissionDHOpportunity> missionOpportunities)
+		{
+			var panel = (StackPanel)page.FindName("StrategyPanel");
+			panel.Children.Clear();
+
+			var settings = OceanTripNewSettings.Instance;
+			var priority = settings.EffectiveFishPriority;
+
+			panel.Children.Add(BuildStrategyRow(PriorityDescription(priority)));
+
+			if (!simulating && priority != FishPriority.IgnoreBoat)
+			{
+				GameStateCache.Instance.RefreshIfNeeded();
+				var gp = GameStateCache.Instance;
+				string gpLine;
+				if (spectralActive)
+				{
+					gpLine = $"In Spectral Current — spending GP freely on Double/Triple Hook for high-value catches ({gp.CurrentGP}/{gp.MaxGP} GP)";
+				}
+				else if (secondsRemaining == null || secondsRemaining > OceanTripPlanner.Definitions.FishingConstants.SPECTRAL_CUTOFF_SECONDS)
+				{
+					gpLine = $"Outside Spectral — building GP for the current when it appears ({gp.CurrentGP}/{gp.MaxGP} GP)";
+				}
+				else
+				{
+					gpLine = $"Outside Spectral — under 90s left at this stop, spending GP normally ({gp.CurrentGP}/{gp.MaxGP} GP)";
+				}
+				panel.Children.Add(BuildStrategyRow(gpLine));
+			}
+
+			string focusLine = FocusDescription(priority, location);
+			if (focusLine != null)
+				panel.Children.Add(BuildStrategyRow(focusLine));
+
+			if (missionOpportunities.Count > 0)
+			{
+				var missionNames = string.Join(", ", missionOpportunities.Select(o => o.MissionText).Distinct());
+				panel.Children.Add(BuildStrategyRow($"Watching for a matching bite to Double/Triple Hook toward: {missionNames}"));
+			}
+		}
+
+		private static string PriorityDescription(FishPriority priority)
+		{
+			string label = PriorityShortLabel(priority);
+			switch (priority)
+			{
+				case FishPriority.FishLog:
+					return $"{label} — chasing missing Fish Log entries first, falls back to points once caught up";
+				case FishPriority.Points:
+					return $"{label} — always optimizing bait for the highest-value catch, ignoring Fish Log gaps";
+				case FishPriority.Auto:
+					return $"{label} — chasing missing Fish Log entries first, falls back to points once caught up";
+				case FishPriority.Achievements:
+					return $"{label} — bait and hooksets focused on completing the achievement below";
+				case FishPriority.Leveling:
+					return $"{label} — Krill/Ragworm/Plump Worm only, catching everything that bites (Fisher below level 90)";
+				case FishPriority.IgnoreBoat:
+					return $"{label} — boat queueing left to you; fishing decisions otherwise follow Auto";
+				default:
+					return label;
+			}
+		}
+
+		private static string PriorityShortLabel(FishPriority priority)
+		{
+			switch (priority)
+			{
+				case FishPriority.FishLog: return "Fishing Log";
+				case FishPriority.Points: return "Points";
+				case FishPriority.Auto: return "Auto";
+				case FishPriority.Achievements: return "Achievements";
+				case FishPriority.Leveling: return "Leveling";
+				case FishPriority.IgnoreBoat: return "Ignore Boat";
+				default: return priority.ToString();
+			}
+		}
+
+		/// <summary>
+		/// Achievement focus takes precedence over Target Fish for the summary line — Achievement
+		/// mode already overrides Target Fish entirely in SelectAndApplyBait (OceanTrip.cs), so
+		/// showing both here would misrepresent which one is actually driving bait selection.
+		/// </summary>
+		private static string FocusDescription(FishPriority priority, string location)
+		{
+			if (priority == FishPriority.Achievements)
+			{
+				var focus = Ocean_Trip.Definitions.AchievementFishDataCache.GetCurrentAchievementFocus();
+				if (focus == Ocean_Trip.Definitions.AchievementType.None)
+					return "No achievement focus selected — pick one on the Settings page";
+
+				string label = AchievementIconLabels.TryGetValue(focus, out var name) ? name : focus.ToString();
+				return $"Focused on: {label}";
+			}
+
+			uint targetFishId = OceanTripNewSettings.Instance.TargetFishId;
+			if (targetFishId != 0)
+			{
+				var targetFish = Ocean_Trip.Definitions.FishDataCache.GetFish().FirstOrDefault(f => f.FishID == (int)targetFishId);
+				if (targetFish != null)
+				{
+					return targetFish.RouteShortName == location
+						? $"Target Fish — chasing {targetFish.FishName} in this zone"
+						: $"Target Fish — {targetFish.FishName} (not in this zone, ignored here)";
+				}
+			}
+
+			return null;
+		}
+
+		private static FrameworkElement BuildStrategyRow(string text)
+		{
+			return new TextBlock
+			{
+				Text = "•  " + text,
+				Style = (Style)Application.Current.Resources["BodyText"],
+				TextWrapping = TextWrapping.Wrap,
+				Margin = new Thickness(0, 0, 0, 6),
+			};
+		}
+
 		private static void ShowEmptyState(UserControl page)
 		{
 			((FrameworkElement)page.FindName("EmptyStatePanel")).Visibility = Visibility.Visible;
@@ -467,23 +595,24 @@ namespace Ocean_Trip.UI.Wpf
 				return;
 			}
 
-			group.Visibility = Visibility.Visible;
-			panel.Children.Clear();
-
 			var target = normalFish.Concat(spectralFish)
 				.Where(f => !f.RequiresIntuition && isAvailable(f) && missingFish.Contains((uint)f.FishID))
 				.OrderBy(f => RarityOrder(f.Rarity))
 				.ThenByDescending(f => f.Points)
 				.FirstOrDefault();
 
-			panel.Children.Add(target != null
-				? BuildFishTile(target, caught: false, available: true, highlight: true, missionOpportunities, timeOfDay, weather)
-				: new TextBlock
-				{
-					Text = "No priority fish remaining at this stop — nice work!",
-					Style = (Style)Application.Current.Resources["SecondaryText"],
-					Margin = new Thickness(4)
-				});
+			// No target left to chase at this stop — collapse the whole card rather than reserve
+			// space for a "nice work!" message, matching the Missions column's own empty-state
+			// behavior in the banner above.
+			if (target == null)
+			{
+				group.Visibility = Visibility.Collapsed;
+				return;
+			}
+
+			group.Visibility = Visibility.Visible;
+			panel.Children.Clear();
+			panel.Children.Add(BuildFishTile(target, caught: false, available: true, highlight: true, missionOpportunities, timeOfDay, weather));
 		}
 
 		private static void BuildFishPanel(WrapPanel panel, List<Ocean_Trip.Definitions.Fish> fishList,
@@ -577,18 +706,17 @@ namespace Ocean_Trip.UI.Wpf
 			//  - Achievement mode: grinding a catch-count, so any extra copy helps regardless of value.
 			//  - An active mission (remaining >= 2): handled above via missionOpportunities.
 			//  - Points/Auto priority: worth it only if the extra copies' points clear the hook's GP
-			//    cost — the same math HookingStrategy.IsPointsWorthDoubleHook uses live. Spectral fish
-			//    (usually much higher Points) clear this far more often than normal fish, which is why
-			//    DH/TH should read as "mostly spectral" in practice — via the real math, not a rule
-			//    that arbitrarily excludes the Normal Fish panel.
+			//    cost — the same math HookingStrategy.IsPointsWorthDoubleHook uses live (called
+			//    directly below, not reimplemented, so a future tuning change can't drift the two
+			//    out of sync). Spectral fish (usually much higher Points) clear this far more often
+			//    than normal fish, which is why DH/TH should read as "mostly spectral" in practice —
+			//    via the real math, not a rule that arbitrarily excludes the Normal Fish panel.
 			bool dhBonusAvailable = fish.THBonus > 1 || fish.DHBonus > 1;
 
 			bool pointsMode = OceanTripNewSettings.Instance.FishPriority == FishPriority.Points
 				|| OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto;
-			bool pointsWorthTriple = fish.THBonus > 1
-				&& fish.Points * fish.THBonus > OceanTripPlanner.Definitions.FishingConstants.TRIPLE_HOOK_GP_COST;
-			bool pointsWorthDouble = fish.DHBonus > 1
-				&& fish.Points * fish.DHBonus > OceanTripPlanner.Definitions.FishingConstants.DOUBLE_HOOK_GP_COST;
+			bool pointsWorthTriple = OceanTripPlanner.Strategies.HookingStrategy.IsPointsWorthTripleHook(fish);
+			bool pointsWorthDouble = OceanTripPlanner.Strategies.HookingStrategy.IsPointsWorthDoubleHook(fish);
 			bool pointsWorthwhile = pointsMode && (pointsWorthTriple || pointsWorthDouble);
 
 			var missionMatch = missionOpportunities?.FirstOrDefault(o =>

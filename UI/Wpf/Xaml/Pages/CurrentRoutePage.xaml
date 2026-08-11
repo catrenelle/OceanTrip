@@ -62,6 +62,10 @@
 					</Grid>
 				</Border>
 
+				<GroupBox x:Name="StrategyGroup" Header="Current Strategy" Style="{DynamicResource Card}">
+					<StackPanel x:Name="StrategyPanel" />
+				</GroupBox>
+
 				<GroupBox x:Name="FishLogTargetGroup" Header="Fishing Log Target" Style="{DynamicResource Card}" Visibility="Collapsed">
 					<WrapPanel x:Name="FishLogTargetPanel" Orientation="Horizontal" />
 				</GroupBox>
