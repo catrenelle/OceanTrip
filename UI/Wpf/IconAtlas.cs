@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using OceanTripPlanner.Helpers;
 
 namespace Ocean_Trip.UI.Wpf
 {
@@ -52,16 +53,8 @@ namespace Ocean_Trip.UI.Wpf
 
 		private static string ResolvePath(string fileName)
 		{
-			var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
-
-			foreach (var dir in possibleDirectories)
-			{
-				var potentialPath = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", fileName);
-				if (File.Exists(potentialPath))
-					return potentialPath;
-			}
-
-			throw new FileNotFoundException($"Resource file not found: {fileName}");
+			return BotBasesResourceLocator.Resolve("Resources", fileName)
+				?? throw new FileNotFoundException($"Resource file not found: {fileName}");
 		}
 	}
 }

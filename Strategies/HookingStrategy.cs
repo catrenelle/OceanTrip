@@ -267,8 +267,9 @@ namespace OceanTripPlanner.Strategies
 		private bool ShouldAttemptHook(HookContext context, List<Fish> matchedFish)
 		{
 			uint targetFishId = OceanTripNewSettings.Instance.TargetFishId;
-			bool targetFishHere = targetFishId != 0 &&
-				FishDataCache.GetFish().Any(f => f.FishID == (int)targetFishId && f.RouteShortName == context.Location);
+			bool targetFishHere = targetFishId != 0
+				&& OceanTripNewSettings.Instance.EffectiveFishPriority != FishPriority.Leveling
+				&& FishDataCache.GetFish().Any(f => f.FishID == (int)targetFishId && f.RouteShortName == context.Location);
 
 			AchievementType achievementFocus = AchievementType.None;
 			bool achievementFishHere = false;
@@ -335,9 +336,22 @@ namespace OceanTripPlanner.Strategies
 			if (bestGuess == null)
 				return false;
 
-			return (bestGuess.Points * bestGuess.THBonus > FishingConstants.TRIPLE_HOOK_GP_COST && bestGuess.THBonus > 1)
-				|| (bestGuess.Points * bestGuess.DHBonus > FishingConstants.DOUBLE_HOOK_GP_COST && bestGuess.DHBonus > 1);
+			return IsPointsWorthTripleHook(bestGuess) || IsPointsWorthDoubleHook(bestGuess);
 		}
+
+		/// <summary>
+		/// Per-fish half of the points-based DH/TH formula above — exposed so the UI's DH/TH badge
+		/// (CurrentRoutePageBehavior.BuildFishIcon) can call the exact same math the bot hooks with,
+		/// instead of hand-rolling a copy that can drift out of sync with a future tuning change.
+		/// </summary>
+		public static bool IsPointsWorthTripleHook(Fish fish) =>
+			fish.THBonus > 1 && fish.Points * fish.THBonus > FishingConstants.TRIPLE_HOOK_GP_COST;
+
+		/// <summary>
+		/// Per-fish half of the points-based DH/TH formula above — see IsPointsWorthTripleHook.
+		/// </summary>
+		public static bool IsPointsWorthDoubleHook(Fish fish) =>
+			fish.DHBonus > 1 && fish.Points * fish.DHBonus > FishingConstants.DOUBLE_HOOK_GP_COST;
 
 		/// <summary>
 		/// Find matching fish from a list, with fallback to nearest fish if no exact match

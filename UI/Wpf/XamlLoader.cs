@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using OceanTripPlanner.Helpers;
 
 namespace Ocean_Trip.UI.Wpf
 {
@@ -94,16 +95,8 @@ namespace Ocean_Trip.UI.Wpf
 
 		private static string ResolvePath(string relativeXamlPath)
 		{
-			var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
-
-			foreach (var dir in possibleDirectories)
-			{
-				var potentialPath = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "UI", "Wpf", "Xaml", relativeXamlPath);
-				if (File.Exists(potentialPath))
-					return potentialPath;
-			}
-
-			throw new FileNotFoundException($"WPF XAML file not found: {relativeXamlPath}");
+			return BotBasesResourceLocator.Resolve("UI", "Wpf", "Xaml", relativeXamlPath)
+				?? throw new FileNotFoundException($"WPF XAML file not found: {relativeXamlPath}");
 		}
 	}
 }

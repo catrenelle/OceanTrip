@@ -4,8 +4,10 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using ff14bot.Managers;
 using Ocean_Trip.UI.Wpf.Converters;
 using OceanTripPlanner;
+using OceanTripPlanner.Definitions;
 
 namespace Ocean_Trip.UI.Wpf
 {
@@ -17,19 +19,22 @@ namespace Ocean_Trip.UI.Wpf
 	/// </summary>
 	public static class OceanSettingsPageBehavior
 	{
-		private static readonly (string Label, int IconX, int IconY, string CountProperty)[] BaitItems =
+		// Label is only a fallback for when the client's item cache hasn't loaded the localized
+		// name yet (see BuildBaitTile) — ItemId is what actually drives the tooltip, so non-English
+		// clients see the bait's name in their own language instead of this hardcoded English one.
+		private static readonly (string Label, uint ItemId, int IconX, int IconY, string CountProperty)[] BaitItems =
 		{
-			("Ragworm", 8, 23, nameof(FFXIV_Databinds.ragwormCount)),
-			("Krill", 9, 23, nameof(FFXIV_Databinds.krillCount)),
-			("Plump Worm", 10, 23, nameof(FFXIV_Databinds.plumpwormCount)),
-			("Rat Tail", 2, 23, nameof(FFXIV_Databinds.rattailCount)),
-			("Glow Worm", 3, 23, nameof(FFXIV_Databinds.glowwormCount)),
-			("Heavy Steel Jig", 5, 23, nameof(FFXIV_Databinds.heavysteeljigCount)),
-			("Shrimp Cage Feeder", 4, 23, nameof(FFXIV_Databinds.shrimpcagefeederCount)),
-			("Pill Bug", 1, 23, nameof(FFXIV_Databinds.pillbugCount)),
-			("Squid Strip", 7, 23, nameof(FFXIV_Databinds.squidstripCount)),
-			("Mackerel Strip", 2, 24, nameof(FFXIV_Databinds.mackerelstripCount)),
-			("Stonefly Nymph", 6, 23, nameof(FFXIV_Databinds.stoneflynymphCount)),
+			("Ragworm", FishBait.Ragworm, 8, 23, nameof(FFXIV_Databinds.ragwormCount)),
+			("Krill", FishBait.Krill, 9, 23, nameof(FFXIV_Databinds.krillCount)),
+			("Plump Worm", FishBait.PlumpWorm, 10, 23, nameof(FFXIV_Databinds.plumpwormCount)),
+			("Rat Tail", FishBait.RatTail, 2, 23, nameof(FFXIV_Databinds.rattailCount)),
+			("Glow Worm", FishBait.GlowWorm, 3, 23, nameof(FFXIV_Databinds.glowwormCount)),
+			("Heavy Steel Jig", FishBait.HeavySteelJig, 5, 23, nameof(FFXIV_Databinds.heavysteeljigCount)),
+			("Shrimp Cage Feeder", FishBait.ShrimpCageFeeder, 4, 23, nameof(FFXIV_Databinds.shrimpcagefeederCount)),
+			("Pill Bug", FishBait.PillBug, 1, 23, nameof(FFXIV_Databinds.pillbugCount)),
+			("Squid Strip", FishBait.SquidStrip, 7, 23, nameof(FFXIV_Databinds.squidstripCount)),
+			("Mackerel Strip", FishBait.MackerelStrip, 2, 24, nameof(FFXIV_Databinds.mackerelstripCount)),
+			("Stonefly Nymph", FishBait.StoneflyNymph, 6, 23, nameof(FFXIV_Databinds.stoneflynymphCount)),
 		};
 
 		private static readonly (string Label, int IconX, int IconY, string AchievedProperty)[] AchievementItems =
@@ -74,7 +79,7 @@ namespace Ocean_Trip.UI.Wpf
 
 			var baitPanel = (WrapPanel)page.FindName("BaitIconPanel");
 			foreach (var item in BaitItems)
-				baitPanel.Children.Add(BuildBaitTile(item.Label, item.IconX, item.IconY, item.CountProperty));
+				baitPanel.Children.Add(BuildBaitTile(item.Label, item.ItemId, item.IconX, item.IconY, item.CountProperty));
 
 			var achievementPanel = (WrapPanel)page.FindName("AchievementIconPanel");
 			foreach (var item in AchievementItems)
@@ -102,12 +107,13 @@ namespace Ocean_Trip.UI.Wpf
 			down.Click += (s, e) => set(Math.Max(0, get() - 1));
 		}
 
-		private static FrameworkElement BuildBaitTile(string label, int iconX, int iconY, string countProperty)
+		private static FrameworkElement BuildBaitTile(string label, uint itemId, int iconX, int iconY, string countProperty)
 		{
 			var stack = new StackPanel { Margin = new Thickness(0, 0, 8, 4), Width = 52 };
 
+			string localeName = DataManager.ItemCache[itemId]?.CurrentLocaleName ?? label;
 			var tile = new Border { Style = (Style)Application.Current.Resources["IconTile"] };
-			var image = new Image { Source = IconAtlas.GetIcon(iconX, iconY), Width = 26, Height = 26, ToolTip = label };
+			var image = new Image { Source = IconAtlas.GetIcon(iconX, iconY), Width = 26, Height = 26, ToolTip = localeName };
 			tile.Child = image;
 			stack.Children.Add(tile);
 

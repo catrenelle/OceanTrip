@@ -507,6 +507,11 @@ namespace OceanTripPlanner
 					fishingContext.SetMissionRequiredTugType(result.missionRequiredTugType);
 					fishingContext.SetMissionRequiredAchievementTags(result.missionRequiredAchievementTags);
 				};
+				fishingContext.RefreshMissionStateCallback = () =>
+				{
+					fishingContext.SetMissionRequiredTugType(GetActiveMissionTugType());
+					fishingContext.SetMissionRequiredAchievementTags(GetActiveMissionAchievementTags());
+				};
 				await fishingSessionManager.ExecuteFishingSession(fishingContext);
 			}
 		}

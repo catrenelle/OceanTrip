@@ -55,5 +55,18 @@ namespace OceanTripPlanner.Strategies
 		/// relevant once ShouldMooch fires and the following cast is a mooch, not a plain cast).
 		/// </summary>
 		public uint ChainMoochTargetFishId { get; set; }
+
+		/// <summary>
+		/// Call when the bait swap for a chain attempt fails (ChangeBait returned false) — the old
+		/// bait is still equipped, so the chain target set for the intended bait no longer applies.
+		/// Leaving it set makes HookingStrategy decline every bite for the rest of the stop since
+		/// the wrong fish never matches the stale target.
+		/// </summary>
+		public void ClearChainTargets()
+		{
+			ShouldMooch = false;
+			ChainCastTargetFishId = 0;
+			ChainMoochTargetFishId = 0;
+		}
 	}
 }

@@ -55,7 +55,8 @@
 				<GroupBox Grid.Row="1" Grid.Column="1" Header="Trip Options" Style="{DynamicResource Card}">
 					<StackPanel Orientation="Horizontal">
 						<CheckBox Content="Late Queue" Margin="0,0,16,0" IsChecked="{Binding LateBoatQueue}" />
-						<CheckBox Content="Nasi Goreng" IsChecked="{Binding OceanFood}" />
+						<CheckBox Content="Nasi Goreng" Margin="0,0,16,0" IsChecked="{Binding OceanFood}" />
+						<CheckBox Content="Verbose Logging" IsChecked="{Binding LoggingMode}" />
 					</StackPanel>
 				</GroupBox>
 

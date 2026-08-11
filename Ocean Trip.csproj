@@ -40,4 +40,15 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+
+  <!-- RebornBuddy.ReferenceAssemblies ships a native (non-.NET) Ijwhost.dll inside its managed
+       lib/net8.0-windows folder. NuGet exposes every DLL in that folder as a compile-time reference
+       candidate, but ResolveAssemblyReferences can't read CLR metadata from a native PE, producing a
+       harmless MSB3246 warning every build. Nothing here uses it (it's a C++/CLI interop host,
+       unrelated to fishing bot code) — drop it from the reference set before it's resolved. -->
+  <Target Name="RemoveIjwhostNativeReference" AfterTargets="ResolveLockFileReferences">
+    <ItemGroup>
+      <Reference Remove="@(Reference)" Condition="'%(Reference.FileName)' == 'Ijwhost'" />
+    </ItemGroup>
+  </Target>
 </Project>

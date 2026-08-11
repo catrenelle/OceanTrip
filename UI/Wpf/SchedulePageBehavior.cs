@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using OceanTripPlanner;
+using OceanTripPlanner.Helpers;
 
 namespace Ocean_Trip.UI.Wpf
 {
@@ -164,19 +165,13 @@ namespace Ocean_Trip.UI.Wpf
 			if (ImageCache.TryGetValue(fileName, out var cached))
 				return cached;
 
-			var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
-			foreach (var dir in possibleDirectories)
-			{
-				var path = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", fileName);
-				if (File.Exists(path))
-				{
-					var image = new BitmapImage(new Uri(path, UriKind.Absolute));
-					ImageCache[fileName] = image;
-					return image;
-				}
-			}
+			var path = BotBasesResourceLocator.Resolve("Resources", fileName);
+			if (path == null)
+				return null;
 
-			return null;
+			var image = new BitmapImage(new Uri(path, UriKind.Absolute));
+			ImageCache[fileName] = image;
+			return image;
 		}
 	}
 

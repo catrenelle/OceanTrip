@@ -70,12 +70,14 @@ namespace OceanTripPlanner.Strategies
 				if (caughtFish.Count(x => x == OceanFish.Heavenskey) < 2) // Needs 2 Heavenskey. Use Ragworm to catch.
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.Heavenskey;
-					await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.Heavenskey)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.Heavenskey)}"))
+						context.ClearChainTargets();
 				}
 				else if (!caughtFish.Contains(OceanFish.NavigatorsPrint)) // Requires 1 Navigators Print.
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.NavigatorsPrint;
-					await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.NavigatorsPrint)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.NavigatorsPrint)}"))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "south") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.CoralManta) && focusFishLog)
@@ -85,7 +87,8 @@ namespace OceanTripPlanner.Strategies
 					context.ShouldMooch = true;
 					context.ChainCastTargetFishId = (uint)OceanFish.HiAetherlouse;
 					context.ChainMoochTargetFishId = (uint)OceanFish.GreatGrandmarlin;
-					await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.GreatGrandmarlin)} via mooching {_gameCache.GetItemName((uint)OceanFish.HiAetherlouse)}.");
+					if (!await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.GreatGrandmarlin)} via mooching {_gameCache.GetItemName((uint)OceanFish.HiAetherlouse)}."))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "north") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Elasmosaurus) && focusFishLog)
@@ -93,7 +96,8 @@ namespace OceanTripPlanner.Strategies
 				if (caughtFish.Count(x => x == OceanFish.Gugrusaurus) < 3) // Needs 3 Gugrusaurus
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.Gugrusaurus;
-					await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.Gugrusaurus)}");
+					if (!await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.Gugrusaurus)}"))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "rhotano") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Stonescale) && focusFishLog)
@@ -101,18 +105,21 @@ namespace OceanTripPlanner.Strategies
 				// Stonescale's real Intuition prereq is Deep-sea Eel (per IntuitionPrereqs in
 				// fishList.json), not Crimson Monkfish — that's actually Sabaton's prereq (a
 				// separate, normal/non-spectral fish already handled generically by
-				// NormalBaitSelector's own IntuitionPrereqs walk). Walk the prereq list the same
-				// way NormalBaitSelector does, so this stays correct if the data ever changes.
+				// NormalBaitSelector's own IntuitionPrereqs walk).
 				var stonescale = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == OceanFish.Stonescale);
 				var prereq = stonescale?.IntuitionPrereqs?.FirstOrDefault(p => !p.IsMooch && caughtFish.Count(x => x == (uint)p.FishID) < p.Count);
 				if (prereq != null)
 				{
-					var prereqFish = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == prereq.FishID);
+					var availableSpectralPrereqFish = currentRoute?.SpectralFish
+						.Where(f => f.TimeOfDayExclusion1 != timeOfDay && f.TimeOfDayExclusion2 != timeOfDay)
+						.ToList() ?? new System.Collections.Generic.List<Fish>();
+					var prereqFish = availableSpectralPrereqFish.FirstOrDefault(f => f.FishID == prereq.FishID);
 					if (prereqFish != null)
 					{
 						context.ChainCastTargetFishId = (uint)prereq.FishID;
 						var caught = caughtFish.Count(x => x == (uint)prereq.FishID);
-						await _baitChanger.ChangeBait(prereqFish.FavoriteBait, $"Switching bait to {_gameCache.GetItemName(prereqFish.FavoriteBait)} in order to catch {caught}/{prereq.Count}x {prereqFish.FishName} (Intuition prereq for {stonescale.FishName})");
+						if (!await _baitChanger.ChangeBait(prereqFish.FavoriteBait, $"Switching bait to {_gameCache.GetItemName(prereqFish.FavoriteBait)} in order to catch {caught}/{prereq.Count}x {prereqFish.FishName} (Intuition prereq for {stonescale.FishName})"))
+							context.ClearChainTargets();
 					}
 				}
 			}
@@ -121,12 +128,14 @@ namespace OceanTripPlanner.Strategies
 				if (caughtFish.Count(x => x == OceanFish.JetborneManta) < 2) // Needs 2 Jetborne Manta
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.JetborneManta;
-					await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.JetborneManta)}");
+					if (!await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.JetborneManta)}"))
+						context.ClearChainTargets();
 				}
 				else if (!caughtFish.Contains(OceanFish.MistbeardsCup)) // Needs 1 Mistbeard's Cup
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.MistbeardsCup;
-					await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.MistbeardsCup)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.MistbeardsCup)}"))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "blood") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.SeafaringToad) && focusFishLog)
@@ -136,7 +145,8 @@ namespace OceanTripPlanner.Strategies
 
 				// Catch 3 Beatific Vision to trigger intuition
 				context.ChainCastTargetFishId = (uint)OceanFish.BeatificVision;
-				await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.BeatificVision)}");
+				if (!await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.BeatificVision)}"))
+					context.ClearChainTargets();
 			}
 			else if ((location == "sound") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.Placodus) && focusFishLog)
 			{
@@ -146,14 +156,16 @@ namespace OceanTripPlanner.Strategies
 				context.ShouldMooch = true;
 				context.ChainCastTargetFishId = (uint)OceanFish.RothlytMussel;
 				context.ChainMoochTargetFishId = (uint)OceanFish.Trollfish;
-				await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.RothlytMussel)} to mooch into {_gameCache.GetItemName((uint)OceanFish.Trollfish)}");
+				if (!await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.RothlytMussel)} to mooch into {_gameCache.GetItemName((uint)OceanFish.Trollfish)}"))
+					context.ClearChainTargets();
 			}
 			else if ((location == "sirensong") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.Taniwha) && focusFishLog)
 			{
 				if (caughtFish.Count(x => x == OceanFish.SunkenCoelacanth) < 3) // Needs 3 Sunken Coelacanth
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.SunkenCoelacanth;
-					await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.SunkenCoelacanth)}");
+					if (!await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.SunkenCoelacanth)}"))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "kugane") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.GlassDragon) && focusFishLog)
@@ -161,14 +173,16 @@ namespace OceanTripPlanner.Strategies
 				if (caughtFish.Count(x => x == OceanFish.Shoshitsuki) < 2) // Needs Shoshitsuki
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.Shoshitsuki;
-					await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.Shoshitsuki)}");
+					if (!await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.Shoshitsuki)}"))
+						context.ClearChainTargets();
 				}
 				else
 				{
 					context.ShouldMooch = true;
 					context.ChainCastTargetFishId = (uint)OceanFish.SnappingKoban;
 					context.ChainMoochTargetFishId = (uint)OceanFish.GlassDragon;
-					await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.SnappingKoban)} to mooch into {_gameCache.GetItemName((uint)OceanFish.GlassDragon)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.SnappingKoban)} to mooch into {_gameCache.GetItemName((uint)OceanFish.GlassDragon)}"))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "rubysea") && (timeOfDay == "Sunset") && missingFish.Contains((uint)OceanFish.HellsClaw) && focusFishLog)
@@ -176,12 +190,14 @@ namespace OceanTripPlanner.Strategies
 				if (caughtFish.Count(x => x == OceanFish.FlyingSquid) < 1) // Needs 1x Flying Squid
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.FlyingSquid;
-					await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.FlyingSquid)}");
+					if (!await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.FlyingSquid)}"))
+						context.ClearChainTargets();
 				}
 				else if (caughtFish.Count(x => x == OceanFish.FleetingSquid) < 2) // Needs 2x Fleeting Squid
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.FleetingSquid;
-					await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.FleetingSquid)}");
+					if (!await _baitChanger.ChangeBait(FishBait.PlumpWorm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.PlumpWorm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.FleetingSquid)}"))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "oneriver") && (timeOfDay == "Day") && missingFish.Contains((uint)OceanFish.JewelofPlumSpring) && focusFishLog)
@@ -189,12 +205,14 @@ namespace OceanTripPlanner.Strategies
 				if (caughtFish.Count(x => x == OceanFish.YanxianGoby) < 2) // Needs 2x Yanxian Goby
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.YanxianGoby;
-					await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.YanxianGoby)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 2x {_gameCache.GetItemName((uint)OceanFish.YanxianGoby)}"))
+						context.ClearChainTargets();
 				}
 				else if (caughtFish.Count(x => x == OceanFish.GensuiShrimp) < 1) // Needs 1x Gensui Shrimp
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.GensuiShrimp;
-					await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.GensuiShrimp)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 1x {_gameCache.GetItemName((uint)OceanFish.GensuiShrimp)}"))
+						context.ClearChainTargets();
 				}
 			}
 #if !RB_TC
@@ -205,7 +223,8 @@ namespace OceanTripPlanner.Strategies
 					context.ShouldMooch = true;
 					context.ChainCastTargetFishId = (uint)OceanFish.CaptainsPen;
 					context.ChainMoochTargetFishId = (uint)OceanFish.CieldalaesRoosterfish;
-					await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch {_gameCache.GetItemName((uint)OceanFish.CaptainsPen)} to mooch into {_gameCache.GetItemName((uint)OceanFish.CieldalaesRoosterfish)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Krill, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Krill)} in order to catch {_gameCache.GetItemName((uint)OceanFish.CaptainsPen)} to mooch into {_gameCache.GetItemName((uint)OceanFish.CieldalaesRoosterfish)}"))
+						context.ClearChainTargets();
 				}
 			}
 			else if ((location == "thavnair") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Manasvin) && focusFishLog)
@@ -213,7 +232,8 @@ namespace OceanTripPlanner.Strategies
 				if (caughtFish.Count(x => x == OceanFish.Satrapsaurus) < 3) // Needs 3x Satrapsaurus
 				{
 					context.ChainCastTargetFishId = (uint)OceanFish.Satrapsaurus;
-					await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.Satrapsaurus)}");
+					if (!await _baitChanger.ChangeBait(FishBait.Ragworm, $"Switching bait to {_gameCache.GetItemName((uint)FishBait.Ragworm)} in order to catch 3x {_gameCache.GetItemName((uint)OceanFish.Satrapsaurus)}"))
+						context.ClearChainTargets();
 				}
 			}
 #endif

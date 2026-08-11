@@ -129,7 +129,7 @@ namespace OceanTripPlanner.Strategies
 
 							if (moochSourceFishId != 0)
 							{
-								var sourceFish = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == (int)moochSourceFishId);
+								var sourceFish = availableNormalFish.FirstOrDefault(f => f.FishID == (int)moochSourceFishId);
 								if (sourceFish != null)
 								{
 									context.ShouldMooch = true;
@@ -169,7 +169,8 @@ namespace OceanTripPlanner.Strategies
 			if (selectedBait == 0)
 				selectedBait = (uint)context.DefaultBaitId;
 
-			await _baitChanger.ChangeBait(selectedBait, baitReason);
+			if (!await _baitChanger.ChangeBait(selectedBait, baitReason))
+				context.ClearChainTargets();
 
 			// Chum handling
 			if (_gameCache.MaxGP >= FishingConstants.FULL_GP_BUFFER
