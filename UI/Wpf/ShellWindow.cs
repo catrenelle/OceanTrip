@@ -46,6 +46,7 @@ namespace Ocean_Trip.UI.Wpf
 			var navOceanSettings = (Button)window.FindName("NavOceanSettings");
 			var navSchedule = (Button)window.FindName("NavSchedule");
 			var navCurrentRoute = (Button)window.FindName("NavCurrentRoute");
+			var navResultHistory = (Button)window.FindName("NavResultHistory");
 			var navLisbeth = (Button)window.FindName("NavLisbeth");
 			var navLlamaMarket = (Button)window.FindName("NavLlamaMarket");
 
@@ -71,7 +72,7 @@ namespace Ocean_Trip.UI.Wpf
 			};
 			closeButton.Click += (s, e) => window.Close();
 
-			var navButtons = new[] { navIdleActivities, navOceanSettings, navSchedule, navCurrentRoute };
+			var navButtons = new[] { navIdleActivities, navOceanSettings, navSchedule, navCurrentRoute, navResultHistory };
 
 			void Navigate(Button active, string pagePath, Action<UserControl> postLoad = null)
 			{
@@ -87,6 +88,7 @@ namespace Ocean_Trip.UI.Wpf
 			navOceanSettings.Click += (s, e) => Navigate(navOceanSettings, "Pages/OceanSettingsPage.xaml", OceanSettingsPageBehavior.Attach);
 			navSchedule.Click += (s, e) => Navigate(navSchedule, "Pages/SchedulePage.xaml", SchedulePageBehavior.Attach);
 			navCurrentRoute.Click += (s, e) => Navigate(navCurrentRoute, "Pages/CurrentRoutePage.xaml", CurrentRoutePageBehavior.Attach);
+			navResultHistory.Click += (s, e) => Navigate(navResultHistory, "Pages/ResultHistoryPage.xaml", ResultHistoryPageBehavior.Attach);
 
 			navLisbeth.Click += (s, e) => OceanTripPlanner.Helpers.Lisbeth.OpenWindow();
 			navLlamaMarket.Click += (s, e) => OceanTripPlanner.Helpers.LlamaMarket.OpenMarketSettings();
@@ -131,6 +133,12 @@ namespace Ocean_Trip.UI.Wpf
 						: $"{missingFish.Count}/{total} fish missing";
 					missingFishText.Visibility = Visibility.Visible;
 				}
+
+				// One-way reveal: once a voyage's ever been logged, VoyageHistoryStore's backing file
+				// never goes away, so there's no case where this needs to go back to Collapsed.
+				// Skipping the File.Exists check once already visible avoids re-hitting disk every tick.
+				if (navResultHistory.Visibility != Visibility.Visible && VoyageHistoryStore.HasAny())
+					navResultHistory.Visibility = Visibility.Visible;
 			}
 
 			RefreshStatus();

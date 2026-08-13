@@ -1,0 +1,70 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Margin="28,12,28,6">
+			<TextBlock Text="Result History" Style="{DynamicResource HeaderText}" />
+			<TextBlock Text="Stats and your most recent completed voyages." Style="{DynamicResource SecondaryText}" Margin="0,0,0,6" />
+
+			<GroupBox Header="All-Time Stats" Style="{DynamicResource Card}">
+				<UniformGrid x:Name="StatsPanel" Columns="5" />
+			</GroupBox>
+
+			<!-- Only shown once more than one route appears in history — with a single route this
+			     would just repeat the numbers already in All-Time Stats above. -->
+			<GroupBox x:Name="RouteBreakdownGroup" Header="By Route" Style="{DynamicResource Card}" Visibility="Collapsed">
+				<StackPanel x:Name="RouteBreakdownPanel" />
+			</GroupBox>
+
+			<!-- No fixed height / VerticalScrollBarVisibility on the grid itself — capped at 10 rows
+			     by ResultHistoryPageBehavior, so it just sizes to content within the page's own
+			     ScrollViewer instead of needing its own internal scroll region (contrast with
+			     SchedulePage's DataGrid, which can hold far more rows and owns its own scrolling). -->
+			<GroupBox Header="Last 10 Runs" Style="{DynamicResource Card}">
+				<DataGrid x:Name="ResultsGrid"
+				          AutoGenerateColumns="False"
+				          IsReadOnly="True"
+				          CanUserAddRows="False"
+				          CanUserDeleteRows="False"
+				          CanUserResizeRows="False"
+				          CanUserSortColumns="False"
+				          HeadersVisibility="Column"
+				          GridLinesVisibility="Horizontal"
+				          Background="{DynamicResource SurfaceBrush}"
+				          Foreground="{DynamicResource TextPrimaryBrush}"
+				          BorderThickness="0"
+				          RowBackground="{DynamicResource SurfaceBrush}"
+				          AlternatingRowBackground="{DynamicResource BackgroundBrush}"
+				          HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+				          VerticalGridLinesBrush="{DynamicResource BorderBrush}"
+				          RowHeaderWidth="0">
+					<DataGrid.ColumnHeaderStyle>
+						<Style TargetType="DataGridColumnHeader">
+							<Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+							<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+							<Setter Property="FontFamily" Value="Segoe UI" />
+							<Setter Property="FontSize" Value="12" />
+							<Setter Property="FontWeight" Value="SemiBold" />
+							<Setter Property="Padding" Value="8,6" />
+							<Setter Property="HorizontalContentAlignment" Value="Left" />
+						</Style>
+					</DataGrid.ColumnHeaderStyle>
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="When" Binding="{Binding Timestamp}" Width="130" />
+						<DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="80" />
+						<DataGridTextColumn Header="Points" Binding="{Binding Points}" Width="90" />
+						<DataGridTextColumn Header="Placement" Binding="{Binding Placement}" Width="120" />
+						<DataGridTextColumn Header="Fish" Binding="{Binding CaughtFish}" Width="60" />
+						<DataGridTextColumn Header="Bonuses" Binding="{Binding Bonuses}" Width="*">
+							<DataGridTextColumn.ElementStyle>
+								<Style TargetType="TextBlock">
+									<Setter Property="ToolTip" Value="{Binding Bonuses}" />
+									<Setter Property="TextTrimming" Value="CharacterEllipsis" />
+								</Style>
+							</DataGridTextColumn.ElementStyle>
+						</DataGridTextColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</GroupBox>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

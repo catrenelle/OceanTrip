@@ -637,6 +637,23 @@ namespace OceanTripPlanner
 			{
 				Logging.Write($"[Ocean Trip] Failed to write voyage history log: {ex.Message}");
 			}
+
+			// Structured, readable-back sibling of the CSV log above — feeds the Result History
+			// page's stats and last-10 table. Append() is self-contained (own try/catch), so no
+			// outer guard needed here.
+			Ocean_Trip.VoyageHistoryStore.Append(new Ocean_Trip.VoyageHistoryEntry
+			{
+				Timestamp = DateTime.Now,
+				Route = OceanTripNewSettings.Instance.FishingRoute.ToString(),
+				TotalPoints = result.TotalPoints,
+				Placement = result.Placement,
+				TrackedPlayerCount = result.TrackedPlayers.Count,
+				CaughtFish = result.CaughtFish,
+				ExperiencePoints = result.ExperiencePoints,
+				Scrip1Amount = result.Scrip1Amount,
+				Scrip2Amount = result.Scrip2Amount,
+				Bonuses = bonuses.Select(b => b.Objective).ToList(),
+			});
 		}
 
 		private static string CsvQuote(string field) => "\"" + (field ?? "").Replace("\"", "\"\"") + "\"";

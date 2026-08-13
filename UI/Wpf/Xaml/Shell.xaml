@@ -76,6 +76,10 @@
 					<Button x:Name="NavOceanSettings" Content="Ocean Settings" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
 					<Button x:Name="NavSchedule" Content="Schedule" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
 					<Button x:Name="NavCurrentRoute" Content="Current Route" Style="{DynamicResource NavButton}" Margin="0,0,0,4" />
+
+					<!-- Hidden until VoyageHistoryStore.HasAny() is true (ShellWindow.RefreshStatus) —
+					     no point showing a history page before any voyage has ever been logged. -->
+					<Button x:Name="NavResultHistory" Content="Result History" Style="{DynamicResource NavButton}" Margin="0,0,0,4" Visibility="Collapsed" />
 				</StackPanel>
 
 				<Border Height="1" Background="{DynamicResource BorderBrush}" Margin="16,8" />
