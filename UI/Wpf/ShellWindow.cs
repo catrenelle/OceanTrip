@@ -91,6 +91,25 @@ namespace Ocean_Trip.UI.Wpf
 			navLisbeth.Click += (s, e) => OceanTripPlanner.Helpers.Lisbeth.OpenWindow();
 			navLlamaMarket.Click += (s, e) => OceanTripPlanner.Helpers.LlamaMarket.OpenMarketSettings();
 
+			// Konami-code listener for Schedule's "Simulate Current Route" panel — a developer-only
+			// feature (drives Current Route without actually being on the boat) that stays hidden from
+			// normal use until this exact arrow-key sequence is typed. PreviewKeyDown (tunneling, on
+			// the Window) rather than a page-level KeyDown, so it still sees the keys even when focus
+			// is inside a ComboBox/DataGrid that would otherwise consume arrow-key input itself.
+			var konamiSequence = new[] { Key.Up, Key.Up, Key.Down, Key.Down, Key.Left, Key.Right, Key.Left, Key.Right };
+			int konamiProgress = 0;
+			window.PreviewKeyDown += (s, e) =>
+			{
+				bool matched = e.Key == konamiSequence[konamiProgress];
+				konamiProgress = matched ? konamiProgress + 1 : (e.Key == konamiSequence[0] ? 1 : 0);
+
+				if (konamiProgress == konamiSequence.Length)
+				{
+					konamiProgress = 0;
+					SchedulePageBehavior.UnlockSimulationPanel();
+				}
+			};
+
 			void RefreshStatus()
 			{
 				bool connected = ff14bot.Core.Me != null;

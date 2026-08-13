@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -54,6 +55,17 @@ namespace Ocean_Trip.UI.Wpf
 
 		private static readonly Dictionary<string, BitmapImage> ImageCache = new Dictionary<string, BitmapImage>();
 
+		// Set for the rest of this RebornBuddy session once ShellWindow's Konami-code listener sees
+		// Up Up Down Down Left Right Left Right. SchedulePage is reloaded fresh via XamlLoader.Load
+		// on every nav click (ShellWindow.Navigate), so this — not just the live GroupBox reference
+		// below — is what makes the reveal stick across navigating away and back.
+		private static bool _simulationUnlocked;
+
+		// The currently-attached page's panel, so UnlockSimulationPanel can reveal it immediately if
+		// the code is entered while already sitting on the Schedule page (AttachSimulationControls
+		// already ran and set Collapsed before the code was known).
+		private static GroupBox _activeSimulationGroup;
+
 		public static void Attach(UserControl page)
 		{
 			var routeCombo = (ComboBox)page.FindName("RouteCombo");
@@ -75,6 +87,10 @@ namespace Ocean_Trip.UI.Wpf
 		/// </summary>
 		private static void AttachSimulationControls(UserControl page)
 		{
+			var group = (GroupBox)page.FindName("SimulateGroup");
+			_activeSimulationGroup = group;
+			group.Visibility = _simulationUnlocked ? Visibility.Visible : Visibility.Collapsed;
+
 			var enabledCheck = (CheckBox)page.FindName("SimulateEnabledCheck");
 			var simRouteCombo = (ComboBox)page.FindName("SimRouteCombo");
 			var simLegCombo = (ComboBox)page.FindName("SimLegCombo");
@@ -96,6 +112,18 @@ namespace Ocean_Trip.UI.Wpf
 			enabledCheck.IsChecked = RouteSimulation.Enabled;
 			simRouteCombo.SelectedIndex = RouteSimulation.Route == "Ruby" ? 1 : 0;
 			simLegCombo.SelectedIndex = RouteSimulation.Leg;
+		}
+
+		/// <summary>
+		/// Called by ShellWindow's Konami-code key listener once it sees the full Up Up Down Down
+		/// Left Right Left Right sequence. Reveals "Simulate Current Route" immediately if Schedule
+		/// is the active page, and marks it unlocked for the rest of the session either way.
+		/// </summary>
+		public static void UnlockSimulationPanel()
+		{
+			_simulationUnlocked = true;
+			if (_activeSimulationGroup != null)
+				_activeSimulationGroup.Visibility = Visibility.Visible;
 		}
 
 		private static string SelectedRouteName(ComboBox combo) =>

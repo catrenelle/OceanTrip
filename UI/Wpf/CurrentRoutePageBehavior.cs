@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using ff14bot.Enums;
 using ff14bot.Helpers;
@@ -49,9 +48,13 @@ namespace Ocean_Trip.UI.Wpf
 		};
 
 		private static readonly Color DefaultAccentColor = Color.FromRgb(0x33, 0x36, 0x48);
-		private static readonly Color UnavailableOverlayColor = Color.FromArgb(0x70, 0xE0, 0x3B, 0x3B);
 		private static readonly Color HighlightBackgroundColor = Color.FromArgb(0x33, 0x00, 0x89, 0xC6);
 		private static readonly Color SubtypeBadgeBackground = Color.FromArgb(0xCC, 0x12, 0x14, 0x1C);
+
+		// Soft red text on a faint red tint — the exclusion pill has to stay readable as small
+		// text on the card background without shouting over the rest of the card.
+		private static readonly Color ExclusionTextColor = Color.FromRgb(0xE0, 0x8A, 0x8A);
+		private static readonly Color ExclusionPillBackground = Color.FromArgb(0x2E, 0xE0, 0x3B, 0x3B);
 
 		// Fish.Achievement stores the singular category tag ("Crab", "Shrimp", ...) that
 		// AchievementFishDataCache already maps to an AchievementType for the settings-page focus
@@ -647,44 +650,67 @@ namespace Ocean_Trip.UI.Wpf
 				? rarityColor
 				: DefaultAccentColor;
 
+			// Rarity reads as a slim left accent stripe (same visual language as the nav sidebar's
+			// active-item bar) rather than a full-perimeter colored border — a bright yellow/blue ring
+			// around the whole card looked like a focus/selection state, and common fish's dark ring
+			// was effectively invisible. The perimeter border is now the neutral BorderBrush for every
+			// card, so rarity is the only thing the stripe color can mean.
+			// VerticalAlignment.Top, not the default Stretch — WrapPanel stretches every child in a
+			// row to match that row's tallest sibling, and a card with a status pill is taller than
+			// its plain neighbors. Left to stretch+center, the plain neighbors' icon/name would drift
+			// down into that extra space, so cards in the same row visibly disagreed on where the
+			// icon sits. Top-aligning means every card is only as tall as its own content and all of
+			// them start at the same offset, so a row reads as aligned regardless of which cards have
+			// pills.
 			var border = new Border
 			{
-				Width = 76,
+				Width = 188,
+				MinHeight = 54,
 				Margin = new Thickness(0, 0, 8, 8),
+				VerticalAlignment = VerticalAlignment.Top,
 				CornerRadius = new CornerRadius(6),
 				Background = highlight
 					? new SolidColorBrush(HighlightBackgroundColor)
 					: (Brush)Application.Current.Resources["SurfaceBrush"],
-				BorderBrush = new SolidColorBrush(accentColor),
-				BorderThickness = new Thickness(highlight ? 2 : 1),
-				Padding = new Thickness(4),
+				BorderBrush = highlight
+					? (Brush)Application.Current.Resources["AccentLightBrush"]
+					: (Brush)Application.Current.Resources["BorderBrush"],
+				BorderThickness = new Thickness(1),
 				Opacity = available ? 1.0 : 0.55,
 			};
 
-			var stack = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
-			var iconGrid = new Grid { Width = 40, Height = 40, HorizontalAlignment = HorizontalAlignment.Center };
+			var frame = new Grid();
+			frame.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3) });
+			frame.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
+			var stripe = new Border
+			{
+				Background = new SolidColorBrush(accentColor),
+				CornerRadius = new CornerRadius(5, 0, 0, 5),
+			};
+			Grid.SetColumn(stripe, 0);
+			frame.Children.Add(stripe);
+
+			// Grid, not a horizontal StackPanel — a StackPanel gives its children infinite width along
+			// the stacking axis, so TextWrapping silently stops working on the name/notes. The Auto/
+			// Star columns give the text column a real width to wrap against.
+			var grid = new Grid();
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+			var iconGrid = new Grid { Width = 40, Height = 40, VerticalAlignment = VerticalAlignment.Center };
+			Grid.SetColumn(iconGrid, 0);
+
+			// Unavailability shows as whole-card dimming plus the red "No <condition>" pill below —
+			// the old translucent red rectangle over the icon just muddied the artwork on top of both.
 			ImageSource iconSource = caught
 				? (ImageSource)IconAtlas.GetIcon(fish.IconX, fish.IconY)
 				: IconAtlas.GetIconGrayscale(fish.IconX, fish.IconY);
 			iconGrid.Children.Add(new Image { Source = iconSource, Width = 40, Height = 40 });
 
-			if (!available)
-			{
-				iconGrid.Children.Add(new Rectangle
-				{
-					Width = 40,
-					Height = 40,
-					Fill = new SolidColorBrush(UnavailableOverlayColor),
-					RadiusX = 3,
-					RadiusY = 3,
-				});
-			}
-
-			// Caught/uncaught and available/unavailable already read from the icon itself (grayscale
-			// vs. color, and the dimmed+red-overlaid state above) — the rarity-colored border does the
-			// same job the old status dot did. This corner badge instead names the fish's special
-			// subtype (Crab, Shrimp, ...), the same icon Schedule's objective columns use.
+			// Caught/uncaught already reads from the icon itself (grayscale vs. color) and rarity from
+			// the left stripe. This corner badge instead names the fish's special subtype (Crab,
+			// Shrimp, ...), the same icon Schedule's objective columns use.
 			var subtypeIcon = SubtypeIcon(fish);
 			if (subtypeIcon != null)
 			{
@@ -731,13 +757,6 @@ namespace Ocean_Trip.UI.Wpf
 			bool achievementMode = OceanTripNewSettings.Instance.FishPriority == FishPriority.Achievements;
 			bool showDhBadge = dhBonusAvailable && (achievementMode || missionBoost || pointsWorthwhile);
 
-			// Prefer whichever tier is actually the reason for the badge: achievement/mission cases
-			// don't care about the point math, so Triple is preferred whenever available (it subsumes
-			// Double); a pure points-mode badge should name the tier that actually clears its GP cost.
-			string hookTier = (pointsWorthwhile && !achievementMode && !missionBoost)
-				? (pointsWorthTriple ? "Triple" : "Double")
-				: (fish.THBonus > 1 ? "Triple" : "Double");
-
 			if (showDhBadge)
 			{
 				iconGrid.Children.Add(new Border
@@ -760,49 +779,109 @@ namespace Ocean_Trip.UI.Wpf
 				});
 			}
 
-			stack.Children.Add(iconGrid);
-			stack.Children.Add(new TextBlock
+			grid.Children.Add(iconGrid);
+
+			var textStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0) };
+			Grid.SetColumn(textStack, 1);
+			grid.Children.Add(textStack);
+
+			textStack.Children.Add(new TextBlock
 			{
 				Text = fish.FishName,
 				Style = (Style)Application.Current.Resources[caught ? "BodyText" : "SecondaryText"],
-				FontSize = 9,
+				FontSize = 12,
+				FontWeight = FontWeights.SemiBold,
 				TextWrapping = TextWrapping.Wrap,
-				TextAlignment = TextAlignment.Center,
-				Margin = new Thickness(0, 3, 0, 0),
 			});
 
-			border.Child = stack;
+			// Points — the single most decision-relevant fact on the card; everything here needs to
+			// read at a glance, no mouseover.
+			textStack.Children.Add(new TextBlock
+			{
+				Text = $"{fish.Points} pts",
+				Style = (Style)Application.Current.Resources["SecondaryText"],
+				FontSize = 11,
+				Margin = new Thickness(0, 1, 0, 0),
+			});
 
-			var statusText = !available ? "Unavailable at this stop" : caught ? "Already caught" : "Not yet caught";
-			var tooltip = $"{fish.FishName}\n{(string.IsNullOrEmpty(fish.Rarity) ? "" : fish.Rarity + " · ")}{statusText}";
-			if (fish.RequiresIntuition)
-				tooltip += "\nRequires Fisher's Intuition";
+			// Grid, not a StackPanel — the pills row uses SharedSizeGroup "FishPillsRow" (scope set per
+			// fish section in CurrentRoutePage.xaml, on each WrapPanel) so every card within a section
+			// reserves the same pills-row height, whether or not IT has any pills. That keeps every
+			// card in Normal Fish (or Spectral Current Fish) the same overall size — scoping per
+			// section rather than page-wide, unlike the old notes/mission rows, means one long mission
+			// note in Spectral Current Fish can't inflate the (usually pill-free) Normal Fish cards.
+			var content = new Grid { Margin = new Thickness(8, 7, 8, 7), VerticalAlignment = VerticalAlignment.Top };
+			content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto, SharedSizeGroup = "FishHeaderRow" });
+			content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto, SharedSizeGroup = "FishPillsRow" });
+			Grid.SetColumn(content, 1);
+			frame.Children.Add(content);
+			Grid.SetRow(grid, 0);
+			content.Children.Add(grid);
 
-			// Name exactly which exclusion(s) triggered and the value being checked against — makes
-			// it possible to tell at a glance whether an "unavailable" reads wrong because of stale
-			// upstream data (WorldManager.CurrentWeather) vs. this comparison itself being wrong.
+			// Status facts render as compact pills that exist only when they apply — a card with
+			// nothing to say just leaves its (shared-size) pills row blank rather than reserving
+			// dead space some OTHER pill's text needed. Exclusions name the exact condition ("No
+			// Sunset"); the tooltip spells out which mechanic it is (time-of-day vs. weather), since
+			// the pill text alone doesn't say which.
+			var pills = new WrapPanel { Margin = new Thickness(0, 5, 0, 0) };
+			Grid.SetRow(pills, 1);
+			content.Children.Add(pills);
+
 			if (!available)
 			{
-				var reasons = new List<string>();
 				if (fish.TimeOfDayExclusion1 == timeOfDay || fish.TimeOfDayExclusion2 == timeOfDay)
-					reasons.Add($"time of day is {timeOfDay}");
+					pills.Children.Add(BuildPill($"No {timeOfDay}", ExclusionPillBackground, ExclusionTextColor,
+						toolTip: $"{fish.FishName} won't bite during {timeOfDay}"));
+
 				if (fish.WeatherExclusion1 == weather || fish.WeatherExclusion2 == weather)
-					reasons.Add($"weather is {weather}");
-				if (reasons.Count > 0)
-					tooltip += $"\nExcluded: {string.Join(", ", reasons)}";
+					pills.Children.Add(BuildPill($"No {weather}", ExclusionPillBackground, ExclusionTextColor,
+						toolTip: $"{fish.FishName} won't bite in {weather} weather"));
 			}
 
+			if (fish.RequiresIntuition)
+				pills.Children.Add(BuildPill("Intuition",
+					Color.FromArgb(0x28, 0x6E, 0xC6, 0xF0),
+					((SolidColorBrush)Application.Current.Resources["AccentLightBrush"]).Color,
+					toolTip: $"{fish.FishName} only appears while the Intuition buff is active, triggered by catching a specific combo of other fish first."));
+
+			// Mission pill: the specific reason a DH/TH badge showed up, when it's mission-driven —
+			// the badge already says "double/triple hook this," the pill names the payoff. Tooltip
+			// carries the full mission sentence (also in the banner's Missions column); repeating it
+			// as on-card text was the page's single biggest space cost.
 			if (missionBoost)
-				tooltip += $"\n{hookTier} Hook here advances \"{missionMatch.MissionText}\" ({missionMatch.Remaining} more needed)";
-			else if (showDhBadge && achievementMode)
-				tooltip += $"\n{hookTier} Hook worth it here for achievement progress";
-			else if (showDhBadge && pointsWorthwhile)
-				tooltip += $"\n{hookTier} Hook worth it here for points";
-			else if (missionMatch != null)
-				tooltip += $"\nCounts toward \"{missionMatch.MissionText}\" ({missionMatch.Remaining} more needed)";
-			border.ToolTip = tooltip;
+				pills.Children.Add(BuildPill($"Mission · {missionMatch.Remaining} left",
+					Color.FromArgb(0x33, 0x00, 0x89, 0xC6),
+					((SolidColorBrush)Application.Current.Resources["AccentLightBrush"]).Color,
+					toolTip: $"Double/Triple Hook this fish to progress: {missionMatch.MissionText} ({missionMatch.Remaining} left)"));
+
+			border.Child = frame;
 
 			return border;
+		}
+
+		/// <summary>
+		/// Small rounded status badge for fish tiles ("No Sunset", "Intuition", "Mission · 2 left").
+		/// </summary>
+		private static Border BuildPill(string text, Color background, Color foreground, string toolTip = null)
+		{
+			var pill = new Border
+			{
+				Background = new SolidColorBrush(background),
+				CornerRadius = new CornerRadius(3),
+				Padding = new Thickness(5, 1, 5, 1),
+				Margin = new Thickness(0, 0, 4, 2),
+				Child = new TextBlock
+				{
+					Text = text,
+					FontFamily = new FontFamily("Segoe UI"),
+					FontSize = 10,
+					FontWeight = FontWeights.SemiBold,
+					Foreground = new SolidColorBrush(foreground),
+				},
+			};
+			if (toolTip != null)
+				pill.ToolTip = toolTip;
+			return pill;
 		}
 
 		/// <summary>

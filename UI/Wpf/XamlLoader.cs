@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
+using System.Windows.Media;
 using OceanTripPlanner.Helpers;
 
 namespace Ocean_Trip.UI.Wpf
@@ -59,6 +61,14 @@ namespace Ocean_Trip.UI.Wpf
 				case TextBox textBox:
 					textBox.Style = (Style)Application.Current.Resources["AppTextBox"];
 					break;
+				case ScrollViewer scrollViewer:
+					HookScrollBarStyling(scrollViewer);
+					break;
+				case DataGrid dataGrid:
+					// DataGrid scrolls via its own internal ScrollViewer template part, exactly like
+					// the bare ScrollViewer case above — same fix, same reason.
+					HookScrollBarStyling(dataGrid);
+					break;
 			}
 
 			// LogicalTreeHelper (not VisualTreeHelper) — the visual tree for template-driven
@@ -70,6 +80,33 @@ namespace Ocean_Trip.UI.Wpf
 				if (child is DependencyObject childObject)
 					ApplyExplicitControlStyles(childObject);
 			}
+		}
+
+		/// <summary>
+		/// ScrollBar is a different case from RadioButton/CheckBox/TextBox above: it isn't hand-authored
+		/// in any page's XAML at all, so it never appears in the logical-tree walk above — ScrollViewer
+		/// (and DataGrid, which hosts its own internal ScrollViewer template part) manufactures its
+		/// PART_VerticalScrollBar/PART_HorizontalScrollBar internally when ITS OWN control template is
+		/// applied. For an element that starts Visibility="Collapsed" until data loads (e.g.
+		/// CurrentRoutePage's ContentScroll), that can happen well after this page's initial Loaded —
+		/// so both Loaded and the Collapsed-to-Visible IsVisibleChanged transition are hooked. Each
+		/// handler walks the VISUAL tree (VisualTreeHelper, not LogicalTreeHelper — the scrollbar parts
+		/// only exist there) rooted at this specific element, not the whole page.
+		/// </summary>
+		private static void HookScrollBarStyling(FrameworkElement element)
+		{
+			element.Loaded += (_, _) => ApplyScrollBarStyle(element);
+			element.IsVisibleChanged += (_, _) => ApplyScrollBarStyle(element);
+		}
+
+		private static void ApplyScrollBarStyle(DependencyObject node)
+		{
+			if (node is ScrollBar scrollBar)
+				scrollBar.Style = (Style)Application.Current.Resources["AppScrollBar"];
+
+			int childCount = VisualTreeHelper.GetChildrenCount(node);
+			for (int i = 0; i < childCount; i++)
+				ApplyScrollBarStyle(VisualTreeHelper.GetChild(node, i));
 		}
 
 		private static void EnsureApplicationInitialized()

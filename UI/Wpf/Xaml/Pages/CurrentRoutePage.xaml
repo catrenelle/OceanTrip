@@ -67,15 +67,19 @@
 				</GroupBox>
 
 				<GroupBox x:Name="FishLogTargetGroup" Header="Fishing Log Target" Style="{DynamicResource Card}" Visibility="Collapsed">
-					<WrapPanel x:Name="FishLogTargetPanel" Orientation="Horizontal" />
+					<WrapPanel x:Name="FishLogTargetPanel" Orientation="Horizontal" Grid.IsSharedSizeScope="True" />
 				</GroupBox>
 
+				<!-- Grid.IsSharedSizeScope scopes each fish-tile's pills-row SharedSizeGroup (see
+				     CurrentRoutePageBehavior.BuildFishTile) to just this panel, so every card within
+				     Normal Fish is the same height as its siblings here, without one long mission note
+				     in Spectral Current Fish inflating cards over here that don't need it. -->
 				<GroupBox Header="Normal Fish" Style="{DynamicResource Card}">
-					<WrapPanel x:Name="NormalFishPanel" Orientation="Horizontal" />
+					<WrapPanel x:Name="NormalFishPanel" Orientation="Horizontal" Grid.IsSharedSizeScope="True" />
 				</GroupBox>
 
 				<GroupBox Header="Spectral Current Fish" Style="{DynamicResource Card}">
-					<WrapPanel x:Name="SpectralFishPanel" Orientation="Horizontal" />
+					<WrapPanel x:Name="SpectralFishPanel" Orientation="Horizontal" Grid.IsSharedSizeScope="True" />
 				</GroupBox>
 			</StackPanel>
 		</ScrollViewer>

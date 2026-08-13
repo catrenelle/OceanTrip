@@ -300,18 +300,22 @@
 	</Style>
 
 	<!-- Slim, borderless scrollbar thumb — replaces the stock wide gray scrollbar that every
-	     ScrollViewer in the app would otherwise show, which looks dated against this dark theme -->
+	     ScrollViewer in the app would otherwise show, which looks dated against this dark theme.
+	     Solid AccentBrush at rest (not a low-opacity tint of it) so the thumb reads as the exact
+	     same blue as the mission progress bars (CurrentRoutePageBehavior.BuildMissionRow) rather
+	     than a washed-out shade blended against the dark background; hover/drag brighten to
+	     AccentHoverBrush, the same escalation PrimaryButton/NavButton already use elsewhere. -->
 	<Style x:Key="SlimScrollThumb" TargetType="Thumb">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Thumb">
-					<Border x:Name="ThumbBorder" Background="{StaticResource AccentBrush}" Opacity="0.45" CornerRadius="4" />
+					<Border x:Name="ThumbBorder" Background="{StaticResource AccentBrush}" CornerRadius="4" />
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True">
-							<Setter TargetName="ThumbBorder" Property="Opacity" Value="0.8" />
+							<Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource AccentHoverBrush}" />
 						</Trigger>
 						<Trigger Property="IsDragging" Value="True">
-							<Setter TargetName="ThumbBorder" Property="Opacity" Value="1" />
+							<Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource AccentHoverBrush}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -319,7 +323,11 @@
 		</Setter>
 	</Style>
 
-	<Style TargetType="ScrollBar">
+	<!-- Explicit x:Key (not implicit TargetType-only) — every OTHER custom style in this file uses
+	     one for the same reason documented on AppRadioButton above: implicit styles don't reliably
+	     auto-apply to elements parsed via XamlReader.Parse in this hosted setup. Applied explicitly
+	     by XamlLoader.HookScrollBarStyling to each ScrollViewer's generated ScrollBar parts. -->
+	<Style x:Key="AppScrollBar" TargetType="ScrollBar">
 		<Setter Property="Width" Value="10" />
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Template">
