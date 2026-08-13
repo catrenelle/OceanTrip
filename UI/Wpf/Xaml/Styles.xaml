@@ -14,6 +14,8 @@
 	<Color x:Key="AccentTextColor">#FF6EC6F0</Color>
 	<Color x:Key="TextPrimaryColor">#FFF2F2F2</Color>
 	<Color x:Key="TextSecondaryColor">#FFA0A4B8</Color>
+	<!-- Low-stock warning — Tackle Box bait counts switch to this once at/below Restock Threshold. -->
+	<Color x:Key="WarningColor">#FFE0A030</Color>
 
 	<SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" />
 	<SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
@@ -23,6 +25,7 @@
 	<SolidColorBrush x:Key="AccentHoverBrush" Color="{StaticResource AccentHoverColor}" />
 	<SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}" />
 	<SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
+	<SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
 
 	<!-- Lighter accent for text/foreground/outline contexts — section headers, the active nav
 	     item, a selected radio button's ring/dot — anywhere AccentBrush itself would be too dark. -->
@@ -210,7 +213,7 @@
 	<Style x:Key="AppRadioButton" TargetType="RadioButton">
 		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
 		<Setter Property="FontFamily" Value="Segoe UI" />
-		<Setter Property="FontSize" Value="11" />
+		<Setter Property="FontSize" Value="13" />
 		<Setter Property="Margin" Value="0,0,0,3" />
 		<Setter Property="Cursor" Value="Hand" />
 		<Setter Property="Template">
@@ -243,7 +246,7 @@
 	<Style x:Key="AppCheckBox" TargetType="CheckBox">
 		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
 		<Setter Property="FontFamily" Value="Segoe UI" />
-		<Setter Property="FontSize" Value="11" />
+		<Setter Property="FontSize" Value="13" />
 		<Setter Property="Margin" Value="0,0,0,3" />
 		<Setter Property="Cursor" Value="Hand" />
 		<Setter Property="Template">
@@ -298,6 +301,24 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+	</Style>
+
+	<!-- Row label in a label-left/options-right settings form (Ocean Settings' Voyage card) -->
+	<Style x:Key="FormLabel" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+		<Setter Property="FontSize" Value="13" />
+		<Setter Property="Margin" Value="0,0,20,0" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<!-- Outer chrome of a numeric stepper: draws the single input border around BOTH the (borderless)
+	     TextBox and the up/down arrow column, so the arrows are part of the field instead of a
+	     separate floating stack that never lines up with the box next to it. -->
+	<Style x:Key="StepperFrame" TargetType="Border">
+		<Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+		<Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="VerticalAlignment" Value="Center" />
 	</Style>
 
 	<!-- Up/down spinner half-button used by numeric stepper fields (Max Stacks, Restock Threshold/Amount).

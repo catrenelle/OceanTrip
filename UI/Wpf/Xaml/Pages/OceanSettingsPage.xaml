@@ -6,208 +6,278 @@
 			<TextBlock Text="What settings would you like to apply to your ocean voyages?"
 			           Style="{DynamicResource SecondaryText}" Margin="0,0,0,10" />
 
+			<!-- All voyage options as one label-left/options-right form card. Options sit in shared
+			     Grid.Column slots (1-6) rather than per-row WrapPanels, so e.g. every row's 2nd
+			     option lines up under every other row's 2nd option instead of drifting left/right
+			     with how long that row's own earlier options happen to be. -->
+			<GroupBox Header="Voyage Settings" Style="{DynamicResource Card}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<!-- Fixed row height (rather than Auto) so every row is exactly the same height —
+					     Auto would let the Lure row's Max Stacks stepper (taller than a plain radio)
+					     inflate just that row, throwing off the vertical rhythm between options. -->
+					<Grid.RowDefinitions>
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+						<RowDefinition Height="30" />
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Fishing Priority" Style="{DynamicResource FormLabel}" />
+					<RadioButton Grid.Row="0" Grid.Column="1" GroupName="FishPriority" Content="Automatic" Margin="0,0,18,0"
+					             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Auto}" />
+					<RadioButton Grid.Row="0" Grid.Column="2" GroupName="FishPriority" Content="Points" Margin="0,0,18,0"
+					             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Points}" />
+					<RadioButton Grid.Row="0" Grid.Column="3" GroupName="FishPriority" Content="Fishing Log" Margin="0,0,18,0"
+					             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=FishLog}" />
+					<RadioButton Grid.Row="0" Grid.Column="4" GroupName="FishPriority" Content="Achievements" Margin="0,0,18,0"
+					             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Achievements}" />
+					<RadioButton Grid.Row="0" Grid.Column="5" GroupName="FishPriority" Content="Leveling" Margin="0,0,18,0"
+					             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Leveling}"
+					             ToolTip="Krill/Ragworm/Plump Worm only, no lures — for gaining Fisher XP below level 90. Automatic already does this for you below level 90." />
+					<RadioButton Grid.Row="0" Grid.Column="6" GroupName="FishPriority" Content="Ignore Boat" Margin="0,0,0,0"
+					             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=IgnoreBoat}" />
+
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="Fishing Route" Style="{DynamicResource FormLabel}" />
+					<RadioButton Grid.Row="1" Grid.Column="1" GroupName="FishingRoute" Content="Indigo" Margin="0,0,18,0"
+					             IsChecked="{Binding FishingRoute, Converter={StaticResource EnumConverter}, ConverterParameter=Indigo}" />
+					<RadioButton Grid.Row="1" Grid.Column="2" GroupName="FishingRoute" Content="Ruby" Margin="0,0,18,0"
+					             IsChecked="{Binding FishingRoute, Converter={StaticResource EnumConverter}, ConverterParameter=Ruby}" />
+
+					<TextBlock Grid.Row="2" Grid.Column="0" Text="Full GP Action" Style="{DynamicResource FormLabel}" />
+					<RadioButton Grid.Row="2" Grid.Column="1" GroupName="FullGPAction" Content="Nothing" Margin="0,0,18,0"
+					             IsChecked="{Binding FullGPAction, Converter={StaticResource EnumConverter}, ConverterParameter=None}" />
+					<RadioButton Grid.Row="2" Grid.Column="2" GroupName="FullGPAction" Content="Double/Triple Hook" Margin="0,0,18,0"
+					             IsChecked="{Binding FullGPAction, Converter={StaticResource EnumConverter}, ConverterParameter=DoubleHook}" />
+					<RadioButton Grid.Row="2" Grid.Column="3" GroupName="FullGPAction" Content="Chum" Margin="0,0,18,0"
+					             IsChecked="{Binding FullGPAction, Converter={StaticResource EnumConverter}, ConverterParameter=Chum}" />
+
+					<TextBlock Grid.Row="3" Grid.Column="0" Text="Patience Skill" Style="{DynamicResource FormLabel}" />
+					<RadioButton Grid.Row="3" Grid.Column="1" GroupName="Patience" Content="Default Logic" Margin="0,0,18,0"
+					             IsChecked="{Binding Patience, Converter={StaticResource EnumConverter}, ConverterParameter=OnlyForSpecificFish}" />
+					<RadioButton Grid.Row="3" Grid.Column="2" GroupName="Patience" Content="Spectral Only" Margin="0,0,18,0"
+					             IsChecked="{Binding Patience, Converter={StaticResource EnumConverter}, ConverterParameter=SpectralOnly}" />
+					<RadioButton Grid.Row="3" Grid.Column="3" GroupName="Patience" Content="Always" Margin="0,0,18,0"
+					             IsChecked="{Binding Patience, Converter={StaticResource EnumConverter}, ConverterParameter=AlwaysUsePatience}" />
+
+					<TextBlock Grid.Row="4" Grid.Column="0" Text="Fish Exchange" Style="{DynamicResource FormLabel}" />
+					<RadioButton Grid.Row="4" Grid.Column="1" GroupName="FishExchange" Content="None" Margin="0,0,18,0"
+					             IsChecked="{Binding ExchangeFish, Converter={StaticResource EnumConverter}, ConverterParameter=None}" />
+					<RadioButton Grid.Row="4" Grid.Column="2" GroupName="FishExchange" Content="Desynthesize" Margin="0,0,18,0"
+					             IsChecked="{Binding ExchangeFish, Converter={StaticResource EnumConverter}, ConverterParameter=Desynth}" />
+					<RadioButton Grid.Row="4" Grid.Column="3" GroupName="FishExchange" Content="Sell" Margin="0,0,18,0"
+					             IsChecked="{Binding ExchangeFish, Converter={StaticResource EnumConverter}, ConverterParameter=Sell}" />
+
+					<TextBlock Grid.Row="5" Grid.Column="0" Text="Lure" Style="{DynamicResource FormLabel}" />
+					<RadioButton Grid.Row="5" Grid.Column="1" GroupName="Lure" Content="None" Margin="0,0,18,0" VerticalAlignment="Center"
+					             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=None}" />
+					<RadioButton Grid.Row="5" Grid.Column="2" GroupName="Lure" Content="Modest" Margin="0,0,18,0" VerticalAlignment="Center"
+					             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=Modest}" />
+					<RadioButton Grid.Row="5" Grid.Column="3" GroupName="Lure" Content="Ambitious" Margin="0,0,18,0" VerticalAlignment="Center"
+					             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=Ambitious}" />
+					<RadioButton Grid.Row="5" Grid.Column="4" GroupName="Lure" Content="Auto" Margin="0,0,18,0" VerticalAlignment="Center"
+					             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=Auto}" />
+					<StackPanel Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
+						<TextBlock Text="Max Stacks:" Style="{DynamicResource SecondaryText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+						<Border Style="{DynamicResource StepperFrame}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<TextBox Grid.Column="0" Width="34" BorderThickness="0" Background="Transparent"
+								         Padding="2,3" TextAlignment="Center"
+								         Text="{Binding LureMaxStacks, UpdateSourceTrigger=PropertyChanged}" />
+								<Grid Grid.Column="1" Width="16" Margin="0,1,1,1">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
+									<RepeatButton x:Name="LureMaxStacksUpButton" Grid.Row="0" Style="{DynamicResource StepperButton}">
+										<Polygon Points="0,4 8,4 4,0" Fill="{DynamicResource TextSecondaryBrush}" />
+									</RepeatButton>
+									<RepeatButton x:Name="LureMaxStacksDownButton" Grid.Row="1" Style="{DynamicResource StepperButton}">
+										<Polygon Points="0,0 8,0 4,4" Fill="{DynamicResource TextSecondaryBrush}" />
+									</RepeatButton>
+								</Grid>
+							</Grid>
+						</Border>
+					</StackPanel>
+
+					<TextBlock Grid.Row="6" Grid.Column="0" Text="Target Fish" Style="{DynamicResource FormLabel}" />
+					<RadioButton Grid.Row="6" Grid.Column="1" GroupName="TargetFish" Content="None" Margin="0,0,18,0"
+					             IsChecked="{Binding TargetFishId, Converter={StaticResource EnumConverter}, ConverterParameter=0}" />
+					<RadioButton Grid.Row="6" Grid.Column="2" GroupName="TargetFish" Content="Junior Jinbei" Margin="0,0,18,0"
+					             IsChecked="{Binding TargetFishId, Converter={StaticResource EnumConverter}, ConverterParameter=51236}" />
+
+					<TextBlock Grid.Row="7" Grid.Column="0" Text="Trip Options" Style="{DynamicResource FormLabel}" />
+					<CheckBox Grid.Row="7" Grid.Column="1" Content="Late Queue" Margin="0,0,18,0" IsChecked="{Binding LateBoatQueue}" />
+					<CheckBox Grid.Row="7" Grid.Column="2" Content="Nasi Goreng" Margin="0,0,18,0" IsChecked="{Binding OceanFood}" />
+					<CheckBox Grid.Row="7" Grid.Column="3" Content="Verbose Logging" Margin="0,0,18,0" IsChecked="{Binding LoggingMode}" />
+
+					<TextBlock Grid.Row="8" Grid.Column="0" Text="Open World" Style="{DynamicResource FormLabel}" />
+					<CheckBox Grid.Row="8" Grid.Column="1" Content="Assisted Fishing" Margin="0,0,18,0" IsChecked="{Binding OpenWorldFishing}" />
+				</Grid>
+			</GroupBox>
+
+			<!-- Tackle Box (full width) -->
+			<GroupBox x:Name="TackleBoxCard" Header="Tackle Box (Bait)" Style="{DynamicResource Card}">
+				<StackPanel>
+					<WrapPanel x:Name="BaitIconPanel" Orientation="Horizontal" />
+					<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+						<TextBlock Text="Restock Threshold:" Style="{DynamicResource SecondaryText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+						<Border Style="{DynamicResource StepperFrame}" Margin="0,0,20,0">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<TextBox x:Name="RestockThresholdBox" Grid.Column="0" Width="40" BorderThickness="0" Background="Transparent"
+								         Padding="2,3" TextAlignment="Center"
+								         Text="{Binding BaitRestockThreshold, UpdateSourceTrigger=PropertyChanged}" />
+								<Grid Grid.Column="1" Width="16" Margin="0,1,1,1">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
+									<RepeatButton x:Name="RestockThresholdUpButton" Grid.Row="0" Style="{DynamicResource StepperButton}">
+										<Polygon Points="0,4 8,4 4,0" Fill="{DynamicResource TextSecondaryBrush}" />
+									</RepeatButton>
+									<RepeatButton x:Name="RestockThresholdDownButton" Grid.Row="1" Style="{DynamicResource StepperButton}">
+										<Polygon Points="0,0 8,0 4,4" Fill="{DynamicResource TextSecondaryBrush}" />
+									</RepeatButton>
+								</Grid>
+							</Grid>
+						</Border>
+						<TextBlock Text="Restock Amount:" Style="{DynamicResource SecondaryText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+						<Border Style="{DynamicResource StepperFrame}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<TextBox x:Name="RestockAmountBox" Grid.Column="0" Width="40" BorderThickness="0" Background="Transparent"
+								         Padding="2,3" TextAlignment="Center"
+								         Text="{Binding BaitRestockAmount, UpdateSourceTrigger=PropertyChanged}" />
+								<Grid Grid.Column="1" Width="16" Margin="0,1,1,1">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
+									<RepeatButton x:Name="RestockAmountUpButton" Grid.Row="0" Style="{DynamicResource StepperButton}">
+										<Polygon Points="0,4 8,4 4,0" Fill="{DynamicResource TextSecondaryBrush}" />
+									</RepeatButton>
+									<RepeatButton x:Name="RestockAmountDownButton" Grid.Row="1" Style="{DynamicResource StepperButton}">
+										<Polygon Points="0,0 8,0 4,4" Fill="{DynamicResource TextSecondaryBrush}" />
+									</RepeatButton>
+								</Grid>
+							</Grid>
+						</Border>
+					</StackPanel>
+				</StackPanel>
+			</GroupBox>
+
+			<!-- Achievement focus: Indigo | Ruby side by side. Each card's options sit in a shared
+			     Grid.Column set (like Voyage Settings above) instead of a WrapPanel, so the wrapped
+			     second row's columns line up under the first row's instead of drifting with however
+			     long that row's own earlier options happen to be. -->
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
 
-				<!-- Row 0: Fishing Priority (full width — five options reads better wide) -->
-				<GroupBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-				          Header="Fishing Priority" Style="{DynamicResource Card}">
-					<StackPanel Orientation="Horizontal">
-						<RadioButton Content="Automatic" Margin="0,0,24,0"
-						             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Auto}" />
-						<RadioButton Content="Points" Margin="0,0,24,0"
-						             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Points}" />
-						<RadioButton Content="Fishing Log" Margin="0,0,24,0"
-						             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=FishLog}" />
-						<RadioButton Content="Achievements" Margin="0,0,24,0"
-						             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Achievements}" />
-						<RadioButton Content="Leveling" Margin="0,0,24,0"
-						             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=Leveling}"
-						             ToolTip="Krill/Ragworm/Plump Worm only, no lures — for gaining Fisher XP below level 90. Automatic already does this for you below level 90." />
-						<RadioButton Content="Ignore Boat"
-						             IsChecked="{Binding FishPriority, Converter={StaticResource EnumConverter}, ConverterParameter=IgnoreBoat}" />
-					</StackPanel>
-				</GroupBox>
+				<GroupBox Grid.Column="0" Header="Indigo Achievement Focus" Style="{DynamicResource Card}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 
-				<!-- Row 1: two small cards paired together, so neither wastes height against a taller one -->
-				<GroupBox Grid.Row="1" Grid.Column="0" Header="Fishing Route" Style="{DynamicResource Card}">
-					<StackPanel Orientation="Horizontal">
-						<RadioButton Content="Indigo" Margin="0,0,16,0"
-						             IsChecked="{Binding FishingRoute, Converter={StaticResource EnumConverter}, ConverterParameter=Indigo}" />
-						<RadioButton Content="Ruby"
-						             IsChecked="{Binding FishingRoute, Converter={StaticResource EnumConverter}, ConverterParameter=Ruby}" />
-					</StackPanel>
-				</GroupBox>
-
-				<GroupBox Grid.Row="1" Grid.Column="1" Header="Trip Options" Style="{DynamicResource Card}">
-					<StackPanel Orientation="Horizontal">
-						<CheckBox Content="Late Queue" Margin="0,0,16,0" IsChecked="{Binding LateBoatQueue}" />
-						<CheckBox Content="Nasi Goreng" Margin="0,0,16,0" IsChecked="{Binding OceanFood}" />
-						<CheckBox Content="Verbose Logging" IsChecked="{Binding LoggingMode}" />
-					</StackPanel>
-				</GroupBox>
-
-				<!-- Row 2: two more small cards paired together -->
-				<GroupBox Grid.Row="2" Grid.Column="0" Header="Open World Fishing" Style="{DynamicResource Card}">
-					<StackPanel Orientation="Horizontal">
-						<CheckBox Content="Assisted Fishing" IsChecked="{Binding OpenWorldFishing}" />
-					</StackPanel>
-				</GroupBox>
-
-				<GroupBox Grid.Row="2" Grid.Column="1" Header="Target Fish" Style="{DynamicResource Card}">
-					<StackPanel Orientation="Horizontal">
-						<RadioButton Content="None" Margin="0,0,16,0"
-						             IsChecked="{Binding TargetFishId, Converter={StaticResource EnumConverter}, ConverterParameter=0}" />
-						<RadioButton Content="Junior Jinbei"
-						             IsChecked="{Binding TargetFishId, Converter={StaticResource EnumConverter}, ConverterParameter=51236}" />
-					</StackPanel>
-				</GroupBox>
-
-				<!-- Row 3: the medium-sized option groups, paired together -->
-				<GroupBox Grid.Row="3" Grid.Column="0" Header="Full GP Action" Style="{DynamicResource Card}">
-					<StackPanel>
-						<RadioButton Content="Nothing"
-						             IsChecked="{Binding FullGPAction, Converter={StaticResource EnumConverter}, ConverterParameter=None}" />
-						<RadioButton Content="Double/Triple Hook"
-						             IsChecked="{Binding FullGPAction, Converter={StaticResource EnumConverter}, ConverterParameter=DoubleHook}" />
-						<RadioButton Content="Chum"
-						             IsChecked="{Binding FullGPAction, Converter={StaticResource EnumConverter}, ConverterParameter=Chum}" />
-					</StackPanel>
-				</GroupBox>
-
-				<GroupBox Grid.Row="3" Grid.Column="1" Header="Use Patience Skill" Style="{DynamicResource Card}">
-					<StackPanel>
-						<RadioButton Content="Default Logic"
-						             IsChecked="{Binding Patience, Converter={StaticResource EnumConverter}, ConverterParameter=OnlyForSpecificFish}" />
-						<RadioButton Content="Spectral Only"
-						             IsChecked="{Binding Patience, Converter={StaticResource EnumConverter}, ConverterParameter=SpectralOnly}" />
-						<RadioButton Content="Always"
-						             IsChecked="{Binding Patience, Converter={StaticResource EnumConverter}, ConverterParameter=AlwaysUsePatience}" />
-					</StackPanel>
-				</GroupBox>
-
-				<!-- Row 4: Fish Exchange | Lure -->
-				<GroupBox Grid.Row="4" Grid.Column="0" Header="Fish Exchange" Style="{DynamicResource Card}">
-					<StackPanel>
-						<RadioButton Content="None"
-						             IsChecked="{Binding ExchangeFish, Converter={StaticResource EnumConverter}, ConverterParameter=None}" />
-						<RadioButton Content="Desynthesize"
-						             IsChecked="{Binding ExchangeFish, Converter={StaticResource EnumConverter}, ConverterParameter=Desynth}" />
-						<RadioButton Content="Sell"
-						             IsChecked="{Binding ExchangeFish, Converter={StaticResource EnumConverter}, ConverterParameter=Sell}" />
-					</StackPanel>
-				</GroupBox>
-
-				<GroupBox Grid.Row="4" Grid.Column="1" Header="Lure" Style="{DynamicResource Card}">
-					<StackPanel>
-						<RadioButton Content="None"
-						             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=None}" />
-						<RadioButton Content="Modest"
-						             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=Modest}" />
-						<RadioButton Content="Ambitious"
-						             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=Ambitious}" />
-						<RadioButton Content="Auto"
-						             IsChecked="{Binding LurePreference, Converter={StaticResource EnumConverter}, ConverterParameter=Auto}" />
-						<StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-							<TextBlock Text="Max Stacks:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
-							<TextBox Text="{Binding LureMaxStacks, UpdateSourceTrigger=PropertyChanged}" Width="40" Padding="4,4" TextAlignment="Center" />
-							<StackPanel Width="16" Margin="2,0,0,0">
-								<RepeatButton x:Name="LureMaxStacksUpButton" Height="12" Style="{DynamicResource StepperButton}">
-									<Polygon Points="0,5 8,5 4,0" Fill="{DynamicResource TextSecondaryBrush}" />
-								</RepeatButton>
-								<RepeatButton x:Name="LureMaxStacksDownButton" Height="12" Style="{DynamicResource StepperButton}">
-									<Polygon Points="0,0 8,0 4,5" Fill="{DynamicResource TextSecondaryBrush}" />
-								</RepeatButton>
-							</StackPanel>
-						</StackPanel>
-					</StackPanel>
-				</GroupBox>
-
-				<!-- Row 5: Tackle Box (full width) -->
-				<GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-				          x:Name="TackleBoxCard" Header="Tackle Box (Bait)" Style="{DynamicResource Card}">
-					<StackPanel>
-						<WrapPanel x:Name="BaitIconPanel" Orientation="Horizontal" />
-						<StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-							<TextBlock Text="Restock Threshold:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
-							<TextBox x:Name="RestockThresholdBox" Text="{Binding BaitRestockThreshold, UpdateSourceTrigger=PropertyChanged}" Width="40" Padding="4,4" TextAlignment="Center" />
-							<StackPanel Width="16" Margin="2,0,16,0">
-								<RepeatButton x:Name="RestockThresholdUpButton" Height="12" Style="{DynamicResource StepperButton}">
-									<Polygon Points="0,5 8,5 4,0" Fill="{DynamicResource TextSecondaryBrush}" />
-								</RepeatButton>
-								<RepeatButton x:Name="RestockThresholdDownButton" Height="12" Style="{DynamicResource StepperButton}">
-									<Polygon Points="0,0 8,0 4,5" Fill="{DynamicResource TextSecondaryBrush}" />
-								</RepeatButton>
-							</StackPanel>
-							<TextBlock Text="Restock Amount:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
-							<TextBox x:Name="RestockAmountBox" Text="{Binding BaitRestockAmount, UpdateSourceTrigger=PropertyChanged}" Width="40" Padding="4,4" TextAlignment="Center" />
-							<StackPanel Width="16" Margin="2,0,0,0">
-								<RepeatButton x:Name="RestockAmountUpButton" Height="12" Style="{DynamicResource StepperButton}">
-									<Polygon Points="0,5 8,5 4,0" Fill="{DynamicResource TextSecondaryBrush}" />
-								</RepeatButton>
-								<RepeatButton x:Name="RestockAmountDownButton" Height="12" Style="{DynamicResource StepperButton}">
-									<Polygon Points="0,0 8,0 4,5" Fill="{DynamicResource TextSecondaryBrush}" />
-								</RepeatButton>
-							</StackPanel>
-						</StackPanel>
-					</StackPanel>
-				</GroupBox>
-
-				<!-- Row 6: Indigo Achievement Focus | Ruby Achievement Focus -->
-				<GroupBox Grid.Row="6" Grid.Column="0" Header="Indigo Achievement Focus" Style="{DynamicResource Card}">
-					<WrapPanel Orientation="Horizontal">
-						<RadioButton Content="Mantas (Solo)" Margin="0,0,24,8"
+						<RadioButton Grid.Row="0" Grid.Column="0" Content="Mantas (Solo)" Margin="0,0,20,4"
 						             IsChecked="{Binding IndigoAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=1}" />
-						<RadioButton Content="Octopods" Margin="0,0,24,8"
+						<RadioButton Grid.Row="0" Grid.Column="1" Content="Octopods" Margin="0,0,20,4"
 						             IsChecked="{Binding IndigoAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=2}" />
-						<RadioButton Content="Sharks" Margin="0,0,24,8"
+						<RadioButton Grid.Row="0" Grid.Column="2" Content="Sharks" Margin="0,0,0,4"
 						             IsChecked="{Binding IndigoAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=3}" />
-						<RadioButton Content="Jellyfish" Margin="0,0,24,8"
+						<RadioButton Grid.Row="1" Grid.Column="0" Content="Jellyfish" Margin="0,0,20,4"
 						             IsChecked="{Binding IndigoAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=4}" />
-						<RadioButton Content="Seadragons" Margin="0,0,24,8"
+						<RadioButton Grid.Row="1" Grid.Column="1" Content="Seadragons" Margin="0,0,20,4"
 						             IsChecked="{Binding IndigoAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=5}" />
-						<RadioButton Content="Balloons" Margin="0,0,24,8"
+						<RadioButton Grid.Row="1" Grid.Column="2" Content="Balloons" Margin="0,0,0,4"
 						             IsChecked="{Binding IndigoAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=6}" />
-						<RadioButton Content="Crabs" Margin="0,0,24,8"
+						<RadioButton Grid.Row="2" Grid.Column="0" Content="Crabs" Margin="0,0,20,0"
 						             IsChecked="{Binding IndigoAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=7}" />
-					</WrapPanel>
+					</Grid>
 				</GroupBox>
 
-				<GroupBox Grid.Row="6" Grid.Column="1" x:Name="RubyFocusCard" Header="Ruby Achievement Focus" Style="{DynamicResource Card}">
-					<WrapPanel Orientation="Horizontal">
-						<RadioButton Content="Shrimp (Solo)" Margin="0,0,24,8"
+				<GroupBox Grid.Column="1" x:Name="RubyFocusCard" Header="Ruby Achievement Focus" Style="{DynamicResource Card}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<RadioButton Grid.Row="0" Grid.Column="0" Content="Shrimp (Solo)" Margin="0,0,20,4"
 						             IsChecked="{Binding RubyAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=8}" />
-						<RadioButton Content="Shellfish" Margin="0,0,24,8"
+						<RadioButton Grid.Row="0" Grid.Column="1" Content="Shellfish" Margin="0,0,20,4"
 						             IsChecked="{Binding RubyAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=9}" />
-						<RadioButton Content="Squid" Margin="0,0,24,8"
+						<RadioButton Grid.Row="0" Grid.Column="2" Content="Squid" Margin="0,0,0,4"
 						             IsChecked="{Binding RubyAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=10}" />
-						<RadioButton x:Name="MantisFocusRadio" Content="Mantis Shrimp (Solo)" Margin="0,0,24,8"
+						<RadioButton x:Name="MantisFocusRadio" Grid.Row="1" Grid.Column="0" Content="Mantis Shrimp (Solo)" Margin="0,0,20,0"
 						             IsChecked="{Binding RubyAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=11}" />
-						<RadioButton x:Name="PrehistoricFocusRadio" Content="Primordial" Margin="0,0,24,8"
+						<RadioButton x:Name="PrehistoricFocusRadio" Grid.Row="1" Grid.Column="1" Content="Primordial" Margin="0,0,20,0"
 						             IsChecked="{Binding RubyAchievementFocus, Converter={StaticResource EnumConverter}, ConverterParameter=12}" />
-					</WrapPanel>
+					</Grid>
 				</GroupBox>
-
-				<!-- Row 7: Ocean Fishing Achievements (full width, read-only progress) -->
-				<GroupBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-				          Header="Ocean Fishing Achievements" Style="{DynamicResource Card}">
-					<WrapPanel x:Name="AchievementIconPanel" Orientation="Horizontal" />
-				</GroupBox>
-
 			</Grid>
+
+			<!-- Ocean Fishing Achievements, read-only progress — grouped by what they're actually
+			     scoped to: Indigo | Ruby side by side (mirroring the Focus cards above), then Overall
+			     full width below since those point totals aren't tied to either single route. -->
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<GroupBox Grid.Column="0" Header="Indigo Achievements" Style="{DynamicResource Card}">
+					<WrapPanel x:Name="IndigoAchievementIconPanel" Orientation="Horizontal" />
+				</GroupBox>
+
+				<GroupBox Grid.Column="1" Header="Ruby Achievements" Style="{DynamicResource Card}">
+					<WrapPanel x:Name="RubyAchievementIconPanel" Orientation="Horizontal" />
+				</GroupBox>
+			</Grid>
+
+			<GroupBox Header="Overall Achievements" Style="{DynamicResource Card}">
+				<WrapPanel x:Name="OverallAchievementIconPanel" Orientation="Horizontal" />
+			</GroupBox>
+
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>

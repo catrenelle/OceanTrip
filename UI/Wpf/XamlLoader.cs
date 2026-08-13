@@ -125,6 +125,7 @@ namespace Ocean_Trip.UI.Wpf
 			// RebornBuddy's compiler isn't something we can reliably hardcode into a XAML xmlns.
 			styles["EnumConverter"] = new Converters.EnumToBooleanConverter();
 			styles["AchievementIconConverter"] = new Converters.AchievementIconConverter();
+			styles["BaitStockToBrushConverter"] = new Converters.BaitStockToBrushConverter();
 
 			Application.Current.Resources.MergedDictionaries.Add(styles);
 			_stylesLoaded = true;
