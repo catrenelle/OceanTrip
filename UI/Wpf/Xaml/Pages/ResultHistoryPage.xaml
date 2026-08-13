@@ -118,11 +118,17 @@
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
 													<Border Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="12"
-													        Padding="8,4" Margin="0,0,8,8" ToolTip="{Binding Name}">
+													        Padding="6,4" Margin="0,0,8,8" ToolTip="{Binding Name}">
 														<StackPanel Orientation="Horizontal">
-															<Path Data="M5,0 L6.3,3.5 L10,3.8 L7.2,6.2 L8.1,10 L5,7.9 L1.9,10 L2.8,6.2 L0,3.8 L3.7,3.5 Z"
-															      Fill="{DynamicResource AccentLightBrush}" Width="10" Height="10"
-															      Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,6,0" />
+															<!-- Real icon (IconSource) draws over the fallback star whenever one's known
+															     (ResultHistoryPageBehavior.BonusIcons) - Image paints nothing when its
+															     Source is null, so the star underneath just shows through otherwise. -->
+															<Grid Width="20" Height="20" Margin="0,0,6,0">
+																<Path Data="M5,0 L6.3,3.5 L10,3.8 L7.2,6.2 L8.1,10 L5,7.9 L1.9,10 L2.8,6.2 L0,3.8 L3.7,3.5 Z"
+																      Fill="{DynamicResource AccentLightBrush}" Width="10" Height="10"
+																      Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
+																<Image Source="{Binding IconSource}" Stretch="Uniform" />
+															</Grid>
 															<TextBlock Text="{Binding PercentText}" Foreground="{DynamicResource TextPrimaryBrush}"
 															           FontSize="12" VerticalAlignment="Center" />
 														</StackPanel>

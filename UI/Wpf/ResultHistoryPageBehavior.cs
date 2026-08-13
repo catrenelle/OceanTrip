@@ -19,6 +19,63 @@ namespace Ocean_Trip.UI.Wpf
 	/// </summary>
 	public static class ResultHistoryPageBehavior
 	{
+		/// <summary>
+		/// Maps IKDContentBonus objective names to real icon atlas coordinates. Verified 2026-08-13:
+		/// Resources/icons.png is pixel-identical, row for row, to the sprite sheet the community
+		/// site ffxiv.pf-n.co/ocean-fishing/bonuses itself uses (confirmed via a full pixel diff —
+		/// only 4 unrelated cells in the very last row differ, none of them bonus icons) — that
+		/// site's own JS bundle embeds the exact grid position for every content-bonus ID, which is
+		/// the raw IKDContentBonus row ID. Several IDs share one objective name (the "(Target number
+		/// adjusted for party size)" duplicate rows for smaller parties) and get separate sprite
+		/// cells despite being the same bonus — this dictionary keeps only the canonical (lowest ID,
+		/// non-adjusted) cell per unique name, since VoyageHistoryEntry only ever stores the name.
+		///
+		/// Two current bonuses aren't covered — Bream Team: Unnamed Island and Bream Team:
+		/// Thavnairian Coast, both added in patch 7.5, after pf-n.co's sprite data was last
+		/// generated. They (and any future new bonus type) fall back to a plain star badge — see
+		/// ResultHistoryPage.xaml's BonusDetails ItemTemplate.
+		/// </summary>
+		private static readonly Dictionary<string, (int X, int Y)> BonusIcons = new Dictionary<string, (int X, int Y)>
+		{
+			["Ocean Fishing Amateur"] = (1, 29),
+			["Ocean Fishing Enthusiast"] = (2, 29),
+			["Ocean Fishing Fanatic"] = (3, 29),
+			["Small Fish in a Big Pond"] = (4, 29),
+			["Big Fish in a Small Pond"] = (5, 29),
+			["A Rare Catch"] = (6, 29),
+			["Catch of a Lifetime"] = (7, 29),
+			["Give a Man a Fish"] = (8, 29),
+			["Teach a Man to Fish"] = (9, 29),
+			["Bream Team: Galadion Bay"] = (10, 29),
+			["Bream Team: Southern Strait of Merlthor"] = (3, 30),
+			["Bream Team: Cieldalaes"] = (6, 30),
+			["Bream Team: Northern Strait of Merlthor"] = (9, 30),
+			["Bream Team: Rhotano Sea"] = (2, 31),
+			["Bream Team: Bloodbrine Sea"] = (5, 31),
+			["Bream Team: Rothlyt Sound"] = (8, 31),
+			["Fabled Fishers"] = (1, 32),
+			["Favored by Llymlaen"] = (2, 32),
+			["Octopus Travelers"] = (3, 32),
+			["Certifiable Shark Hunters"] = (4, 32),
+			["Jelled Together"] = (5, 32),
+			["Maritime Dragonslayers"] = (6, 32),
+			["Balloon Catchers"] = (7, 32),
+			["Crab Boat Crew"] = (8, 32),
+			["Sticking it to the Manta"] = (9, 32),
+			["Bream Team: Sirensong Sea"] = (10, 32),
+			["Bream Team: Kugane Coast"] = (3, 33),
+			["Bream Team: Ruby Price"] = (6, 33),
+			["Bream Team: Lower One River"] = (9, 33),
+			["Maximum Mussel"] = (2, 34),
+			["Squid Squadron"] = (3, 34),
+			["Shrimp Smorgasbord"] = (4, 34),
+			// Not present in the pf-n.co grid this table was sourced from (both added in a later
+			// patch than that site's data) - reuse SchedulePageBehavior's existing Achievement icon
+			// coordinates for the same two creatures instead of leaving them star-only.
+			["Time Waits for No Mantis"] = SchedulePageBehavior.ObjectiveIcons["Mantis"],
+			["Prehistoric Professionals"] = SchedulePageBehavior.ObjectiveIcons["Prehistoric"],
+		};
+
 		public static void Attach(UserControl page)
 		{
 			var allEntries = VoyageHistoryStore.LoadAll();
@@ -137,7 +194,12 @@ namespace Ocean_Trip.UI.Wpf
 					? $"Bonuses Earned (+{totalBonusPercent}% total)"
 					: "No bonuses earned this run.",
 				BonusDetails = entry.Bonuses
-					.Select(b => new BonusDetailRow { Name = b.Name, PercentText = $"+{b.Multiplier - 100}%" })
+					.Select(b => new BonusDetailRow
+					{
+						Name = b.Name,
+						PercentText = $"+{b.Multiplier - 100}%",
+						IconSource = BonusIcons.TryGetValue(b.Name, out var coords) ? IconAtlas.GetIcon(coords.X, coords.Y) : null,
+					})
 					.ToList(),
 			};
 		}
@@ -205,5 +267,10 @@ namespace Ocean_Trip.UI.Wpf
 	{
 		public string Name { get; set; }
 		public string PercentText { get; set; }
+
+		/// <summary>Null for bonuses with no known real icon (see ResultHistoryPageBehavior.BonusIcons)
+		/// — the XAML template draws a fallback star underneath, which shows through whenever this
+		/// is null since nothing paints over it.</summary>
+		public ImageSource IconSource { get; set; }
 	}
 }
