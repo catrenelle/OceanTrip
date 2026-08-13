@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using OceanTripPlanner.Helpers;
 
 namespace Ocean_Trip.UI.Wpf
 {
@@ -29,13 +31,8 @@ namespace Ocean_Trip.UI.Wpf
 		/// adjusted for party size)" duplicate rows for smaller parties) and get separate sprite
 		/// cells despite being the same bonus — this dictionary keeps only the canonical (lowest ID,
 		/// non-adjusted) cell per unique name, since VoyageHistoryEntry only ever stores the name.
-		///
-		/// Two current bonuses aren't covered — Bream Team: Unnamed Island and Bream Team:
-		/// Thavnairian Coast, both added in patch 7.5, after pf-n.co's sprite data was last
-		/// generated. They (and any future new bonus type) fall back to a plain star badge — see
-		/// ResultHistoryPage.xaml's BonusDetails ItemTemplate.
 		/// </summary>
-		private static readonly Dictionary<string, (int X, int Y)> BonusIcons = new Dictionary<string, (int X, int Y)>
+		private static readonly Dictionary<string, (int X, int Y)> AtlasBonusIcons = new Dictionary<string, (int X, int Y)>
 		{
 			["Ocean Fishing Amateur"] = (1, 29),
 			["Ocean Fishing Enthusiast"] = (2, 29),
@@ -75,6 +72,37 @@ namespace Ocean_Trip.UI.Wpf
 			["Time Waits for No Mantis"] = SchedulePageBehavior.ObjectiveIcons["Mantis"],
 			["Prehistoric Professionals"] = SchedulePageBehavior.ObjectiveIcons["Prehistoric"],
 		};
+
+		/// <summary>
+		/// The two 7.5-patch Bream Team zones missing from the atlas — confirmed (via a pixel diff
+		/// against every existing Bream Team cell, 93%+ different from all of them) to be genuinely
+		/// new art, not a reuse of an existing icon, so pulled in as standalone files instead of
+		/// atlas coordinates. Source: ffxiv.consolegameswiki.com's per-bonus icon images.
+		/// </summary>
+		private static readonly Dictionary<string, string> FileBonusIcons = new Dictionary<string, string>
+		{
+			["Bream Team: Unnamed Island"] = "BreamTeamUnnamedIsland.png",
+			["Bream Team: Thavnairian Coast"] = "BreamTeamThavnairianCoast.png",
+		};
+
+		private static readonly Dictionary<string, ImageSource> BonusIcons = BuildBonusIcons();
+
+		private static Dictionary<string, ImageSource> BuildBonusIcons()
+		{
+			var icons = new Dictionary<string, ImageSource>();
+
+			foreach (var kvp in AtlasBonusIcons)
+				icons[kvp.Key] = IconAtlas.GetIcon(kvp.Value.X, kvp.Value.Y);
+
+			foreach (var kvp in FileBonusIcons)
+			{
+				var path = BotBasesResourceLocator.Resolve("Resources", kvp.Value);
+				if (path != null)
+					icons[kvp.Key] = new BitmapImage(new Uri(path, UriKind.Absolute));
+			}
+
+			return icons;
+		}
 
 		public static void Attach(UserControl page)
 		{
@@ -198,7 +226,7 @@ namespace Ocean_Trip.UI.Wpf
 					{
 						Name = b.Name,
 						PercentText = $"+{b.Multiplier - 100}%",
-						IconSource = BonusIcons.TryGetValue(b.Name, out var coords) ? IconAtlas.GetIcon(coords.X, coords.Y) : null,
+						IconSource = BonusIcons.TryGetValue(b.Name, out var icon) ? icon : null,
 					})
 					.ToList(),
 			};
