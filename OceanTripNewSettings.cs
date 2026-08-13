@@ -90,6 +90,16 @@ namespace OceanTripPlanner
 			get { return _instance ?? (_instance = new OceanTripNewSettings()); }
 		}
 
+		private OceanTripNewSettings()
+		{
+			// Re-raise rather than forward: WPF's PropertyChangedEventManager files listeners under
+			// the object it subscribed on (this wrapper, as the binding source) but delivers events
+			// by looking the SENDER up in that table — so forwarding the inner OceanTripSettings'
+			// event unchanged (sender = inner object) meant bindings on this wrapper never saw any
+			// change notification, e.g. the numeric stepper buttons updated settings invisibly.
+			OceanTripSettings.Instance.PropertyChanged += (_, e) => PropertyChanged?.Invoke(this, e);
+		}
+
 		// Reference to new settings implementation
 		private OceanTripSettings _settings => OceanTripSettings.Instance;
 
@@ -135,6 +145,60 @@ namespace OceanTripPlanner
 		{
 			get => _settings.IsMaterialEnabled(7);
 			set => _settings.SetMaterialEnabled(7, value);
+		}
+
+		public bool material8
+		{
+			get => _settings.IsMaterialEnabled(8);
+			set => _settings.SetMaterialEnabled(8, value);
+		}
+
+		public bool material9
+		{
+			get => _settings.IsMaterialEnabled(9);
+			set => _settings.SetMaterialEnabled(9, value);
+		}
+
+		public bool material10
+		{
+			get => _settings.IsMaterialEnabled(10);
+			set => _settings.SetMaterialEnabled(10, value);
+		}
+
+		public bool material11
+		{
+			get => _settings.IsMaterialEnabled(11);
+			set => _settings.SetMaterialEnabled(11, value);
+		}
+
+		public bool material12
+		{
+			get => _settings.IsMaterialEnabled(12);
+			set => _settings.SetMaterialEnabled(12, value);
+		}
+
+		public bool material13
+		{
+			get => _settings.IsMaterialEnabled(13);
+			set => _settings.SetMaterialEnabled(13, value);
+		}
+
+		public bool material14
+		{
+			get => _settings.IsMaterialEnabled(14);
+			set => _settings.SetMaterialEnabled(14, value);
+		}
+
+		public bool material15
+		{
+			get => _settings.IsMaterialEnabled(15);
+			set => _settings.SetMaterialEnabled(15, value);
+		}
+
+		public bool material16
+		{
+			get => _settings.IsMaterialEnabled(16);
+			set => _settings.SetMaterialEnabled(16, value);
 		}
 
 		#endregion
@@ -814,11 +878,7 @@ namespace OceanTripPlanner
 
 		#region INotifyPropertyChanged
 
-		public event PropertyChangedEventHandler PropertyChanged
-		{
-			add => _settings.PropertyChanged += value;
-			remove => _settings.PropertyChanged -= value;
-		}
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		#endregion
 	}

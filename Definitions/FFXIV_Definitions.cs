@@ -24,20 +24,30 @@ namespace OceanTripPlanner.Definitions
 
 	public static class Defaults
 	{
-		// CondensedSolution (Orange Crafters' Scrip, Dawntrail) replaces the old ImmutableSolution
-		// (Purple Crafters' Scrip, Endwalker) — same 125-scrip "Solution" reagent, just the current
-		// tier. The remaining six are still Heavensward-patch (3.1/3.55) Purple Gatherers' Scrip
-		// items awaiting their own current-tier replacements — see conversation, pending the actual
-		// Orange Gatherers' Scrip "Materials" tab contents before swapping in real item IDs.
+		// Replaces the old Heavensward-patch (3.1/3.55) Purple Gatherers' Scrip items (Dinosaur
+		// Leather, Sphalerite, Royal Mistletoe, Cloud Cotton Boll, Cloud Mythril Ore, Stormcloud
+		// Cotton Boll) — confirmed 2026-08-12 against the live exchange that the Gatherers' Scrip
+		// "Materials" category is just Aethersand now (already its own card/list, see aethersands
+		// below), so that raw-ore/leather/cloth category has no current-tier equivalent to swap in.
+		// The full current Orange Crafters' Scrip "Materials" list took its place instead.
 		public static readonly int[] materials = new int[]
 		{
 			Material.CondensedSolution,
-			Material.DinosaurLeather,
-			Material.Sphalerite,
-			Material.RoyalMistletoe,
-			Material.CloudCottonBoll,
-			Material.CloudMythrilOre,
-			Material.StormcloudCottonBoll
+			Material.RumplessChicken,
+			Material.BrownCardamom,
+			Material.WildCoffeeBeans,
+			Material.NavelOrange,
+			Material.RoyalLobster,
+			Material.Cassava,
+			Material.SplendidMateLeaves,
+			Material.AjiAmarillo,
+			Material.QuesoFresco,
+			Material.WoolbackLoin,
+			Material.FlintCorn,
+			Material.TuraliPlum,
+			Material.RroneekMilk,
+			Material.RockFistPopoto,
+			Material.Quahog
 		};
 
 		public static readonly int[] aethersands = new int[]
@@ -432,6 +442,28 @@ namespace OceanTripPlanner.Definitions
 		/// (125 Purple Crafters' Scrip, Endwalker). Used in Optical Nanofiber -> Everseekers gear,
 		/// the current tier of high-difficulty crafts.</summary>
 		public static int CondensedSolution = 44848;
+
+		// The rest of the Orange Crafters' Scrip "Materials" exchange, confirmed 2026-08-12 against
+		// the live in-game exchange window (Materials/Misc subcategory) rather than guessed from
+		// naming convention. Cheap (10-15 scrip) Culinarian ingredients; Brown Cardamom in
+		// particular is a real Moqueca ingredient (see Defaults.raidfood).
+		public static int RumplessChicken = 44170;
+		public static int BrownCardamom = 44171;
+		public static int WildCoffeeBeans = 44172;
+		public static int NavelOrange = 44173;
+		public static int RoyalLobster = 44174;
+
+		public static int Cassava = 45990;
+		public static int SplendidMateLeaves = 45991;
+		public static int AjiAmarillo = 45992;
+		public static int QuesoFresco = 45993;
+		public static int WoolbackLoin = 45994;
+
+		public static int FlintCorn = 49229;
+		public static int TuraliPlum = 49230;
+		public static int RroneekMilk = 49231;
+		public static int RockFistPopoto = 49232;
+		public static int Quahog = 49233;
 	}
 
 	public static class NPC

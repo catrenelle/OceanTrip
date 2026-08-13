@@ -18,13 +18,17 @@ namespace Ocean_Trip.UI.Wpf
 	/// Post-load wiring for IdleActivitiesPage.xaml: builds the material/aethersand/food/potion
 	/// toggle grids and the materia grade-by-type checkbox matrix in code, since their labels come
 	/// from live game data (DataManager.ItemCache) and their bound property names are generated
-	/// ("material1".."material7", etc.) rather than fixed — the same reason OceanSettingsPageBehavior
+	/// ("material1".."material16", etc.) rather than fixed — the same reason OceanSettingsPageBehavior
 	/// builds its icon grids in code instead of loose XAML.
 	/// </summary>
 	public static class IdleActivitiesPageBehavior
 	{
 		private static readonly string[] MaterialProperties =
-			{ "material1", "material2", "material3", "material4", "material5", "material6", "material7" };
+		{
+			"material1", "material2", "material3", "material4", "material5", "material6", "material7",
+			"material8", "material9", "material10", "material11", "material12", "material13",
+			"material14", "material15", "material16"
+		};
 
 		private static readonly string[] AethersandProperties =
 		{
