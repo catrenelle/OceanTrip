@@ -24,9 +24,14 @@ namespace OceanTripPlanner.Definitions
 
 	public static class Defaults
 	{
-		public static readonly int[] materials = new int[] 
-		{ 
-			Material.ImmutableSolution,
+		// CondensedSolution (Orange Crafters' Scrip, Dawntrail) replaces the old ImmutableSolution
+		// (Purple Crafters' Scrip, Endwalker) — same 125-scrip "Solution" reagent, just the current
+		// tier. The remaining six are still Heavensward-patch (3.1/3.55) Purple Gatherers' Scrip
+		// items awaiting their own current-tier replacements — see conversation, pending the actual
+		// Orange Gatherers' Scrip "Materials" tab contents before swapping in real item IDs.
+		public static readonly int[] materials = new int[]
+		{
+			Material.CondensedSolution,
 			Material.DinosaurLeather,
 			Material.Sphalerite,
 			Material.RoyalMistletoe,
@@ -422,6 +427,11 @@ namespace OceanTripPlanner.Definitions
 		public static int MythloamAethersand = 44036;
 		public static int MythrootAethersand = 44037;
 		public static int MythbrineAethersand = 44038;
+
+		/// <summary>125 Orange Crafters' Scrip — the Dawntrail-tier successor to ImmutableSolution
+		/// (125 Purple Crafters' Scrip, Endwalker). Used in Optical Nanofiber -> Everseekers gear,
+		/// the current tier of high-difficulty crafts.</summary>
+		public static int CondensedSolution = 44848;
 	}
 
 	public static class NPC
