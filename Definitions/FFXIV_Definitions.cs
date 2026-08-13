@@ -48,10 +48,14 @@ namespace OceanTripPlanner.Definitions
 			Material.MythbrineAethersand,
 		};
 
+		// Moqueca (Crit/Det) replaced the old Piety food (Broccoli and Spinach Saute) here — Piety
+		// isn't a stat current savage BiS food chases, while Moqueca is the current cross-role
+		// "crit/det" pick per job consumables guides. Introduced in 7.05, so it's already correct
+		// for RB_TC's 7.2 client too — no ifdef split needed like raidpotions' Gemdraught tier.
 		public static readonly int[] raidfood = new int[]
 		{
 			FoodList.CreamyAlpacaPasta,
-			FoodList.BroccoliSpinachSaute,
+			FoodList.Moqueca,
 			FoodList.VegetableSoup,
 			FoodList.MesquiteSoup,
 		};
@@ -311,8 +315,12 @@ namespace OceanTripPlanner.Definitions
 
 		public static int CreamyAlpacaPasta = 44087;
 		public static int BroccoliSpinachSaute = 44090;
-		public static int VegetableSoup = 44096; 
+		public static int VegetableSoup = 44096;
 		public static int MesquiteSoup = 44098;
+
+		/// <summary>Determination/Critical Hit/Vitality — introduced 7.05, still the current
+		/// BiS "crit/det" food as of 7.55 per job consumables guides.</summary>
+		public static int Moqueca = 44178;
 	}
 
 	public static class Materia
