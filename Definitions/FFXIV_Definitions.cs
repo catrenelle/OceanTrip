@@ -58,16 +58,19 @@ namespace OceanTripPlanner.Definitions
 
 		public static readonly int[] raidpotions = new int[]
 		{
-#if (RB_DT && !RB_CN)
+#if (RB_DT && !RB_TC)
+			// Global client, patch 7.55 — Grade 4 is the current tier (introduced 7.4).
+			Potions.Grade4GemdraughtStrength,
+			Potions.Grade4GemdraughtDexterity,
+			Potions.Grade4GemdraughtIntelligence,
+			Potions.Grade4GemdraughtMind,
+#elif (RB_DT && RB_TC)
+			// RB_TC client is separately patched and still on 7.2 (see Routes.cs/CHANGELOG.txt) —
+			// Grade 4 didn't exist yet there, so it stays on the Grade 2 tier that was current then.
 			Potions.Grade2GemdraughtStrength,
 			Potions.Grade2GemdraughtDexterity,
 			Potions.Grade2GemdraughtIntelligence,
 			Potions.Grade2GemdraughtMind,
-#elif (RB_DT && RB_CN)
-			Potions.Grade1GemdraughtStrength,
-			Potions.Grade1GemdraughtDexterity,
-			Potions.Grade1GemdraughtIntelligence,
-			Potions.Grade1GemdraughtMind,
 #else
 			Potions.Grade8TinctureStrength,
 			Potions.Grade8TinctureDexterity,
@@ -448,6 +451,11 @@ namespace OceanTripPlanner.Definitions
 		public static int Grade2GemdraughtDexterity = 44163;
 		public static int Grade2GemdraughtIntelligence = 44165;
 		public static int Grade2GemdraughtMind = 44166;
+
+		public static int Grade4GemdraughtStrength = 49234;
+		public static int Grade4GemdraughtDexterity = 49235;
+		public static int Grade4GemdraughtIntelligence = 49237;
+		public static int Grade4GemdraughtMind = 49238;
 	}
 
 	public static class Weather
