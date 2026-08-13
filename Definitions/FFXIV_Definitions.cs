@@ -50,14 +50,16 @@ namespace OceanTripPlanner.Definitions
 			Material.Quahog
 		};
 
+		// Everborn/Everdeep (pre-Endwalker) and Endstone/Endwood/Endtide/Earthbreak (Endwalker) are
+		// all gone from the current Orange Gatherers' Scrip exchange — confirmed 2026-08-12 against
+		// the live in-game exchange window, which lists exactly Levinchrome, Sungilt, Mythloam,
+		// Mythroot, and Mythbrine. Levinchrome and Sungilt were missing entirely from this list
+		// despite being current (7.0/7.3) and used by recipes this bot already crafts (Grade 4
+		// Gemdraughts, Moqueca — see Defaults.raidpotions/raidfood).
 		public static readonly int[] aethersands = new int[]
 		{
-			Material.EverbornAethersand,
-			Material.EverdeepAethersand,
-			Material.EndstoneAethersand,
-			Material.EndwoodAethersand,
-			Material.EndtideAethersand,
-			Material.EarthbreakAethersand,
+			Material.LevinchromeAethersand,
+			Material.SungiltAethersand,
 			Material.MythloamAethersand,
 			Material.MythrootAethersand,
 			Material.MythbrineAethersand,
@@ -437,6 +439,15 @@ namespace OceanTripPlanner.Definitions
 		public static int MythloamAethersand = 44036;
 		public static int MythrootAethersand = 44037;
 		public static int MythbrineAethersand = 44038;
+
+		/// <summary>7.3 — used in dozens of current level-100 recipes across all 8 crafting classes
+		/// (all four Grade 4 Gemdraughts, All i Pebre, Synthetic Dark Matter, Aspected Aether items,
+		/// Courtly Lover's gear). Confirmed in the current Orange Gatherers' Scrip exchange.</summary>
+		public static int LevinchromeAethersand = 46246;
+
+		/// <summary>7.0 — used in Optical Nanofiber (-> Everseekers gear) and Moqueca (see
+		/// Defaults.raidfood). Confirmed in the current Orange Gatherers' Scrip exchange.</summary>
+		public static int SungiltAethersand = 44035;
 
 		/// <summary>125 Orange Crafters' Scrip — the Dawntrail-tier successor to ImmutableSolution
 		/// (125 Purple Crafters' Scrip, Endwalker). Used in Optical Nanofiber -> Everseekers gear,

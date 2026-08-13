@@ -11,7 +11,7 @@
 			</GroupBox>
 
 			<GroupBox Header="Gather Aethersand" Style="{DynamicResource Card}">
-				<UniformGrid x:Name="AethersandsPanel" Columns="9" />
+				<UniformGrid x:Name="AethersandsPanel" Columns="5" />
 			</GroupBox>
 
 			<Grid>

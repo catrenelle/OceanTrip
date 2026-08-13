@@ -31,10 +31,7 @@ namespace Ocean_Trip.UI.Wpf
 		};
 
 		private static readonly string[] AethersandProperties =
-		{
-			"aethersand1", "aethersand2", "aethersand3", "aethersand4", "aethersand5",
-			"aethersand6", "aethersand7", "aethersand8", "aethersand9"
-		};
+			{ "aethersand1", "aethersand2", "aethersand3", "aethersand4", "aethersand5" };
 
 		private static readonly string[] FoodProperties = { "food1", "food2", "food3", "food4" };
 		private static readonly string[] PotionProperties = { "potion1", "potion2", "potion3", "potion4" };
