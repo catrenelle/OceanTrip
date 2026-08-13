@@ -2,15 +2,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<StackPanel Margin="28,12,28,6">
-			<TextBlock Text="Result History" Style="{DynamicResource HeaderText}" />
-			<TextBlock Text="Stats and your most recent completed voyages." Style="{DynamicResource SecondaryText}" Margin="0,0,0,6" />
+			<Grid Margin="0,0,0,6">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<TextBlock Text="Result History" Style="{DynamicResource HeaderText}" />
+					<TextBlock Text="Stats and your most recent completed voyages." Style="{DynamicResource SecondaryText}" />
+				</StackPanel>
+
+				<!-- All/Indigo/Ruby route filter — recomputes every card on this page, not just the
+				     runs table, so e.g. Avg Points reflects only the selected route's history. -->
+				<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+					<Button x:Name="RouteFilterAll" Content="All" Style="{DynamicResource FilterPillButton}" Margin="0,0,6,0" Tag="Active" />
+					<Button x:Name="RouteFilterIndigo" Content="Indigo" Style="{DynamicResource FilterPillButton}" Margin="0,0,6,0" />
+					<Button x:Name="RouteFilterRuby" Content="Ruby" Style="{DynamicResource FilterPillButton}" />
+				</StackPanel>
+			</Grid>
 
 			<GroupBox Header="All-Time Stats" Style="{DynamicResource Card}">
 				<UniformGrid x:Name="StatsPanel" Columns="5" />
 			</GroupBox>
 
-			<!-- Only shown once more than one route appears in history — with a single route this
-			     would just repeat the numbers already in All-Time Stats above. -->
+			<!-- Only shown for the "All" filter with more than one route in history — with a single
+			     route in scope this would just repeat the numbers already in All-Time Stats above. -->
 			<GroupBox x:Name="RouteBreakdownGroup" Header="By Route" Style="{DynamicResource Card}" Visibility="Collapsed">
 				<StackPanel x:Name="RouteBreakdownPanel" />
 			</GroupBox>
@@ -19,51 +35,107 @@
 			     by ResultHistoryPageBehavior, so it just sizes to content within the page's own
 			     ScrollViewer instead of needing its own internal scroll region (contrast with
 			     SchedulePage's DataGrid, which can hold far more rows and owns its own scrolling). -->
-			<GroupBox Header="Last 10 Runs" Style="{DynamicResource Card}">
-				<DataGrid x:Name="ResultsGrid"
-				          AutoGenerateColumns="False"
-				          IsReadOnly="True"
-				          CanUserAddRows="False"
-				          CanUserDeleteRows="False"
-				          CanUserResizeRows="False"
-				          CanUserSortColumns="False"
-				          HeadersVisibility="Column"
-				          GridLinesVisibility="Horizontal"
-				          Background="{DynamicResource SurfaceBrush}"
-				          Foreground="{DynamicResource TextPrimaryBrush}"
-				          BorderThickness="0"
-				          RowBackground="{DynamicResource SurfaceBrush}"
-				          AlternatingRowBackground="{DynamicResource BackgroundBrush}"
-				          HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
-				          VerticalGridLinesBrush="{DynamicResource BorderBrush}"
-				          RowHeaderWidth="0">
-					<DataGrid.ColumnHeaderStyle>
-						<Style TargetType="DataGridColumnHeader">
-							<Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
-							<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-							<Setter Property="FontFamily" Value="Segoe UI" />
-							<Setter Property="FontSize" Value="12" />
-							<Setter Property="FontWeight" Value="SemiBold" />
-							<Setter Property="Padding" Value="8,6" />
-							<Setter Property="HorizontalContentAlignment" Value="Left" />
-						</Style>
-					</DataGrid.ColumnHeaderStyle>
-					<DataGrid.Columns>
-						<DataGridTextColumn Header="When" Binding="{Binding Timestamp}" Width="130" />
-						<DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="80" />
-						<DataGridTextColumn Header="Points" Binding="{Binding Points}" Width="90" />
-						<DataGridTextColumn Header="Placement" Binding="{Binding Placement}" Width="120" />
-						<DataGridTextColumn Header="Fish" Binding="{Binding CaughtFish}" Width="60" />
-						<DataGridTextColumn Header="Bonuses" Binding="{Binding Bonuses}" Width="*">
-							<DataGridTextColumn.ElementStyle>
-								<Style TargetType="TextBlock">
-									<Setter Property="ToolTip" Value="{Binding Bonuses}" />
-									<Setter Property="TextTrimming" Value="CharacterEllipsis" />
-								</Style>
-							</DataGridTextColumn.ElementStyle>
-						</DataGridTextColumn>
-					</DataGrid.Columns>
-				</DataGrid>
+			<GroupBox x:Name="ResultsGroup" Header="Last 10 Runs" Style="{DynamicResource Card}">
+				<StackPanel>
+					<TextBlock Text="Click a run to see its bonus breakdown." Style="{DynamicResource SecondaryText}"
+					           FontSize="11" Margin="0,0,0,6" />
+					<DataGrid x:Name="ResultsGrid"
+					          AutoGenerateColumns="False"
+					          IsReadOnly="True"
+					          CanUserAddRows="False"
+					          CanUserDeleteRows="False"
+					          CanUserResizeRows="False"
+					          CanUserSortColumns="False"
+					          HeadersVisibility="Column"
+					          GridLinesVisibility="Horizontal"
+					          RowDetailsVisibilityMode="VisibleWhenSelected"
+					          SelectionMode="Single"
+					          SelectionUnit="FullRow"
+					          Background="{DynamicResource SurfaceBrush}"
+					          Foreground="{DynamicResource TextPrimaryBrush}"
+					          BorderThickness="0"
+					          RowBackground="{DynamicResource SurfaceBrush}"
+					          AlternatingRowBackground="{DynamicResource BackgroundBrush}"
+					          HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+					          VerticalGridLinesBrush="{DynamicResource BorderBrush}"
+					          RowHeaderWidth="0">
+						<DataGrid.Resources>
+							<Style TargetType="DataGridRow">
+								<Setter Property="Cursor" Value="Hand" />
+								<Style.Triggers>
+									<Trigger Property="IsSelected" Value="True">
+										<Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</DataGrid.Resources>
+						<DataGrid.ColumnHeaderStyle>
+							<Style TargetType="DataGridColumnHeader">
+								<Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+								<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+								<Setter Property="FontFamily" Value="Segoe UI" />
+								<Setter Property="FontSize" Value="12" />
+								<Setter Property="FontWeight" Value="SemiBold" />
+								<Setter Property="Padding" Value="8,6" />
+								<Setter Property="HorizontalContentAlignment" Value="Left" />
+							</Style>
+						</DataGrid.ColumnHeaderStyle>
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="When" Binding="{Binding Timestamp}" Width="130" />
+							<DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="80" />
+							<DataGridTextColumn Header="Points" Binding="{Binding Points}" Width="90" />
+							<DataGridTextColumn Header="Placement" Binding="{Binding Placement}" Width="120" />
+							<DataGridTextColumn Header="Fish" Binding="{Binding CaughtFish}" Width="60" />
+							<DataGridTextColumn Header="Bonus" Binding="{Binding BonusPercentText}" Width="*">
+								<DataGridTextColumn.ElementStyle>
+									<Style TargetType="TextBlock">
+										<Setter Property="FontWeight" Value="SemiBold" />
+										<Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding HasBonus}" Value="True">
+												<Setter Property="Foreground" Value="{DynamicResource AccentLightBrush}" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</DataGridTextColumn.ElementStyle>
+							</DataGridTextColumn>
+						</DataGrid.Columns>
+
+						<!-- Expanded-row detail: one badge per bonus earned, icon + its own %, full
+						     name on hover — the per-row breakdown behind the Bonus column's summary %. -->
+						<DataGrid.RowDetailsTemplate>
+							<DataTemplate>
+								<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="4" Padding="10" Margin="0,2,0,6">
+									<StackPanel>
+										<TextBlock Text="{Binding BonusSummaryHeader}" Style="{DynamicResource SecondaryText}"
+										           FontSize="11" Margin="0,0,0,6" />
+										<ItemsControl ItemsSource="{Binding BonusDetails}">
+											<ItemsControl.ItemsPanel>
+												<ItemsPanelTemplate>
+													<WrapPanel Orientation="Horizontal" />
+												</ItemsPanelTemplate>
+											</ItemsControl.ItemsPanel>
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<Border Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="12"
+													        Padding="8,4" Margin="0,0,8,8" ToolTip="{Binding Name}">
+														<StackPanel Orientation="Horizontal">
+															<Path Data="M5,0 L6.3,3.5 L10,3.8 L7.2,6.2 L8.1,10 L5,7.9 L1.9,10 L2.8,6.2 L0,3.8 L3.7,3.5 Z"
+															      Fill="{DynamicResource AccentLightBrush}" Width="10" Height="10"
+															      Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,6,0" />
+															<TextBlock Text="{Binding PercentText}" Foreground="{DynamicResource TextPrimaryBrush}"
+															           FontSize="12" VerticalAlignment="Center" />
+														</StackPanel>
+													</Border>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</DataGrid.RowDetailsTemplate>
+					</DataGrid>
+				</StackPanel>
 			</GroupBox>
 		</StackPanel>
 	</ScrollViewer>

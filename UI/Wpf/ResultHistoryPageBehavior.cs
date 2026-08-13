@@ -11,20 +11,42 @@ namespace Ocean_Trip.UI.Wpf
 	/// <summary>
 	/// Post-load wiring for ResultHistoryPage.xaml: reads every completed voyage from
 	/// VoyageHistoryStore (populated by OceanTrip.LogVoyageResult on each voyage's results
-	/// screen), computes all-time stats over the FULL history, and shows the 10 most recent runs
-	/// in the DataGrid. ShellWindow only reveals this page's nav button once
-	/// VoyageHistoryStore.HasAny() is true, so Attach can assume at least one entry exists, but
-	/// still degrades to zeros/dashes rather than throwing if that's ever not the case.
+	/// screen), computes all-time stats over the FULL history (or a route-filtered subset — see
+	/// the All/Indigo/Ruby pill buttons), and shows the 10 most recent matching runs in the
+	/// DataGrid. ShellWindow only reveals this page's nav button once VoyageHistoryStore.HasAny()
+	/// is true, so Attach can assume at least one entry exists, but still degrades to zeros/dashes
+	/// rather than throwing if that's ever not the case.
 	/// </summary>
 	public static class ResultHistoryPageBehavior
 	{
 		public static void Attach(UserControl page)
 		{
-			var entries = VoyageHistoryStore.LoadAll();
+			var allEntries = VoyageHistoryStore.LoadAll();
 
-			BuildStats(page, entries);
-			BuildRouteBreakdown(page, entries);
-			BuildResultsGrid(page, entries);
+			var allButton = (Button)page.FindName("RouteFilterAll");
+			var indigoButton = (Button)page.FindName("RouteFilterIndigo");
+			var rubyButton = (Button)page.FindName("RouteFilterRuby");
+			var filterButtons = new[] { allButton, indigoButton, rubyButton };
+
+			void ApplyFilter(Button active, string route)
+			{
+				foreach (var btn in filterButtons)
+					btn.Tag = btn == active ? "Active" : null;
+
+				var filtered = route == null
+					? allEntries
+					: allEntries.Where(e => string.Equals(e.Route, route, StringComparison.OrdinalIgnoreCase)).ToList();
+
+				BuildStats(page, filtered);
+				BuildRouteBreakdown(page, filtered, showWhenSingleRoute: route == null);
+				BuildResultsGrid(page, filtered, route);
+			}
+
+			allButton.Click += (s, e) => ApplyFilter(allButton, null);
+			indigoButton.Click += (s, e) => ApplyFilter(indigoButton, "Indigo");
+			rubyButton.Click += (s, e) => ApplyFilter(rubyButton, "Ruby");
+
+			ApplyFilter(allButton, null);
 		}
 
 		private static void BuildStats(UserControl page, List<VoyageHistoryEntry> entries)
@@ -49,7 +71,7 @@ namespace Ocean_Trip.UI.Wpf
 				"Avg Fish Caught"));
 		}
 
-		private static void BuildRouteBreakdown(UserControl page, List<VoyageHistoryEntry> entries)
+		private static void BuildRouteBreakdown(UserControl page, List<VoyageHistoryEntry> entries, bool showWhenSingleRoute)
 		{
 			var group = (GroupBox)page.FindName("RouteBreakdownGroup");
 			var panel = (StackPanel)page.FindName("RouteBreakdownPanel");
@@ -60,7 +82,9 @@ namespace Ocean_Trip.UI.Wpf
 				.OrderByDescending(g => g.Count())
 				.ToList();
 
-			if (byRoute.Count < 2)
+			// Not meaningful once a single route is already the filter in effect — nothing left to
+			// compare against — nor with only one route in the unfiltered history.
+			if (!showWhenSingleRoute || byRoute.Count < 2)
 			{
 				group.Visibility = Visibility.Collapsed;
 				return;
@@ -81,8 +105,11 @@ namespace Ocean_Trip.UI.Wpf
 			group.Visibility = Visibility.Visible;
 		}
 
-		private static void BuildResultsGrid(UserControl page, List<VoyageHistoryEntry> entries)
+		private static void BuildResultsGrid(UserControl page, List<VoyageHistoryEntry> entries, string routeFilter)
 		{
+			if (page.FindName("ResultsGroup") is GroupBox resultsGroup)
+				resultsGroup.Header = routeFilter == null ? "Last 10 Runs" : $"Last 10 {routeFilter} Runs";
+
 			var grid = (DataGrid)page.FindName("ResultsGrid");
 			grid.ItemsSource = entries
 				.OrderByDescending(e => e.Timestamp)
@@ -91,17 +118,29 @@ namespace Ocean_Trip.UI.Wpf
 				.ToList();
 		}
 
-		private static ResultHistoryRow BuildRow(VoyageHistoryEntry entry) => new ResultHistoryRow
+		private static ResultHistoryRow BuildRow(VoyageHistoryEntry entry)
 		{
-			Timestamp = entry.Timestamp.ToString("MM/dd HH:mm"),
-			Route = entry.Route,
-			Points = entry.TotalPoints.ToString("N0"),
-			Placement = entry.Placement.HasValue
-				? $"{Ordinal(entry.Placement.Value)} of {entry.TrackedPlayerCount}"
-				: "Unranked",
-			CaughtFish = entry.CaughtFish,
-			Bonuses = entry.Bonuses.Count > 0 ? string.Join(", ", entry.Bonuses) : "None",
-		};
+			int totalBonusPercent = entry.Bonuses.Sum(b => b.Multiplier - 100);
+
+			return new ResultHistoryRow
+			{
+				Timestamp = entry.Timestamp.ToString("MM/dd HH:mm"),
+				Route = entry.Route,
+				Points = entry.TotalPoints.ToString("N0"),
+				Placement = entry.Placement.HasValue
+					? $"{Ordinal(entry.Placement.Value)} of {entry.TrackedPlayerCount}"
+					: "Unranked",
+				CaughtFish = entry.CaughtFish,
+				HasBonus = totalBonusPercent > 0,
+				BonusPercentText = totalBonusPercent > 0 ? $"+{totalBonusPercent}%" : "—",
+				BonusSummaryHeader = entry.Bonuses.Count > 0
+					? $"Bonuses Earned (+{totalBonusPercent}% total)"
+					: "No bonuses earned this run.",
+				BonusDetails = entry.Bonuses
+					.Select(b => new BonusDetailRow { Name = b.Name, PercentText = $"+{b.Multiplier - 100}%" })
+					.ToList(),
+			};
+		}
 
 		private static Border BuildStatTile(string value, string label)
 		{
@@ -110,7 +149,7 @@ namespace Ocean_Trip.UI.Wpf
 			{
 				Text = value,
 				FontFamily = new FontFamily("Segoe UI"),
-				FontSize = 22,
+				FontSize = 24,
 				FontWeight = FontWeights.SemiBold,
 				Foreground = (Brush)Application.Current.Resources["AccentLightBrush"],
 				HorizontalAlignment = HorizontalAlignment.Center
@@ -121,9 +160,17 @@ namespace Ocean_Trip.UI.Wpf
 				Style = (Style)Application.Current.Resources["SecondaryText"],
 				FontSize = 11,
 				HorizontalAlignment = HorizontalAlignment.Center,
-				Margin = new Thickness(0, 2, 0, 0)
+				Margin = new Thickness(0, 3, 0, 0)
 			});
-			return new Border { Child = stack, Padding = new Thickness(4, 6, 4, 2) };
+
+			return new Border
+			{
+				Child = stack,
+				Background = (Brush)Application.Current.Resources["SurfaceHoverBrush"],
+				CornerRadius = new CornerRadius(8),
+				Padding = new Thickness(10, 12, 10, 10),
+				Margin = new Thickness(4)
+			};
 		}
 
 		private static string Ordinal(int n)
@@ -148,6 +195,15 @@ namespace Ocean_Trip.UI.Wpf
 		public string Points { get; set; }
 		public string Placement { get; set; }
 		public int CaughtFish { get; set; }
-		public string Bonuses { get; set; }
+		public bool HasBonus { get; set; }
+		public string BonusPercentText { get; set; }
+		public string BonusSummaryHeader { get; set; }
+		public List<BonusDetailRow> BonusDetails { get; set; }
+	}
+
+	public class BonusDetailRow
+	{
+		public string Name { get; set; }
+		public string PercentText { get; set; }
 	}
 }

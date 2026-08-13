@@ -137,6 +137,40 @@
 		</Setter>
 	</Style>
 
+	<!-- Small pill toggle for a mutually-exclusive filter row (e.g. Result History's All/Indigo/Ruby
+	     route filter) — same Tag="Active"-driven highlight convention as NavButton, just styled as a
+	     horizontal segment instead of a sidebar row. -->
+	<Style x:Key="FilterPillButton" TargetType="Button">
+		<Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+		<Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+		<Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="Padding" Value="16,6" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="Bg" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+					        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="14">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+						</Trigger>
+						<Trigger Property="Tag" Value="Active">
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource AccentBrush}" />
+							<Setter TargetName="Bg" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+							<Setter Property="Foreground" Value="White" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 	<!-- Section card — replaces GroupBox's dated chrome with a modern flat rounded panel,
 	     while keeping the same Header/Content semantics as the original WinForms GroupBoxes.
 	     Header uses a small, letter-spaced, accent-tinted label (vs. plain white) and the panel

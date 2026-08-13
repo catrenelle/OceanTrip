@@ -652,7 +652,7 @@ namespace OceanTripPlanner
 				ExperiencePoints = result.ExperiencePoints,
 				Scrip1Amount = result.Scrip1Amount,
 				Scrip2Amount = result.Scrip2Amount,
-				Bonuses = bonuses.Select(b => b.Objective).ToList(),
+				Bonuses = bonuses.Select(b => new Ocean_Trip.VoyageBonusEntry { Name = b.Objective, Multiplier = b.BonusMultiplier }).ToList(),
 			});
 		}
 

@@ -69,6 +69,16 @@ namespace Ocean_Trip
 		public uint ExperiencePoints { get; set; }
 		public ushort Scrip1Amount { get; set; }
 		public ushort Scrip2Amount { get; set; }
-		public List<string> Bonuses { get; set; } = new List<string>();
+		public List<VoyageBonusEntry> Bonuses { get; set; } = new List<VoyageBonusEntry>();
+	}
+
+	/// <summary>One earned bonus, keeping its multiplier (not just the name) so Result History can
+	/// show an aggregate bonus % without re-deriving it from BonusDataCache after the fact.</summary>
+	public class VoyageBonusEntry
+	{
+		public string Name { get; set; }
+
+		/// <summary>100 + the bonus percentage — matches IkdContentBonus.BonusMultiplier (120 = +20%).</summary>
+		public int Multiplier { get; set; }
 	}
 }
