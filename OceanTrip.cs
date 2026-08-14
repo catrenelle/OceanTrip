@@ -59,6 +59,14 @@ namespace OceanTripPlanner
 		// Used to gate GP-banking — see ManageBuffsAndConsumables.
 		private bool _hadSpectralThisStop;
 
+		// Whether the stop we just LEFT never saw a spectral current — per the community-confirmed
+		// pity rule, that makes the current stop's spectral run longer (3 min vs 2) with rising
+		// trigger odds per spectral-fish catch, and it doesn't stack (recomputed fresh from
+		// _hadSpectralThisStop on every transition, so repeatedly missing it just holds this at
+		// true rather than escalating). Threaded into BaitSelectionContext so bait selectors can
+		// prioritize converting it — see NormalBaitSelector.NeedsSpectral.
+		private bool _spectralPityActive;
+
 		private bool ignoreBoat { get { if (OceanTripNewSettings.Instance.FishPriority == FishPriority.IgnoreBoat) { return true; } else { return false; } } }
 
 		private static Random rnd = new Random();
@@ -454,6 +462,17 @@ namespace OceanTripPlanner
 
 				if (location != lastLoggedLocation)
 				{
+					// Carry pity forward from the stop we're leaving — but only on a genuine
+					// transition, not the very first stop of the voyage (lastLoggedLocation still
+					// empty here), where _hadSpectralThisStop's initial false would otherwise read
+					// as "previous stop skipped it" with no previous stop to have skipped it at.
+					if (!string.IsNullOrEmpty(lastLoggedLocation))
+					{
+						_spectralPityActive = !_hadSpectralThisStop;
+						if (_spectralPityActive)
+							Log("Spectral pity active — last stop never saw a current, this one runs longer.", OceanLogLevel.Debug);
+					}
+
 					lastLoggedLocation = location;
 					_hadSpectralThisStop = false;
 					string priorityMode = OceanTripNewSettings.Instance.FishPriority.ToString();
@@ -1242,7 +1261,8 @@ namespace OceanTripPlanner
 				CaughtFish = caughtFish,
 				FocusFishLog = FocusFishLog,
 				CurrentWeather = gameCache.CurrentWeather,
-				TargetFishId = contextTargetFishId
+				TargetFishId = contextTargetFishId,
+				SpectralPityActive = _spectralPityActive
 			};
 
 			// Use achievement bait selector when in achievement mode AND achievement fish exist here

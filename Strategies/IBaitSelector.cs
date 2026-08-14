@@ -32,6 +32,16 @@ namespace OceanTripPlanner.Strategies
 		public string CurrentWeather { get; set; }
 
 		/// <summary>
+		/// True when the PREVIOUS stop never saw a spectral current — the community-confirmed
+		/// Ocean Fishing pity rule then makes THIS stop's spectral current run longer (3 min
+		/// instead of 2) with rising trigger odds on every spectral-fish catch, and the bonus
+		/// doesn't stack (missing a pity-boosted current again just repeats the same boost next
+		/// stop, not a bigger one) — so this is the best this trigger opportunity will ever be.
+		/// Set once per stop transition in OceanTrip's main loop from _spectralPityActive.
+		/// </summary>
+		public bool SpectralPityActive { get; set; }
+
+		/// <summary>
 		/// When non-zero, overrides the goal fish for bait selection in the matching zone.
 		/// Set from the Target Fish setting when the bot is in the target fish's zone.
 		/// </summary>

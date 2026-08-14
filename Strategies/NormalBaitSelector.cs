@@ -208,20 +208,48 @@ namespace OceanTripPlanner.Strategies
 						return $"all {spectralMissing} missing fish here are spectral";
 					if (spectralMissing > normalMissing)
 						return $"most missing fish here are spectral ({spectralMissing} spectral vs {normalMissing} normal)";
+
+					// Pity active — worth chasing even just SOME missing spectral fish here, since
+					// this current will run longer than usual (see the points-mode comment below
+					// for the full mechanic), giving a better shot at catching them.
+					if (context.SpectralPityActive && spectralMissing > 0)
+						return $"pity active — {spectralMissing} missing fish here are spectral, worth the longer current";
 				}
 			}
 
-			// Points/Auto mode: spectral fish are worth more points
+			// Points/Auto mode: is popping spectral worth it here, right now?
 			if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
 			{
 				var spectralFish = allFish
 					.Where(f => f.RouteShortName == location && f.SpectralFish)
 					.ToList();
-				var normalFish = allFish
-					.Where(f => f.RouteShortName == location && !f.SpectralFish && !f.CausesSpectral)
-					.ToList();
-				if (spectralFish.Any() && normalFish.Any() && spectralFish.Average(f => f.Points) > normalFish.Average(f => f.Points))
-					return "spectral fish are worth more points";
+
+				if (spectralFish.Any())
+				{
+					double spectralAvg = spectralFish.Average(f => f.Points);
+
+					// Pity active (previous stop's spectral never triggered): per the community-
+					// confirmed rule, this stop's current runs longer (3 min vs 2) with rising
+					// trigger odds on every spectral-fish catch, and missing it again doesn't earn
+					// anything further since the bonus doesn't stack — so this is the best this
+					// trigger opportunity will ever be. Worth it as long as there's spectral fish
+					// here at all, without needing to clear the normal margin below.
+					if (context.SpectralPityActive)
+						return $"pity active — {spectralAvg:F0} avg pts spectral fish here, converting the longer current";
+
+					// No pity: only worth the detour if spectral fish clearly outscore normal fish
+					// here — a marginal edge isn't worth casts spent on trigger bait instead of
+					// points-optimal bait.
+					var normalFish = allFish
+						.Where(f => f.RouteShortName == location && !f.SpectralFish && !f.CausesSpectral)
+						.ToList();
+					if (normalFish.Any())
+					{
+						double normalAvg = normalFish.Average(f => f.Points);
+						if (spectralAvg > normalAvg * FishingConstants.SPECTRAL_POINTS_MARGIN)
+							return $"spectral fish average {spectralAvg:F0} pts vs {normalAvg:F0} normal — popping for points";
+					}
+				}
 			}
 
 			return null;

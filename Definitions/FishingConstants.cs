@@ -99,6 +99,17 @@ namespace OceanTripPlanner.Definitions
 		/// </summary>
 		public const int SPECTRAL_CUTOFF_SECONDS = 90;
 
+		/// <summary>
+		/// In Points/Auto priority, spectral fish here must average at least this multiple of
+		/// normal fish's average points to be worth actively popping spectral for (rather than
+		/// just fishing points-optimal normal bait) — a bare "spectral averages more" isn't
+		/// enough to justify the detour on its own. Ignored while spectral pity is active (see
+		/// OceanTrip._spectralPityActive) — a pity-boosted current runs longer with rising trigger
+		/// odds, so it's worth chasing as long as there's any spectral fish worth catching here at
+		/// all, without needing to clear this bar.
+		/// </summary>
+		public const double SPECTRAL_POINTS_MARGIN = 1.15;
+
 		// ========================================
 		// LURE CONSTANTS
 		// ========================================
