@@ -210,6 +210,7 @@ namespace Ocean_Trip.UI.Wpf
 			{
 				Timestamp = entry.Timestamp.ToString("MM/dd HH:mm"),
 				Route = entry.Route,
+				ZoneName = string.IsNullOrEmpty(entry.ZoneName) ? "—" : entry.ZoneName,
 				TimeOfDay = string.IsNullOrEmpty(entry.TimeOfDay) ? "—" : entry.TimeOfDay,
 				Points = entry.TotalPoints.ToString("N0"),
 				Placement = entry.Placement.HasValue
@@ -283,6 +284,7 @@ namespace Ocean_Trip.UI.Wpf
 	{
 		public string Timestamp { get; set; }
 		public string Route { get; set; }
+		public string ZoneName { get; set; }
 		public string TimeOfDay { get; set; }
 		public string Points { get; set; }
 		public string Placement { get; set; }

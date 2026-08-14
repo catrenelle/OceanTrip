@@ -61,7 +61,15 @@ namespace Ocean_Trip
 	public class VoyageHistoryEntry
 	{
 		public DateTime Timestamp { get; set; }
+
+		/// <summary>Indigo or Ruby — the broad route direction, not a specific zone.</summary>
 		public string Route { get; set; }
+
+		/// <summary>The scheduled slot's representative zone ("Rhotano Sea", "Bloodbrine Sea", etc.)
+		/// — same convention Helpers/Schedule.cs uses for the Schedule page's own "Route" column
+		/// (Schedule.routeName = areaName of the 3rd/last stop), just named ZoneName here to avoid
+		/// colliding with the Indigo/Ruby Route field above.</summary>
+		public string ZoneName { get; set; }
 
 		/// <summary>The scheduled slot's representative time-of-day ("Day"/"Sunset"/"Night") — same
 		/// convention Helpers/Schedule.cs already uses for the Schedule page (the 3rd/last stop's

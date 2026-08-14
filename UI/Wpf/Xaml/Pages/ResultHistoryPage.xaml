@@ -92,6 +92,7 @@
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="When" Binding="{Binding Timestamp}" Width="130" />
 							<DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="80" />
+							<DataGridTextColumn Header="Zone" Binding="{Binding ZoneName}" Width="150" />
 							<DataGridTextColumn Header="Time" Binding="{Binding TimeOfDay}" Width="70" />
 							<DataGridTextColumn Header="Points" Binding="{Binding Points}" Width="90" />
 							<DataGridTextColumn Header="Placement" Binding="{Binding Placement}" Width="120" />
