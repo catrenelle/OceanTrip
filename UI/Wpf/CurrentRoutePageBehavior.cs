@@ -239,7 +239,7 @@ namespace Ocean_Trip.UI.Wpf
 
 			bool spectralActive = !simulating && WorldManager.CurrentWeatherId == OceanTripPlanner.Definitions.Weather.Spectral;
 			double? secondsRemaining = simulating ? (double?)null : endeavor.SecondsRemainingAtStop;
-			BuildStrategyPanel(page, location, simulating, spectralActive, secondsRemaining, missionOpportunities);
+			BuildStrategyPanel(page, location, simulating, spectralActive, secondsRemaining, missionOpportunities, leg >= 2);
 
 			BuildFishPanel((WrapPanel)page.FindName("NormalFishPanel"), normalFish, missingFish, IsAvailable, missionOpportunities, timeOfDay, weather);
 			BuildFishPanel((WrapPanel)page.FindName("SpectralFishPanel"), spectralFish, missingFish, IsAvailable, missionOpportunities, timeOfDay, weather);
@@ -389,7 +389,7 @@ namespace Ocean_Trip.UI.Wpf
 		/// standing priorities that drive them.
 		/// </summary>
 		private static void BuildStrategyPanel(UserControl page, string location, bool simulating, bool spectralActive,
-			double? secondsRemaining, List<MissionDHOpportunity> missionOpportunities)
+			double? secondsRemaining, List<MissionDHOpportunity> missionOpportunities, bool isLastStop)
 		{
 			var panel = (StackPanel)page.FindName("StrategyPanel");
 			panel.Children.Clear();
@@ -418,15 +418,26 @@ namespace Ocean_Trip.UI.Wpf
 				}
 				panel.Children.Add(BuildStrategyRow(gpLine));
 
-				// Pity only actually changes anything in NormalBaitSelector.NeedsSpectral, which
-				// only runs for FishLog/Points/Auto priority (Achievements pops spectral on its own
-				// unconditional logic; Leveling bypasses bait selectors entirely) — and only while
-				// outside spectral, since once it's active the current is already converted.
+				// Pity/last-stop only actually change anything in NormalBaitSelector.NeedsSpectral,
+				// which only runs for FishLog/Points/Auto priority (Achievements pops spectral on
+				// its own unconditional logic; Leveling bypasses bait selectors entirely) — and only
+				// while outside spectral, since once it's active the current is already converted.
 				bool pityRelevantPriority = priority == FishPriority.FishLog || priority == FishPriority.Points || priority == FishPriority.Auto;
-				if (!spectralActive && pityRelevantPriority && OceanTripPlanner.OceanTrip.SpectralPityActive)
+				if (!spectralActive && pityRelevantPriority)
 				{
-					panel.Children.Add(BuildStrategyRow(
-						"Spectral pity active (last stop skipped it, this one runs longer) — prioritizing bait that triggers it"));
+					// Matches NeedsSpectral's actual precedence: last-stop is checked (and returned
+					// on) before pity is ever consulted, so show whichever one is actually driving
+					// bait selection right now rather than both or neither.
+					if (isLastStop && !OceanTripPlanner.OceanTrip.HadSpectralThisStop)
+					{
+						panel.Children.Add(BuildStrategyRow(
+							"Last stop of the voyage, spectral not yet triggered — prioritizing bait to convert it before time runs out"));
+					}
+					else if (OceanTripPlanner.OceanTrip.SpectralPityActive)
+					{
+						panel.Children.Add(BuildStrategyRow(
+							"Spectral pity active (last stop skipped it, this one runs longer) — prioritizing bait that triggers it"));
+					}
 				}
 			}
 

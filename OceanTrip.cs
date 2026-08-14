@@ -59,6 +59,13 @@ namespace OceanTripPlanner
 		// Used to gate GP-banking — see ManageBuffsAndConsumables.
 		private bool _hadSpectralThisStop;
 
+		// Static mirror of _hadSpectralThisStop — see SpectralPityActive just below for why a
+		// static bridge is used (CurrentRoutePageBehavior can't reach into a running instance).
+		// Combined with knowing it's the last stop (CurrentRoutePageBehavior already tracks that
+		// locally via Endeavor.CurrentZone), lets the UI show the "last stop, still chasing
+		// spectral" notice — see NormalBaitSelector.NeedsSpectral's IsLastStop check.
+		internal static bool HadSpectralThisStop { get; private set; }
+
 		// Whether the stop we just LEFT never saw a spectral current — per the community-confirmed
 		// pity rule, that makes the current stop's spectral run longer (3 min vs 2) with rising
 		// trigger odds per spectral-fish catch, and it doesn't stack (recomputed fresh from
@@ -484,6 +491,7 @@ namespace OceanTripPlanner
 
 					lastLoggedLocation = location;
 					_hadSpectralThisStop = false;
+					HadSpectralThisStop = false;
 					string priorityMode = OceanTripNewSettings.Instance.FishPriority.ToString();
 					string focusMode = FocusFishLog ? "Fish Log" : "Points";
 					Log($"Zone: {Schedule.areaName(location)} ({location}), Time: {TimeOfDay}, Stop: {Endeavor.CurrentZone + 1}/3, Priority: {priorityMode} ({focusMode})");
@@ -991,6 +999,7 @@ namespace OceanTripPlanner
 					spectraled = true;
 				}
 				_hadSpectralThisStop = true;
+				HadSpectralThisStop = true;
 			}
 
 			await Coroutine.Yield();
