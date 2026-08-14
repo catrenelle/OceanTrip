@@ -76,6 +76,11 @@ namespace Ocean_Trip
 	/// show an aggregate bonus % without re-deriving it from BonusDataCache after the fact.</summary>
 	public class VoyageBonusEntry
 	{
+		/// <summary>IKDContentBonus row ID — lets Result History show bonuses in a stable, consistent
+		/// order (the raw sheet order) rather than whatever order the results screen reported them
+		/// in that particular voyage.</summary>
+		public int Id { get; set; }
+
 		public string Name { get; set; }
 
 		/// <summary>100 + the bonus percentage — matches IkdContentBonus.BonusMultiplier (120 = +20%).</summary>

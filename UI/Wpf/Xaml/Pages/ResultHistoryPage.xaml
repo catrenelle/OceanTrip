@@ -32,13 +32,25 @@
 			</GroupBox>
 
 			<!-- No fixed height / VerticalScrollBarVisibility on the grid itself — capped at 10 rows
-			     by ResultHistoryPageBehavior, so it just sizes to content within the page's own
-			     ScrollViewer instead of needing its own internal scroll region (contrast with
+			     per page by ResultHistoryPageBehavior, so it just sizes to content within the page's
+			     own ScrollViewer instead of needing its own internal scroll region (contrast with
 			     SchedulePage's DataGrid, which can hold far more rows and owns its own scrolling). -->
-			<GroupBox x:Name="ResultsGroup" Header="Last 10 Runs" Style="{DynamicResource Card}">
+			<GroupBox x:Name="ResultsGroup" Header="Runs" Style="{DynamicResource Card}">
 				<StackPanel>
-					<TextBlock Text="Click a run to see its bonus breakdown." Style="{DynamicResource SecondaryText}"
-					           FontSize="11" Margin="0,0,0,6" />
+					<Grid Margin="0,0,0,6">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" Text="Click a run to see its bonus breakdown." Style="{DynamicResource SecondaryText}"
+						           FontSize="11" VerticalAlignment="Center" />
+						<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+							<Button x:Name="ResultsPrevButton" Content="‹ Prev" Style="{DynamicResource FilterPillButton}" Padding="10,4" Margin="0,0,6,0" />
+							<TextBlock x:Name="ResultsPageLabel" Style="{DynamicResource SecondaryText}" FontSize="11"
+							           VerticalAlignment="Center" Margin="0,0,6,0" />
+							<Button x:Name="ResultsNextButton" Content="Next ›" Style="{DynamicResource FilterPillButton}" Padding="10,4" />
+						</StackPanel>
+					</Grid>
 					<DataGrid x:Name="ResultsGrid"
 					          AutoGenerateColumns="False"
 					          IsReadOnly="True"

@@ -14,8 +14,9 @@ namespace Ocean_Trip.UI.Wpf
 	/// Post-load wiring for ResultHistoryPage.xaml: reads every completed voyage from
 	/// VoyageHistoryStore (populated by OceanTrip.LogVoyageResult on each voyage's results
 	/// screen), computes all-time stats over the FULL history (or a route-filtered subset — see
-	/// the All/Indigo/Ruby pill buttons), and shows the 10 most recent matching runs in the
-	/// DataGrid. ShellWindow only reveals this page's nav button once VoyageHistoryStore.HasAny()
+	/// the All/Indigo/Ruby pill buttons), and shows the most recent matching runs (newest first,
+	/// capped at MAX_PAGED_RUNS) in the DataGrid, paged PAGE_SIZE at a time via the Prev/Next
+	/// buttons. ShellWindow only reveals this page's nav button once VoyageHistoryStore.HasAny()
 	/// is true, so Attach can assume at least one entry exists, but still degrades to zeros/dashes
 	/// rather than throwing if that's ever not the case.
 	/// </summary>
@@ -104,6 +105,9 @@ namespace Ocean_Trip.UI.Wpf
 			return icons;
 		}
 
+		private const int PAGE_SIZE = 10;
+		private const int MAX_PAGED_RUNS = 100;
+
 		public static void Attach(UserControl page)
 		{
 			var allEntries = VoyageHistoryStore.LoadAll();
@@ -112,6 +116,40 @@ namespace Ocean_Trip.UI.Wpf
 			var indigoButton = (Button)page.FindName("RouteFilterIndigo");
 			var rubyButton = (Button)page.FindName("RouteFilterRuby");
 			var filterButtons = new[] { allButton, indigoButton, rubyButton };
+
+			var prevButton = (Button)page.FindName("ResultsPrevButton");
+			var nextButton = (Button)page.FindName("ResultsNextButton");
+
+			// Most-recent-first, capped at MAX_PAGED_RUNS — All-Time Stats/By Route below still see
+			// the full (unfiltered-by-cap) `filtered` set from ApplyFilter, only the runs table
+			// itself is paged. Both re-set on every filter change; currentPage resets to page 1.
+			List<VoyageHistoryEntry> pageableEntries = new List<VoyageHistoryEntry>();
+			string currentRouteLabel = null;
+			int currentPage = 0;
+
+			void RenderResultsPage()
+			{
+				if (page.FindName("ResultsGroup") is GroupBox resultsGroup)
+					resultsGroup.Header = currentRouteLabel == null ? "Runs" : $"{currentRouteLabel} Runs";
+
+				int totalPages = Math.Max(1, (int)Math.Ceiling(pageableEntries.Count / (double)PAGE_SIZE));
+				currentPage = Math.Max(0, Math.Min(currentPage, totalPages - 1));
+
+				var grid = (DataGrid)page.FindName("ResultsGrid");
+				grid.ItemsSource = pageableEntries
+					.Skip(currentPage * PAGE_SIZE)
+					.Take(PAGE_SIZE)
+					.Select(BuildRow)
+					.ToList();
+
+				var pageLabel = (TextBlock)page.FindName("ResultsPageLabel");
+				pageLabel.Text = pageableEntries.Count == 0
+					? "No runs"
+					: $"Page {currentPage + 1} of {totalPages} ({pageableEntries.Count} runs)";
+
+				prevButton.IsEnabled = currentPage > 0;
+				nextButton.IsEnabled = currentPage < totalPages - 1;
+			}
 
 			void ApplyFilter(Button active, string route)
 			{
@@ -124,8 +162,15 @@ namespace Ocean_Trip.UI.Wpf
 
 				BuildStats(page, filtered);
 				BuildRouteBreakdown(page, filtered, showWhenSingleRoute: route == null);
-				BuildResultsGrid(page, filtered, route);
+
+				currentRouteLabel = route;
+				pageableEntries = filtered.OrderByDescending(e => e.Timestamp).Take(MAX_PAGED_RUNS).ToList();
+				currentPage = 0;
+				RenderResultsPage();
 			}
+
+			prevButton.Click += (s, e) => { currentPage--; RenderResultsPage(); };
+			nextButton.Click += (s, e) => { currentPage++; RenderResultsPage(); };
 
 			allButton.Click += (s, e) => ApplyFilter(allButton, null);
 			indigoButton.Click += (s, e) => ApplyFilter(indigoButton, "Indigo");
@@ -190,19 +235,6 @@ namespace Ocean_Trip.UI.Wpf
 			group.Visibility = Visibility.Visible;
 		}
 
-		private static void BuildResultsGrid(UserControl page, List<VoyageHistoryEntry> entries, string routeFilter)
-		{
-			if (page.FindName("ResultsGroup") is GroupBox resultsGroup)
-				resultsGroup.Header = routeFilter == null ? "Last 10 Runs" : $"Last 10 {routeFilter} Runs";
-
-			var grid = (DataGrid)page.FindName("ResultsGrid");
-			grid.ItemsSource = entries
-				.OrderByDescending(e => e.Timestamp)
-				.Take(10)
-				.Select(BuildRow)
-				.ToList();
-		}
-
 		private static ResultHistoryRow BuildRow(VoyageHistoryEntry entry)
 		{
 			int totalBonusPercent = entry.Bonuses.Sum(b => b.Multiplier - 100);
@@ -222,6 +254,7 @@ namespace Ocean_Trip.UI.Wpf
 					? $"Bonuses Earned (+{totalBonusPercent}% total)"
 					: "No bonuses earned this run.",
 				BonusDetails = entry.Bonuses
+					.OrderBy(b => b.Id)
 					.Select(b => new BonusDetailRow
 					{
 						Name = b.Name,

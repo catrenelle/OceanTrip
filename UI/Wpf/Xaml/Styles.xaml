@@ -168,6 +168,13 @@
 							<Setter TargetName="Bg" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
 							<Setter Property="Foreground" Value="White" />
 						</Trigger>
+						<!-- Result History's Prev/Next pagination buttons use this (disabled at the
+						     first/last page) — the custom template above replaces the whole visual
+						     tree, so IsEnabled needs its own explicit dimming like everything else here. -->
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Opacity" Value="0.4" />
+							<Setter Property="Cursor" Value="Arrow" />
+						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
