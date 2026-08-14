@@ -120,9 +120,9 @@ namespace Ocean_Trip.UI.Wpf
 			var prevButton = (Button)page.FindName("ResultsPrevButton");
 			var nextButton = (Button)page.FindName("ResultsNextButton");
 
-			// Most-recent-first, capped at MAX_PAGED_RUNS — All-Time Stats/By Route below still see
-			// the full (unfiltered-by-cap) `filtered` set from ApplyFilter, only the runs table
-			// itself is paged. Both re-set on every filter change; currentPage resets to page 1.
+			// Most-recent-first, capped at MAX_PAGED_RUNS — All-Time Stats below still sees the full
+			// (unfiltered-by-cap) `filtered` set from ApplyFilter, only the runs table itself is
+			// paged. Both re-set on every filter change; currentPage resets to page 1.
 			List<VoyageHistoryEntry> pageableEntries = new List<VoyageHistoryEntry>();
 			string currentRouteLabel = null;
 			int currentPage = 0;
@@ -160,8 +160,9 @@ namespace Ocean_Trip.UI.Wpf
 					? allEntries
 					: allEntries.Where(e => string.Equals(e.Route, route, StringComparison.OrdinalIgnoreCase)).ToList();
 
+				if (page.FindName("StatsGroup") is GroupBox statsGroup)
+					statsGroup.Header = route == null ? "All-Time Stats" : $"{route} Stats";
 				BuildStats(page, filtered);
-				BuildRouteBreakdown(page, filtered, showWhenSingleRoute: route == null);
 
 				currentRouteLabel = route;
 				pageableEntries = filtered.OrderByDescending(e => e.Timestamp).Take(MAX_PAGED_RUNS).ToList();
@@ -201,40 +202,6 @@ namespace Ocean_Trip.UI.Wpf
 				"Avg Fish Caught"));
 		}
 
-		private static void BuildRouteBreakdown(UserControl page, List<VoyageHistoryEntry> entries, bool showWhenSingleRoute)
-		{
-			var group = (GroupBox)page.FindName("RouteBreakdownGroup");
-			var panel = (StackPanel)page.FindName("RouteBreakdownPanel");
-			panel.Children.Clear();
-
-			var byRoute = entries
-				.GroupBy(e => string.IsNullOrEmpty(e.Route) ? "Unknown" : e.Route)
-				.OrderByDescending(g => g.Count())
-				.ToList();
-
-			// Not meaningful once a single route is already the filter in effect — nothing left to
-			// compare against — nor with only one route in the unfiltered history.
-			if (!showWhenSingleRoute || byRoute.Count < 2)
-			{
-				group.Visibility = Visibility.Collapsed;
-				return;
-			}
-
-			foreach (var routeGroup in byRoute)
-			{
-				double avgPoints = routeGroup.Average(e => (double)e.TotalPoints);
-				int count = routeGroup.Count();
-				panel.Children.Add(new TextBlock
-				{
-					Style = (Style)Application.Current.Resources["BodyText"],
-					Margin = new Thickness(0, 0, 0, 6),
-					Text = $"{routeGroup.Key} — {count} run{(count == 1 ? "" : "s")}, avg {avgPoints:N0} points"
-				});
-			}
-
-			group.Visibility = Visibility.Visible;
-		}
-
 		private static ResultHistoryRow BuildRow(VoyageHistoryEntry entry)
 		{
 			int totalBonusPercent = entry.Bonuses.Sum(b => b.Multiplier - 100);
@@ -243,6 +210,7 @@ namespace Ocean_Trip.UI.Wpf
 			{
 				Timestamp = entry.Timestamp.ToString("MM/dd HH:mm"),
 				Route = entry.Route,
+				TimeOfDay = string.IsNullOrEmpty(entry.TimeOfDay) ? "—" : entry.TimeOfDay,
 				Points = entry.TotalPoints.ToString("N0"),
 				Placement = entry.Placement.HasValue
 					? $"{Ordinal(entry.Placement.Value)} of {entry.TrackedPlayerCount}"
@@ -315,6 +283,7 @@ namespace Ocean_Trip.UI.Wpf
 	{
 		public string Timestamp { get; set; }
 		public string Route { get; set; }
+		public string TimeOfDay { get; set; }
 		public string Points { get; set; }
 		public string Placement { get; set; }
 		public int CaughtFish { get; set; }

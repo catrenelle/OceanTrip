@@ -657,13 +657,23 @@ namespace OceanTripPlanner
 				Logging.Write($"[Ocean Trip] Failed to write voyage history log: {ex.Message}");
 			}
 
+			// Same "3rd/last stop's TimeOfDay represents the whole voyage" convention
+			// Helpers/Schedule.cs already uses for the Schedule page (see its routeTime
+			// assignment) — recomputed fresh here rather than threaded through from the main
+			// loop's local `schedule`/`TimeOfDay` variables, since GetSchedule is a pure function
+			// of (time, route) and the voyage just completed well within the same 2-hour slot.
+			string routeName = OceanTripNewSettings.Instance.FishingRoute.ToString();
+			var schedule = Ocean_Trip.Definitions.Routes.GetSchedule(route: routeName);
+			string timeOfDay = schedule != null && schedule.Length >= 3 ? schedule[2].Item2 : null;
+
 			// Structured, readable-back sibling of the CSV log above — feeds the Result History
 			// page's stats and last-10 table. Append() is self-contained (own try/catch), so no
 			// outer guard needed here.
 			Ocean_Trip.VoyageHistoryStore.Append(new Ocean_Trip.VoyageHistoryEntry
 			{
 				Timestamp = DateTime.Now,
-				Route = OceanTripNewSettings.Instance.FishingRoute.ToString(),
+				Route = routeName,
+				TimeOfDay = timeOfDay,
 				TotalPoints = result.TotalPoints,
 				Placement = result.Placement,
 				TrackedPlayerCount = result.TrackedPlayers.Count,

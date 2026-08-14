@@ -62,6 +62,12 @@ namespace Ocean_Trip
 	{
 		public DateTime Timestamp { get; set; }
 		public string Route { get; set; }
+
+		/// <summary>The scheduled slot's representative time-of-day ("Day"/"Sunset"/"Night") — same
+		/// convention Helpers/Schedule.cs already uses for the Schedule page (the 3rd/last stop's
+		/// TimeOfDay stands in for the whole voyage), not a per-stop breakdown.</summary>
+		public string TimeOfDay { get; set; }
+
 		public uint TotalPoints { get; set; }
 		public int? Placement { get; set; }
 		public int TrackedPlayerCount { get; set; }

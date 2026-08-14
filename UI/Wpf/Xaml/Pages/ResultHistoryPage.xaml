@@ -21,14 +21,11 @@
 				</StackPanel>
 			</Grid>
 
-			<GroupBox Header="All-Time Stats" Style="{DynamicResource Card}">
+			<!-- Header retitles to "Indigo Stats"/"Ruby Stats" when the pill filter narrows it -
+			     see ResultHistoryPageBehavior.RenderResultsPage - so it's visually obvious these
+			     numbers are scoped to the current filter, not always literally all-time. -->
+			<GroupBox x:Name="StatsGroup" Header="All-Time Stats" Style="{DynamicResource Card}">
 				<UniformGrid x:Name="StatsPanel" Columns="5" />
-			</GroupBox>
-
-			<!-- Only shown for the "All" filter with more than one route in history — with a single
-			     route in scope this would just repeat the numbers already in All-Time Stats above. -->
-			<GroupBox x:Name="RouteBreakdownGroup" Header="By Route" Style="{DynamicResource Card}" Visibility="Collapsed">
-				<StackPanel x:Name="RouteBreakdownPanel" />
 			</GroupBox>
 
 			<!-- No fixed height / VerticalScrollBarVisibility on the grid itself — capped at 10 rows
@@ -95,6 +92,7 @@
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="When" Binding="{Binding Timestamp}" Width="130" />
 							<DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="80" />
+							<DataGridTextColumn Header="Time" Binding="{Binding TimeOfDay}" Width="70" />
 							<DataGridTextColumn Header="Points" Binding="{Binding Points}" Width="90" />
 							<DataGridTextColumn Header="Placement" Binding="{Binding Placement}" Width="120" />
 							<DataGridTextColumn Header="Fish" Binding="{Binding CaughtFish}" Width="60" />
