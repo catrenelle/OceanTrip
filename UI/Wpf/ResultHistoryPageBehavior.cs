@@ -15,10 +15,11 @@ namespace Ocean_Trip.UI.Wpf
 	/// VoyageHistoryStore (populated by OceanTrip.LogVoyageResult on each voyage's results
 	/// screen), computes all-time stats over the FULL history (or a route-filtered subset — see
 	/// the All/Indigo/Ruby pill buttons), and shows the most recent matching runs (newest first,
-	/// capped at MAX_PAGED_RUNS) in the DataGrid, paged PAGE_SIZE at a time via the Prev/Next
-	/// buttons. ShellWindow only reveals this page's nav button once VoyageHistoryStore.HasAny()
-	/// is true, so Attach can assume at least one entry exists, but still degrades to zeros/dashes
-	/// rather than throwing if that's ever not the case.
+	/// capped at MAX_PAGED_RUNS_PER_ROUTE per route — see BuildPageableEntries) in the DataGrid,
+	/// paged PAGE_SIZE at a time via the Prev/Next buttons. ShellWindow only reveals this page's
+	/// nav button once VoyageHistoryStore.HasAny() is true, so Attach can assume at least one
+	/// entry exists, but still degrades to zeros/dashes rather than throwing if that's ever not
+	/// the case.
 	/// </summary>
 	public static class ResultHistoryPageBehavior
 	{
@@ -106,7 +107,12 @@ namespace Ocean_Trip.UI.Wpf
 		}
 
 		private const int PAGE_SIZE = 10;
-		private const int MAX_PAGED_RUNS = 100;
+
+		/// <summary>Per-route cap, not a global one — the "All" filter takes up to this many of
+		/// EACH distinct route (see BuildPageableEntries) rather than the most recent N overall,
+		/// so a route fished far more often than another can't crowd it out of the "All" view
+		/// entirely. With just Indigo/Ruby in practice, that's up to 100 total under "All".</summary>
+		private const int MAX_PAGED_RUNS_PER_ROUTE = 50;
 
 		public static void Attach(UserControl page)
 		{
@@ -165,7 +171,7 @@ namespace Ocean_Trip.UI.Wpf
 				BuildStats(page, filtered);
 
 				currentRouteLabel = route;
-				pageableEntries = filtered.OrderByDescending(e => e.Timestamp).Take(MAX_PAGED_RUNS).ToList();
+				pageableEntries = BuildPageableEntries(allEntries, route);
 				currentPage = 0;
 				RenderResultsPage();
 			}
@@ -178,6 +184,31 @@ namespace Ocean_Trip.UI.Wpf
 			rubyButton.Click += (s, e) => ApplyFilter(rubyButton, "Ruby");
 
 			ApplyFilter(allButton, null);
+		}
+
+		/// <summary>
+		/// Most-recent-first, capped per MAX_PAGED_RUNS_PER_ROUTE. For a specific route filter,
+		/// that's just the simple top-N. For "All" (routeFilter == null), each distinct route is
+		/// capped independently and then the results are combined and re-sorted — otherwise a
+		/// route fished far more often than another would crowd it out of the "All" view (e.g. 100
+		/// straight Indigo runs with zero Ruby visible even if you'd fished Ruby recently too).
+		/// </summary>
+		private static List<VoyageHistoryEntry> BuildPageableEntries(List<VoyageHistoryEntry> allEntries, string routeFilter)
+		{
+			if (routeFilter != null)
+			{
+				return allEntries
+					.Where(e => string.Equals(e.Route, routeFilter, StringComparison.OrdinalIgnoreCase))
+					.OrderByDescending(e => e.Timestamp)
+					.Take(MAX_PAGED_RUNS_PER_ROUTE)
+					.ToList();
+			}
+
+			return allEntries
+				.GroupBy(e => e.Route ?? "")
+				.SelectMany(g => g.OrderByDescending(e => e.Timestamp).Take(MAX_PAGED_RUNS_PER_ROUTE))
+				.OrderByDescending(e => e.Timestamp)
+				.ToList();
 		}
 
 		private static void BuildStats(UserControl page, List<VoyageHistoryEntry> entries)
