@@ -191,6 +191,19 @@ namespace OceanTripPlanner.Strategies
 		/// </summary>
 		private string NeedsSpectral(BaitSelectionContext context, HashSet<uint> missingFish)
 		{
+			// Ocean Fishing allows at most one spectral trigger per stop — once it's already
+			// happened here, there's nothing left to chase regardless of pity/last-stop/points,
+			// so skip straight past every other check below.
+			if (context.SpectralAlreadyTriggeredThisStop)
+				return null;
+
+			// Last stop of the voyage: there's no next stop left to carry an unclaimed pity bonus
+			// into, so a spectral missed here is gone for the rest of the voyage, not just delayed
+			// — unconditionally worth chasing regardless of fish-log need or points margin, since
+			// (caller already confirmed a trigger fish exists at this zone before calling this).
+			if (context.IsLastStop)
+				return "last stop of the voyage — no next stop to carry a miss into, converting now or never";
+
 			var location = context.Location;
 			var allFish = FishDataCache.GetFish();
 

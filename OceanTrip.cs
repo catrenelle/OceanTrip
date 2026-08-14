@@ -1283,7 +1283,9 @@ namespace OceanTripPlanner
 				FocusFishLog = FocusFishLog,
 				CurrentWeather = gameCache.CurrentWeather,
 				TargetFishId = contextTargetFishId,
-				SpectralPityActive = _spectralPityActive
+				SpectralPityActive = _spectralPityActive,
+				IsLastStop = Endeavor.CurrentZone >= 2,
+				SpectralAlreadyTriggeredThisStop = _hadSpectralThisStop
 			};
 
 			// Use achievement bait selector when in achievement mode AND achievement fish exist here

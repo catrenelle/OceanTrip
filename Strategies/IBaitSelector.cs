@@ -42,6 +42,21 @@ namespace OceanTripPlanner.Strategies
 		public bool SpectralPityActive { get; set; }
 
 		/// <summary>
+		/// True while on the 3rd/final stop of the voyage (Endeavor.CurrentZone == 2) — there's no
+		/// next stop left to carry an unclaimed pity bonus into, so a spectral current missed here
+		/// is gone for the rest of the voyage, not just delayed. See NormalBaitSelector.NeedsSpectral.
+		/// </summary>
+		public bool IsLastStop { get; set; }
+
+		/// <summary>
+		/// True once a spectral current has already triggered at THIS stop — Ocean Fishing allows
+		/// at most one trigger per stop, so there's nothing left to chase trigger-bait for here
+		/// regardless of pity/last-stop/points considerations. Mirrors OceanTrip's
+		/// _hadSpectralThisStop (reset on stop transition, set once spectral is observed active).
+		/// </summary>
+		public bool SpectralAlreadyTriggeredThisStop { get; set; }
+
+		/// <summary>
 		/// When non-zero, overrides the goal fish for bait selection in the matching zone.
 		/// Set from the Target Fish setting when the bot is in the target fish's zone.
 		/// </summary>
