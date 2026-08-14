@@ -417,6 +417,17 @@ namespace Ocean_Trip.UI.Wpf
 					gpLine = $"Outside Spectral — under 90s left at this stop, spending GP normally ({gp.CurrentGP}/{gp.MaxGP} GP)";
 				}
 				panel.Children.Add(BuildStrategyRow(gpLine));
+
+				// Pity only actually changes anything in NormalBaitSelector.NeedsSpectral, which
+				// only runs for FishLog/Points/Auto priority (Achievements pops spectral on its own
+				// unconditional logic; Leveling bypasses bait selectors entirely) — and only while
+				// outside spectral, since once it's active the current is already converted.
+				bool pityRelevantPriority = priority == FishPriority.FishLog || priority == FishPriority.Points || priority == FishPriority.Auto;
+				if (!spectralActive && pityRelevantPriority && OceanTripPlanner.OceanTrip.SpectralPityActive)
+				{
+					panel.Children.Add(BuildStrategyRow(
+						"Spectral pity active (last stop skipped it, this one runs longer) — prioritizing bait that triggers it"));
+				}
 			}
 
 			string focusLine = FocusDescription(priority, location);

@@ -67,6 +67,14 @@ namespace OceanTripPlanner
 		// prioritize converting it — see NormalBaitSelector.NeedsSpectral.
 		private bool _spectralPityActive;
 
+		// Static mirror of _spectralPityActive so CurrentRoutePageBehavior (which otherwise
+		// re-derives all its state independently from Endeavor/GameStateCache/WorldManager rather
+		// than reaching into a running OceanTrip instance) can show a "trying to trigger spectral"
+		// notice on the Current Strategy panel. RebornBuddy only ever runs one BotBase instance at
+		// a time, so a static bridge here is safe — set in lockstep with the instance field, never
+		// read/written anywhere else.
+		internal static bool SpectralPityActive { get; private set; }
+
 		private bool ignoreBoat { get { if (OceanTripNewSettings.Instance.FishPriority == FishPriority.IgnoreBoat) { return true; } else { return false; } } }
 
 		private static Random rnd = new Random();
@@ -469,6 +477,7 @@ namespace OceanTripPlanner
 					if (!string.IsNullOrEmpty(lastLoggedLocation))
 					{
 						_spectralPityActive = !_hadSpectralThisStop;
+						SpectralPityActive = _spectralPityActive;
 						if (_spectralPityActive)
 							Log("Spectral pity active — last stop never saw a current, this one runs longer.", OceanLogLevel.Debug);
 					}
