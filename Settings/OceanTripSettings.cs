@@ -198,6 +198,13 @@ namespace OceanTripPlanner.Settings
 			set => SetProperty(ref _useCraftingFood, value);
 		}
 
+		private bool _restockOceanFood;
+		public bool RestockOceanFood
+		{
+			get => _restockOceanFood;
+			set => SetProperty(ref _restockOceanFood, value);
+		}
+
 		private bool _refillScrips;
 		public bool RefillScrips
 		{

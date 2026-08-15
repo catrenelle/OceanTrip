@@ -440,8 +440,10 @@ namespace OceanTripPlanner
 					{
 						string stopLocation = schedule[i].Item1;
 						string stopTime = schedule[i].Item2;
+						// Day/Night/Sunset only ever gates spectral fish; weather isn't knowable this far
+						// ahead of the stop, so normal fish are counted as possible regardless.
 						var fish = AchievementFishDataCache.GetFishForLocation(stopLocation, focus)
-							.Where(f => f.TimeOfDayExclusion1 != stopTime && f.TimeOfDayExclusion2 != stopTime)
+							.Where(f => !f.SpectralFish || (f.TimeOfDayExclusion1 != stopTime && f.TimeOfDayExclusion2 != stopTime))
 							.ToList();
 						if (fish.Any())
 							stopsWithFish++;
@@ -487,6 +489,16 @@ namespace OceanTripPlanner
 						SpectralPityActive = _spectralPityActive;
 						if (_spectralPityActive)
 							Log("Spectral pity active — last stop never saw a current, this one runs longer.", OceanLogLevel.Debug);
+					}
+					else
+					{
+						// First stop of a fresh voyage. Unlike _hadSpectralThisStop (reset unconditionally
+						// below on every stop transition), pity is only ever written inside the branch
+						// above — so without this, a pity=true left over from the previous voyage's last
+						// stop-transition would otherwise still be sitting in these fields and get shown
+						// as active on round 1, where pity can't legitimately apply.
+						_spectralPityActive = false;
+						SpectralPityActive = false;
 					}
 
 					lastLoggedLocation = location;
@@ -1017,7 +1029,14 @@ namespace OceanTripPlanner
 				&& (secondsRemaining == null || secondsRemaining > FishingConstants.SPECTRAL_CUTOFF_SECONDS);
 			bool shouldBankGp = spectralStillChasable && !currentlySpectral;
 
-			if (shouldBankGp)
+			// Even while banking, don't let GP run dangerously low — a Hi-Cordial here still leaves
+			// plenty in reserve for the spectral burst, and this is the safety valve the pre-WPF-rewrite
+			// Cordial logic had (LOW_GP_PERCENT) that banking otherwise bypasses entirely.
+			bool criticallyLowGp = shouldBankGp
+				&& gameCache.NeedsGPRecovery(FishingConstants.CORDIAL_GP_THRESHOLD)
+				&& gameCache.CurrentGPPercent <= FishingConstants.LOW_GP_PERCENT;
+
+			if (shouldBankGp && !criticallyLowGp)
 			{
 				Log("Banking GP for spectral current — skipping proactive Cordial/Thaliak's Favor.", OceanLogLevel.Debug);
 			}
@@ -1033,6 +1052,14 @@ namespace OceanTripPlanner
 				}
 
 				Log("Done with Cordials.", OceanLogLevel.Debug);
+
+				if (shouldBankGp)
+				{
+					// Still banking Angler's Art for the spectral burst — the Hi-Cordial above was
+					// only an emergency GP top-up, not a signal to start spending Thaliak's Favor too.
+					Log("Still banking Angler's Art for spectral current — skipping Thaliak's Favor.", OceanLogLevel.Debug);
+					return;
+				}
 
 				// Should we use Thaliak's Favor?
 				Log("Checking if we need to use Thaliak's Favor", OceanLogLevel.Debug);

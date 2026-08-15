@@ -58,6 +58,7 @@
 				<GroupBox Grid.Column="1" Header="Crafting &amp; Boat Options" Style="{DynamicResource Card}">
 					<StackPanel>
 						<CheckBox x:Name="UseCraftingFoodCheck" Margin="0,0,0,4" IsChecked="{Binding useCraftingFood}" />
+						<CheckBox Content="Keep &quot;Nasi Goreng&quot; stocked for boat food" Margin="0,0,0,4" IsChecked="{Binding restockOceanFood}" />
 						<CheckBox Content="Refill Crafting Scrips" Margin="0,0,0,4" IsChecked="{Binding refillScrips}" />
 						<CheckBox Content="Purchase Hi-Cordials" Margin="0,0,0,4" IsChecked="{Binding purchaseHiCordials}" />
 						<CheckBox Content="Use custom &quot;BoatOrder.json&quot; with Lisbeth" Margin="0,0,0,4" IsChecked="{Binding customBoatOrders}" />

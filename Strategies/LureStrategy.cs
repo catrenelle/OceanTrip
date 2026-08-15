@@ -252,11 +252,13 @@ namespace OceanTripPlanner.Strategies
 
 		private bool IsTargetHooksetDominant(LureContext context, TugType targetTug)
 		{
+			// Non-spectral fish (already filtered to via !f.SpectralFish) are weather-gated only —
+			// Day/Night/Sunset only ever applies to spectral fish.
 			var zoneFish = FishDataCache.GetFish()
 				.Where(f => f.RouteShortName == context.Location &&
 					!f.SpectralFish &&
-					f.TimeOfDayExclusion1 != context.TimeOfDay &&
-					f.TimeOfDayExclusion2 != context.TimeOfDay)
+					f.WeatherExclusion1 != _gameCache.CurrentWeather &&
+					f.WeatherExclusion2 != _gameCache.CurrentWeather)
 				.ToList();
 
 			if (zoneFish.Count == 0)

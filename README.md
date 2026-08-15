@@ -50,6 +50,7 @@ During downtime between fishing trips, the BotBase can perform the following act
 * Craft Raid Potions
 * Restock Crystals
 * Purchase Materia (Grade IV - Grade XII)
+	* Pick exactly which materia to farm from a grade/type grid (Craftsman's and Gatherer's types, Grade XII down to Grade IV). Older grades (IV-VI) are tucked behind a "Show older grades" toggle to keep the list compact.
 	* For Grade XI and XII, you will need to complete the Dawntrail quests and unlock them before the BotBase can farm them.
 
 When Ocean Fishing:
@@ -57,7 +58,8 @@ When Ocean Fishing:
 	* Automatic (Default) - Will focus on Fishing Log when missing fish are available, otherwise focuses on points.
 	* Points - Self explainatory, will focus on getting points based on DH / TH values of fish available.
 	* Fishing Log - Self explainatory, will focus on catching fish you have not caught.
-	* Achievements (Currently Disabled - Work in Progress) - Focus on the various fishing achievements such as catching Jellyfish.
+	* Achievements - Focus on the various fishing achievements such as catching Jellyfish, only spending GP on Double/Triple Hook when the predicted fish counts toward your selected focus.
+	* Leveling - Krill/Ragworm/Plump Worm only, no lures. For gaining Fisher XP below level 90 (Automatic already does this for you below level 90).
 	* Ignore Boat - This will allow you to utilize the BotBase in order to focus on the "Idle" activities such as raid preparation.
 
 * Fishing Route
@@ -80,8 +82,16 @@ When Ocean Fishing:
 	* None - Keep all the fish you catch.
 	* Desynthesize - As it sounds, will Desynthesize all ocean fish you have caught except for the Spectral Blue's.
 	* Sell - Sell all the ocean fish you have caught except for the Spectral Blue's.
-	
-* Indigo Achievement Focus (only if "Achievements" is set for Priority - Currently disabled due to being work in progress)
+
+* Lure (Modest/Ambitious Lure)
+	* None - Never use Lure.
+	* Modest / Ambitious - Always use the selected Lure when available.
+	* Auto - Picks Modest or Ambitious based on your achievement focus, Target Fish, or the highest-value fish at the current zone.
+	* Max Stacks - Cap how many Lure stacks the BotBase will build up (1-3). Lure is skipped during Spectral Currents and Fisher's Intuition.
+
+* Target Fish - Override the goal fish for every zone regardless of Fishing Priority (currently supports Junior Jinbei).
+
+* Indigo Achievement Focus (only if "Achievements" is set for Priority)
 	* Mantas (Solo) - Attempts to catch 25 mantas
 	* Octopods - Attempts to catch 150 octopods (requires party)
 	* Sharks - Attempts to catch 200 sharks (requires party)
@@ -90,10 +100,12 @@ When Ocean Fishing:
 	* Balloons - Attempts to catch 250 fugu (requires party)
 	* Crabs - Attempts to catch 250 crabs (requires party)
 
-* Ruby Achievement Focus (only if "Achievements" is set for Priority - Currently disabled due to being work in progress)
+* Ruby Achievement Focus (only if "Achievements" is set for Priority)
 	* Shrimp (Solo) - Attempts to catch 50 shrimp
 	* Shellfish - Attempts to catch 350 shellfish (requires party)
 	* Squid - Attempts to catch 400 squid (requires party)
+	* Mantis Shrimp (Solo) - Added with the Thavnairian Coast route (7.5). Not available on Traditional Chinese clients (RB_TC), which stay on the pre-7.5 Ruby rotation.
+	* Primordial - Added with the Thavnairian Coast route (7.5). Not available on Traditional Chinese clients (RB_TC), which stay on the pre-7.5 Ruby rotation.
 
 There is an additional option to enable or disable "Open World Fishing". This allows you to settle down at a fishing hole, cast your line with whatever bait you wish and have the bot take over to auto-hook, auto-cast, or auto-mooch. It will not manage your bait for you, but will give you a brief pause before auto-casting to allow you to change bait or use abilities such as Prize Catch. This is not intended to catch big-fish, but will allow you to sit back and relax while filling your fishing log.
 
@@ -106,12 +118,28 @@ In the Ocean Settings screen, there is a Tacklebox panel. This panel will show y
 
 * Restock Amount - If the BotBase goes below the threshold and requires restocking, it will purchase bait until you have this amount in your inventory. In case the bait is a lure, it will restock up to 15. This is because you can occasionally lose a lure during fishing (although uncommon).
 
+Each bait's inventory count is also a low-stock warning: once it drops to or below your Restock Threshold, the number changes color so you can tell at a glance what's about to trigger a restock. Lures (e.g. Heavy Steel Jig) only flag at exactly 0, since they aren't consumed on every catch.
+
+
+## Current Route & Live Strategy
+
+While you're on a voyage, the Current Route page shows what the BotBase sees and why it's doing what it's doing:
+
+* Recommended normal and Spectral Current bait for the current stop, any active missions, and the route banner/status.
+* A Current Strategy panel with plain-language notices about what the bot is prioritizing right now - including two Spectral Current cases: on the last stop of the voyage, if Spectral hasn't triggered yet, it will always push bait to try to trigger it before time runs out; otherwise, if the previous stop never triggered a Spectral Current, the next one gets a longer window and rising trigger odds ("spectral pity"), and the BotBase will chase it more aggressively while that's active.
+* Normal Fish and Spectral Current Fish cards for the stop, plus a Fishing Log Target panel when Fishing Log priority still has missing fish nearby.
+
 
 ## Ocean Fishing Achievements
 
-While this feature is currently a work in progress and Achievement focus is disabled, you can track your progress with this panel in the Ocean Settings screen. From a high-level view, you'll know what points achievements you have or need for each route and what your progress is towards the "World Class Troller" title. If you have any of the special focus achievements such as Mantas or Octopods, they will also be displayed here.
+You can track your achievement progress in the Ocean Settings screen, split into Indigo, Ruby, and Overall panels. From a high-level view, you'll know what points achievements you have or need for each route and what your progress is towards the "World Class Troller" title. If you have any of the special focus achievements such as Mantas or Octopods, they will also be displayed here.
 
 If an icon is greyed out, you do not have the achievement or the BotBase was unable to determine that you have the achievement. If it's in full-color, the BotBase was able to determine that you have the achievement.
+
+
+## Result History
+
+The Result History page logs your completed voyages and shows an All-Time Stats card (Runs Logged, Avg Points, Best Run, Avg Placement, Avg Fish Caught) alongside a table of your recent runs (When, Route, Zone, Time of Day, Points, Placement, Fish Caught, Bonus %). Use the Indigo/Ruby/All filter to scope the stats and table to one route, and click any run to expand its full bonus breakdown. Up to 50 runs per route are kept.
 
 
 ## Support Development

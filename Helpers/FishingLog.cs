@@ -188,7 +188,35 @@ namespace OceanTrip
 				SaveMissingFishLog();
 			}
 			else
+			{
 				LoadMissingFishLog();
+				await ReconcileWithFishGuide();
+			}
+		}
+
+		/// <summary>
+		/// Cross-check the disk-cached missing set against AgentFishGuide2's live catch data and drop
+		/// anything that's actually already been caught. The cache is otherwise only invalidated by a
+		/// fish DATA-count change (a fishList.json update) — a fish caught by any means that didn't
+		/// route through RemoveFish (e.g. the game's own catch tracking syncing late for a
+		/// newly-added fish right when the cache was first built, or a missed catch-detection edge
+		/// case) would otherwise stay marked "missing" indefinitely, since nothing else ever
+		/// re-validates it against reality.
+		/// </summary>
+		private static async Task ReconcileWithFishGuide()
+		{
+			if (_cachedMissingFishSet == null || _cachedMissingFishSet.Count == 0)
+				return;
+
+			var fishList = await AgentFishGuide2.Instance.GetFishList();
+			var caughtIds = new HashSet<uint>(fishList.Where(x => x.HasCaught).Select(x => (uint)x.FishItem));
+
+			int removed = _cachedMissingFishSet.RemoveWhere(caughtIds.Contains);
+			if (removed > 0)
+			{
+				Logging.Write($"[Ocean Trip] Fishing log cache was stale — {removed} already-caught fish were still marked missing, reconciled.");
+				SaveMissingFishLog();
+			}
 		}
 
 		public static void SaveMissingFishLog()

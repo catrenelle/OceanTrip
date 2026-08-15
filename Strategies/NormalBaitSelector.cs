@@ -27,15 +27,14 @@ namespace OceanTripPlanner.Strategies
 		{
 			var missingFish = context.MissingFish;
 			var currentRoute = context.CurrentRoute;
-			var timeOfDay = context.TimeOfDay;
 			var focusFishLog = context.FocusFishLog;
 			var caughtFish = context.CaughtFish;
 			string currentWeather = context.CurrentWeather;
 
+			// Normal (non-spectral) fish availability is weather-gated only — TimeOfDayExclusion only
+			// ever applies to spectral fish, see NeedsSpectral below and SpectralBaitSelector.
 			var availableNormalFish = currentRoute?.NormalFish
-				.Where(f => f.TimeOfDayExclusion1 != timeOfDay
-					&& f.TimeOfDayExclusion2 != timeOfDay
-					&& f.WeatherExclusion1 != currentWeather
+				.Where(f => f.WeatherExclusion1 != currentWeather
 					&& f.WeatherExclusion2 != currentWeather)
 				.ToList() ?? new List<Fish>();
 
@@ -210,23 +209,30 @@ namespace OceanTripPlanner.Strategies
 			// Fish Log / Auto mode: check if missing fish at this zone are spectral
 			if (context.FocusFishLog && missingFish.Count > 0)
 			{
+				// Spectral fish are gated by time of day only (never the pre-spectral weather we're
+				// currently in — see SpectralBaitSelector's availableSpectralFish for the same
+				// convention); normal fish are gated by weather only, never time of day.
 				var missingHere = allFish
-					.Where(f => f.RouteShortName == location && missingFish.Contains((uint)f.FishID))
+					.Where(f => f.RouteShortName == location && missingFish.Contains((uint)f.FishID)
+						&& (f.SpectralFish
+							? (f.TimeOfDayExclusion1 != context.TimeOfDay && f.TimeOfDayExclusion2 != context.TimeOfDay)
+							: (f.WeatherExclusion1 != context.CurrentWeather && f.WeatherExclusion2 != context.CurrentWeather)))
 					.ToList();
 				if (missingHere.Any())
 				{
-					int spectralMissing = missingHere.Count(f => f.SpectralFish);
-					int normalMissing = missingHere.Count(f => !f.SpectralFish);
-					if (spectralMissing > 0 && normalMissing == 0)
-						return $"all {spectralMissing} missing fish here are spectral";
-					if (spectralMissing > normalMissing)
-						return $"most missing fish here are spectral ({spectralMissing} spectral vs {normalMissing} normal)";
-
-					// Pity active — worth chasing even just SOME missing spectral fish here, since
-					// this current will run longer than usual (see the points-mode comment below
-					// for the full mechanic), giving a better shot at catching them.
-					if (context.SpectralPityActive && spectralMissing > 0)
-						return $"pity active — {spectralMissing} missing fish here are spectral, worth the longer current";
+					// A missing target fish that's spectral-only can NEVER be caught outside a
+					// spectral current — normal weather locks it out entirely regardless of bait —
+					// so it's worth chasing the current unconditionally the moment it's actually
+					// obtainable this stop, regardless of how many other (normal-catchable) missing
+					// fish are also here or whether pity happens to be active. Without spectral, this
+					// fish simply isn't obtainable this stop at all.
+					var missingSpectralHere = missingHere.Where(f => f.SpectralFish).ToList();
+					if (missingSpectralHere.Any())
+					{
+						return missingSpectralHere.Count == 1
+							? $"missing fish here needs spectral to catch: {missingSpectralHere[0].FishName}"
+							: $"{missingSpectralHere.Count} missing fish here need spectral to catch: {string.Join(", ", missingSpectralHere.Select(f => f.FishName))}";
+					}
 				}
 			}
 

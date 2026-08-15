@@ -731,6 +731,12 @@ namespace OceanTripPlanner
 			set => _settings.UseCraftingFood = value;
 		}
 
+		public bool restockOceanFood
+		{
+			get => _settings.RestockOceanFood;
+			set => _settings.RestockOceanFood = value;
+		}
+
 		public bool refillScrips
 		{
 			get => _settings.RefillScrips;

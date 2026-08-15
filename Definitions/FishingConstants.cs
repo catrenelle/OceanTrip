@@ -52,9 +52,12 @@ namespace OceanTripPlanner.Definitions
 		public const int CORDIAL_GP_THRESHOLD = 400;
 
 		/// <summary>
-		/// GP percentage threshold for low GP situations (25%)
+		/// GP percentage threshold, while still banking for spectral, below which to use a Hi-Cordial
+		/// anyway instead of just passively regenerating (50%) — natural GP regen is slow enough that
+		/// sitting in the 25-50% band for the rest of a stop wastes more time than the Cordial saves
+		/// for the spectral burst.
 		/// </summary>
-		public const float LOW_GP_PERCENT = 25.0f;
+		public const float LOW_GP_PERCENT = 50.0f;
 
 		/// <summary>
 		/// GP threshold below which to use Thaliak's Favor (200 GP)

@@ -22,6 +22,7 @@ namespace OceanTripPlanner.IdleActivities
 				new ResumeLisbethActivity(),
 				new CustomBoatOrderActivity(),
 				new OceanFoodActivity(),
+				new BoatFoodActivity(),
 				new CrystalFarmingActivity(),
 				new ScripFarmingActivity(),
 				new RaidFoodActivity(),

@@ -214,9 +214,10 @@ namespace Ocean_Trip.UI.Wpf
 
 			var missingFish = global::OceanTrip.FishingLog.MissingFish() ?? new HashSet<uint>();
 
-			bool IsAvailable(Ocean_Trip.Definitions.Fish fish) =>
-				fish.TimeOfDayExclusion1 != timeOfDay && fish.TimeOfDayExclusion2 != timeOfDay &&
-				fish.WeatherExclusion1 != weather && fish.WeatherExclusion2 != weather;
+			// Day/Night/Sunset only ever gates spectral fish; normal fish are weather-gated only.
+			bool IsAvailable(Ocean_Trip.Definitions.Fish fish) => fish.SpectralFish
+				? (fish.TimeOfDayExclusion1 != timeOfDay && fish.TimeOfDayExclusion2 != timeOfDay)
+				: (fish.WeatherExclusion1 != weather && fish.WeatherExclusion2 != weather);
 
 			var normalFish = routeInfo?.NormalFish?.Where(f => f != null).ToList() ?? new List<Ocean_Trip.Definitions.Fish>();
 			var spectralFish = routeInfo?.SpectralFish?.Where(f => f != null).ToList() ?? new List<Ocean_Trip.Definitions.Fish>();
@@ -239,7 +240,8 @@ namespace Ocean_Trip.UI.Wpf
 
 			bool spectralActive = !simulating && WorldManager.CurrentWeatherId == OceanTripPlanner.Definitions.Weather.Spectral;
 			double? secondsRemaining = simulating ? (double?)null : endeavor.SecondsRemainingAtStop;
-			BuildStrategyPanel(page, location, simulating, spectralActive, secondsRemaining, missionOpportunities, leg >= 2);
+			var missingSpectralHere = spectralFish.Where(f => missingFish.Contains((uint)f.FishID) && IsAvailable(f)).ToList();
+			BuildStrategyPanel(page, location, simulating, spectralActive, secondsRemaining, missionOpportunities, leg >= 2, missingSpectralHere);
 
 			BuildFishPanel((WrapPanel)page.FindName("NormalFishPanel"), normalFish, missingFish, IsAvailable, missionOpportunities, timeOfDay, weather);
 			BuildFishPanel((WrapPanel)page.FindName("SpectralFishPanel"), spectralFish, missingFish, IsAvailable, missionOpportunities, timeOfDay, weather);
@@ -389,7 +391,8 @@ namespace Ocean_Trip.UI.Wpf
 		/// standing priorities that drive them.
 		/// </summary>
 		private static void BuildStrategyPanel(UserControl page, string location, bool simulating, bool spectralActive,
-			double? secondsRemaining, List<MissionDHOpportunity> missionOpportunities, bool isLastStop)
+			double? secondsRemaining, List<MissionDHOpportunity> missionOpportunities, bool isLastStop,
+			List<Ocean_Trip.Definitions.Fish> missingSpectralHere)
 		{
 			var panel = (StackPanel)page.FindName("StrategyPanel");
 			panel.Children.Clear();
@@ -408,6 +411,10 @@ namespace Ocean_Trip.UI.Wpf
 				{
 					gpLine = $"In Spectral Current — spending GP freely on Double/Triple Hook for high-value catches ({gp.CurrentGP}/{gp.MaxGP} GP)";
 				}
+				else if (OceanTripPlanner.OceanTrip.HadSpectralThisStop)
+				{
+					gpLine = $"Outside Spectral — already triggered this stop (can't happen twice), spending GP normally ({gp.CurrentGP}/{gp.MaxGP} GP)";
+				}
 				else if (secondsRemaining == null || secondsRemaining > OceanTripPlanner.Definitions.FishingConstants.SPECTRAL_CUTOFF_SECONDS)
 				{
 					gpLine = $"Outside Spectral — building GP for the current when it appears ({gp.CurrentGP}/{gp.MaxGP} GP)";
@@ -418,22 +425,32 @@ namespace Ocean_Trip.UI.Wpf
 				}
 				panel.Children.Add(BuildStrategyRow(gpLine));
 
-				// Pity/last-stop only actually change anything in NormalBaitSelector.NeedsSpectral,
-				// which only runs for FishLog/Points/Auto priority (Achievements pops spectral on
-				// its own unconditional logic; Leveling bypasses bait selectors entirely) — and only
-				// while outside spectral, since once it's active the current is already converted.
-				bool pityRelevantPriority = priority == FishPriority.FishLog || priority == FishPriority.Points || priority == FishPriority.Auto;
-				if (!spectralActive && pityRelevantPriority)
+				// Missing-target/pity/last-stop only actually change anything in
+				// NormalBaitSelector.NeedsSpectral (Achievements pops spectral on its own
+				// unconditional logic; Leveling bypasses bait selectors entirely) — and only while
+				// outside spectral, since once it's active the current is already converted.
+				bool focusFishLogPriority = priority == FishPriority.FishLog || priority == FishPriority.Auto;
+				bool pointsPriority = priority == FishPriority.Points || priority == FishPriority.Auto;
+				if (!spectralActive && (focusFishLogPriority || pointsPriority))
 				{
-					// Matches NeedsSpectral's actual precedence: last-stop is checked (and returned
-					// on) before pity is ever consulted, so show whichever one is actually driving
-					// bait selection right now rather than both or neither.
+					// Matches NeedsSpectral's actual precedence: last-stop is checked (and returned on)
+					// before anything else, then a missing fish-log-target fish that needs spectral
+					// (FishLog/Auto only — NeedsSpectral gates this on FocusFishLog), then general pity
+					// (Points/Auto only — NeedsSpectral's pity check lives inside its Points/Auto-only
+					// block, so it never independently drives plain FishLog priority).
 					if (isLastStop && !OceanTripPlanner.OceanTrip.HadSpectralThisStop)
 					{
 						panel.Children.Add(BuildStrategyRow(
 							"Last stop of the voyage, spectral not yet triggered — prioritizing bait to convert it before time runs out"));
 					}
-					else if (OceanTripPlanner.OceanTrip.SpectralPityActive)
+					else if (focusFishLogPriority && missingSpectralHere.Count > 0)
+					{
+						string names = string.Join(", ", missingSpectralHere.Select(f => f.FishName));
+						panel.Children.Add(BuildStrategyRow(missingSpectralHere.Count == 1
+							? $"Missing fish here needs spectral to catch ({names}) — prioritizing bait to trigger it"
+							: $"{missingSpectralHere.Count} missing fish here need spectral to catch ({names}) — prioritizing bait to trigger it"));
+					}
+					else if (pointsPriority && OceanTripPlanner.OceanTrip.SpectralPityActive)
 					{
 						panel.Children.Add(BuildStrategyRow(
 							"Spectral pity active (last stop skipped it, this one runs longer) — prioritizing bait that triggers it"));
@@ -849,13 +866,16 @@ namespace Ocean_Trip.UI.Wpf
 			Grid.SetRow(pills, 1);
 			content.Children.Add(pills);
 
+			// Day/Night/Sunset only ever gates spectral fish; normal fish are weather-gated only —
+			// matches IsAvailable above, so a normal fish's (irrelevant) TimeOfDayExclusion data
+			// can't show a misleading "No {timeOfDay}" pill for a restriction that isn't real.
 			if (!available)
 			{
-				if (fish.TimeOfDayExclusion1 == timeOfDay || fish.TimeOfDayExclusion2 == timeOfDay)
+				if (fish.SpectralFish && (fish.TimeOfDayExclusion1 == timeOfDay || fish.TimeOfDayExclusion2 == timeOfDay))
 					pills.Children.Add(BuildPill($"No {timeOfDay}", ExclusionPillBackground, ExclusionTextColor,
 						toolTip: $"{fish.FishName} won't bite during {timeOfDay}"));
 
-				if (fish.WeatherExclusion1 == weather || fish.WeatherExclusion2 == weather)
+				if (!fish.SpectralFish && (fish.WeatherExclusion1 == weather || fish.WeatherExclusion2 == weather))
 					pills.Children.Add(BuildPill($"No {weather}", ExclusionPillBackground, ExclusionTextColor,
 						toolTip: $"{fish.FishName} won't bite in {weather} weather"));
 			}

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.Enums;
@@ -31,7 +32,7 @@ namespace OceanTripPlanner.Strategies
 		/// Handle fish bite - determine hook type and execute the appropriate action
 		/// </summary>
 		/// <param name="context">Context containing fishing state and bite information</param>
-		public Task ExecuteHook(HookContext context)
+		public async Task ExecuteHook(HookContext context)
 		{
 			double biteElapsed = Math.Round(context.BiteElapsedSeconds, 1);
 			bool doubleHook = false;
@@ -53,14 +54,14 @@ namespace OceanTripPlanner.Strategies
 				matchElapsed,
 				context.TimeOfDay,
 				currentWeather,
-				excludeWeather: false);
+				isSpectral: true);
 
 			List<Fish> normalFishToCatch = FindMatchingFish(
 				context.CurrentRoute?.NormalFish,
 				matchElapsed,
 				context.TimeOfDay,
 				currentWeather,
-				excludeWeather: true);
+				isSpectral: false);
 
 			var matchedFish = context.Spectraled ? spectralFishToCatch : normalFishToCatch;
 			var potentialFish = String.Join(", ", matchedFish.Select(x => _gameCache.GetItemName((uint)x.FishID)).ToList());
@@ -97,6 +98,14 @@ namespace OceanTripPlanner.Strategies
 				{
 					Log($"Declining bite — predicted {bestGuessName} isn't the current target. Using Rest to bail out.", OceanLogLevel.Debug);
 					ActionManager.DoAction(Actions.Rest, Core.Me);
+
+					// Wait for the client to actually drop out of the Bite state before returning —
+					// without this, the caller's outer loop can read a stale State (still mid-Bite in
+					// the game even though we've already issued Rest), race ahead into bait-selection/
+					// Cast for what it thinks is a fresh cast, and have both fail because the original
+					// line is still out. Same failure class as the post-catch tacklebox-settle issue
+					// (POST_CATCH_BAIT_SETTLE_MS), just triggered by a declined bite instead of a catch.
+					await Coroutine.Wait(2000, () => FishingManager.State != FishingState.Bite);
 				}
 				else
 				{
@@ -104,7 +113,7 @@ namespace OceanTripPlanner.Strategies
 				}
 
 				context.OnHookExecuted(false);
-				return Task.CompletedTask;
+				return;
 			}
 
 			Log("Checking if we should double hook based on bite timer and current fishing conditions!", OceanLogLevel.Debug);
@@ -253,8 +262,6 @@ namespace OceanTripPlanner.Strategies
 			Log("Refreshing UI for Bait and Achievements in case something changed.", OceanLogLevel.Debug);
 
 			FFXIV_Databinds.Instance.RefreshBait();
-
-			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -356,7 +363,7 @@ namespace OceanTripPlanner.Strategies
 		/// <summary>
 		/// Find matching fish from a list, with fallback to nearest fish if no exact match
 		/// </summary>
-		private List<Fish> FindMatchingFish(IEnumerable<Fish> fishList, double biteElapsed, string timeOfDay, string currentWeather, bool excludeWeather)
+		private List<Fish> FindMatchingFish(IEnumerable<Fish> fishList, double biteElapsed, string timeOfDay, string currentWeather, bool isSpectral)
 		{
 			if (fishList == null)
 				return new List<Fish>();
@@ -364,12 +371,12 @@ namespace OceanTripPlanner.Strategies
 			uint currentBait = FishingManager.SelectedBaitItemId;
 			bool hasIntuition = Core.Player.HasAura(CharacterAuras.FishersIntuition);
 
-			// Filter by time of day, weather (if applicable), tug type, and intuition requirement
+			// Day/Night/Sunset only ever gates spectral fish; normal (non-spectral) fish availability
+			// is weather-gated only. fishList here is already one or the other (never mixed).
 			var eligibleFish = fishList.Where(x =>
-				x.TimeOfDayExclusion1 != timeOfDay &&
-				x.TimeOfDayExclusion2 != timeOfDay &&
+				(!isSpectral || (x.TimeOfDayExclusion1 != timeOfDay && x.TimeOfDayExclusion2 != timeOfDay)) &&
+				(isSpectral || (x.WeatherExclusion1 != currentWeather && x.WeatherExclusion2 != currentWeather)) &&
 				x.BiteType == FishingManager.TugType &&
-				(!excludeWeather || (x.WeatherExclusion1 != currentWeather && x.WeatherExclusion2 != currentWeather)) &&
 				(!x.RequiresIntuition || hasIntuition)).ToList();
 
 			// First try exact match using bite range for current bait
@@ -395,13 +402,13 @@ namespace OceanTripPlanner.Strategies
 			uint currentBait = FishingManager.SelectedBaitItemId;
 			bool hasIntuition = Core.Player.HasAura(CharacterAuras.FishersIntuition);
 
-			// Filter by location, time of day, weather, tug type, and intuition requirement
+			// Filter by location, tug type, and intuition requirement — plus availability, which
+			// this list mixes both spectral and normal fish for, so it's checked per-fish: Day/
+			// Night/Sunset only ever gates spectral fish, normal fish are weather-gated only.
 			var eligibleFish = allFish.Where(x =>
 				x.RouteShortName == location &&
-				x.TimeOfDayExclusion1 != timeOfDay &&
-				x.TimeOfDayExclusion2 != timeOfDay &&
-				x.WeatherExclusion1 != currentWeather &&
-				x.WeatherExclusion2 != currentWeather &&
+				(!x.SpectralFish || (x.TimeOfDayExclusion1 != timeOfDay && x.TimeOfDayExclusion2 != timeOfDay)) &&
+				(x.SpectralFish || (x.WeatherExclusion1 != currentWeather && x.WeatherExclusion2 != currentWeather)) &&
 				x.BiteType == FishingManager.TugType &&
 				(!x.RequiresIntuition || hasIntuition)).ToList();
 
@@ -457,13 +464,15 @@ namespace OceanTripPlanner.Strategies
 			if (fishList == null)
 				return;
 
-			bool excludeWeather = !context.Spectraled;
+			// Day/Night/Sunset only ever gates spectral fish; normal fish are weather-gated only.
+			// fishList here is already one or the other (never mixed), matching context.Spectraled.
+			bool checkTimeOfDay = context.Spectraled;
+			bool checkWeather = !context.Spectraled;
 
 			var excluded = fishList.Where(x =>
 				x.BiteType == FishingManager.TugType &&
-				(x.TimeOfDayExclusion1 == context.TimeOfDay ||
-				x.TimeOfDayExclusion2 == context.TimeOfDay ||
-				(excludeWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))))
+				((checkTimeOfDay && (x.TimeOfDayExclusion1 == context.TimeOfDay || x.TimeOfDayExclusion2 == context.TimeOfDay)) ||
+				(checkWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))))
 				.ToList();
 
 			if (excluded.Any())
@@ -472,9 +481,9 @@ namespace OceanTripPlanner.Strategies
 				var excludedStr = String.Join(", ", excluded.Select(x =>
 				{
 					var reasons = new List<string>();
-					if (x.TimeOfDayExclusion1 == context.TimeOfDay || x.TimeOfDayExclusion2 == context.TimeOfDay)
+					if (checkTimeOfDay && (x.TimeOfDayExclusion1 == context.TimeOfDay || x.TimeOfDayExclusion2 == context.TimeOfDay))
 						reasons.Add($"time={context.TimeOfDay}");
-					if (excludeWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))
+					if (checkWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))
 						reasons.Add($"weather={currentWeather}");
 					var (start, end) = x.GetBiteRange(currentBait);
 					return $"{_gameCache.GetItemName((uint)x.FishID)} [{start:F0}-{end:F0}s, excluded: {String.Join("+", reasons)}]";

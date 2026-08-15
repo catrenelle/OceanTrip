@@ -4508,7 +4508,6 @@
         "Points": 38,
         "DHBonus": 4,
         "THBonus": 7,
-        "TimeOfDayExclusion1": "Night",
         "TimeOfDayExclusion2": "Sunset",
         "BiteTimers": {
             "29714": [
