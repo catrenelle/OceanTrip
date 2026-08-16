@@ -455,6 +455,26 @@ namespace Ocean_Trip.UI.Wpf
 						panel.Children.Add(BuildStrategyRow(
 							"Spectral pity active (last stop skipped it, this one runs longer) — prioritizing bait that triggers it"));
 					}
+					else if (pointsPriority)
+					{
+						// Last branch of NormalBaitSelector's spectral-trigger precedence: with no
+						// pity/missing/last-stop reason, it still pops spectral when spectral fish here
+						// clearly outscore normal fish (spectralAvg > normalAvg * SPECTRAL_POINTS_MARGIN).
+						// The box omitted this, so a "popping for points" decision showed in the log but
+						// not here. Mirror the selector's exact filter/threshold to close that gap.
+						var spectralHere = Ocean_Trip.Definitions.FishDataCache.GetFish()
+							.Where(f => f.RouteShortName == location && f.SpectralFish).ToList();
+						var normalHere = Ocean_Trip.Definitions.FishDataCache.GetFish()
+							.Where(f => f.RouteShortName == location && !f.SpectralFish && !f.CausesSpectral).ToList();
+						if (spectralHere.Any() && normalHere.Any())
+						{
+							double spectralAvg = spectralHere.Average(f => f.Points);
+							double normalAvg = normalHere.Average(f => f.Points);
+							if (spectralAvg > normalAvg * OceanTripPlanner.Definitions.FishingConstants.SPECTRAL_POINTS_MARGIN)
+								panel.Children.Add(BuildStrategyRow(
+									$"Spectral fish here average {spectralAvg:F0} pts vs {normalAvg:F0} normal — prioritizing bait to pop the current for points"));
+						}
+					}
 				}
 			}
 
