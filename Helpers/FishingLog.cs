@@ -140,8 +140,14 @@ namespace OceanTrip
 
 		public static async Task InitializeFishLog()
 		{
+			// Already built this session — reuse it and do NOT touch the game. Run() is the botbase root
+			// (ActionRunCoroutine), so RB re-ticks it every time it completes and calls InitializeFishLog
+			// each tick; without this guard we'd rebuild and re-open the in-game Fish Guide (via
+			// ReconcileWithFishGuide → GetFishList) on every tick — exactly what this cache exists to
+			// avoid. The in-memory set stays current through RemoveFish on each catch, and Stop() calls
+			// InvalidateCache() to force a fresh load next session.
 			if (_cachedMissingFishSet != null)
-				_cachedMissingFishSet = null;
+				return;
 
 			bool needsReinit = !File.Exists(fileName);
 
