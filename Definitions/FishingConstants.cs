@@ -171,9 +171,19 @@ namespace OceanTripPlanner.Definitions
 		// ========================================
 
 		/// <summary>
-		/// Offset to adjust FishingManager.TimeSinceCast to match expected bite times (-0.3s)
+		/// Offset to adjust FishingManager.TimeSinceCast to match expected bite times (-0.3s).
+		/// Used by the open-world fishing path, which still times from the cast command.
 		/// </summary>
 		public const double BITE_TIMER_OFFSET = -0.3;
+
+		/// <summary>
+		/// Offset for the ocean-voyage bite timer to match GatherBuddy. Our splashdown latch anchors at
+		/// the first "settled waiting" fishing state, which lands ~1.3s AFTER GatherBuddy's own anchor,
+		/// so RB measures a shorter interval. Measured live: RB read a consistent 1.3s LOWER than
+		/// GatherBuddy, so add it back. TUNING KNOB: if a future run shows a new consistent bias vs
+		/// GatherBuddy, adjust this value (not BITE_TIMER_OFFSET, which the open-world path uses).
+		/// </summary>
+		public const double LANDED_BITE_OFFSET = 1.3;
 
 
 		/// <summary>
@@ -211,9 +221,12 @@ namespace OceanTripPlanner.Definitions
 		public const int LOADING_TIMEOUT_MS = 30000;
 
 		/// <summary>
-		/// Delay before/after cordial use (600ms)
+		/// Delay before/after cordial use. Applied twice per use (before the UseItem and after, to let
+		/// the GP change register), so this is doubled in the cast-cycle cost. Trimmed from 600ms to
+		/// 250ms — during Spectral Current cordials fire nearly every cast, so 2x600ms was a big chunk
+		/// of the between-cast time; the GP change registers well within 250ms.
 		/// </summary>
-		public const int CORDIAL_USE_DELAY_MS = 600;
+		public const int CORDIAL_USE_DELAY_MS = 250;
 
 		/// <summary>
 		/// Timeout for waiting for dialog windows to open (3000ms = 3 seconds)
@@ -248,6 +261,14 @@ namespace OceanTripPlanner.Definitions
 		public const int BAIT_CHANGE_RETRY_DELAY_MS = 300;
 
 		/// <summary>
+		/// Bounded wait for the pole to be idle (PoleReady) before spending a bait-change attempt.
+		/// ChangeBait's own ~5s internal waits just burn out if the line is in the water, and during
+		/// Spectral Current the client re-deploys the line within a poll tick — so we sync each attempt
+		/// to a real PoleReady moment. Returns immediately if already PoleReady; caps the wait otherwise.
+		/// </summary>
+		public const int BAIT_CHANGE_STATE_WAIT_MS = 1000;
+
+		/// <summary>
 		/// Max attempts for a single BaitChanger.ChangeBait call before giving up and logging a
 		/// failure instead of silently casting with the wrong bait still equipped.
 		/// </summary>
@@ -265,6 +286,15 @@ namespace OceanTripPlanner.Definitions
 		/// nothing to settle from and doesn't need it.
 		/// </summary>
 		public const int POST_CATCH_BAIT_SETTLE_MS = 1500;
+
+		/// <summary>
+		/// After a hook, cap on how long to wait for the fishing state machine to actually advance past
+		/// the catch (reach PoleReady, or show the line already back out) before looping to re-cast.
+		/// Forces the states to update instead of blurring past a single poll tick — needed so the
+		/// splashdown latch and ChangeBait's tackle-box window aren't raced by a fast Spectral re-deploy.
+		/// Returns as soon as the state advances, so in practice it only spans the natural reel-in.
+		/// </summary>
+		public const int POST_HOOK_SETTLE_TIMEOUT_MS = 2000;
 
 		// ========================================
 		// BOAT QUEUE TIMING CONSTANTS

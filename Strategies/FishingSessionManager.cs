@@ -25,7 +25,47 @@ namespace OceanTripPlanner.Strategies
 		private readonly HookingStrategy _hookingStrategy;
 		private readonly LureStrategy _lureStrategy;
 		private readonly bool _loggingEnabled;
-		private double _moochCastOffset;
+
+		// Self-owned bite clock. We deliberately do NOT use FishingManager.TimeSinceCast for bite
+		// timing: RB resets it only inside FishingManager.Cast() (spell 289) -- never on Mooch,
+		// Identical Cast, or the client's automatic re-cast during Spectral Current. In spectral the
+		// base Cast isn't castable, so FishingManager.Cast() silently no-ops while the client keeps
+		// re-casting, leaving TimeSinceCast to climb monotonically across the whole window and
+		// misreport bite times. Instead we snapshot the time at every line-out (each cast / mooch /
+		// Identical Cast) and, on the bite, take (UtcNow - _castStartUtc). The outer loop still runs a
+		// cast cycle per catch during spectral, so we re-stamp every line-out and each bite is timed
+		// from ITS OWN cast, to ~0.2-0.5s.
+		private DateTime _castStartUtc;
+		private bool _awaitingLineOut;
+
+		// The line is out and settled, waiting for a bite (post-splashdown) -- as opposed to the cast
+		// animation (PoleOut), reeling, or pole-ready. The FIRST of these observed after arming is the
+		// real "bobber landed" moment we want to time a bite from.
+		private static bool IsWaitingForBite(FishingState st) =>
+			st == FishingState.Waitin || st == FishingState.NormalFishing || st == FishingState.LureFishing;
+
+		// Arm the line-out latch. _castStartUtc is stamped now as a safe fallback (this cast/hook moment);
+		// if a settled waiting state is then observed before the bite, LatchLineOut refines it to the true
+		// splashdown. Armed by EVERY line-out event -- each explicit cast/mooch/Identical Cast AND every
+		// hook -- so a seamless same-bait re-cast (Spectral Current) still re-bases and can never collapse
+		// multiple catches into one giant cast, nor go stale if the settled state is never sampled.
+		private void ArmLineOut()
+		{
+			_castStartUtc = DateTime.UtcNow;
+			_awaitingLineOut = true;
+		}
+
+		// Refine the bite clock to the instant the line actually settles in the water. Idempotent per arm
+		// (clears the latch), so it only moves the start forward once, at splashdown.
+		private void LatchLineOut()
+		{
+			if (_awaitingLineOut && IsWaitingForBite(FishingManager.State))
+			{
+				_castStartUtc = DateTime.UtcNow;
+				_awaitingLineOut = false;
+				Log($"Line settled (state {FishingManager.State}); bite clock started.", OceanLogLevel.Debug);
+			}
+		}
 
 		public FishingSessionManager(GameStateCache gameCache, HookingStrategy hookingStrategy, bool enableLogging = true)
 		{
@@ -43,11 +83,16 @@ namespace OceanTripPlanner.Strategies
 			bool spectraled = false;
 			bool hookExecuted = false;
 
+			// Fresh bite clock for this session
+			ArmLineOut();
+
 			// Handle food consumption at start of session
 			await ConsumeFood(context);
 
 			while (context.ShouldContinueFishingCallback())
 			{
+				LatchLineOut();
+
 				// Fast path: If pole is ready, skip expensive overhead and jump straight to casting
 				if (FishingManager.State == FishingState.PoleReady)
 				{
@@ -83,10 +128,14 @@ namespace OceanTripPlanner.Strategies
 				if (FishingManager.State == FishingState.None || FishingManager.State == FishingState.PoleReady)
 				{
 					hookExecuted = false;
-					_moochCastOffset = 0;
 					_lureStrategy.ResetForNewCast();
 					// Process caught fish and check for Identical Cast
 					bool identicalCastUsed = await context.ProcessCaughtFishCallback();
+
+					// Identical Cast re-casts the line inside ProcessCaughtFish (a raw DoAction that does
+					// not reset TimeSinceCast); arm our own line-out latch so its bite is timed from here.
+					if (identicalCastUsed)
+						ArmLineOut();
 
 					// If Identical Cast was used, skip mooch/bait selection (cast already started)
 					if (!identicalCastUsed)
@@ -96,31 +145,24 @@ namespace OceanTripPlanner.Strategies
 						if (context.GetShouldMooch() && (FishingManager.CanMoochAny == FishingManager.AvailableMooch.Mooch || FishingManager.CanMoochAny == FishingManager.AvailableMooch.Both))
 						{
 							Log("Using Mooch!");
-							_moochCastOffset = FishingManager.TimeSinceCast.TotalSeconds;
 							context.RefreshMissionStateCallback?.Invoke();
 							FishingManager.Mooch();
+							ArmLineOut();
 							context.SetLastCastMooch(true);
 							context.SetShouldMooch(false);
 						}
 						else if (context.GetShouldMooch() && FishingManager.CanMoochAny == FishingManager.AvailableMooch.MoochTwo)
 						{
 							Log("Using Mooch II!");
-							_moochCastOffset = FishingManager.TimeSinceCast.TotalSeconds;
 							context.RefreshMissionStateCallback?.Invoke();
 							FishingManager.MoochTwo();
+							ArmLineOut();
 							context.SetLastCastMooch(true);
 							context.SetShouldMooch(false);
 						}
 						else
 						{
-							// See FishingConstants.POST_CATCH_BAIT_SETTLE_MS — right after a catch, the
-							// client's reel-in animation/tackle-box UI needs a moment to settle before
-							// ChangeBait's own bait-selection window will actually open. Not needed on
-							// the very first cast of a stop (State == None, nothing to settle from).
-							if (FishingManager.State == FishingState.PoleReady)
-								await Coroutine.Sleep(FishingConstants.POST_CATCH_BAIT_SETTLE_MS);
-
-							// Select and apply bait based on current conditions
+							// Select and apply bait for the current conditions.
 							await context.SelectAndApplyBaitCallback(spectraled);
 
 							// Prize Catch before Cast, not after a bite — it's a pre-commit buff
@@ -133,6 +175,7 @@ namespace OceanTripPlanner.Strategies
 							Log("Casting!", OceanLogLevel.Debug);
 
 							FishingManager.Cast();
+							ArmLineOut();
 							context.SetLastCastMooch(false);
 						}
 					}
@@ -142,6 +185,10 @@ namespace OceanTripPlanner.Strategies
 
 				while ((FishingManager.State != FishingState.PoleReady) && context.ShouldContinueFishingCallback())
 				{
+
+					// Refine the bite clock to the real splashdown (see ArmLineOut/LatchLineOut).
+					LatchLineOut();
+
 					// Refresh cache to detect spectral changes immediately during bite wait
 					_gameCache.RefreshIfNeeded();
 
@@ -156,6 +203,16 @@ namespace OceanTripPlanner.Strategies
 							FishingManager.Hook();
 							hookExecuted = true;
 							context.OnHookExecutedCallback?.Invoke(false);
+							ArmLineOut();
+
+							// As on the main hook path, wait for the catch to resolve and log it here —
+							// a spectral-pop catch may never return cleanly to PoleReady, so relying on
+							// ProcessCaughtFish alone would drop it.
+							await Coroutine.Wait(FishingConstants.POST_HOOK_SETTLE_TIMEOUT_MS,
+								() => FishingManager.State == FishingState.PoleReady
+									|| FishingManager.State == FishingState.None
+									|| IsWaitingForBite(FishingManager.State));
+							context.LogCaughtFishCallback?.Invoke();
 						}
 					}
 
@@ -177,13 +234,14 @@ namespace OceanTripPlanner.Strategies
 					if (FishingManager.CanHook && FishingManager.State == FishingState.Bite && !hookExecuted)
 					{
 						hookExecuted = true;
-						double rawTime = FishingManager.TimeSinceCast.TotalSeconds;
-						double biteTime = context.GetLastCastMooch()
-							? (rawTime - _moochCastOffset)
-							: rawTime;
+						// Time this line has actually been in the water, measured from splashdown on our own clock
+						// (see ArmLineOut/LatchLineOut) -- not FishingManager.TimeSinceCast, which never resets
+						// on mooch / Identical Cast / the Spectral auto-recast and so accumulates across a window.
+						double biteTime = Math.Max(0, (DateTime.UtcNow - _castStartUtc).TotalSeconds);
+						Log($"Bite clock: {biteTime:F2}s (settled anchor)", OceanLogLevel.Debug);
 						var hookContext = new HookContext
 						{
-							BiteElapsedSeconds = biteTime + FishingConstants.BITE_TIMER_OFFSET,
+							BiteElapsedSeconds = biteTime + FishingConstants.LANDED_BITE_OFFSET,
 							Spectraled = spectraled,
 							Location = context.Location,
 							TimeOfDay = context.TimeOfDay,
@@ -197,6 +255,27 @@ namespace OceanTripPlanner.Strategies
 						hookContext.SetHookExecutedCallback(context.OnHookExecutedCallback);
 						await _hookingStrategy.ExecuteHook(hookContext);
 						context.SetLastCastMooch(false);
+						ArmLineOut();
+
+						// Force the state machine to advance past the catch before we loop back to re-cast:
+						// returns the instant we reach PoleReady (or the line is already back out), so it costs
+						// no more than the natural reel-in but stops a fast Spectral re-deploy from blurring the
+						// reel/PoleReady transition past our poll tick (which hid the anchor and starved bait
+						// changes of their tackle-box window). Predicate also accepts the line-out states so an
+						// aliased-over PoleReady can't hang us until the timeout.
+						bool settled = await Coroutine.Wait(FishingConstants.POST_HOOK_SETTLE_TIMEOUT_MS,
+							() => FishingManager.State == FishingState.PoleReady
+								|| FishingManager.State == FishingState.None
+								|| IsWaitingForBite(FishingManager.State));
+						Log($"Post-hook settle: {(settled ? "advanced" : "timed out")} at state {FishingManager.State}", OceanLogLevel.Debug);
+
+						// Log this catch now, at its own resolution point. ProcessCaughtFish (the other
+						// catch-logging site) only runs when the pole returns to PoleReady at the top of
+						// the outer loop; in Spectral Current the line auto-redeploys and that often
+						// doesn't happen between catches, so without this the mid-spectral catches (and
+						// their caughtFish prereq entries) were dropped. Idempotent via the catch
+						// signature, so the eventual PoleReady call won't double-log it.
+						context.LogCaughtFishCallback?.Invoke();
 					}
 
 					await Coroutine.Yield();
@@ -323,6 +402,22 @@ namespace OceanTripPlanner.Strategies
 		public Func<bool, Task> SelectAndApplyBaitCallback { get; set; }
 		public Func<bool, Task> PrizeCatchCallback { get; set; }
 		public Action<bool> OnHookExecutedCallback { get; set; }
+
+		/// <summary>
+		/// Logs a newly landed fish right after a hook resolves. Called per hook from the fishing loop so
+		/// Spectral-Current catches — where the pole rarely returns to PoleReady between catches, so
+		/// ProcessCaughtFish isn't reached — still get logged and counted into the caughtFish prereq
+		/// list. Idempotent via the catch signature, so it never double-logs with ProcessCaughtFish.
+		/// </summary>
+		public Func<bool> LogCaughtFishCallback { get; set; }
+
+		/// <summary>
+		/// Spends GP-recovery consumables (Cordial + Thaliak's Favor) per hook. Same fix as
+		/// LogCaughtFishCallback: ManageBuffsCallback only runs once per cast cycle at the top of the
+		/// outer loop, which a continuous Spectral Current starves, so the GP banked for the spectral
+		/// burst was never spent. Self-gated on GP need, so calling it every hook is cheap when GP is fine.
+		/// </summary>
+		public Func<Task> ManageGpConsumablesCallback { get; set; }
 
 		/// <summary>
 		/// Re-reads active mission tug-type/achievement-tag requirements from Endeavor and stores

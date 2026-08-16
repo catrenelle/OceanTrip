@@ -48,7 +48,12 @@ namespace OceanTripPlanner
 
 		private List<uint> caughtFish;
 		private uint lastCaughtFish = 0;
-		private bool caughtFishLogged = false;
+		// Per-catch signature (fish id + size/quality/quantity roll) of the last catch we logged. Used to
+		// detect a genuinely new catch — including a second catch of the SAME species, which rolls a
+		// different size — while NOT re-logging a phantom when a hook lands nothing and the result window
+		// is unchanged. Replaces the old id-diff + caughtFishLogged/reset-to-0 dedup, which both dropped
+		// mid-Spectral catches and re-logged phantoms of the previous fish on an empty hook.
+		private string lastLoggedCatchSig = null;
 
 		// Last-logged progress per mission slot, to only log on change. ushort.MaxValue means
 		// "not yet observed" so a real progress of 0 still logs once.
@@ -176,11 +181,15 @@ namespace OceanTripPlanner
 
 			TreeHooks.Instance.ClearAll();
 
+			// Warn up front if AutoHook (or another rod-driving Dalamud plugin) looks present — running it
+			// alongside OceanTrip corrupts bite timers and mimics cast/bait/catch bugs. Log-only.
+			PluginDetector.ScanAndLog();
+
 			InitializeSharedResources();
 
 			caughtFish = new List<uint>();
 			lastCaughtFish = 0;
-			caughtFishLogged = false;
+			lastLoggedCatchSig = null;
 
 			// Initialize strategy pattern dependencies
 			baitChanger = new BaitChanger(gameCache);
@@ -464,7 +473,7 @@ namespace OceanTripPlanner
 				// Reset for this round
 				caughtFish.Clear();
 				lastCaughtFish = 0;
-				caughtFishLogged = false;
+				lastLoggedCatchSig = null;
 
 				FFXIV_Databinds.Instance.RefreshBait();
 
@@ -544,7 +553,9 @@ namespace OceanTripPlanner
 					ManageBuffsCallback = ManageBuffsAndConsumables,
 					ProcessCaughtFishCallback = ProcessCaughtFish,
 					PrizeCatchCallback = MaybeUsePrizeCatch,
-					OnHookExecutedCallback = (logged) => { caughtFishLogged = logged; lastCaughtFish = 0; }
+					OnHookExecutedCallback = (logged) => { },
+					LogCaughtFishCallback = LogCaughtFish,
+					ManageGpConsumablesCallback = () => ManageGpConsumables(gameCache.CurrentWeatherId == Weather.Spectral)
 				};
 				fishingContext.SelectAndApplyBaitCallback = async (spectraled) =>
 				{
@@ -950,11 +961,8 @@ namespace OceanTripPlanner
 
 		public async Task EmptyScrips(int itemId, int scripThreshold)
 		{
-#if RB_DT
 			SpecialCurrency currency = SpecialCurrency.PurpleGatherersScrips;
-#else
-			SpecialCurrency currency = SpecialCurrency.WhiteGatherersScrips;
-#endif
+
 
 			// TODO: Future enhancement - Support purchasing additional items with excess scrips (not just Hi-Cordials)
 			if (SpecialCurrencyManager.GetCurrencyCount(currency) > scripThreshold)
@@ -1016,6 +1024,20 @@ namespace OceanTripPlanner
 
 			await Coroutine.Yield();
 
+			await ManageGpConsumables(currentlySpectral);
+		}
+
+		/// <summary>
+		/// GP-recovery consumables (Cordial + Thaliak's Favor) plus the spectral-banking rule. Split out
+		/// of ManageBuffsAndConsumables so the fishing loop can also run it per hook: like catch logging,
+		/// it otherwise only ran once per cast cycle at the top of the outer loop, and a continuous
+		/// Spectral Current (the pole never cleanly returns to PoleReady between catches) starved it — so
+		/// the GP banked for the spectral burst was never actually spent. This half carries no
+		/// spectral-transition logging or _hadSpectralThisStop mutation; that stays in the once-per-cast
+		/// ManageBuffsAndConsumables so it isn't repeated per hook.
+		/// </summary>
+		private async Task ManageGpConsumables(bool currentlySpectral)
+		{
 			// Bank GP/Angler's Art instead of proactively spending it while still chasing this stop's
 			// first spectral current — Thaliak's Favor and Hi-Cordial are worth far more spent in a
 			// burst during the current than trickled out during ordinary fishing. That window closes
@@ -1122,44 +1144,69 @@ namespace OceanTripPlanner
 		/// Process caught fish and check for Identical Cast
 		/// Returns true if Identical Cast was used and casting has started
 		/// </summary>
+		/// <summary>
+		/// Detect and log a newly landed fish, independent of the cast-decision flow so it can be called
+		/// after every hook — including mid-Spectral-Current, where the line auto-redeploys and the pole
+		/// rarely returns to PoleReady, so the old once-per-cast-cycle ProcessCaughtFish call was skipped
+		/// and those catches (and their entries in the caughtFish prereq-count list the bait selectors
+		/// rely on) were silently lost.
+		///
+		/// Newness is keyed on a per-catch signature (fish id + size/quality/quantity roll) rather than a
+		/// bare id diff: two catches of the SAME species roll different sizes so both log, while a hook
+		/// that lands nothing leaves the result window unchanged and is correctly NOT re-logged as a
+		/// phantom of the previous fish. Idempotent — safe to call from both the per-hook loop site and
+		/// ProcessCaughtFish without double-logging. Returns true if a new catch was logged.
+		/// </summary>
+		private bool LogCaughtFish()
+		{
+			// Uses the new Catch API when available for better reliability, falling back to the IKD log.
+			var currentFish = FishingLog.LastFishCaught;
+			if (currentFish == 0)
+				return false;
+
+			var (_, size, stars, quantity) = FishingLog.GetCatchDetails();
+			string sig = $"{currentFish}|{size}|{stars}|{quantity}";
+			if (sig == lastLoggedCatchSig)
+				return false;
+
+			lastLoggedCatchSig = sig;
+			lastCaughtFish = currentFish;
+			caughtFish.Add(currentFish);
+
+			// Use Catch.FishName if available, fall back to gameCache, then fishList.json
+			string fishName = FishingLog.LastFishName;
+			if (string.IsNullOrEmpty(fishName))
+				fishName = gameCache.GetItemName(currentFish);
+			if (string.IsNullOrEmpty(fishName))
+			{
+				var fishData = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == (int)currentFish);
+				fishName = fishData?.FishName ?? $"Unknown ({currentFish})";
+			}
+
+			Log($"Caught {fishName}.");
+
+			// Remove from missing fish list if needed
+			if (FishingLog.MissingFish().Contains(currentFish))
+			{
+				FishingLog.RemoveFish(currentFish);
+				FishingLog.SaveMissingFishLog();
+			}
+
+			return true;
+		}
+
 		private Task<bool> ProcessCaughtFish()
 		{
 			Log("Checking for a recently caught fish.", OceanLogLevel.Debug);
-
-			// Cache LastFishCaught to avoid reading game memory multiple times (expensive operation)
-			// Now uses the new Catch API when available for better reliability
-			var currentFish = FishingLog.LastFishCaught;
-
-			Log($"ProcessCaughtFish: currentFish={currentFish}, lastCaughtFish={lastCaughtFish}, caughtFishLogged={caughtFishLogged}", OceanLogLevel.Debug);
+			Log($"ProcessCaughtFish: lastCaughtFish={lastCaughtFish}, lastSig={lastLoggedCatchSig}", OceanLogLevel.Debug);
 
 			LogMissionProgress();
 
-			// Did we catch a fish? Let's log it.
-			if (lastCaughtFish != currentFish && !caughtFishLogged)
-			{
-				lastCaughtFish = currentFish;
-				caughtFish.Add(currentFish);
-				caughtFishLogged = true;
-
-				// Use Catch.FishName if available, fall back to gameCache, then fishList.json
-				string fishName = FishingLog.LastFishName;
-				if (string.IsNullOrEmpty(fishName))
-					fishName = gameCache.GetItemName(currentFish);
-				if (string.IsNullOrEmpty(fishName))
-				{
-					var fishData = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == (int)currentFish);
-					fishName = fishData?.FishName ?? $"Unknown ({currentFish})";
-				}
-
-				Log($"Caught {fishName}.");
-
-				// Remove from missing fish list if needed
-				if (FishingLog.MissingFish().Contains(currentFish))
-				{
-					FishingLog.RemoveFish(currentFish);
-					FishingLog.SaveMissingFishLog();
-				}
-			}
+			// Catch out any fish not already logged by the per-hook call in the fishing loop. During
+			// normal fishing this is the site that logs catches; during Spectral Current the loop logs
+			// them per hook (this method often isn't reached between catches). Idempotent, so a catch
+			// already logged there won't be logged again here.
+			LogCaughtFish();
 
 			Log("Done checking for a recently caught fish.", OceanLogLevel.Debug);
 
@@ -1269,7 +1316,11 @@ namespace OceanTripPlanner
 				? $"{condition.Text}: {progress}/{condition.Count}"
 				: $"Unknown mission type {missionType} ({progress})";
 
-			Log($"Mission {slot + 1}: {description}");
+			// Mission progress is verbose-only: the Current Route "Missions" card already shows it live
+			// (CurrentRoutePageBehavior refreshes off its own 5s DispatcherTimer, reading Endeavor
+			// directly), and at spectral pace these lines flooded the console hard enough to drop
+			// cast/hook log entries. Gate behind LoggingMode so the important lines get through.
+			Log($"Mission {slot + 1}: {description}", OceanLogLevel.Debug);
 		}
 
 		/// <summary>
