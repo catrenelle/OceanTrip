@@ -7,14 +7,17 @@ using OceanTripPlanner.Helpers;
 namespace Ocean_Trip.UI.Wpf
 {
 	/// <summary>
-	/// Crops icons from Resources/icons.png (a 10x34 sprite sheet), same math as
+	/// Crops icons from Resources/icons.png (a 10x38 sprite sheet), same math as
 	/// UIElements.getIconImage, but reading the loose file from disk like every other
 	/// Resources/* asset in this codebase instead of relying on embedded .resx resources.
+	/// Rows 35-38 were appended 2026-08-16 to hold the Endwalker Thavnair fish icons, which the
+	/// original 34-row sheet lacked — those fish had been duplicate-mapped onto older fish' cells
+	/// (see fishList.json). Cell size stays 40x40 (1520/38), so rows 1-34 are unaffected.
 	/// </summary>
 	public static class IconAtlas
 	{
 		private const int Columns = 10;
-		private const int Rows = 34;
+		private const int Rows = 38;
 
 		private static BitmapImage _sheet;
 
