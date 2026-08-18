@@ -428,10 +428,13 @@ namespace Ocean_Trip.UI.Wpf
 				// Missing-target/pity/last-stop only actually change anything in
 				// NormalBaitSelector.NeedsSpectral (Achievements pops spectral on its own
 				// unconditional logic; Leveling bypasses bait selectors entirely) — and only while
-				// outside spectral, since once it's active the current is already converted.
+				// outside spectral, since once it's active the current is already converted. Also gated
+				// on !HadSpectralThisStop to match NeedsSpectral's first early-out: a stop can only pop
+				// spectral once, so once it's triggered here none of these "prioritizing bait to trigger
+				// spectral" reasons apply (the bot falls back to missing-fish/points bait instead).
 				bool focusFishLogPriority = priority == FishPriority.FishLog || priority == FishPriority.Auto;
 				bool pointsPriority = priority == FishPriority.Points || priority == FishPriority.Auto;
-				if (!spectralActive && (focusFishLogPriority || pointsPriority))
+				if (!spectralActive && !OceanTripPlanner.OceanTrip.HadSpectralThisStop && (focusFishLogPriority || pointsPriority))
 				{
 					// Matches NeedsSpectral's actual precedence: last-stop is checked (and returned on)
 					// before anything else, then a missing fish-log-target fish that needs spectral
