@@ -29,7 +29,32 @@ namespace OceanTrip
 		private static HashSet<uint> _cachedMissingFishSet;
 		public static HashSet<uint> MissingFish()
 		{
-			return _cachedMissingFishSet;
+			// Session cache — populated by InitializeFishLog when the botbase starts. When it hasn't run
+			// yet (the Schedule / Current Route UI is open before Start), fall back to the persisted file
+			// so those pages can still show missing-fish highlights instead of nothing until Start.
+			//
+			// The fallback deliberately does NOT assign _cachedMissingFishSet: InitializeFishLog guards on
+			// it being null to decide whether to reinit (fish-data-count change) and reconcile against the
+			// live Fish Guide, so pre-filling it here would silently skip that on the session's first Start.
+			if (_cachedMissingFishSet != null)
+				return _cachedMissingFishSet;
+
+			return ReadMissingFishFile();
+		}
+
+		/// <summary>
+		/// Read the persisted missing-fish set straight off disk without touching the game or the session
+		/// cache. Returns null when the file doesn't exist yet (log never built for this character).
+		/// </summary>
+		private static HashSet<uint> ReadMissingFishFile()
+		{
+			if (!File.Exists(fileName))
+				return null;
+
+			return new HashSet<uint>(
+				File.ReadAllLines(fileName)
+					.Where(x => !x.StartsWith("#"))
+					.Select(x => (uint)Convert.ToInt32(x)));
 		}
 
 
@@ -154,20 +179,23 @@ namespace OceanTrip
 			if (!needsReinit)
 			{
 				var firstLine = File.ReadLines(fileName).FirstOrDefault();
-				var currentFishCount = FishDataCache.GetFish().Count;
+				var currentSig = FishDataSignature();
 
-				if (firstLine != null && firstLine.StartsWith("#fishDataCount="))
+				if (firstLine != null && firstLine.StartsWith(SignatureHeaderPrefix))
 				{
-					var cachedCount = int.Parse(firstLine.Substring("#fishDataCount=".Length));
-					if (cachedCount != currentFishCount)
+					var cachedSig = firstLine.Substring(SignatureHeaderPrefix.Length);
+					if (cachedSig != currentSig)
 					{
-						Logging.Write($"[Ocean Trip] Fish data updated ({cachedCount} → {currentFishCount} fish) — reinitializing fishing log...");
+						Logging.Write($"[Ocean Trip] Fish data changed ({cachedSig} → {currentSig}) — reinitializing fishing log...");
 						needsReinit = true;
 					}
 				}
 				else
 				{
-					Logging.Write("[Ocean Trip] Fishing log cache missing version header — reinitializing...");
+					// No signature header — either a pre-signature cache (old #fishDataCount= format) or a
+					// corrupt/missing one. Rebuild so any stale IDs (e.g. the Junior Jinbei 51236→51687 fix)
+					// are purged rather than lingering as orphaned "missing" entries forever.
+					Logging.Write("[Ocean Trip] Fishing log cache missing/old version header — reinitializing...");
 					needsReinit = true;
 				}
 			}
@@ -195,21 +223,28 @@ namespace OceanTrip
 			}
 			else
 			{
+				// Just load the cached set from disk — do NOT auto-reconcile against the in-game Fish
+				// Guide here. AgentFishGuide2.GetFishList() visibly opens and closes the Fish Guide window,
+				// and doing that on every Start is jarring when the cache is already current: the botbase
+				// removes each fish from the set the instant it's caught (RemoveFish + SaveMissingFishLog
+				// in the catch flow), so a valid cache stays accurate on its own. A full rebuild
+				// (needsReinit above) still reads the Guide, but only when the dataset actually changed.
+				// Out-of-band catches (manual fishing between sessions) can be reconciled on demand via
+				// ResyncWithFishGuide().
 				LoadMissingFishLog();
-				await ReconcileWithFishGuide();
 			}
 		}
 
 		/// <summary>
-		/// Cross-check the disk-cached missing set against AgentFishGuide2's live catch data and drop
-		/// anything that's actually already been caught. The cache is otherwise only invalidated by a
-		/// fish DATA-count change (a fishList.json update) — a fish caught by any means that didn't
-		/// route through RemoveFish (e.g. the game's own catch tracking syncing late for a
-		/// newly-added fish right when the cache was first built, or a missed catch-detection edge
-		/// case) would otherwise stay marked "missing" indefinitely, since nothing else ever
-		/// re-validates it against reality.
+		/// On-demand reconcile of the disk-cached missing set against AgentFishGuide2's live catch data,
+		/// dropping anything that's actually already been caught. Deliberately NOT called at Start:
+		/// GetFishList() visibly opens and closes the in-game Fish Guide, which is poor UX every session
+		/// when the cache is already kept current by per-catch RemoveFish + SaveMissingFishLog. Exposed
+		/// for a manual "resync" to recover fish caught out-of-band — e.g. manual fishing between
+		/// sessions, or a missed catch-detection edge case — that never routed through RemoveFish and
+		/// would otherwise stay marked "missing" until the next full rebuild.
 		/// </summary>
-		private static async Task ReconcileWithFishGuide()
+		public static async Task ResyncWithFishGuide()
 		{
 			if (_cachedMissingFishSet == null || _cachedMissingFishSet.Count == 0)
 				return;
@@ -230,21 +265,39 @@ namespace OceanTrip
 			if (File.Exists(fileName))
 				File.Delete(fileName);
 
-			var lines = new List<string> { $"#fishDataCount={FishDataCache.GetFish().Count}" };
+			var lines = new List<string> { SignatureHeaderPrefix + FishDataSignature() };
 			lines.AddRange(_cachedMissingFishSet.Select(x => x.ToString()));
 			File.WriteAllLines(fileName, lines);
 		}
 
+		private const string SignatureHeaderPrefix = "#fishDataSig=";
+
+		/// <summary>
+		/// Stable signature of the current ocean-fish dataset — the fish count plus an order-independent
+		/// FNV-1a hash of the fish IDs. The disk cache is keyed on this so it rebuilds not only when fish
+		/// are ADDED/REMOVED (count change), but also when an existing fish's ID is CORRECTED with the
+		/// count unchanged (e.g. the Junior Jinbei 51236 → 51687 fix). The old count-only header missed
+		/// that class of change, leaving corrected fish stuck flagged "missing" until some later update
+		/// happened to alter the count.
+		/// </summary>
+		private static string FishDataSignature()
+		{
+			var ids = FishDataCache.GetFish().Select(f => f.FishID).OrderBy(x => x).ToList();
+			unchecked
+			{
+				uint hash = 2166136261;
+				foreach (var id in ids)
+				{
+					hash ^= (uint)id;
+					hash *= 16777619;
+				}
+				return $"{ids.Count}:{hash:X8}";
+			}
+		}
+
 		public static void LoadMissingFishLog()
 		{
-			if (_cachedMissingFishSet != null)
-				_cachedMissingFishSet = null;
-
-			if (File.Exists(fileName))
-				_cachedMissingFishSet = new HashSet<uint>(
-					File.ReadAllLines(fileName)
-						.Where(x => !x.StartsWith("#"))
-						.Select(x => (uint)Convert.ToInt32(x)));
+			_cachedMissingFishSet = ReadMissingFishFile();
 		}
 	}
 }

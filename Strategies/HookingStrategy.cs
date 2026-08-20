@@ -133,12 +133,12 @@ namespace OceanTripPlanner.Strategies
 							AchievementFishDataCache.MapAchievementString(f.Achievement) == achievementFocus);
 					}
 
-					// No achievement fish matched — fall through to points-based DH/TH
-					if (!doubleHook)
-					{
-						var matchingFish = FindMatchingFishForHook(context.Location, matchElapsed, context.TimeOfDay, currentWeather);
-						doubleHook = IsPointsWorthDoubleHook(matchingFish);
-					}
+					// Intentionally NO points-based fallback here. In Achievement mode the GP plan is to
+					// bank GP outside spectral and dump Double/Triple Hooks on the focus category once the
+					// current pops (for Mantas — and most focus categories — that means spectral-only fish).
+					// DH/TH-ing high-point NON-focus normal fish while we're just trying to trigger spectral
+					// drains exactly the GP the achievement run is saving up. ONLY the focus category above
+					// justifies a hookset in Achievement mode — even active missions are skipped (below).
 				}
 				else if (OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Points || OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Auto)
 				{
@@ -159,27 +159,32 @@ namespace OceanTripPlanner.Strategies
 					}
 				}
 
-				// Bite-strength missions ("Catch fish with a weak/strong/ferocious bite"): a single
-				// hookset catches several fish sharing this tug, multiplying mission progress. Worth
-				// it regardless of the points/GP-cost math above and regardless of FishPriority — a
-				// mission's value is a 5-20% multiplier on the ENTIRE voyage score, not just this catch.
-				if (!doubleHook && context.MissionRequiredTugType.HasValue && context.MissionRequiredTugType.Value == FishingManager.TugType)
+				// Missions are a 5-20% multiplier on the whole voyage score, so DH/TH accelerating them
+				// is worth the GP for every priority EXCEPT Achievements: there, a mission-matching bite
+				// is almost never the focus category, so hooking it just drains the GP the achievement run
+				// is banking for its focus catches (see the Achievement branch above). Skip them entirely.
+				if (OceanTripNewSettings.Instance.FishPriority != FishPriority.Achievements)
 				{
-					Log("Bite matches an active bite-strength mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
-					doubleHook = true;
-				}
-
-				// Category missions ("Catch sharks", "Catch fugu"): same idea, but matched by the
-				// predicted fish's Achievement tag instead of tug type — a multi-catch hookset nets
-				// several of the matching category at once.
-				if (!doubleHook && context.MissionRequiredAchievementTags != null)
-				{
-					var bestGuess = matchedFish.FirstOrDefault();
-					if (bestGuess != null && !string.IsNullOrEmpty(bestGuess.Achievement)
-						&& context.MissionRequiredAchievementTags.Contains(bestGuess.Achievement))
+					// Bite-strength missions ("Catch fish with a weak/strong/ferocious bite"): a single
+					// hookset catches several fish sharing this tug, multiplying mission progress.
+					if (!doubleHook && context.MissionRequiredTugType.HasValue && context.MissionRequiredTugType.Value == FishingManager.TugType)
 					{
-						Log("Bite matches an active category mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
+						Log("Bite matches an active bite-strength mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
 						doubleHook = true;
+					}
+
+					// Category missions ("Catch sharks", "Catch fugu"): same idea, but matched by the
+					// predicted fish's Achievement tag instead of tug type — a multi-catch hookset nets
+					// several of the matching category at once.
+					if (!doubleHook && context.MissionRequiredAchievementTags != null)
+					{
+						var bestGuess = matchedFish.FirstOrDefault();
+						if (bestGuess != null && !string.IsNullOrEmpty(bestGuess.Achievement)
+							&& context.MissionRequiredAchievementTags.Contains(bestGuess.Achievement))
+						{
+							Log("Bite matches an active category mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
+							doubleHook = true;
+						}
 					}
 				}
 			}

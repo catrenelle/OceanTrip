@@ -857,12 +857,22 @@ namespace Ocean_Trip.UI.Wpf
 			});
 
 			// Points — the single most decision-relevant fact on the card; everything here needs to
-			// read at a glance, no mouseover.
+			// read at a glance, no mouseover. The DH/TH bonus counts (how many copies of THIS fish a
+			// Double/Triple Hook nets) ride alongside as informational text — distinct from the corner
+			// badge, which flags whether the bot actually intends to DH/TH here. Each is shown only when
+			// it's an actual bonus (> 1); "×1" would just be noise since a plain hook nets one anyway.
+			var stats = $"{fish.Points} pts";
+			if (fish.DHBonus > 1)
+				stats += $"  ·  DH ×{fish.DHBonus}";
+			if (fish.THBonus > 1)
+				stats += $"  ·  TH ×{fish.THBonus}";
+
 			textStack.Children.Add(new TextBlock
 			{
-				Text = $"{fish.Points} pts",
+				Text = stats,
 				Style = (Style)Application.Current.Resources["SecondaryText"],
 				FontSize = 11,
+				TextWrapping = TextWrapping.Wrap,
 				Margin = new Thickness(0, 1, 0, 0),
 			});
 

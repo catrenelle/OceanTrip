@@ -16,6 +16,9 @@
 	<Color x:Key="TextSecondaryColor">#FFA0A4B8</Color>
 	<!-- Low-stock warning — Tackle Box bait counts switch to this once at/below Restock Threshold. -->
 	<Color x:Key="WarningColor">#FFE0A030</Color>
+	<!-- Positive/"available" accent — e.g. the Schedule "New Fish" highlight. A mid green dark
+	     enough to read white badge text against, and clearly distinct from the blue Accent. -->
+	<Color x:Key="SuccessColor">#FF2E9E52</Color>
 
 	<SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" />
 	<SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
@@ -26,6 +29,7 @@
 	<SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}" />
 	<SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
 	<SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
+	<SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}" />
 
 	<!-- Lighter accent for text/foreground/outline contexts — section headers, the active nav
 	     item, a selected radio button's ring/dot — anywhere AccentBrush itself would be too dark. -->

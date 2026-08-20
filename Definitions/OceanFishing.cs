@@ -278,7 +278,7 @@ namespace OceanTripPlanner.Definitions
 		public const int ParjanyaWrasse = 51233;
 		public const int Simolestes = 51234;
 		public const int Thavnasaurus = 51235;
-		public const int JuniorJinbei = 51236;
+		public const int JuniorJinbei = 51687;
 		public const int SpectralGrouper = 51237;
 		public const int Silkfin = 51238;
 

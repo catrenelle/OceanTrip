@@ -106,6 +106,22 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Highlights" Width="150">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0,0,0">
+								<Border Visibility="{Binding PointsBadge}" ToolTip="{Binding PointsTip}"
+								        Background="{DynamicResource AccentBrush}" CornerRadius="3" Padding="6,1" Margin="0,0,5,0">
+									<TextBlock Text="★ Points" FontSize="10" FontWeight="SemiBold" Foreground="White" />
+								</Border>
+								<Border Visibility="{Binding MissingBadge}" ToolTip="{Binding MissingTip}"
+								        Background="{DynamicResource SuccessBrush}" CornerRadius="3" Padding="6,1">
+									<TextBlock Text="◆ New Fish" FontSize="10" FontWeight="SemiBold" Foreground="White" />
+								</Border>
+							</StackPanel>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>

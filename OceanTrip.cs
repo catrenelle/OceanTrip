@@ -64,6 +64,13 @@ namespace OceanTripPlanner
 		// Used to gate GP-banking — see ManageBuffsAndConsumables.
 		private bool _hadSpectralThisStop;
 
+		// Cosmetic trip toggles (SitWhileFishing / CastLight). Both are stateless toggles — /sit has
+		// no RB-exposed seated flag and Cast Light applies no aura — so re-issuing either would just
+		// turn it back off. They're fired ONCE per voyage and tracked here; reset at the top of
+		// ExecuteVoyage. See EnsureTripCosmetics.
+		private bool _satThisVoyage;
+		private bool _castLightApplied;
+
 		// Static mirror of _hadSpectralThisStop — see SpectralPityActive just below for why a
 		// static bridge is used (CurrentRoutePageBehavior can't reach into a running instance).
 		// Combined with knowing it's the last stop (CurrentRoutePageBehavior already tracks that
@@ -423,6 +430,10 @@ namespace OceanTripPlanner
 		private async Task ExecuteVoyage()
 		{
 			int spot = rnd.Next(6);
+
+			// Fresh voyage — re-arm the once-per-voyage cosmetic toggles (see EnsureTripCosmetics).
+			_satThisVoyage = false;
+			_castLightApplied = false;
 
 			// Auto-detect route from zone ID and sync the setting so achievement code reads the correct route
 			string detectedRoute = WorldManager.RawZoneId == Zones.TheEndeavor ? "Indigo" : "Ruby";
@@ -1001,6 +1012,8 @@ namespace OceanTripPlanner
 		/// </summary>
 		private async Task ManageBuffsAndConsumables(bool spectraled)
 		{
+			EnsureTripCosmetics();
+
 			// Check for spectral weather changes
 			bool currentlySpectral = gameCache.CurrentWeatherId == Weather.Spectral;
 			if (!currentlySpectral)
@@ -1025,6 +1038,44 @@ namespace OceanTripPlanner
 			await Coroutine.Yield();
 
 			await ManageGpConsumables(currentlySpectral);
+		}
+
+		/// <summary>
+		/// Applies the cosmetic trip toggles (Sit While Fishing / Cast Light) once per voyage. Called
+		/// at the top of every cast cycle but guarded by _satThisVoyage / _castLightApplied so each
+		/// fires exactly once — both are stateless in-game toggles (no seated flag, no Cast Light aura),
+		/// so re-issuing would turn them back off. Cast Light is gated on CanCast (needs the rod out);
+		/// /sit is a plain emote. Both are purely visual and never touch GP or the catch flow.
+		/// </summary>
+		private void EnsureTripCosmetics()
+		{
+			if (OceanTripNewSettings.Instance.CastLight && !_castLightApplied
+				&& ActionManager.CanCast(Actions.CastLight, Core.Me))
+			{
+				Log("Enabling Cast Light (rod-tip glow) for the voyage.", OceanLogLevel.Debug);
+				ActionManager.DoAction(Actions.CastLight, Core.Me);
+				_castLightApplied = true;
+			}
+
+			// Only sit from PoleReady (rod out, between casts). EnsureTripCosmetics also runs when
+			// State == None (first cast of a stop, rod not yet out); sitting there just plants us on
+			// the deck without a line and the following cast either fails or stands us straight back up.
+			// Guarded once-per-voyage: /sit is a stateless toggle (no seated flag to read), so re-issuing
+			// it while already seated would stand us up — sit once and stay put.
+			if (OceanTripNewSettings.Instance.SitWhileFishing && !_satThisVoyage
+				&& FishingManager.State == FishingState.PoleReady)
+			{
+				// "/sit" is locale-safe on EVERY client despite being a text command. For the Sit emote
+				// (TextCommand row 451) the Command ("/lounge") and ShortCommand ("/sit") are the canonical
+				// commands and are preserved across all six client languages — verified EN/DE/FR/JA via
+				// XIVAPI and Simplified Chinese via the CN datamining sheet (both keep "/sit"; the Chinese
+				// text lands in Alias/Description, not the primary command). TW runs the same engine. RB
+				// exposes no emote-by-ID API (no ActionType.Emote, no AgentEmote wrapper), so a chat
+				// command is the right tool — and this one doesn't break abroad.
+				Log("Sitting for the voyage (/sit).", OceanLogLevel.Debug);
+				ChatManager.SendChat("/sit");
+				_satThisVoyage = true;
+			}
 		}
 
 		/// <summary>

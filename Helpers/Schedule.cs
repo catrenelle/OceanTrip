@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using OceanTrip;
 using Ocean_Trip.Definitions;
+using OceanTripPlanner.Definitions;
 
 namespace OceanTripPlanner
 {
@@ -19,6 +20,12 @@ namespace OceanTripPlanner
 		public string routeName { get; set; }
 		public string routeTime { get; set; }
 		public string objectives { get; set; }
+
+		// Run highlights, computed in GetSchedules from the run's fish (see RunFishStats).
+		public bool hasMissingFish { get; set; }
+		public string missingFishNames { get; set; }
+		public bool bestForPoints { get; set; }
+		public int pointsScore { get; set; }
 
 		public Schedule() { }
 
@@ -41,22 +48,42 @@ namespace OceanTripPlanner
 
 			List<Schedule> schedules = new List<Schedule>();
 
-			for (int i = 0; i < amount; i++)
+			// Hoisted out of the per-run loop — both are cached lookups, but there's no reason to
+			// re-fetch them 18 times. MissingFish can be null before the log has been read once.
+			var missingFish = global::OceanTrip.FishingLog.MissingFish() ?? new HashSet<uint>();
+			var allFish = FishDataCache.GetFish();
+
+			var nextBoat = OceanTrip.TimeUntilNextBoat();
+
+			// Row 0 of the raw walk is the most-recent boat (the -120 offset), which is only worth
+			// showing while it's still boardable. Walk forward, skipping any run whose boarding window
+			// has already closed, until we've collected `amount` upcoming runs. The +4 cap keeps a
+			// pathological clock/timespan state from looping forever.
+			for (int i = 0; schedules.Count < amount && i < amount + 4; i++)
 			{
-				var nextBoat = OceanTrip.TimeUntilNextBoat();
 				DateTime time = DateTime.Now.AddMinutes((nextBoat.TotalMinutes - 120) + (i * 120));
 
 				// Sometimes a mismatch can happen between when the timespan was captured and when the datetime is generated
 				if (time.Minute == 59)
 					time = time.AddMinutes(1);
 
+				// Drop boats that have already sailed. Registration closes at :15 past a run's even
+				// departure hour (LATE_QUEUE_END_MINUTE) — after that it can't be boarded, so it has no
+				// place at the top of an "upcoming runs" list. e.g. by 11:00 the 10:00 boat is long gone
+				// and the first row should be 12:00. Floor to the hour first so this holds regardless of
+				// the early (:00) vs late (:13) queue-minute the time was generated at.
+				DateTime boardingClosesAt = time.AddMinutes(-time.Minute).AddMinutes(FishingConstants.LATE_QUEUE_END_MINUTE);
+				if (DateTime.Now > boardingClosesAt)
+					continue;
+
 				var schedule = Routes.GetSchedule(time, route);
 				int posOnSchedule = 0;
 
 				// Build the schedule!
 				var entry = new Schedule();
-				
-				if (i == 0 || (time.ToString("hh:mm tt") == "12:00 AM" || time.ToString("hh:mm tt") == "01:00 AM"))
+
+				// First VISIBLE row (after any skips) carries the date, as do the day-rollover rows.
+				if (schedules.Count == 0 || (time.ToString("hh:mm tt") == "12:00 AM" || time.ToString("hh:mm tt") == "01:00 AM"))
 					entry.day = time.ToString("MM/dd");
 				else
 					entry.day = "";
@@ -66,12 +93,63 @@ namespace OceanTripPlanner
 				entry.routeTime = schedule[posOnSchedule + 2].Item2;
 				entry.objectives = scheduleObjectives(schedule);
 
+				var (hasMissing, missingNames, score) = RunFishStats(schedule, missingFish, allFish);
+				entry.hasMissingFish = hasMissing;
+				entry.missingFishNames = missingNames;
+				entry.pointsScore = score;
+
 				schedules.Add(entry);
+			}
+
+			// "Best for points" is relative to the runs actually shown: flag every run within 10% of the
+			// top score. When one route rotation has standout high-value (blue-fish) runs they alone light
+			// up; when the shown runs are all comparable, they all qualify — which is itself accurate.
+			if (schedules.Count > 0)
+			{
+				int maxScore = schedules.Max(s => s.pointsScore);
+				int threshold = (int)(maxScore * 0.9);
+				foreach (var s in schedules)
+					s.bestForPoints = maxScore > 0 && s.pointsScore >= threshold;
 			}
 
 			return schedules;
 		}
 
+
+		/// <summary>
+		/// Per-run fish highlights: whether the run can catch any still-uncaught Fish Log entry, the
+		/// names of those fish (for the tooltip), and a points-potential score. Score = sum over the
+		/// three stops of the single highest-value fish available at each — a cheap proxy that rewards
+		/// runs stacked with blue/high-value fish. Weather isn't knowable this far ahead, so normal
+		/// fish are all counted as possible; spectral fish are still time-of-day gated (that IS known).
+		/// </summary>
+		private static (bool hasMissing, string missingNames, int pointsScore) RunFishStats(
+			Tuple<string, string>[] schedule, HashSet<uint> missingFish, List<Fish> allFish)
+		{
+			var missingNames = new List<string>();
+			var missingSeen = new HashSet<uint>();
+			int score = 0;
+
+			for (int i = 0; i <= 2; i++)
+			{
+				string loc = schedule[i].Item1;
+				string tod = schedule[i].Item2;
+
+				var stopFish = allFish.Where(f => f.RouteShortName == loc &&
+					(!f.SpectralFish || (f.TimeOfDayExclusion1 != tod && f.TimeOfDayExclusion2 != tod))).ToList();
+
+				if (stopFish.Count > 0)
+					score += stopFish.Max(f => f.Points);
+
+				foreach (var f in stopFish)
+				{
+					if (missingFish.Contains((uint)f.FishID) && missingSeen.Add((uint)f.FishID))
+						missingNames.Add(f.FishName);
+				}
+			}
+
+			return (missingNames.Count > 0, string.Join(", ", missingNames), score);
+		}
 
 		public static string areaName(string shortname)
 		{

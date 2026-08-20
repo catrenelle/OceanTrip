@@ -785,6 +785,18 @@ namespace OceanTripPlanner
 			set => _settings.OpenWorldFishing = value;
 		}
 
+		public bool SitWhileFishing
+		{
+			get => _settings.SitWhileFishing;
+			set => _settings.SitWhileFishing = value;
+		}
+
+		public bool CastLight
+		{
+			get => _settings.CastLight;
+			set => _settings.CastLight = value;
+		}
+
 		public FishPriority FishPriority
 		{
 			get => _settings.FishPriority;

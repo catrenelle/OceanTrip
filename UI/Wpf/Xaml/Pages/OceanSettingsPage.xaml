@@ -121,12 +121,16 @@
 					<RadioButton Grid.Row="6" Grid.Column="1" GroupName="TargetFish" Content="None" Margin="0,0,18,0"
 					             IsChecked="{Binding TargetFishId, Converter={StaticResource EnumConverter}, ConverterParameter=0}" />
 					<RadioButton Grid.Row="6" Grid.Column="2" GroupName="TargetFish" Content="Junior Jinbei" Margin="0,0,18,0"
-					             IsChecked="{Binding TargetFishId, Converter={StaticResource EnumConverter}, ConverterParameter=51236}" />
+					             IsChecked="{Binding TargetFishId, Converter={StaticResource EnumConverter}, ConverterParameter=51687}" />
 
 					<TextBlock Grid.Row="7" Grid.Column="0" Text="Trip Options" Style="{DynamicResource FormLabel}" />
 					<CheckBox Grid.Row="7" Grid.Column="1" Content="Late Queue" Margin="0,0,18,0" IsChecked="{Binding LateBoatQueue}" />
 					<CheckBox Grid.Row="7" Grid.Column="2" Content="Nasi Goreng" Margin="0,0,18,0" IsChecked="{Binding OceanFood}" />
-					<CheckBox Grid.Row="7" Grid.Column="3" Content="Verbose Logging" Margin="0,0,18,0" IsChecked="{Binding LoggingMode}" />
+					<CheckBox Grid.Row="7" Grid.Column="3" Content="/sit" Margin="0,0,18,0" IsChecked="{Binding SitWhileFishing}"
+					          ToolTip="Sit (/sit) while out on the voyage — cosmetic only" />
+					<CheckBox Grid.Row="7" Grid.Column="4" Content="Cast Light" Margin="0,0,18,0" IsChecked="{Binding CastLight}"
+					          ToolTip="Use the Cast Light action to light the rod tip — cosmetic only" />
+					<CheckBox Grid.Row="7" Grid.Column="5" Content="Verbose Logging" Margin="0,0,18,0" IsChecked="{Binding LoggingMode}" />
 
 					<TextBlock Grid.Row="8" Grid.Column="0" Text="Open World" Style="{DynamicResource FormLabel}" />
 					<CheckBox Grid.Row="8" Grid.Column="1" Content="Assisted Fishing" Margin="0,0,18,0" IsChecked="{Binding OpenWorldFishing}" />

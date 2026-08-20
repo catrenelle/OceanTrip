@@ -156,6 +156,12 @@ namespace Ocean_Trip.UI.Wpf
 				Objective1Name = objective1 ?? "",
 				Objective2Icon = ObjectiveImage(objective2),
 				Objective2Name = objective2 ?? "",
+				PointsBadge = schedule.bestForPoints ? Visibility.Visible : Visibility.Collapsed,
+				PointsTip = "High point potential — among the best-scoring runs shown here.",
+				MissingBadge = schedule.hasMissingFish ? Visibility.Visible : Visibility.Collapsed,
+				MissingTip = string.IsNullOrEmpty(schedule.missingFishNames)
+					? null
+					: $"Uncaught Fish Log entries possible this run: {schedule.missingFishNames}",
 			};
 		}
 
@@ -213,5 +219,9 @@ namespace Ocean_Trip.UI.Wpf
 		public string Objective1Name { get; set; }
 		public ImageSource Objective2Icon { get; set; }
 		public string Objective2Name { get; set; }
+		public Visibility PointsBadge { get; set; }
+		public string PointsTip { get; set; }
+		public Visibility MissingBadge { get; set; }
+		public string MissingTip { get; set; }
 	}
 }

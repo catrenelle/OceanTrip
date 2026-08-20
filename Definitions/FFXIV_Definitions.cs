@@ -238,6 +238,13 @@ namespace OceanTripPlanner.Definitions
 		public const uint ThaliaksFavor = 26804;
 
 		/// <summary>
+		/// "Lights up the tip of your fishing rod." Toggle, FSH Lv1, 0 GP — purely cosmetic (helps
+		/// see the bobber at night). Verified via XIVAPI Action row 2135. Applies NO status aura, so
+		/// its on/off state isn't observable — it must be fired once and tracked, never re-checked.
+		/// </summary>
+		public const uint CastLight = 2135;
+
+		/// <summary>
 		/// Guarantees the next catch is Large (2x points), until you catch something or quit fishing.
 		/// Verified via XIVAPI Action 26806: Name "Prize Catch", ClassJobLevel 81, GP cost 200.
 		/// </summary>

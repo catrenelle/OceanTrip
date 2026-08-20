@@ -177,6 +177,22 @@ namespace OceanTripPlanner.Settings
 			set => SetProperty(ref _openWorldFishing, value);
 		}
 
+		// Cosmetic trip options — sit (/sit emote) and light the rod tip (Cast Light action) while
+		// out on the voyage. No effect on catches; fired once per voyage (both are stateless toggles).
+		private bool _sitWhileFishing;
+		public bool SitWhileFishing
+		{
+			get => _sitWhileFishing;
+			set => SetProperty(ref _sitWhileFishing, value);
+		}
+
+		private bool _castLight;
+		public bool CastLight
+		{
+			get => _castLight;
+			set => SetProperty(ref _castLight, value);
+		}
+
 		private bool _lateBoatQueue;
 		public bool LateBoatQueue
 		{
