@@ -118,6 +118,8 @@ namespace Ocean_Trip.UI.Wpf
 			if (page.FindName("RouteBannerBrush") is ImageBrush bannerBrush)
 				bannerBrush.ImageSource = LoadBannerImage();
 
+			WireBaitClipboard(page);
+
 			Refresh(page);
 
 			var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
@@ -127,6 +129,52 @@ namespace Ocean_Trip.UI.Wpf
 			// Each Attach() call gets its own timer instance captured by this closure, so pages
 			// navigated away from stop only their own timer — no shared/static state to leak.
 			page.Unloaded += (s, e) => timer.Stop();
+		}
+
+		// Segoe MDL2 Assets glyphs: Copy (idle) / CheckMark (post-copy feedback). Kept as consts so the
+		// XAML default (E8C8) and the click handler's revert stay in sync.
+		private const string CopyGlyph = "";
+		private const string CopiedGlyph = "";
+
+		/// <summary>
+		/// Wires the header copy glyph once per page load (not per 5s poll — that would stack handlers).
+		/// The current plan text is refreshed onto glyph.Tag every poll by SetBaitClipboard; this handler
+		/// just reads it. Clipboard.SetText can throw CLIPBRD_E_CANT_OPEN when another process holds the
+		/// clipboard, so it's guarded — a failed copy logs and leaves the glyph unchanged rather than
+		/// showing a false "copied" checkmark.
+		/// </summary>
+		private static void WireBaitClipboard(UserControl page)
+		{
+			if (!(page.FindName("CopyBaitGlyph") is TextBlock glyph))
+				return;
+
+			glyph.MouseLeftButtonUp += (s, e) =>
+			{
+				if (!(glyph.Tag is string text) || string.IsNullOrEmpty(text))
+					return;
+
+				try
+				{
+					Clipboard.SetText(text);
+				}
+				catch (Exception ex)
+				{
+					Logging.Write($"[Ocean Trip] Copy bait plan to clipboard failed: {ex.Message}");
+					return;
+				}
+
+				glyph.Text = CopiedGlyph;
+				glyph.ToolTip = "Copied!";
+
+				var revert = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
+				revert.Tick += (ts, te) =>
+				{
+					glyph.Text = CopyGlyph;
+					glyph.ToolTip = "Copy bait plan to clipboard";
+					revert.Stop();
+				};
+				revert.Start();
+			};
 		}
 
 		private static BitmapImage _cachedBannerImage;
@@ -602,14 +650,20 @@ namespace Ocean_Trip.UI.Wpf
 					Foreground = new SolidColorBrush(Color.FromArgb(0xCC, 0xFF, 0xFF, 0xFF)),
 					TextWrapping = TextWrapping.Wrap,
 				});
+				SetBaitClipboard(page, null);
 				return;
 			}
+
+			// Same (label, bait) pairs as the rows below, accumulated so the header's copy glyph can
+			// hand the whole plan to the clipboard as one chat-pasteable line.
+			var plan = new List<(string Label, uint Bait)>();
 
 			// Trigger Spectral sits under Normal (same column) rather than alongside During
 			// Spectral/For Sothis — it's still the "normal fishing" phase of the stop, just aimed at
 			// procuring Spectral Current, whereas the second column is entirely about what to do once
 			// Spectral Current has already started.
 			normalPanel.Children.Add(BuildBaitRow("Normal", routeInfo.Route.NormalBait));
+			plan.Add(("Normal", routeInfo.Route.NormalBait));
 
 			var spectralTriggerBait = normalFish
 				.Where(f => f.CausesSpectral && isAvailable(f))
@@ -619,6 +673,7 @@ namespace Ocean_Trip.UI.Wpf
 				.FirstOrDefault() ?? routeInfo.Route.NormalBait;
 
 			normalPanel.Children.Add(BuildBaitRow("Trigger Spectral", spectralTriggerBait));
+			plan.Add(("Trigger Spectral", spectralTriggerBait));
 
 			// Route.SpectralBait (fishingRoutes.json) is inconsistently curated — sometimes it's the
 			// route's signature Rare fish's own FavoriteBait, sometimes (when that fish has no bait
@@ -633,6 +688,7 @@ namespace Ocean_Trip.UI.Wpf
 				bestSpectralBait = routeInfo.Route.SpectralBait;
 
 			spectralPanel.Children.Add(BuildBaitRow("During Spectral", bestSpectralBait));
+			plan.Add(("During Spectral", bestSpectralBait));
 
 			// The route's signature Rare fish (e.g. Sothis at Galadion Bay) is usually the whole
 			// point of chasing Spectral Current — call out its specific favorite bait separately
@@ -641,7 +697,42 @@ namespace Ocean_Trip.UI.Wpf
 			// in which case there's nothing meaningful to show here.
 			var specialFish = spectralFish.FirstOrDefault(f => f.Rarity == "Rare");
 			if (specialFish != null && specialFish.FavoriteBait != 0)
+			{
 				spectralPanel.Children.Add(BuildBaitRow($"For {specialFish.FishName}", specialFish.FavoriteBait));
+				plan.Add(($"For {specialFish.FishName}", specialFish.FavoriteBait));
+			}
+
+			SetBaitClipboard(page, ComposeBaitPlanText(plan));
+		}
+
+		/// <summary>
+		/// Flattens the bait plan into a single line for FFXIV chat — one message is one line in game,
+		/// so a multi-line paste would be truncated. Rows whose bait name hasn't resolved yet (item
+		/// sheet still warming up) are skipped rather than emitted as a dash. Returns null when nothing
+		/// resolved, so the copy glyph stays hidden until there's something worth copying.
+		/// </summary>
+		private static string ComposeBaitPlanText(List<(string Label, uint Bait)> plan)
+		{
+			var segments = plan
+				.Select(p => (p.Label, Name: ResolveBaitName(p.Bait)))
+				.Where(p => !string.IsNullOrEmpty(p.Name))
+				.Select(p => $"{p.Label}: {p.Name}")
+				.ToList();
+
+			return segments.Count == 0 ? null : "Ocean Fishing bait — " + string.Join(" | ", segments);
+		}
+
+		/// <summary>
+		/// Stashes the current plan text on the copy glyph (read back by the click handler wired once
+		/// in Attach) and shows/hides the glyph accordingly. Called every 5s poll, so the text tracks
+		/// the live stop without re-wiring the handler each time.
+		/// </summary>
+		private static void SetBaitClipboard(UserControl page, string text)
+		{
+			if (!(page.FindName("CopyBaitGlyph") is TextBlock glyph))
+				return;
+			glyph.Tag = text;
+			glyph.Visibility = string.IsNullOrEmpty(text) ? Visibility.Collapsed : Visibility.Visible;
 		}
 
 		private static void BuildFishLogTarget(UserControl page, List<Ocean_Trip.Definitions.Fish> normalFish,
@@ -963,6 +1054,22 @@ namespace Ocean_Trip.UI.Wpf
 		/// Compact icon + two-line (muted caption / bold name) row — designed to sit stacked three
 		/// deep in the banner's left column rather than as its own standalone card.
 		/// </summary>
+		/// <summary>
+		/// DataManager.ItemCache[id] can come back null for a valid item ID while the game's item
+		/// sheet is still warming up (e.g. right after boarding, mid zone-transition) — this page
+		/// polls every 5s via a live DispatcherTimer, unlike the other ItemCache call sites in this
+		/// project (settings dialogs opened well after the character is fully loaded), so it's the
+		/// one place that needs to tolerate a transient miss. Returns null (not "—") so callers can
+		/// tell "no bait / not resolved yet" apart from a real name — the clipboard builder skips
+		/// nulls, the row renderer falls back to a dash.
+		/// </summary>
+		private static string ResolveBaitName(uint baitItemId)
+		{
+			if (baitItemId == 0)
+				return null;
+			return DataManager.ItemCache[baitItemId]?.CurrentLocaleName;
+		}
+
 		private static FrameworkElement BuildBaitRow(string label, uint baitItemId)
 		{
 			var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) };
@@ -986,14 +1093,7 @@ namespace Ocean_Trip.UI.Wpf
 				FontSize = 9,
 				Foreground = new SolidColorBrush(Color.FromArgb(0xAA, 0xFF, 0xFF, 0xFF)),
 			});
-			// DataManager.ItemCache[id] can come back null for a valid item ID while the game's item
-			// sheet is still warming up (e.g. right after boarding, mid zone-transition) — this page
-			// polls every 5s via a live DispatcherTimer, unlike the other ItemCache call sites in this
-			// project (settings dialogs opened well after the character is fully loaded), so it's the
-			// one place that needs to tolerate a transient miss instead of assuming the cache is hot.
-			string baitName = "—";
-			if (baitItemId != 0)
-				baitName = DataManager.ItemCache[baitItemId]?.CurrentLocaleName ?? "—";
+			string baitName = ResolveBaitName(baitItemId) ?? "—";
 
 			textStack.Children.Add(new TextBlock
 			{

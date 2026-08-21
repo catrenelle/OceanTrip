@@ -41,8 +41,17 @@
 								<TextBlock x:Name="RouteSubText" FontFamily="Segoe UI" FontSize="12"
 								           Foreground="#DDDDDD" Margin="0,2,0,16" />
 
-								<TextBlock Text="RECOMMENDED BAIT" FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
-								           Foreground="#6EC6F0" Margin="0,0,0,8" />
+								<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+									<TextBlock Text="RECOMMENDED BAIT" FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
+									           Foreground="#6EC6F0" VerticalAlignment="Center" />
+									<!-- Copies the whole bait plan (all rows below) as a single line for pasting into
+									     FFXIV chat. Wired in CurrentRoutePageBehavior: Tag holds the current text,
+									     refreshed every poll; glyph is Segoe MDL2 Assets Copy (E8C8) / CheckMark (E73E). -->
+									<TextBlock x:Name="CopyBaitGlyph" Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets"
+									           FontSize="12" Foreground="#6EC6F0" Margin="8,0,0,0" Cursor="Hand"
+									           VerticalAlignment="Center" Visibility="Collapsed"
+									           ToolTip="Copy bait plan to clipboard" />
+								</StackPanel>
 								<Grid HorizontalAlignment="Left">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto" />
