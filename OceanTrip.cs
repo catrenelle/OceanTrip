@@ -299,6 +299,9 @@ namespace OceanTripPlanner
 
 			//FishingLog.MissingFish();
 			await FishingLog.InitializeFishLog();
+			// Drain a queued manual Fish Guide reconcile (status-bar refresh icon) at the voyage-cycle
+			// boundary — idle and off the line here. See FishingLog.ProcessPendingResync.
+			await FishingLog.ProcessPendingResync();
 			FFXIV_Databinds.Instance.RefreshBait();
 
 			await OceanFishing();
@@ -481,6 +484,10 @@ namespace OceanTripPlanner
 
 			while (OnBoat && Endeavor.waitingOnBoat)
 			{
+				// Pick up a queued Fish Guide reconcile at the top of a round — the pole is back at
+				// PoleReady (line not out), so briefly opening the Fish Guide before the next cast is safe.
+				await FishingLog.ProcessPendingResync();
+
 				// Reset for this round
 				caughtFish.Clear();
 				lastCaughtFish = 0;

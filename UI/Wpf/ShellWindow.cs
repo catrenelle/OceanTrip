@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
@@ -40,7 +41,9 @@ namespace Ocean_Trip.UI.Wpf
 			var pageContent = (ContentControl)window.FindName("PageContent");
 			var statusDot = (System.Windows.Shapes.Ellipse)window.FindName("StatusDot");
 			var statusText = (TextBlock)window.FindName("StatusText");
+			var missingFishPanel = (StackPanel)window.FindName("MissingFishPanel");
 			var missingFishText = (TextBlock)window.FindName("MissingFishText");
+			var resyncFishGlyph = (TextBlock)window.FindName("ResyncFishGlyph");
 
 			var navIdleActivities = (Button)window.FindName("NavIdleActivities");
 			var navOceanSettings = (Button)window.FindName("NavOceanSettings");
@@ -112,6 +115,57 @@ namespace Ocean_Trip.UI.Wpf
 				}
 			};
 
+			// Status-bar Fish Guide reconcile icon: the click can't open the Fish Guide itself (that's a
+			// framethread game action), so it just queues a request the botbase drains between casts — see
+			// FishingLog.ProcessPendingResync. Spin the glyph until the request clears.
+			var resyncRotate = new RotateTransform();
+			resyncFishGlyph.RenderTransform = resyncRotate;
+			resyncFishGlyph.RenderTransformOrigin = new Point(0.5, 0.5);
+
+			void StartResyncSpinner()
+			{
+				resyncFishGlyph.Opacity = 1.0;
+				var spin = new DoubleAnimation(0, 360, new Duration(TimeSpan.FromSeconds(1))) { RepeatBehavior = RepeatBehavior.Forever };
+				resyncRotate.BeginAnimation(RotateTransform.AngleProperty, spin);
+			}
+
+			void StopResyncSpinner()
+			{
+				resyncRotate.BeginAnimation(RotateTransform.AngleProperty, null);
+				resyncRotate.Angle = 0;
+			}
+
+			resyncFishGlyph.MouseLeftButtonUp += (s, e) =>
+			{
+				// Guarded to the same condition RefreshStatus enables the glyph under; a stale click that
+				// slips through (e.g. bot stopped mid-frame) is a harmless no-op the coroutine never drains.
+				if (ff14bot.Core.Me == null || !ff14bot.TreeRoot.IsRunning || global::OceanTrip.FishingLog.ResyncPending)
+					return;
+
+				global::OceanTrip.FishingLog.RequestResync();
+				StartResyncSpinner();
+				resyncFishGlyph.ToolTip = "Reconciling with the in-game Fish Guide…";
+
+				// Poll for completion off the request flag. 300ms × 400 ≈ 2min safety cap: during a long
+				// spectral current the pole may not return to PoleReady for a while, so don't give up early —
+				// but if the bot stops before draining it, stop spinning eventually. A still-queued request
+				// runs later regardless, and the 5s status tick picks up the new count.
+				var poll = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+				int ticks = 0;
+				poll.Tick += (ts, te) =>
+				{
+					ticks++;
+					if (!global::OceanTrip.FishingLog.ResyncPending || ticks > 400)
+					{
+						poll.Stop();
+						StopResyncSpinner();
+						resyncFishGlyph.ToolTip = "Reconcile with the in-game Fish Guide";
+						RefreshStatus();
+					}
+				};
+				poll.Start();
+			};
+
 			void RefreshStatus()
 			{
 				bool connected = ff14bot.Core.Me != null;
@@ -123,7 +177,7 @@ namespace Ocean_Trip.UI.Wpf
 				var missingFish = connected ? global::OceanTrip.FishingLog.MissingFish() : null;
 				if (missingFish == null)
 				{
-					missingFishText.Visibility = Visibility.Collapsed;
+					missingFishPanel.Visibility = Visibility.Collapsed;
 				}
 				else
 				{
@@ -131,7 +185,25 @@ namespace Ocean_Trip.UI.Wpf
 					missingFishText.Text = missingFish.Count == 0
 						? "No missing fish"
 						: $"{missingFish.Count}/{total} fish missing";
-					missingFishText.Visibility = Visibility.Visible;
+					missingFishPanel.Visibility = Visibility.Visible;
+
+					// Refresh glyph is clickable only while a resync isn't already running and the botbase is
+					// running (the only time the queued request can actually be drained) — dim + non-interactive
+					// otherwise, with a tooltip that says why. While a resync is pending the spinner owns the
+					// glyph, so leave its opacity/hit-testing to the click handler.
+					if (global::OceanTrip.FishingLog.ResyncPending)
+					{
+						resyncFishGlyph.IsHitTestVisible = false;
+					}
+					else
+					{
+						bool canResync = ff14bot.TreeRoot.IsRunning;
+						resyncFishGlyph.IsHitTestVisible = canResync;
+						resyncFishGlyph.Opacity = canResync ? 1.0 : 0.35;
+						resyncFishGlyph.ToolTip = canResync
+							? "Reconcile with the in-game Fish Guide"
+							: "Start the bot to reconcile the Fish Guide";
+					}
 				}
 
 				// One-way reveal: once a voyage's ever been logged, VoyageHistoryStore's backing file

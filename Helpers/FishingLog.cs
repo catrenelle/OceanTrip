@@ -260,6 +260,47 @@ namespace OceanTrip
 			}
 		}
 
+		// Manual Fish Guide reconcile, triggered by the status-bar refresh icon (ShellWindow). The
+		// WPF click can't run ResyncWithFishGuide directly — GetFishList opens the in-game Fish Guide,
+		// a framethread game action — so the click just raises _resyncRequested and the botbase
+		// coroutine drains it via ProcessPendingResync at a point where the line isn't out.
+		private static volatile bool _resyncRequested;
+		private static volatile bool _resyncRunning;
+
+		/// <summary>Raise a request to reconcile the missing-fish cache against the in-game Fish Guide.
+		/// Safe to call from the WPF thread; actual work happens on the botbase coroutine.</summary>
+		public static void RequestResync() => _resyncRequested = true;
+
+		/// <summary>True from the instant a resync is requested until it finishes — drives the status-bar
+		/// spinner. _resyncRunning is set before _resyncRequested is cleared in ProcessPendingResync, so a
+		/// UI poll never catches a false "done" gap between the two.</summary>
+		public static bool ResyncPending => _resyncRequested || _resyncRunning;
+
+		/// <summary>Botbase-coroutine pickup (framethread): run a pending manual reconcile if one was
+		/// requested, else a cheap no-op. Must only be awaited where the line isn't out, since it can open
+		/// the in-game Fish Guide. Swallows its own errors so a reconcile failure never aborts the voyage.</summary>
+		public static async Task ProcessPendingResync()
+		{
+			if (!_resyncRequested)
+				return;
+
+			_resyncRunning = true;
+			_resyncRequested = false;
+			try
+			{
+				Logging.Write("[Ocean Trip] Manual Fish Guide reconcile requested — reading the in-game Fish Guide...");
+				await ResyncWithFishGuide();
+			}
+			catch (Exception ex)
+			{
+				Logging.Write($"[Ocean Trip] Manual Fish Guide reconcile failed: {ex.Message}");
+			}
+			finally
+			{
+				_resyncRunning = false;
+			}
+		}
+
 		public static void SaveMissingFishLog()
 		{
 			if (File.Exists(fileName))

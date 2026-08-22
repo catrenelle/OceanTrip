@@ -108,9 +108,17 @@
 					</StackPanel>
 
 					<!-- Fish Log progress — collapsed (not just empty text) until a character is
-					     connected and the log has loaded, so nothing dangles in the corner before then. -->
-					<TextBlock x:Name="MissingFishText" Style="{DynamicResource SecondaryText}"
-					           HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" />
+					     connected and the log has loaded, so nothing dangles in the corner before then.
+					     The refresh glyph reconciles the missing-fish cache against the in-game Fish Guide
+					     (wired in ShellWindow); enabled only while connected and the bot is running. -->
+					<StackPanel x:Name="MissingFishPanel" Orientation="Horizontal"
+					            HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed">
+						<TextBlock x:Name="MissingFishText" Style="{DynamicResource SecondaryText}" VerticalAlignment="Center" />
+						<TextBlock x:Name="ResyncFishGlyph" Text="&#xE72C;" FontFamily="Segoe MDL2 Assets"
+						           FontSize="12" Margin="8,0,0,0" VerticalAlignment="Center" Cursor="Hand"
+						           Foreground="{DynamicResource TextSecondaryBrush}"
+						           ToolTip="Reconcile with the in-game Fish Guide" />
+					</StackPanel>
 				</Grid>
 			</Grid>
 		</Grid>
