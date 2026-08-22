@@ -382,6 +382,14 @@ namespace OceanTripPlanner
 					|| (DateTime.UtcNow.Minute >= 13 && DateTime.UtcNow.Minute < 15 && OceanTripNewSettings.Instance.LateBoatQueue)))
 					|| ignoreBoat)
 			{
+				// Drain a queued Fish Guide reconcile (status-bar refresh icon) during the idle wait for
+				// the boat window — the most common time to click it, and previously a dead spot since
+				// neither Run()'s top nor the on-boat round loop is reached while parked here. Gated to
+				// State.None (no line out) so it can't fire mid open-world cast if OpenWorldFishing (below)
+				// is passing the time. Cheap no-op when nothing's queued.
+				if (FishingManager.State == FishingState.None)
+					await FishingLog.ProcessPendingResync();
+
 				await Coroutine.Sleep(FishingConstants.STANDARD_DELAY_MS);
 
 				if (OceanTripNewSettings.Instance.OpenWorldFishing && FishingManager.State != FishingState.None && Core.Me.CurrentJob == ClassJobType.Fisher)
