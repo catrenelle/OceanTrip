@@ -311,14 +311,23 @@ namespace OceanTripPlanner.Strategies
 
 			if (chainTargetActive)
 			{
-				if (bestGuess.FishID == (int)chainTarget)
+				// A fuzzy/ambiguous bite returns several candidates ordered by bite-time proximity, and
+				// the chain target can legitimately be a lower-ranked one — e.g. "Mehi-mahi, Satrapsaurus
+				// (fuzzy)" at Thavnair/Night, where Satrapsaurus is the Intuition prereq for Manasvin but
+				// Mehi-mahi is the closer bite-time match. Declining just because the TOP guess isn't the
+				// target would stall the whole chain: the prereqs share a tug/bite window with off-target
+				// fish, so we'd never build Intuition and never reach the real target. Accept if the
+				// target is ANY candidate — a wasted off-target catch costs one cast, a missed prereq
+				// costs the entire chain.
+				if (matchedFish.Any(f => f.FishID == (int)chainTarget))
 					return true;
 
 				// A mooch can sometimes catch the same source fish again instead of the intended
 				// target (e.g. Snapping Koban can mooch into itself) — accept a re-catch of the
 				// cast-source fish too, so the chain continues with another mooch attempt instead
 				// of discarding a valid catch and restarting from a fresh cast.
-				if (context.LastCastMooch && context.ChainCastTargetFishId != 0 && bestGuess.FishID == (int)context.ChainCastTargetFishId)
+				if (context.LastCastMooch && context.ChainCastTargetFishId != 0
+					&& matchedFish.Any(f => f.FishID == (int)context.ChainCastTargetFishId))
 					return true;
 
 				return false;
