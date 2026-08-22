@@ -18,7 +18,6 @@ using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
-using GreyMagic;
 using OceanTripPlanner.Helpers;
 using OceanTripPlanner.Definitions;
 using TreeSharp;
