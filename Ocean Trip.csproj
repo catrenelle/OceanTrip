@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>Ocean_Trip</RootNamespace>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -30,7 +30,7 @@
   <ItemGroup>
     <PackageReference Include="LlamaLibrary" Version="25.1218.1808.49" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.792" />
+    <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.902" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" Version="1.3.0" />
   </ItemGroup>
@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <!-- RebornBuddy.ReferenceAssemblies ships a native (non-.NET) Ijwhost.dll inside its managed
-       lib/net8.0-windows folder. NuGet exposes every DLL in that folder as a compile-time reference
+       lib/net10.0-windows folder. NuGet exposes every DLL in that folder as a compile-time reference
        candidate, but ResolveAssemblyReferences can't read CLR metadata from a native PE, producing a
        harmless MSB3246 warning every build. Nothing here uses it (it's a C++/CLI interop host,
        unrelated to fishing bot code) — drop it from the reference set before it's resolved. -->
