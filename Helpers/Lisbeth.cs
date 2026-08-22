@@ -22,9 +22,24 @@ namespace OceanTripPlanner.Helpers
 
 		public static async Task<bool> ExecuteOrders(string json)
 		{
+			EnsureResolved();
 			if (_orderMethod == null) { return false; }
 
 			return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
+		}
+
+		/// <summary>
+		/// Re-run the reflection lookup if we don't yet have a Lisbeth handle. The original code resolved
+		/// it once in the static constructor and cached the result forever — so if Lisbeth wasn't loaded
+		/// (or wasn't finished initializing) the first time this class was touched, _orderMethod stayed
+		/// null for the whole session and every ExecuteOrders silently returned false. That surfaced as
+		/// bait restock (and any other Lisbeth order) doing nothing, with no error, since IdleLisbeth's own
+		/// "is the bot present now" guard still passed. Retry until we bind once, then this is a cheap no-op.
+		/// </summary>
+		private static void EnsureResolved()
+		{
+			if (_orderMethod == null)
+				FindLisbeth();
 		}
 
 		private static object GetLisbethBotObject()
@@ -76,7 +91,8 @@ namespace OceanTripPlanner.Helpers
 
 		public static void OpenWindow()
 		{
-			_openWindow();
+			EnsureResolved();
+			_openWindow?.Invoke();
 		}
 	}
 }
