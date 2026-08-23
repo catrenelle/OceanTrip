@@ -3,6 +3,7 @@ using LlamaLibrary.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using OceanTripPlanner;
+using OceanTripPlanner.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -338,22 +339,10 @@ namespace Ocean_Trip.Definitions
 		{
 			try
 			{
-				var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
-				string filePath = null;
-
-				foreach (var dir in possibleDirectories)
+				var filePath = BotBasesResourceLocator.Resolve("Resources", "fishingRoutes.json");
+				if (filePath == null)
 				{
-					var potentialPath = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", "fishingRoutes.json");
-					if (File.Exists(potentialPath))
-					{
-						filePath = potentialPath;
-						break;
-					}
-				}
-
-				if (filePath == null || !File.Exists(filePath))
-				{
-					throw new FileNotFoundException("The routes file was not found.", filePath);
+					throw new FileNotFoundException("The routes file was not found.");
 				}
 
 				var json = File.ReadAllText(filePath);

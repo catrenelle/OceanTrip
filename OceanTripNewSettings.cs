@@ -1,5 +1,8 @@
 using System;
 using System.ComponentModel;
+using ff14bot;
+using ff14bot.Enums;
+using OceanTripPlanner.Definitions;
 using OceanTripPlanner.Settings;
 
 namespace OceanTripPlanner
@@ -18,7 +21,15 @@ namespace OceanTripPlanner
 		Points,
 		Auto,
 		IgnoreBoat,
-		Achievements
+		Achievements,
+
+		/// <summary>
+		/// Below Fisher level 90: catch anything, only using Krill/Ragworm/Plump Worm, no lures, no
+		/// restocking any other bait — simplest possible loop for gaining Fisher XP. Selectable
+		/// directly, or entered automatically by Auto mode below level 90 — see
+		/// OceanTripNewSettings.EffectiveFishPriority.
+		/// </summary>
+		Leveling
 	}
 
 	public enum OceanFood : int
@@ -79,6 +90,16 @@ namespace OceanTripPlanner
 			get { return _instance ?? (_instance = new OceanTripNewSettings()); }
 		}
 
+		private OceanTripNewSettings()
+		{
+			// Re-raise rather than forward: WPF's PropertyChangedEventManager files listeners under
+			// the object it subscribed on (this wrapper, as the binding source) but delivers events
+			// by looking the SENDER up in that table — so forwarding the inner OceanTripSettings'
+			// event unchanged (sender = inner object) meant bindings on this wrapper never saw any
+			// change notification, e.g. the numeric stepper buttons updated settings invisibly.
+			OceanTripSettings.Instance.PropertyChanged += (_, e) => PropertyChanged?.Invoke(this, e);
+		}
+
 		// Reference to new settings implementation
 		private OceanTripSettings _settings => OceanTripSettings.Instance;
 
@@ -124,6 +145,60 @@ namespace OceanTripPlanner
 		{
 			get => _settings.IsMaterialEnabled(7);
 			set => _settings.SetMaterialEnabled(7, value);
+		}
+
+		public bool material8
+		{
+			get => _settings.IsMaterialEnabled(8);
+			set => _settings.SetMaterialEnabled(8, value);
+		}
+
+		public bool material9
+		{
+			get => _settings.IsMaterialEnabled(9);
+			set => _settings.SetMaterialEnabled(9, value);
+		}
+
+		public bool material10
+		{
+			get => _settings.IsMaterialEnabled(10);
+			set => _settings.SetMaterialEnabled(10, value);
+		}
+
+		public bool material11
+		{
+			get => _settings.IsMaterialEnabled(11);
+			set => _settings.SetMaterialEnabled(11, value);
+		}
+
+		public bool material12
+		{
+			get => _settings.IsMaterialEnabled(12);
+			set => _settings.SetMaterialEnabled(12, value);
+		}
+
+		public bool material13
+		{
+			get => _settings.IsMaterialEnabled(13);
+			set => _settings.SetMaterialEnabled(13, value);
+		}
+
+		public bool material14
+		{
+			get => _settings.IsMaterialEnabled(14);
+			set => _settings.SetMaterialEnabled(14, value);
+		}
+
+		public bool material15
+		{
+			get => _settings.IsMaterialEnabled(15);
+			set => _settings.SetMaterialEnabled(15, value);
+		}
+
+		public bool material16
+		{
+			get => _settings.IsMaterialEnabled(16);
+			set => _settings.SetMaterialEnabled(16, value);
 		}
 
 		#endregion
@@ -656,6 +731,12 @@ namespace OceanTripPlanner
 			set => _settings.UseCraftingFood = value;
 		}
 
+		public bool restockOceanFood
+		{
+			get => _settings.RestockOceanFood;
+			set => _settings.RestockOceanFood = value;
+		}
+
 		public bool refillScrips
 		{
 			get => _settings.RefillScrips;
@@ -704,10 +785,45 @@ namespace OceanTripPlanner
 			set => _settings.OpenWorldFishing = value;
 		}
 
+		public bool SitWhileFishing
+		{
+			get => _settings.SitWhileFishing;
+			set => _settings.SitWhileFishing = value;
+		}
+
+		public bool CastLight
+		{
+			get => _settings.CastLight;
+			set => _settings.CastLight = value;
+		}
+
 		public FishPriority FishPriority
 		{
 			get => _settings.FishPriority;
 			set => _settings.FishPriority = value;
+		}
+
+		/// <summary>
+		/// What every decision (bait, lures, restocking, hooking) should actually treat the priority
+		/// as — the raw FishPriority setting, except Auto resolves to Leveling below Fisher level 90.
+		/// A leveling character has none of the DH/TH/Prize Catch/points-optimization abilities
+		/// unlocked anyway, and dragging Auto's missing-fish/points bait logic in during that window
+		/// just wastes bait it can't use — better to keep it simple until level 90.
+		///
+		/// Reads Core.Me.Levels[ClassJobType.Fisher] (the same per-job lookup BaitRestockStrategy
+		/// already uses for its Goldsmith check), not Core.Me.ClassLevel — ClassLevel only reflects
+		/// whichever job is currently active, which would read the wrong level entirely if the bot is
+		/// started before switching to Fisher.
+		/// </summary>
+		public FishPriority EffectiveFishPriority
+		{
+			get
+			{
+				if (FishPriority == FishPriority.Auto && Core.Me.Levels[ClassJobType.Fisher] < FishingConstants.LEVELING_MODE_LEVEL_CAP)
+					return FishPriority.Leveling;
+
+				return FishPriority;
+			}
 		}
 
 		public bool LateBoatQueue
@@ -780,11 +896,7 @@ namespace OceanTripPlanner
 
 		#region INotifyPropertyChanged
 
-		public event PropertyChangedEventHandler PropertyChanged
-		{
-			add => _settings.PropertyChanged += value;
-			remove => _settings.PropertyChanged -= value;
-		}
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		#endregion
 	}

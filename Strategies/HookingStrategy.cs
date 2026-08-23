@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.Enums;
@@ -31,7 +32,7 @@ namespace OceanTripPlanner.Strategies
 		/// Handle fish bite - determine hook type and execute the appropriate action
 		/// </summary>
 		/// <param name="context">Context containing fishing state and bite information</param>
-		public Task ExecuteHook(HookContext context)
+		public async Task ExecuteHook(HookContext context)
 		{
 			double biteElapsed = Math.Round(context.BiteElapsedSeconds, 1);
 			bool doubleHook = false;
@@ -40,7 +41,11 @@ namespace OceanTripPlanner.Strategies
 			// Chum reduces bite time by ~50% — double observed time to match our database windows
 			double matchElapsed = hasChum ? biteElapsed * 2.0 : biteElapsed;
 
-			// Cache current weather to avoid repeated API calls in LINQ queries
+			// Force a fresh read rather than relying on GameStateCache's ambient 100ms-throttled
+			// RefreshIfNeeded() polling from the outer bite-wait loop — weather can change (e.g. the
+			// moment Spectral Current ends) in that gap, and this decision (hook accept/decline,
+			// DH/TH, exclusion logging) only runs once per bite, so a full refresh here is cheap.
+			_gameCache.Refresh();
 			string currentWeather = _gameCache.CurrentWeather;
 
 			// Build fish lists for bite prediction - first try exact match, then fallback to nearest
@@ -49,14 +54,14 @@ namespace OceanTripPlanner.Strategies
 				matchElapsed,
 				context.TimeOfDay,
 				currentWeather,
-				excludeWeather: false);
+				isSpectral: true);
 
 			List<Fish> normalFishToCatch = FindMatchingFish(
 				context.CurrentRoute?.NormalFish,
 				matchElapsed,
 				context.TimeOfDay,
 				currentWeather,
-				excludeWeather: true);
+				isSpectral: false);
 
 			var matchedFish = context.Spectraled ? spectralFishToCatch : normalFishToCatch;
 			var potentialFish = String.Join(", ", matchedFish.Select(x => _gameCache.GetItemName((uint)x.FishID)).ToList());
@@ -78,6 +83,39 @@ namespace OceanTripPlanner.Strategies
 			if (isFuzzy)
 				LogExcludedFish(context, currentWeather);
 
+			// Narrow-target modes (Achievement focus / TargetFishId): decline bites that can't be
+			// what we're after. Hooking and declining both end this attempt either way, but only
+			// hooking incurs an unpredictable-length catch resolution (size-roll/log/achievement
+			// popups) — skip it when bite-time+tug prediction already rules out our target.
+			if (!ShouldAttemptHook(context, matchedFish))
+			{
+				var bestGuessName = matchedFish.Any() ? _gameCache.GetItemName((uint)matchedFish.First().FishID) : "unknown fish";
+
+				// Rest (0 GP) safely abandons the bite immediately instead of waiting for it to
+				// time out on its own — no risk of accidentally hooking the unwanted fish, and it
+				// doesn't strip buffs (Intuition, Chum, etc.) the way some other bail-out paths would.
+				if (ActionManager.CanCast(Actions.Rest, Core.Me))
+				{
+					Log($"Declining bite — predicted {bestGuessName} isn't the current target. Using Rest to bail out.", OceanLogLevel.Debug);
+					ActionManager.DoAction(Actions.Rest, Core.Me);
+
+					// Wait for the client to actually drop out of the Bite state before returning —
+					// without this, the caller's outer loop can read a stale State (still mid-Bite in
+					// the game even though we've already issued Rest), race ahead into bait-selection/
+					// Cast for what it thinks is a fresh cast, and have both fail because the original
+					// line is still out. Same failure class as the post-catch tacklebox-settle issue
+					// (POST_CATCH_BAIT_SETTLE_MS), just triggered by a declined bite instead of a catch.
+					await Coroutine.Wait(2000, () => FishingManager.State != FishingState.Bite);
+				}
+				else
+				{
+					Log($"Declining bite — predicted {bestGuessName} isn't the current target, skipping to avoid a wasted catch.", OceanLogLevel.Debug);
+				}
+
+				context.OnHookExecuted(false);
+				return;
+			}
+
 			Log("Checking if we should double hook based on bite timer and current fishing conditions!", OceanLogLevel.Debug);
 
 			// DH/TH cannot be used during Patience — fish always escapes without Precision/Powerful Hookset
@@ -95,25 +133,19 @@ namespace OceanTripPlanner.Strategies
 							AchievementFishDataCache.MapAchievementString(f.Achievement) == achievementFocus);
 					}
 
-					// Only fall back to points-based DH/TH if no achievement fish can spawn here at all
-					if (!doubleHook)
-					{
-						bool achievementFishAvailable = AchievementFishDataCache.GetFishForLocation(context.Location, achievementFocus)
-							.Any(f => f.TimeOfDayExclusion1 != context.TimeOfDay &&
-								f.TimeOfDayExclusion2 != context.TimeOfDay &&
-								f.WeatherExclusion1 != currentWeather &&
-								f.WeatherExclusion2 != currentWeather);
-
-						if (!achievementFishAvailable)
-						{
-							var matchingFish = FindMatchingFishForHook(context.Location, matchElapsed, context.TimeOfDay, currentWeather);
-							doubleHook = matchingFish.Any(x =>
-								((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3));
-						}
-					}
+					// Intentionally NO points-based fallback here. In Achievement mode the GP plan is to
+					// bank GP outside spectral and dump Double/Triple Hooks on the focus category once the
+					// current pops (for Mantas — and most focus categories — that means spectral-only fish).
+					// DH/TH-ing high-point NON-focus normal fish while we're just trying to trigger spectral
+					// drains exactly the GP the achievement run is saving up. ONLY the focus category above
+					// justifies a hookset in Achievement mode — even active missions are skipped (below).
 				}
-				else if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Points || OceanTripNewSettings.Instance.FishPriority == FishPriority.Auto)
+				else if (OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Points || OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Auto)
 				{
+					// Leveling mode (a raw Auto reading resolves here when EffectiveFishPriority
+					// isn't Points/Auto) never reaches this branch — no DH/TH points-chasing while
+					// leveling, just a plain Hook on whatever bites.
+
 					// Special handling for South's lastMooch rule - Always DH/TH after a Mooch in South if spectral.
 					if (context.Location == "south" && context.LastCastMooch && (context.TimeOfDay == "Sunset" || context.TimeOfDay == "Night") && context.Spectraled)
 					{
@@ -123,8 +155,36 @@ namespace OceanTripPlanner.Strategies
 					{
 						// Find matching fish for DH/TH decision with fallback to nearest
 						var matchingFish = FindMatchingFishForHook(context.Location, matchElapsed, context.TimeOfDay, currentWeather);
-						doubleHook = matchingFish.Any(x =>
-							((x.Points * x.THBonus > 600 && x.THBonus > 1) || (x.Points * x.DHBonus > 400 && x.DHBonus > 1)) || (x.THBonus > 5 || x.DHBonus > 3));
+						doubleHook = IsPointsWorthDoubleHook(matchingFish);
+					}
+				}
+
+				// Missions are a 5-20% multiplier on the whole voyage score, so DH/TH accelerating them
+				// is worth the GP for every priority EXCEPT Achievements: there, a mission-matching bite
+				// is almost never the focus category, so hooking it just drains the GP the achievement run
+				// is banking for its focus catches (see the Achievement branch above). Skip them entirely.
+				if (OceanTripNewSettings.Instance.FishPriority != FishPriority.Achievements)
+				{
+					// Bite-strength missions ("Catch fish with a weak/strong/ferocious bite"): a single
+					// hookset catches several fish sharing this tug, multiplying mission progress.
+					if (!doubleHook && context.MissionRequiredTugType.HasValue && context.MissionRequiredTugType.Value == FishingManager.TugType)
+					{
+						Log("Bite matches an active bite-strength mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
+						doubleHook = true;
+					}
+
+					// Category missions ("Catch sharks", "Catch fugu"): same idea, but matched by the
+					// predicted fish's Achievement tag instead of tug type — a multi-catch hookset nets
+					// several of the matching category at once.
+					if (!doubleHook && context.MissionRequiredAchievementTags != null)
+					{
+						var bestGuess = matchedFish.FirstOrDefault();
+						if (bestGuess != null && !string.IsNullOrEmpty(bestGuess.Achievement)
+							&& context.MissionRequiredAchievementTags.Contains(bestGuess.Achievement))
+						{
+							Log("Bite matches an active category mission — Double/Triple Hooking to accelerate it.", OceanLogLevel.Debug);
+							doubleHook = true;
+						}
 					}
 				}
 			}
@@ -207,14 +267,117 @@ namespace OceanTripPlanner.Strategies
 			Log("Refreshing UI for Bait and Achievements in case something changed.", OceanLogLevel.Debug);
 
 			FFXIV_Databinds.Instance.RefreshBait();
-
-			return Task.CompletedTask;
 		}
+
+		/// <summary>
+		/// Narrow-target gate for Achievement mode / TargetFishId: only hook bites that plausibly
+		/// are the target. Only applies when that target is actually reachable at this location
+		/// and spectral state right now — otherwise every bite here would be wrongly declined for
+		/// the whole zone visit (e.g. achievement focus has no fish here, or TargetFishId is for a
+		/// different zone), which falls back to hooking normally instead.
+		/// </summary>
+		private bool ShouldAttemptHook(HookContext context, List<Fish> matchedFish)
+		{
+			uint targetFishId = OceanTripNewSettings.Instance.TargetFishId;
+			bool targetFishHere = targetFishId != 0
+				&& OceanTripNewSettings.Instance.EffectiveFishPriority != FishPriority.Leveling
+				&& FishDataCache.GetFish().Any(f => f.FishID == (int)targetFishId && f.RouteShortName == context.Location);
+
+			AchievementType achievementFocus = AchievementType.None;
+			bool achievementFishHere = false;
+			if (OceanTripNewSettings.Instance.FishPriority == FishPriority.Achievements)
+			{
+				achievementFocus = AchievementFishDataCache.GetCurrentAchievementFocus();
+				if (achievementFocus != AchievementType.None)
+				{
+					achievementFishHere = AchievementFishDataCache.GetFishForLocation(context.Location, achievementFocus)
+						.Any(f => f.SpectralFish == context.Spectraled);
+				}
+			}
+
+			// A bait selector explicitly flagged this cast as chasing one specific prerequisite fish
+			// (mooch-chain source, or an Intuition prereq) — honor that regardless of FishPriority;
+			// the bait itself was chosen for that fish, so anything else biting is a distraction.
+			uint chainTarget = context.LastCastMooch ? context.ChainMoochTargetFishId : context.ChainCastTargetFishId;
+			bool chainTargetActive = chainTarget != 0;
+
+			// No narrow-target condition is actually active right now — hook everything as normal.
+			if (!targetFishHere && !achievementFishHere && !chainTargetActive)
+				return true;
+
+			var bestGuess = matchedFish.FirstOrDefault();
+			if (bestGuess == null)
+				return true; // no prediction available — don't block hooking on uncertainty
+
+			if (chainTargetActive)
+			{
+				// A fuzzy/ambiguous bite returns several candidates ordered by bite-time proximity, and
+				// the chain target can legitimately be a lower-ranked one — e.g. "Mehi-mahi, Satrapsaurus
+				// (fuzzy)" at Thavnair/Night, where Satrapsaurus is the Intuition prereq for Manasvin but
+				// Mehi-mahi is the closer bite-time match. Declining just because the TOP guess isn't the
+				// target would stall the whole chain: the prereqs share a tug/bite window with off-target
+				// fish, so we'd never build Intuition and never reach the real target. Accept if the
+				// target is ANY candidate — a wasted off-target catch costs one cast, a missed prereq
+				// costs the entire chain.
+				if (matchedFish.Any(f => f.FishID == (int)chainTarget))
+					return true;
+
+				// A mooch can sometimes catch the same source fish again instead of the intended
+				// target (e.g. Snapping Koban can mooch into itself) — accept a re-catch of the
+				// cast-source fish too, so the chain continues with another mooch attempt instead
+				// of discarding a valid catch and restarting from a fresh cast.
+				if (context.LastCastMooch && context.ChainCastTargetFishId != 0
+					&& matchedFish.Any(f => f.FishID == (int)context.ChainCastTargetFishId))
+					return true;
+
+				return false;
+			}
+
+			if (targetFishHere && bestGuess.FishID == (int)targetFishId)
+				return true;
+
+			if (achievementFishHere &&
+				!string.IsNullOrEmpty(bestGuess.Achievement) &&
+				AchievementFishDataCache.MapAchievementString(bestGuess.Achievement) == achievementFocus)
+				return true;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Points-based DH/TH decision: only worth it if the top-candidate fish's total expected
+		/// payoff (Points x DH/TH catch-count bonus) exceeds the real GP cost of the action
+		/// (400 for Double Hook, 700 for Triple Hook — verified against game data). Uses only the
+		/// closest bite-time match, not any fuzzy candidate in the pool — a low-confidence guess
+		/// shouldn't justify a 400-700 GP spend.
+		/// </summary>
+		private bool IsPointsWorthDoubleHook(List<Fish> matchingFish)
+		{
+			var bestGuess = matchingFish.FirstOrDefault();
+			if (bestGuess == null)
+				return false;
+
+			return IsPointsWorthTripleHook(bestGuess) || IsPointsWorthDoubleHook(bestGuess);
+		}
+
+		/// <summary>
+		/// Per-fish half of the points-based DH/TH formula above — exposed so the UI's DH/TH badge
+		/// (CurrentRoutePageBehavior.BuildFishIcon) can call the exact same math the bot hooks with,
+		/// instead of hand-rolling a copy that can drift out of sync with a future tuning change.
+		/// </summary>
+		public static bool IsPointsWorthTripleHook(Fish fish) =>
+			fish.THBonus > 1 && fish.Points * fish.THBonus > FishingConstants.TRIPLE_HOOK_GP_COST;
+
+		/// <summary>
+		/// Per-fish half of the points-based DH/TH formula above — see IsPointsWorthTripleHook.
+		/// </summary>
+		public static bool IsPointsWorthDoubleHook(Fish fish) =>
+			fish.DHBonus > 1 && fish.Points * fish.DHBonus > FishingConstants.DOUBLE_HOOK_GP_COST;
 
 		/// <summary>
 		/// Find matching fish from a list, with fallback to nearest fish if no exact match
 		/// </summary>
-		private List<Fish> FindMatchingFish(IEnumerable<Fish> fishList, double biteElapsed, string timeOfDay, string currentWeather, bool excludeWeather)
+		private List<Fish> FindMatchingFish(IEnumerable<Fish> fishList, double biteElapsed, string timeOfDay, string currentWeather, bool isSpectral)
 		{
 			if (fishList == null)
 				return new List<Fish>();
@@ -222,12 +385,12 @@ namespace OceanTripPlanner.Strategies
 			uint currentBait = FishingManager.SelectedBaitItemId;
 			bool hasIntuition = Core.Player.HasAura(CharacterAuras.FishersIntuition);
 
-			// Filter by time of day, weather (if applicable), tug type, and intuition requirement
+			// Day/Night/Sunset only ever gates spectral fish; normal (non-spectral) fish availability
+			// is weather-gated only. fishList here is already one or the other (never mixed).
 			var eligibleFish = fishList.Where(x =>
-				x.TimeOfDayExclusion1 != timeOfDay &&
-				x.TimeOfDayExclusion2 != timeOfDay &&
+				(!isSpectral || (x.TimeOfDayExclusion1 != timeOfDay && x.TimeOfDayExclusion2 != timeOfDay)) &&
+				(isSpectral || (x.WeatherExclusion1 != currentWeather && x.WeatherExclusion2 != currentWeather)) &&
 				x.BiteType == FishingManager.TugType &&
-				(!excludeWeather || (x.WeatherExclusion1 != currentWeather && x.WeatherExclusion2 != currentWeather)) &&
 				(!x.RequiresIntuition || hasIntuition)).ToList();
 
 			// First try exact match using bite range for current bait
@@ -253,13 +416,13 @@ namespace OceanTripPlanner.Strategies
 			uint currentBait = FishingManager.SelectedBaitItemId;
 			bool hasIntuition = Core.Player.HasAura(CharacterAuras.FishersIntuition);
 
-			// Filter by location, time of day, weather, tug type, and intuition requirement
+			// Filter by location, tug type, and intuition requirement — plus availability, which
+			// this list mixes both spectral and normal fish for, so it's checked per-fish: Day/
+			// Night/Sunset only ever gates spectral fish, normal fish are weather-gated only.
 			var eligibleFish = allFish.Where(x =>
 				x.RouteShortName == location &&
-				x.TimeOfDayExclusion1 != timeOfDay &&
-				x.TimeOfDayExclusion2 != timeOfDay &&
-				x.WeatherExclusion1 != currentWeather &&
-				x.WeatherExclusion2 != currentWeather &&
+				(!x.SpectralFish || (x.TimeOfDayExclusion1 != timeOfDay && x.TimeOfDayExclusion2 != timeOfDay)) &&
+				(x.SpectralFish || (x.WeatherExclusion1 != currentWeather && x.WeatherExclusion2 != currentWeather)) &&
 				x.BiteType == FishingManager.TugType &&
 				(!x.RequiresIntuition || hasIntuition)).ToList();
 
@@ -315,13 +478,15 @@ namespace OceanTripPlanner.Strategies
 			if (fishList == null)
 				return;
 
-			bool excludeWeather = !context.Spectraled;
+			// Day/Night/Sunset only ever gates spectral fish; normal fish are weather-gated only.
+			// fishList here is already one or the other (never mixed), matching context.Spectraled.
+			bool checkTimeOfDay = context.Spectraled;
+			bool checkWeather = !context.Spectraled;
 
 			var excluded = fishList.Where(x =>
 				x.BiteType == FishingManager.TugType &&
-				(x.TimeOfDayExclusion1 == context.TimeOfDay ||
-				x.TimeOfDayExclusion2 == context.TimeOfDay ||
-				(excludeWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))))
+				((checkTimeOfDay && (x.TimeOfDayExclusion1 == context.TimeOfDay || x.TimeOfDayExclusion2 == context.TimeOfDay)) ||
+				(checkWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))))
 				.ToList();
 
 			if (excluded.Any())
@@ -330,9 +495,9 @@ namespace OceanTripPlanner.Strategies
 				var excludedStr = String.Join(", ", excluded.Select(x =>
 				{
 					var reasons = new List<string>();
-					if (x.TimeOfDayExclusion1 == context.TimeOfDay || x.TimeOfDayExclusion2 == context.TimeOfDay)
+					if (checkTimeOfDay && (x.TimeOfDayExclusion1 == context.TimeOfDay || x.TimeOfDayExclusion2 == context.TimeOfDay))
 						reasons.Add($"time={context.TimeOfDay}");
-					if (excludeWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))
+					if (checkWeather && (x.WeatherExclusion1 == currentWeather || x.WeatherExclusion2 == currentWeather))
 						reasons.Add($"weather={currentWeather}");
 					var (start, end) = x.GetBiteRange(currentBait);
 					return $"{_gameCache.GetItemName((uint)x.FishID)} [{start:F0}-{end:F0}s, excluded: {String.Join("+", reasons)}]";
@@ -369,6 +534,32 @@ namespace OceanTripPlanner.Strategies
 		public string TimeOfDay { get; set; }
 		public RouteWithFish CurrentRoute { get; set; }
 		public bool LastCastMooch { get; set; }
+
+		/// <summary>
+		/// Non-zero when this cast is chasing a specific prerequisite fish (mooch-chain source,
+		/// or an Intuition prereq) — set by the bait selector that ran before this cast.
+		/// </summary>
+		public uint ChainCastTargetFishId { get; set; }
+
+		/// <summary>
+		/// Non-zero when a mooch off this cast's catch is chasing a specific fish. Only relevant
+		/// when LastCastMooch is true (i.e. this bite came from a mooch, not a plain cast).
+		/// </summary>
+		public uint ChainMoochTargetFishId { get; set; }
+
+		/// <summary>
+		/// Set when an active bite-strength mission ("Catch fish with a weak/strong/ferocious
+		/// bite") still needs progress — a bite matching this tug is worth Double/Triple Hooking
+		/// regardless of the usual points/GP-cost math, since it multiplies mission progress.
+		/// </summary>
+		public TugType? MissionRequiredTugType { get; set; }
+
+		/// <summary>
+		/// Set when an active category mission ("Catch sharks", "Catch fugu") still needs progress —
+		/// a bite whose predicted fish's Achievement tag is in this list is worth Double/Triple
+		/// Hooking for the same reason as MissionRequiredTugType.
+		/// </summary>
+		public string[] MissionRequiredAchievementTags { get; set; }
 
 		private Action<bool> _onHookExecutedCallback;
 

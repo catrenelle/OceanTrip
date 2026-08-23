@@ -18,8 +18,11 @@ namespace OceanTripPlanner.IdleActivities
 		private const int AETHERSAND_THRESHOLD = 300;
 		private const int AETHERSAND_BATCH_SIZE = 50;
 
-		// Indices 5 and 8 are exchangeable in the aethersands array
-		private static readonly List<int> ExchangeableIndices = new List<int> { 5, 8 };
+		// All 5 current aethersand types (Levinchrome, Sungilt, Mythloam, Mythroot, Mythbrine) are
+		// confirmed exchangeable in the live Orange Gatherers' Scrip window as of 2026-08-12 — the
+		// old split (2 of 9 exchangeable, rest gather-only) pointed at indices from a 9-item array
+		// that no longer exists (see Defaults.aethersands).
+		private static readonly List<int> ExchangeableIndices = new List<int> { 1, 2, 3, 4, 5 };
 
 		public async Task ExecuteAsync(IdleActivityContext context)
 		{

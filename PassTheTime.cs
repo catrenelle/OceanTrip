@@ -90,7 +90,15 @@ namespace OceanTripPlanner
 
 			if (BotManager.Bots.FirstOrDefault(c => c.Name == "Lisbeth") != null)
 			{
-				await Lisbeth.ExecuteOrders("[{'Item':" + itemId + ",'Amount':" + amount + ",'Type':'" + type + "','QuickSynth':" + quicksynth + ",'Food':" + food + ",'Enabled': true, 'IsPrimary': true, 'AmountMode':'" + (defaultmode ? "Default" : "Absolute") + "'}]");
+				string order = "[{'Item':" + itemId + ",'Amount':" + amount + ",'Type':'" + type + "','QuickSynth':" + quicksynth + ",'Food':" + food + ",'Enabled': true, 'IsPrimary': true, 'AmountMode':'" + (defaultmode ? "Default" : "Absolute") + "'}]";
+
+				// ExecuteOrders returns false when Lisbeth couldn't run the order (handle not resolved,
+				// order rejected/unparsed, nothing to do). It was previously ignored, so a failed order
+				// looked identical to success ("Crafting complete") — the reason restock failures were
+				// invisible. Surface it explicitly, with the order for context.
+				bool ordered = await Lisbeth.ExecuteOrders(order);
+				if (!ordered)
+					Log($"Lisbeth did NOT run the order (ExecuteOrders returned false). Order: {order}");
 
 				AtkAddonControl masterWindow = RaptureAtkUnitManager.GetWindowByName("MasterPieceSupply");
 				if (masterWindow != null)
@@ -126,7 +134,7 @@ namespace OceanTripPlanner
 			}
 			else
 			{
-				Log("Failed to craft.");
+				Log("Failed to craft — no bot named \"Lisbeth\" is loaded in RebornBuddy. Load Lisbeth to enable restock/exchange.");
 			}
 		}
 		/// <summary>
@@ -182,14 +190,18 @@ namespace OceanTripPlanner
 		}
 
 		/// <summary>
-		/// Get total inventory count (normal + HQ) for an item
+		/// Total inventory count (all qualities) for an item. InventoryManager.ItemCount already returns
+		/// the combined total across every filled slot regardless of quality, so it must be called ONCE.
+		/// The old code summed GetItem(id,false) and GetItem(id,true) — but the hq flag on the Item doesn't
+		/// split the count, so both returned the same total and this reported 2x the real amount. That's
+		/// why restock never fired for baits above half the threshold (e.g. 200 Krill read as 400, never
+		/// below a 300 threshold), while the tackle-box UI — which calls ItemCount once — showed the real
+		/// 200. GetItem returns null for an unknown id; treat that as 0.
 		/// </summary>
 		public static int inventoryCount(int id)
 		{
-			int normal = (int)DataManager.GetItem((uint)id, false).ItemCount();
-			int hq = (int)DataManager.GetItem((uint)id, true).ItemCount();
-
-			return (normal + hq);
+			var item = DataManager.GetItem((uint)id, false);
+			return item == null ? 0 : (int)item.ItemCount();
 		}
 
 		private static void Log(string text)

@@ -38,9 +38,11 @@ namespace OceanTripPlanner.Strategies
 		}
 
 		/// <summary>
-		/// Restock all required baits based on inventory thresholds
+		/// Restock all required baits based on inventory thresholds. When allowedBaits is provided
+		/// (Leveling mode), every other bait is skipped entirely regardless of its own threshold —
+		/// Leveling never acquires anything beyond that set.
 		/// </summary>
-		public async Task RestockBait(int defaultThreshold, uint defaultAmount)
+		public async Task RestockBait(int defaultThreshold, uint defaultAmount, HashSet<uint> allowedBaits = null)
 		{
 			// Build configuration for each bait type
 			var baitConfigs = new List<BaitConfig>
@@ -65,13 +67,23 @@ namespace OceanTripPlanner.Strategies
 
 			// Determine which baits need restocking
 			var baitsToRestock = baitConfigs
-				.Where(config => PassTheTime.inventoryCount((int)config.BaitId) < config.Threshold && config.CanAcquire())
+				.Where(config => (allowedBaits == null || allowedBaits.Contains(config.BaitId))
+					&& PassTheTime.inventoryCount((int)config.BaitId) < config.Threshold && config.CanAcquire())
 				.ToList();
 
 			if (!baitsToRestock.Any())
+			{
+				// Silent-nothing was indistinguishable from a broken restock in reports. At debug level,
+				// dump have/threshold per candidate bait so we can tell "everything's already stocked"
+				// from "the count read is wrong / thresholds off".
+				var counts = string.Join(", ", baitConfigs
+					.Where(c => allowedBaits == null || allowedBaits.Contains(c.BaitId))
+					.Select(c => $"{ItemDataCache.GetItemName(c.BaitId)} {PassTheTime.inventoryCount((int)c.BaitId)}/{c.Threshold}"));
+				Log($"No baits below threshold — nothing to restock. Have/threshold: {counts}", OceanLogLevel.Debug);
 				return;
+			}
 
-			Log("Restocking bait with Lisbeth...");
+			Log($"Restocking {baitsToRestock.Count} bait(s) below threshold with Lisbeth...");
 
 			// Restock each bait
 			foreach (var config in baitsToRestock)

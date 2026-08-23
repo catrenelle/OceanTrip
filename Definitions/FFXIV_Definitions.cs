@@ -24,50 +24,74 @@ namespace OceanTripPlanner.Definitions
 
 	public static class Defaults
 	{
-		public static readonly int[] materials = new int[] 
-		{ 
-			Material.ImmutableSolution,
-			Material.DinosaurLeather,
-			Material.Sphalerite,
-			Material.RoyalMistletoe,
-			Material.CloudCottonBoll,
-			Material.CloudMythrilOre,
-			Material.StormcloudCottonBoll
+		// Replaces the old Heavensward-patch (3.1/3.55) Purple Gatherers' Scrip items (Dinosaur
+		// Leather, Sphalerite, Royal Mistletoe, Cloud Cotton Boll, Cloud Mythril Ore, Stormcloud
+		// Cotton Boll) — confirmed 2026-08-12 against the live exchange that the Gatherers' Scrip
+		// "Materials" category is just Aethersand now (already its own card/list, see aethersands
+		// below), so that raw-ore/leather/cloth category has no current-tier equivalent to swap in.
+		// The full current Orange Crafters' Scrip "Materials" list took its place instead.
+		public static readonly int[] materials = new int[]
+		{
+			Material.CondensedSolution,
+			Material.RumplessChicken,
+			Material.BrownCardamom,
+			Material.WildCoffeeBeans,
+			Material.NavelOrange,
+			Material.RoyalLobster,
+			Material.Cassava,
+			Material.SplendidMateLeaves,
+			Material.AjiAmarillo,
+			Material.QuesoFresco,
+			Material.WoolbackLoin,
+			Material.FlintCorn,
+			Material.TuraliPlum,
+			Material.RroneekMilk,
+			Material.RockFistPopoto,
+			Material.Quahog
 		};
 
+		// Everborn/Everdeep (pre-Endwalker) and Endstone/Endwood/Endtide/Earthbreak (Endwalker) are
+		// all gone from the current Orange Gatherers' Scrip exchange — confirmed 2026-08-12 against
+		// the live in-game exchange window, which lists exactly Levinchrome, Sungilt, Mythloam,
+		// Mythroot, and Mythbrine. Levinchrome and Sungilt were missing entirely from this list
+		// despite being current (7.0/7.3) and used by recipes this bot already crafts (Grade 4
+		// Gemdraughts, Moqueca — see Defaults.raidpotions/raidfood).
 		public static readonly int[] aethersands = new int[]
 		{
-			Material.EverbornAethersand,
-			Material.EverdeepAethersand,
-			Material.EndstoneAethersand,
-			Material.EndwoodAethersand,
-			Material.EndtideAethersand,
-			Material.EarthbreakAethersand,
+			Material.LevinchromeAethersand,
+			Material.SungiltAethersand,
 			Material.MythloamAethersand,
 			Material.MythrootAethersand,
 			Material.MythbrineAethersand,
 		};
 
+		// Moqueca (Crit/Det) replaced the old Piety food (Broccoli and Spinach Saute) here — Piety
+		// isn't a stat current savage BiS food chases, while Moqueca is the current cross-role
+		// "crit/det" pick per job consumables guides. Introduced in 7.05, so it's already correct
+		// for RB_TC's 7.2 client too — no ifdef split needed like raidpotions' Gemdraught tier.
 		public static readonly int[] raidfood = new int[]
 		{
 			FoodList.CreamyAlpacaPasta,
-			FoodList.BroccoliSpinachSaute,
+			FoodList.Moqueca,
 			FoodList.VegetableSoup,
 			FoodList.MesquiteSoup,
 		};
 
 		public static readonly int[] raidpotions = new int[]
 		{
-#if (RB_DT && !RB_CN)
+#if (RB_DT && !RB_TC)
+			// Global client, patch 7.55 — Grade 4 is the current tier (introduced 7.4).
+			Potions.Grade4GemdraughtStrength,
+			Potions.Grade4GemdraughtDexterity,
+			Potions.Grade4GemdraughtIntelligence,
+			Potions.Grade4GemdraughtMind,
+#elif (RB_DT && RB_TC)
+			// RB_TC client is separately patched and still on 7.2 (see Routes.cs/CHANGELOG.txt) —
+			// Grade 4 didn't exist yet there, so it stays on the Grade 2 tier that was current then.
 			Potions.Grade2GemdraughtStrength,
 			Potions.Grade2GemdraughtDexterity,
 			Potions.Grade2GemdraughtIntelligence,
 			Potions.Grade2GemdraughtMind,
-#elif (RB_DT && RB_CN)
-			Potions.Grade1GemdraughtStrength,
-			Potions.Grade1GemdraughtDexterity,
-			Potions.Grade1GemdraughtIntelligence,
-			Potions.Grade1GemdraughtMind,
 #else
 			Potions.Grade8TinctureStrength,
 			Potions.Grade8TinctureDexterity,
@@ -212,9 +236,30 @@ namespace OceanTripPlanner.Definitions
 		public const uint PrecisionHookset = 4179;
 		public const uint IdenticalCast = 4596;
 		public const uint ThaliaksFavor = 26804;
+
+		/// <summary>
+		/// "Lights up the tip of your fishing rod." Toggle, FSH Lv1, 0 GP — purely cosmetic (helps
+		/// see the bobber at night). Verified via XIVAPI Action row 2135. Applies NO status aura, so
+		/// its on/off state isn't observable — it must be fired once and tracked, never re-checked.
+		/// </summary>
+		public const uint CastLight = 2135;
+
+		/// <summary>
+		/// Guarantees the next catch is Large (2x points), until you catch something or quit fishing.
+		/// Verified via XIVAPI Action 26806: Name "Prize Catch", ClassJobLevel 81, GP cost 200.
+		/// </summary>
+		public const uint PrizeCatch = 26806;
+
 		public const uint TripleHook = 27523;
 		public const uint ModestLure = 37595;
 		public const uint AmbitiousLure = 37594;
+
+		/// <summary>
+		/// "Abandons fishing but keeps your equipment at the ready" (GP cost 0, level 1, Fisher-only).
+		/// Verified via XIVAPI Action sheet row 37047. Lets us bail out of an unwanted bite
+		/// immediately instead of letting it sit until the bite times out on its own.
+		/// </summary>
+		public const uint Rest = 37047;
 	}
 
 	public static class CharacterAuras
@@ -294,8 +339,12 @@ namespace OceanTripPlanner.Definitions
 
 		public static int CreamyAlpacaPasta = 44087;
 		public static int BroccoliSpinachSaute = 44090;
-		public static int VegetableSoup = 44096; 
+		public static int VegetableSoup = 44096;
 		public static int MesquiteSoup = 44098;
+
+		/// <summary>Determination/Critical Hit/Vitality — introduced 7.05, still the current
+		/// BiS "crit/det" food as of 7.55 per job consumables guides.</summary>
+		public static int Moqueca = 44178;
 	}
 
 	public static class Materia
@@ -397,6 +446,42 @@ namespace OceanTripPlanner.Definitions
 		public static int MythloamAethersand = 44036;
 		public static int MythrootAethersand = 44037;
 		public static int MythbrineAethersand = 44038;
+
+		/// <summary>7.3 — used in dozens of current level-100 recipes across all 8 crafting classes
+		/// (all four Grade 4 Gemdraughts, All i Pebre, Synthetic Dark Matter, Aspected Aether items,
+		/// Courtly Lover's gear). Confirmed in the current Orange Gatherers' Scrip exchange.</summary>
+		public static int LevinchromeAethersand = 46246;
+
+		/// <summary>7.0 — used in Optical Nanofiber (-> Everseekers gear) and Moqueca (see
+		/// Defaults.raidfood). Confirmed in the current Orange Gatherers' Scrip exchange.</summary>
+		public static int SungiltAethersand = 44035;
+
+		/// <summary>125 Orange Crafters' Scrip — the Dawntrail-tier successor to ImmutableSolution
+		/// (125 Purple Crafters' Scrip, Endwalker). Used in Optical Nanofiber -> Everseekers gear,
+		/// the current tier of high-difficulty crafts.</summary>
+		public static int CondensedSolution = 44848;
+
+		// The rest of the Orange Crafters' Scrip "Materials" exchange, confirmed 2026-08-12 against
+		// the live in-game exchange window (Materials/Misc subcategory) rather than guessed from
+		// naming convention. Cheap (10-15 scrip) Culinarian ingredients; Brown Cardamom in
+		// particular is a real Moqueca ingredient (see Defaults.raidfood).
+		public static int RumplessChicken = 44170;
+		public static int BrownCardamom = 44171;
+		public static int WildCoffeeBeans = 44172;
+		public static int NavelOrange = 44173;
+		public static int RoyalLobster = 44174;
+
+		public static int Cassava = 45990;
+		public static int SplendidMateLeaves = 45991;
+		public static int AjiAmarillo = 45992;
+		public static int QuesoFresco = 45993;
+		public static int WoolbackLoin = 45994;
+
+		public static int FlintCorn = 49229;
+		public static int TuraliPlum = 49230;
+		public static int RroneekMilk = 49231;
+		public static int RockFistPopoto = 49232;
+		public static int Quahog = 49233;
 	}
 
 	public static class NPC
@@ -434,6 +519,11 @@ namespace OceanTripPlanner.Definitions
 		public static int Grade2GemdraughtDexterity = 44163;
 		public static int Grade2GemdraughtIntelligence = 44165;
 		public static int Grade2GemdraughtMind = 44166;
+
+		public static int Grade4GemdraughtStrength = 49234;
+		public static int Grade4GemdraughtDexterity = 49235;
+		public static int Grade4GemdraughtIntelligence = 49237;
+		public static int Grade4GemdraughtMind = 49238;
 	}
 
 	public static class Weather

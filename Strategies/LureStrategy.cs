@@ -23,6 +23,12 @@ namespace OceanTripPlanner.Strategies
 		private bool _lureAppliedThisCast;
 		private int _lureStacksApplied;
 
+		// Auto-mode resolution is cast-invariant (depends only on location/time/target/achievement
+		// focus, none of which change mid-cast) but was being recomputed via FishDataCache LINQ
+		// queries on every tick of the bite-wait loop. Cache it per-cast instead.
+		private uint? _cachedAutoLureAction;
+		private bool _cachedAutoModeSkip;
+
 		public LureStrategy(GameStateCache gameCache)
 		{
 			_gameCache = gameCache;
@@ -45,6 +51,8 @@ namespace OceanTripPlanner.Strategies
 		{
 			_lureAppliedThisCast = false;
 			_lureStacksApplied = 0;
+			_cachedAutoLureAction = null;
+			_cachedAutoModeSkip = false;
 		}
 
 		/// <summary>
@@ -108,6 +116,11 @@ namespace OceanTripPlanner.Strategies
 			if (pref == LurePreference.None)
 				return false;
 
+			// Leveling mode never uses lures — it's meant to be the simplest possible loop, and
+			// lures spend GP a leveling character often can't spare.
+			if (OceanTripNewSettings.Instance.EffectiveFishPriority == FishPriority.Leveling)
+				return false;
+
 			// Never during spectral — lures group all fast-biting spectral fish together,
 			// making bite-time identification impossible
 			if (context.Spectraled)
@@ -124,12 +137,11 @@ namespace OceanTripPlanner.Strategies
 			// In Auto mode, skip when target hookset is dominant in the pool
 			if (pref == LurePreference.Auto)
 			{
-				uint lureAction = GetLureAction(context);
-				if (lureAction == 0)
+				ResolveAutoModeIfNeeded(context);
+				if (_cachedAutoLureAction == 0)
 					return false;
 
-				TugType targetTug = lureAction == Actions.ModestLure ? TugType.Light : TugType.Medium;
-				if (IsTargetHooksetDominant(context, targetTug))
+				if (_cachedAutoModeSkip)
 					return false;
 			}
 
@@ -147,9 +159,31 @@ namespace OceanTripPlanner.Strategies
 				return Actions.AmbitiousLure;
 
 			if (pref == LurePreference.Auto)
-				return ResolveLureForAutoMode(context);
+			{
+				ResolveAutoModeIfNeeded(context);
+				return _cachedAutoLureAction ?? 0;
+			}
 
 			return 0;
+		}
+
+		/// <summary>
+		/// Resolve and cache the Auto-mode lure action (and dominant-hookset skip) once per cast.
+		/// All inputs are cast-invariant, so recomputing this every bite-wait tick was wasted work.
+		/// </summary>
+		private void ResolveAutoModeIfNeeded(LureContext context)
+		{
+			if (_cachedAutoLureAction.HasValue)
+				return;
+
+			uint action = ResolveLureForAutoMode(context);
+			_cachedAutoLureAction = action;
+
+			if (action != 0)
+			{
+				TugType targetTug = action == Actions.ModestLure ? TugType.Light : TugType.Medium;
+				_cachedAutoModeSkip = IsTargetHooksetDominant(context, targetTug);
+			}
 		}
 
 		private uint ResolveLureForAutoMode(LureContext context)
@@ -218,11 +252,13 @@ namespace OceanTripPlanner.Strategies
 
 		private bool IsTargetHooksetDominant(LureContext context, TugType targetTug)
 		{
+			// Non-spectral fish (already filtered to via !f.SpectralFish) are weather-gated only —
+			// Day/Night/Sunset only ever applies to spectral fish.
 			var zoneFish = FishDataCache.GetFish()
 				.Where(f => f.RouteShortName == context.Location &&
 					!f.SpectralFish &&
-					f.TimeOfDayExclusion1 != context.TimeOfDay &&
-					f.TimeOfDayExclusion2 != context.TimeOfDay)
+					f.WeatherExclusion1 != _gameCache.CurrentWeather &&
+					f.WeatherExclusion2 != _gameCache.CurrentWeather)
 				.ToList();
 
 			if (zoneFish.Count == 0)

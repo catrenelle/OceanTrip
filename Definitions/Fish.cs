@@ -2,6 +2,7 @@ using ff14bot.Enums;
 using ff14bot.Helpers;
 using Newtonsoft.Json;
 using Ocean_Trip.Definitions;
+using OceanTripPlanner.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -79,22 +80,10 @@ namespace Ocean_Trip.Definitions
 		{
 			try
 			{
-				var possibleDirectories = new[] { "OceanTrip", "Ocean Trip", "Ocean-Trip" };
-				string filePath = null;
-
-				foreach (var dir in possibleDirectories)
+				var filePath = BotBasesResourceLocator.Resolve("Resources", "fishList.json");
+				if (filePath == null)
 				{
-					var potentialPath = Path.Combine(Environment.CurrentDirectory, "BotBases", dir, "Resources", "fishList.json");
-					if (File.Exists(potentialPath))
-					{
-						filePath = potentialPath;
-						break;
-					}
-				}
-
-				if (filePath == null || !File.Exists(filePath))
-				{
-					throw new FileNotFoundException("The fish list file was not found.", filePath);
+					throw new FileNotFoundException("The fish list file was not found.");
 				}
 
 				var json = File.ReadAllText(filePath);
