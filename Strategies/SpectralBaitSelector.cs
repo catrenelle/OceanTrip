@@ -62,7 +62,21 @@ namespace OceanTripPlanner.Strategies
 				))
 			{
 				caughtFish.Clear();
-				await _baitChanger.ChangeBait(spectralbaitId, $"Switching bait to {_gameCache.GetItemName((uint)spectralbaitId)} to catch a blue fish now that we have intuition.");
+
+				// Intuition-active bait: default to the route's SpectralBait, which an audit (2026-08-23)
+				// confirmed already equals each route's Intuition-target favorite (Sothis, Coral Manta,
+				// Elasmosaurus, Hafgufa, Hell's Claw, Manasvin) OR the target has no bait preference
+				// (Glass Dragon, Placodus, Seafaring Toad, Taniwha, Jewel of Plum Spring, Akupara), where
+				// the route default is correct. The sole exception is rhotano/Sunset: its SpectralBait is
+				// Heavy Steel Jig, but the Intuition target Stonescale wants Rat Tail - use its own favorite.
+				ulong intuitionBait = spectralbaitId;
+				if (location == "rhotano" && timeOfDay == "Sunset")
+				{
+					var stonescale = FishDataCache.GetFish().FirstOrDefault(f => f.FishID == OceanFish.Stonescale);
+					if (stonescale != null && stonescale.FavoriteBait != 0)
+						intuitionBait = stonescale.FavoriteBait;
+				}
+				await _baitChanger.ChangeBait(intuitionBait, $"Switching bait to {_gameCache.GetItemName((uint)intuitionBait)} to catch a blue fish now that we have intuition.");
 			}
 			// Blue fish prerequisite handling
 			else if ((location == "galadion") && (timeOfDay == "Night") && missingFish.Contains((uint)OceanFish.Sothis) && focusFishLog)
