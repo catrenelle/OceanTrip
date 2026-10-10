@@ -1,0 +1,10 @@
+{
+  "Name": "Ocean Trip",
+  "Url": "https://github.com/catrenelle/OceanTrip.git",
+  "Branch": "master",
+  "CloneIfNotExist": true,
+  "IsPrivate": false,
+  "RepoType": "Botbase",
+  "UpdateFrequency": "EveryDay",
+  "Description": "Automate your Ocean Fishing! Complete your Fishing Log, go for Points, or both."
+}

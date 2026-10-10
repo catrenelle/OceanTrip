@@ -1,0 +1,128 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Grid with an Auto header row + a Star row for the DataGrid, not a page-level ScrollViewer
+	     wrapping everything — the DataGrid has its own internal ScrollViewer (with a frozen column
+	     header) and needs to be THE scrolling region, sized to whatever space is actually left in the
+	     window. Wrapping it in a second, outer ScrollViewer caused three problems at once: the header
+	     scrolled away with the rows instead of staying pinned, mouse wheel over the grid did nothing
+	     (WPF's ScrollViewer marks the wheel event Handled even when it has nothing to scroll, so it
+	     never bubbles up to the outer one), and a second, redundant scrollbar appeared. Sizing the
+	     DataGrid to the Star row bounds it the same way the old MaxHeight="520" did, but without a
+	     hardcoded pixel value that could exceed a shorter window. -->
+	<Grid Margin="28">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0">
+			<TextBlock Text="Schedule" Style="{DynamicResource HeaderText}" />
+			<TextBlock Text="Where would you like to go today?" Style="{DynamicResource SecondaryText}" Margin="0,0,0,10" />
+
+			<!-- Developer-only panel — hidden by default (SchedulePageBehavior sets Visibility) so a
+			     normal player doesn't see route-simulation controls on their Schedule page. Revealed for
+			     the rest of the session by ShellWindow's Konami-style key listener (Up Up Down Down Left
+			     Right Left Right); see SchedulePageBehavior.UnlockSimulationPanel. -->
+			<GroupBox x:Name="SimulateGroup" Header="Simulate Current Route" Style="{DynamicResource Card}" Visibility="Collapsed">
+				<StackPanel Orientation="Horizontal">
+					<CheckBox x:Name="SimulateEnabledCheck" Content="Enable" Margin="0,0,24,0" VerticalAlignment="Center" />
+					<TextBlock Text="Route:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+					<ComboBox x:Name="SimRouteCombo" Width="100" Margin="0,0,24,0">
+						<ComboBoxItem Content="Indigo" />
+						<ComboBoxItem Content="Ruby" />
+					</ComboBox>
+					<TextBlock Text="Stop:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+					<ComboBox x:Name="SimLegCombo" Width="100" Margin="0,0,24,0">
+						<ComboBoxItem Content="Stop 1" />
+						<ComboBoxItem Content="Stop 2" />
+						<ComboBoxItem Content="Stop 3" />
+					</ComboBox>
+					<Button x:Name="RerollMissionsButton" Content="Reroll Missions" Style="{DynamicResource PrimaryButton}" />
+				</StackPanel>
+			</GroupBox>
+
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Route:" Style="{DynamicResource BodyText}" VerticalAlignment="Center" Margin="0,0,8,0" />
+				<ComboBox x:Name="RouteCombo" Width="120">
+					<ComboBoxItem Content="Indigo" />
+					<ComboBoxItem Content="Ruby" />
+				</ComboBox>
+			</StackPanel>
+		</StackPanel>
+
+		<DataGrid x:Name="ScheduleGrid"
+		          Grid.Row="1"
+		          VerticalScrollBarVisibility="Auto"
+		          AutoGenerateColumns="False"
+		          IsReadOnly="True"
+		          CanUserAddRows="False"
+		          CanUserDeleteRows="False"
+		          CanUserResizeRows="False"
+		          CanUserSortColumns="False"
+		          HeadersVisibility="Column"
+		          GridLinesVisibility="Horizontal"
+		          Background="{DynamicResource SurfaceBrush}"
+		          Foreground="{DynamicResource TextPrimaryBrush}"
+		          BorderThickness="1"
+		          BorderBrush="{DynamicResource BorderBrush}"
+		          RowBackground="{DynamicResource SurfaceBrush}"
+		          AlternatingRowBackground="{DynamicResource BackgroundBrush}"
+		          HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+		          VerticalGridLinesBrush="{DynamicResource BorderBrush}"
+		          RowHeaderWidth="0">
+			<DataGrid.ColumnHeaderStyle>
+				<Style TargetType="DataGridColumnHeader">
+					<Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+					<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+					<Setter Property="FontFamily" Value="Segoe UI" />
+					<Setter Property="FontSize" Value="12" />
+					<Setter Property="FontWeight" Value="SemiBold" />
+					<Setter Property="Padding" Value="8,6" />
+					<Setter Property="HorizontalContentAlignment" Value="Left" />
+				</Style>
+			</DataGrid.ColumnHeaderStyle>
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="70" />
+				<DataGridTextColumn Header="Route Start Time" Binding="{Binding Time}" Width="130" />
+				<DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="*" />
+				<DataGridTemplateColumn Header="Time of Day" Width="90">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Image Source="{Binding TimeOfDayIcon}" Width="22" Height="22" Margin="4" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="First Objective" Width="110">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Image Source="{Binding Objective1Icon}" ToolTip="{Binding Objective1Name}" Width="22" Height="22" Margin="4" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Second Objective" Width="110">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Image Source="{Binding Objective2Icon}" ToolTip="{Binding Objective2Name}" Width="22" Height="22" Margin="4" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Highlights" Width="150">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0,0,0">
+								<Border Visibility="{Binding PointsBadge}" ToolTip="{Binding PointsTip}"
+								        Background="{DynamicResource AccentBrush}" CornerRadius="3" Padding="6,1" Margin="0,0,5,0">
+									<TextBlock Text="★ Points" FontSize="10" FontWeight="SemiBold" Foreground="White" />
+								</Border>
+								<Border Visibility="{Binding MissingBadge}" ToolTip="{Binding MissingTip}"
+								        Background="{DynamicResource SuccessBrush}" CornerRadius="3" Padding="6,1">
+									<TextBlock Text="◆ New Fish" FontSize="10" FontWeight="SemiBold" Foreground="White" />
+								</Border>
+							</StackPanel>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

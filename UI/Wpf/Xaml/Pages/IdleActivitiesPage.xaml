@@ -1,0 +1,72 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Margin="28,12,28,6">
+			<TextBlock Text="Idle Activities" Style="{DynamicResource HeaderText}" />
+			<TextBlock Text="What would you like to do during the downtime between each ocean trip?"
+			           Style="{DynamicResource SecondaryText}" Margin="0,0,0,6" />
+
+			<GroupBox Header="Gather Materials" Style="{DynamicResource Card}">
+				<UniformGrid x:Name="MaterialsPanel" Columns="4" />
+			</GroupBox>
+
+			<GroupBox Header="Gather Aethersand" Style="{DynamicResource Card}">
+				<UniformGrid x:Name="AethersandsPanel" Columns="5" />
+			</GroupBox>
+
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<GroupBox Grid.Column="0" Header="Craft Raid Food" Style="{DynamicResource Card}">
+					<UniformGrid x:Name="FoodPanel" Columns="2" />
+				</GroupBox>
+
+				<!-- Header is retitled at runtime to the potions' shared base name (e.g. "Craft Grade 2
+				     Gemdraughts") so the per-item labels can drop the repeated prefix — see
+				     IdleActivitiesPageBehavior.BuildPotionsPanel. -->
+				<GroupBox x:Name="PotionsGroup" Grid.Column="1" Header="Craft Raid Potions" Style="{DynamicResource Card}">
+					<UniformGrid x:Name="PotionsPanel" Columns="2" />
+				</GroupBox>
+			</Grid>
+
+			<GroupBox Header="Restock Crystals" Style="{DynamicResource Card}">
+				<UniformGrid Columns="6">
+					<CheckBox Content="Fire" IsChecked="{Binding firecrystal}" />
+					<CheckBox Content="Ice" IsChecked="{Binding icecrystal}" />
+					<CheckBox Content="Wind" IsChecked="{Binding windcrystal}" />
+					<CheckBox Content="Earth" IsChecked="{Binding earthcrystal}" />
+					<CheckBox Content="Lightning" IsChecked="{Binding lightningcrystal}" />
+					<CheckBox Content="Water" IsChecked="{Binding watercrystal}" />
+				</UniformGrid>
+			</GroupBox>
+
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!-- Populated by IdleActivitiesPageBehavior.AttachMateria: a grade x type checkbox
+				     matrix plus a show/hide toggle for the older grades. -->
+				<GroupBox Grid.Column="0" Header="Purchase Materia" Style="{DynamicResource Card}">
+					<StackPanel x:Name="MateriaHost" />
+				</GroupBox>
+
+				<GroupBox Grid.Column="1" Header="Crafting &amp; Boat Options" Style="{DynamicResource Card}">
+					<StackPanel>
+						<CheckBox x:Name="UseCraftingFoodCheck" Margin="0,0,0,4" IsChecked="{Binding useCraftingFood}" />
+						<CheckBox Content="Keep &quot;Nasi Goreng&quot; stocked for boat food" Margin="0,0,0,4" IsChecked="{Binding restockOceanFood}" />
+						<CheckBox Content="Refill Crafting Scrips" Margin="0,0,0,4" IsChecked="{Binding refillScrips}" />
+						<CheckBox Content="Purchase Hi-Cordials" Margin="0,0,0,4" IsChecked="{Binding purchaseHiCordials}" />
+						<CheckBox Content="Use custom &quot;BoatOrder.json&quot; with Lisbeth" Margin="0,0,0,4" IsChecked="{Binding customBoatOrders}" />
+						<CheckBox Content="Resume Lisbeth Orders if interrupted" IsChecked="{Binding resumeLisbeth}" />
+					</StackPanel>
+				</GroupBox>
+			</Grid>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

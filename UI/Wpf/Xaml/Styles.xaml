@@ -1,0 +1,420 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!-- Palette — evolved from the existing brand accent (#0089C6) used elsewhere in the botbase -->
+	<Color x:Key="BackgroundColor">#FF1A1B26</Color>
+	<Color x:Key="SurfaceColor">#FF242636</Color>
+	<Color x:Key="SurfaceHoverColor">#FF2E3146</Color>
+	<Color x:Key="BorderColor">#FF333648</Color>
+	<Color x:Key="AccentColor">#FF0089C6</Color>
+	<Color x:Key="AccentHoverColor">#FF1AA3E0</Color>
+	<!-- Lighter than AccentColor for use as text/foreground/outline on dark surfaces — AccentColor
+	     itself is a fill color (works fine under white icon/text) but reads too dark on its own,
+	     e.g. as label text, an active nav item's text, or a selected radio button's ring/dot. -->
+	<Color x:Key="AccentTextColor">#FF6EC6F0</Color>
+	<Color x:Key="TextPrimaryColor">#FFF2F2F2</Color>
+	<Color x:Key="TextSecondaryColor">#FFA0A4B8</Color>
+	<!-- Low-stock warning — Tackle Box bait counts switch to this once at/below Restock Threshold. -->
+	<Color x:Key="WarningColor">#FFE0A030</Color>
+	<!-- Positive/"available" accent — e.g. the Schedule "New Fish" highlight. A mid green dark
+	     enough to read white badge text against, and clearly distinct from the blue Accent. -->
+	<Color x:Key="SuccessColor">#FF2E9E52</Color>
+
+	<SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" />
+	<SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
+	<SolidColorBrush x:Key="SurfaceHoverBrush" Color="{StaticResource SurfaceHoverColor}" />
+	<SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+	<SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+	<SolidColorBrush x:Key="AccentHoverBrush" Color="{StaticResource AccentHoverColor}" />
+	<SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}" />
+	<SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
+	<SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
+	<SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}" />
+
+	<!-- Lighter accent for text/foreground/outline contexts — section headers, the active nav
+	     item, a selected radio button's ring/dot — anywhere AccentBrush itself would be too dark. -->
+	<SolidColorBrush x:Key="AccentLightBrush" Color="{StaticResource AccentTextColor}" />
+
+	<!-- Typography -->
+	<Style x:Key="BodyText" TargetType="TextBlock">
+		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="13" />
+	</Style>
+
+	<Style x:Key="SecondaryText" TargetType="TextBlock" BasedOn="{StaticResource BodyText}">
+		<Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+	</Style>
+
+	<Style x:Key="HeaderText" TargetType="TextBlock" BasedOn="{StaticResource BodyText}">
+		<Setter Property="FontSize" Value="18" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="Margin" Value="0,0,0,4" />
+	</Style>
+
+	<!-- Left-nav sidebar button; set Tag="Active" in code to highlight the current page.
+	     Active state reads as a left accent bar + tinted background + accent-colored label,
+	     rather than a solid filled pill — quieter and reads better once several items sit side by side. -->
+	<Style x:Key="NavButton" TargetType="Button">
+		<Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="13" />
+		<Setter Property="Padding" Value="14,10" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid SnapsToDevicePixels="True">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="3" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Border x:Name="AccentBar" Grid.Column="0" Background="Transparent" Margin="0,3,0,3" CornerRadius="0,2,2,0" />
+						<Border x:Name="Bg" Grid.Column="1" Background="{TemplateBinding Background}" CornerRadius="0,6,6,0">
+							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							                  VerticalAlignment="Center"
+							                  Margin="{TemplateBinding Padding}" />
+						</Border>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+						</Trigger>
+						<Trigger Property="Tag" Value="Active">
+							<Setter TargetName="AccentBar" Property="Background" Value="{StaticResource AccentLightBrush}" />
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+							<Setter Property="Foreground" Value="{StaticResource AccentLightBrush}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Standard filled action button -->
+	<Style x:Key="PrimaryButton" TargetType="Button">
+		<Setter Property="Background" Value="{StaticResource AccentBrush}" />
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="13" />
+		<Setter Property="Padding" Value="16,8" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border Background="{TemplateBinding Background}" CornerRadius="6">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Borderless title-bar close/window-control button -->
+	<Style x:Key="TitleBarButton" TargetType="Button">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="Width" Value="46" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="Bg" Background="{TemplateBinding Background}">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Small pill toggle for a mutually-exclusive filter row (e.g. Result History's All/Indigo/Ruby
+	     route filter) — same Tag="Active"-driven highlight convention as NavButton, just styled as a
+	     horizontal segment instead of a sidebar row. -->
+	<Style x:Key="FilterPillButton" TargetType="Button">
+		<Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+		<Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+		<Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="Padding" Value="16,6" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="Bg" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+					        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="14">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+						</Trigger>
+						<Trigger Property="Tag" Value="Active">
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource AccentBrush}" />
+							<Setter TargetName="Bg" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+							<Setter Property="Foreground" Value="White" />
+						</Trigger>
+						<!-- Result History's Prev/Next pagination buttons use this (disabled at the
+						     first/last page) — the custom template above replaces the whole visual
+						     tree, so IsEnabled needs its own explicit dimming like everything else here. -->
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Opacity" Value="0.4" />
+							<Setter Property="Cursor" Value="Arrow" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Section card — replaces GroupBox's dated chrome with a modern flat rounded panel,
+	     while keeping the same Header/Content semantics as the original WinForms GroupBoxes.
+	     Header uses a small, letter-spaced, accent-tinted label (vs. plain white) and the panel
+	     gets a soft drop shadow for a touch of elevation over the page background. -->
+	<Style x:Key="Card" TargetType="GroupBox">
+		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+		<Setter Property="Margin" Value="0,0,8,8" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="GroupBox">
+					<Border Background="{StaticResource SurfaceBrush}"
+					        BorderBrush="{StaticResource BorderBrush}"
+					        BorderThickness="1"
+					        CornerRadius="8"
+					        Padding="12">
+						<Border.Effect>
+							<DropShadowEffect Color="Black" Opacity="0.28" BlurRadius="12" ShadowDepth="2" Direction="270" />
+						</Border.Effect>
+						<StackPanel>
+							<TextBlock Text="{TemplateBinding Header}"
+							           FontFamily="Segoe UI" FontSize="11" FontWeight="SemiBold"
+							           Foreground="{StaticResource AccentLightBrush}"
+							           Margin="0,0,0,8" />
+							<ContentPresenter />
+						</StackPanel>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- These are applied explicitly (via XamlLoader's post-parse tree walk, or Style="{DynamicResource ...}"
+	     for anything hand-authored in XAML) rather than relying on implicit TargetType-only style
+	     auto-discovery — that resolves fine for elements loaded via XamlReader.Parse in this
+	     RebornBuddy-hosted setup for SOME cases but not reliably for RadioButton/CheckBox/TextBox,
+	     which is why checked boxes/radios were falling back to stock OS chrome instead of this template. -->
+	<Style x:Key="AppRadioButton" TargetType="RadioButton">
+		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="13" />
+		<Setter Property="Margin" Value="0,0,0,3" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="RadioButton">
+					<StackPanel Orientation="Horizontal">
+						<Border x:Name="Circle" Width="16" Height="16" CornerRadius="8"
+						        BorderThickness="1.5" BorderBrush="{StaticResource BorderBrush}"
+						        Background="Transparent" VerticalAlignment="Center">
+							<Ellipse x:Name="Dot" Width="7" Height="7" Fill="{StaticResource AccentLightBrush}"
+							         HorizontalAlignment="Center" VerticalAlignment="Center"
+							         Visibility="Collapsed" />
+						</Border>
+						<ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+					</StackPanel>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsChecked" Value="True">
+							<Setter TargetName="Circle" Property="BorderBrush" Value="{StaticResource AccentLightBrush}" />
+							<Setter TargetName="Dot" Property="Visibility" Value="Visible" />
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Circle" Property="BorderBrush" Value="{StaticResource AccentHoverBrush}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="AppCheckBox" TargetType="CheckBox">
+		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="13" />
+		<Setter Property="Margin" Value="0,0,0,3" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="CheckBox">
+					<StackPanel Orientation="Horizontal">
+						<Border x:Name="Box" Width="16" Height="16" CornerRadius="4"
+						        BorderThickness="1.5" BorderBrush="{StaticResource BorderBrush}"
+						        Background="Transparent" VerticalAlignment="Center">
+							<Path x:Name="Check" Data="M 3,8.2 L 6.6,11.8 L 13,4.2"
+							      Stroke="White" StrokeThickness="2"
+							      StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+							      HorizontalAlignment="Center" VerticalAlignment="Center"
+							      Visibility="Collapsed" />
+						</Border>
+						<ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+					</StackPanel>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsChecked" Value="True">
+							<Setter TargetName="Box" Property="Background" Value="{StaticResource AccentBrush}" />
+							<Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+							<Setter TargetName="Check" Property="Visibility" Value="Visible" />
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource AccentHoverBrush}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="AppTextBox" TargetType="TextBox">
+		<Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+		<Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding" Value="8,4" />
+		<Setter Property="FontFamily" Value="Segoe UI" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="CaretBrush" Value="{StaticResource TextPrimaryBrush}" />
+		<Setter Property="Width" Value="60" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TextBox">
+					<Border Background="{TemplateBinding Background}"
+					        BorderBrush="{TemplateBinding BorderBrush}"
+					        BorderThickness="{TemplateBinding BorderThickness}"
+					        CornerRadius="4">
+						<ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Row label in a label-left/options-right settings form (Ocean Settings' Voyage card) -->
+	<Style x:Key="FormLabel" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+		<Setter Property="FontSize" Value="13" />
+		<Setter Property="Margin" Value="0,0,20,0" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<!-- Outer chrome of a numeric stepper: draws the single input border around BOTH the (borderless)
+	     TextBox and the up/down arrow column, so the arrows are part of the field instead of a
+	     separate floating stack that never lines up with the box next to it. -->
+	<Style x:Key="StepperFrame" TargetType="Border">
+		<Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+		<Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<!-- Up/down spinner half-button used by numeric stepper fields (Max Stacks, Restock Threshold/Amount).
+	     Content is a vector Polygon triangle, not a font glyph — same reasoning as the title bar's
+	     minimize/maximize icons: nothing here depends on a specific icon font having the right codepoint. -->
+	<Style x:Key="StepperButton" TargetType="RepeatButton">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Focusable" Value="False" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="RepeatButton">
+					<Border x:Name="Bg" Background="{TemplateBinding Background}">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bg" Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Small icon tile used for bait/achievement grids -->
+	<Style x:Key="IconTile" TargetType="Border">
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+		<Setter Property="CornerRadius" Value="5" />
+		<Setter Property="Margin" Value="0,0,0,2" />
+	</Style>
+
+	<!-- Slim, borderless scrollbar thumb — replaces the stock wide gray scrollbar that every
+	     ScrollViewer in the app would otherwise show, which looks dated against this dark theme.
+	     Solid AccentBrush at rest (not a low-opacity tint of it) so the thumb reads as the exact
+	     same blue as the mission progress bars (CurrentRoutePageBehavior.BuildMissionRow) rather
+	     than a washed-out shade blended against the dark background; hover/drag brighten to
+	     AccentHoverBrush, the same escalation PrimaryButton/NavButton already use elsewhere. -->
+	<Style x:Key="SlimScrollThumb" TargetType="Thumb">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Thumb">
+					<Border x:Name="ThumbBorder" Background="{StaticResource AccentBrush}" CornerRadius="4" />
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource AccentHoverBrush}" />
+						</Trigger>
+						<Trigger Property="IsDragging" Value="True">
+							<Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource AccentHoverBrush}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Explicit x:Key (not implicit TargetType-only) — every OTHER custom style in this file uses
+	     one for the same reason documented on AppRadioButton above: implicit styles don't reliably
+	     auto-apply to elements parsed via XamlReader.Parse in this hosted setup. Applied explicitly
+	     by XamlLoader.HookScrollBarStyling to each ScrollViewer's generated ScrollBar parts. -->
+	<Style x:Key="AppScrollBar" TargetType="ScrollBar">
+		<Setter Property="Width" Value="10" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ScrollBar">
+					<Grid Background="Transparent">
+						<Track x:Name="PART_Track" IsDirectionReversed="True" Width="6" HorizontalAlignment="Center">
+							<Track.DecreaseRepeatButton>
+								<RepeatButton Command="ScrollBar.LineUpCommand" Opacity="0" />
+							</Track.DecreaseRepeatButton>
+							<Track.IncreaseRepeatButton>
+								<RepeatButton Command="ScrollBar.LineDownCommand" Opacity="0" />
+							</Track.IncreaseRepeatButton>
+							<Track.Thumb>
+								<Thumb Style="{StaticResource SlimScrollThumb}" />
+							</Track.Thumb>
+						</Track>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>
